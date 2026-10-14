@@ -384,6 +384,8 @@ export function extractTextFromSearchapi(rawOutput: any): string {
  */
 export function extractTextContent(rawOutput: any, providerOrEngine: string): string {
 	switch (providerOrEngine) {
+		case "beat-browser":
+			return rawOutput?.status === "completed" && typeof rawOutput.answer === "string" ? rawOutput.answer : "";
 		case "openai-api":
 		case "openai":
 		case "chatgpt":
@@ -676,6 +678,11 @@ export function extractCitationsFromSearchapi(rawOutput: any): Citation[] {
  */
 export function extractCitations(rawOutput: any, providerOrEngine: string): Citation[] {
 	switch (providerOrEngine) {
+		case "beat-browser":
+			return collectCitations((add) => {
+				if (rawOutput?.status !== "completed") return;
+				for (const citation of asArray(rawOutput.citations)) add(citation?.url, citation?.title);
+			});
 		case "openai-api":
 		case "openai":
 		case "chatgpt":

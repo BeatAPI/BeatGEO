@@ -62,7 +62,9 @@
     "RESEND_API_KEY",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
-    "RESEND_FROM_EMAIL"
+    "RESEND_FROM_EMAIL",
+    "BROWSER_RUNNER_URL",
+    "BROWSER_RUNNER_TOKEN"
   ],
   "tasks": {
     "//#format": {

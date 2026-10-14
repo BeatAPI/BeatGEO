@@ -43,6 +43,19 @@ const VALIDATED_MODES: DeploymentMode[] = ["local", "demo", "whitelabel", "cloud
 
 export const ENV_REGISTRY: EnvVarSpec[] = [
 	{
+		name: "BROWSER_RUNNER_URL",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Local Open Profound Browser Lab URL.",
+	},
+	{
+		name: "BROWSER_RUNNER_TOKEN",
+		scope: "server",
+		requiredBy: "dynamic-scrape-targets",
+		provider: "beat-browser",
+		description: "Shared token for the local browser collector.",
+	},
+	{
 		name: "DATABASE_URL",
 		scope: "server",
 		requiredBy: VALIDATED_MODES,
