@@ -1,3 +1,9 @@
+# Open Profound fork notes
+
+This is BeatAPI's independent Open Profound prototype based on Elmo. Preserve upstream copyright and attribution. `apps/browser-lab` is the local real-browser experiment; `.open-profound` and all credentials/raw account evidence must remain untracked. Do not activate upstream publishing, content automation or deployment workflows. Distinguish real UI observations from API simulations and unfinished runs from missing mentions.
+
+The upstream contributor instructions below continue to apply to the inherited workspace.
+
 # AGENTS.md
 
 ## What this is

@@ -44,6 +44,8 @@ declare global {
 			readonly DATABASE_URL: string;
 			readonly APP_URL?: string;
 			readonly SCRAPE_TARGETS?: string;
+			readonly BROWSER_RUNNER_URL?: string;
+			readonly BROWSER_RUNNER_TOKEN?: string;
 			readonly OPENAI_API_KEY: string;
 			readonly ANTHROPIC_API_KEY: string;
 			readonly MISTRAL_API_KEY?: string;

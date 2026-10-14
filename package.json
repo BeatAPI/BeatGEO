@@ -1,5 +1,5 @@
 {
-  "name": "elmo",
+  "name": "open-profound",
   "private": true,
   "license": "MIT",
   "packageManager": "pnpm@12.4.1",
@@ -31,7 +31,9 @@
     "test:api:demo": "pnpm --filter e2e test:api:demo",
     "validate:spec": "pnpm --filter e2e validate:spec",
     "test:scripts": "node --test 'scripts/*.test.mjs'",
-    "license-check": "node scripts/check-licenses.mjs"
+    "license-check": "node scripts/check-licenses.mjs",
+    "browser:lab": "node apps/browser-lab/server.mjs",
+    "test:browser": "node --test apps/browser-lab/core.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

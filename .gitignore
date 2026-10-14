@@ -92,3 +92,6 @@ apps/web/storybook-static/
 
 # Built from skills/ by apps/www/scripts/build-agent-skills.mjs.
 apps/www/public/.well-known/agent-skills/
+# Browser sessions, raw answers and local runner credentials are never published.
+.open-profound/
+.env.browser-local

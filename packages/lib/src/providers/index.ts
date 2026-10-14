@@ -1,5 +1,6 @@
 import { PROVIDERS_DOCS_URL } from "@workspace/config/constants";
 import { anthropicApi } from "./registry/anthropic-api";
+import { beatBrowser } from "./registry/beat-browser";
 import { brightdata } from "./registry/brightdata";
 import { cloro } from "./registry/cloro";
 import { dataforseo } from "./registry/dataforseo";
@@ -26,6 +27,7 @@ export type {
 } from "./types";
 
 const providerMap: Record<string, Provider> = {
+	"beat-browser": beatBrowser,
 	searchapi,
 	olostep,
 	brightdata,
