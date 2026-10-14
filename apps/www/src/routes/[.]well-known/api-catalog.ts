@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CLOUD_APP_URL } from "@workspace/config/referrals";
 import { canonicalUrl } from "@/lib/seo";
 
-const STATUS_URL = "https://status.elmohq.com/";
+const STATUS_URL = "https://github.com/BeatAPI/BeatGeo";
 
 const catalog = {
 	linkset: [
@@ -12,22 +12,22 @@ const catalog = {
 				{
 					href: canonicalUrl("/api/openapi.json"),
 					type: "application/vnd.oai.openapi+json;version=3.1",
-					title: "Elmo API — OpenAPI description",
+					title: "BeatGeo API — OpenAPI description",
 				},
 			],
 			"service-doc": [
 				{
 					href: canonicalUrl("/docs/api"),
 					type: "text/html",
-					title: "Elmo API reference",
+					title: "BeatGeo API reference",
 				},
 				{
 					href: canonicalUrl("/docs/api.md"),
 					type: "text/markdown",
-					title: "Elmo API reference (markdown)",
+					title: "BeatGeo API reference (markdown)",
 				},
 			],
-			status: [{ href: STATUS_URL, type: "text/html", title: "Elmo status" }],
+			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGeo status" }],
 		},
 		{
 			anchor: `${CLOUD_APP_URL}/api/mcp`,
@@ -35,15 +35,15 @@ const catalog = {
 				{
 					href: canonicalUrl("/docs/api/mcp"),
 					type: "text/html",
-					title: "Elmo MCP server",
+					title: "BeatGeo MCP server",
 				},
 				{
 					href: canonicalUrl("/docs/api/mcp.md"),
 					type: "text/markdown",
-					title: "Elmo MCP server (markdown)",
+					title: "BeatGeo MCP server (markdown)",
 				},
 			],
-			status: [{ href: STATUS_URL, type: "text/html", title: "Elmo status" }],
+			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGeo status" }],
 		},
 	],
 };

@@ -90,7 +90,7 @@ test("an uncertain submission is not replayed or counted as a missing mention", 
 });
 
 test("run evidence round-trips through private local storage", async () => {
-	const directory = await mkdtemp(path.join(os.tmpdir(), "open-profound-test-"));
+	const directory = await mkdtemp(path.join(os.tmpdir(), "beat-geo-test-"));
 	try {
 		const run = { id: "abcdef-1234", startedAt: "2026-10-14T00:00:00Z", status: "completed", answer: "Raw answer" };
 		await saveRun(directory, run);
@@ -193,4 +193,18 @@ test("default collection uses the chosen profile and preserves evidence pages", 
 		false,
 	);
 	assert.equal(calls.at(-1).params.keep, "all");
+});
+
+test("duplicate observation IDs and failed attempts do not inflate a brand percentage", () => {
+	const result = summarize([
+		{ id: "a", status: "completed", brandMentioned: true },
+		{ id: "a", status: "completed", brandMentioned: true },
+		{ id: "b", status: "completed", brandMentioned: false },
+		{ id: "c", status: "timeout", brandMentioned: null },
+	]);
+	assert.equal(result.mentionRate, 0.5);
+	assert.equal(result.total, 3);
+	assert.equal(result.timeout, 1);
+	assert.equal(result.statusCounts.timeout, 1);
+	assert.equal(result.metricVersion, "beatgeo-v1");
 });

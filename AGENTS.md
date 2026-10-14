@@ -1,6 +1,6 @@
-# Open Profound fork notes
+# BeatGeo fork notes
 
-This is BeatAPI's independent Open Profound prototype based on Elmo. Preserve upstream copyright and attribution. `apps/browser-lab` is the local real-browser experiment; `.open-profound` and all credentials/raw account evidence must remain untracked. Do not activate upstream publishing, content automation or deployment workflows. Distinguish real UI observations from API simulations and unfinished runs from missing mentions.
+This is BeatAPI's independent BeatGeo product based on the MIT-licensed Elmo codebase. Product naming is BeatGeo; GitHub is BeatAPI/BeatGeo. Preserve upstream copyright and attribution. `apps/browser-lab` is the local real-browser experiment; `.beat-geo`, legacy `.open-profound`, and all credentials/raw account evidence must remain untracked. Do not activate upstream publishing, content automation or deployment workflows. Distinguish real UI observations from API simulations and unfinished runs from missing mentions.
 
 The upstream contributor instructions below continue to apply to the inherited workspace.
 
@@ -8,12 +8,12 @@ The upstream contributor instructions below continue to apply to the inherited w
 
 ## What this is
 
-Elmo is an open-source AI visibility platform (Answer Engine Optimization): it tracks how AI answer engines like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention, cite, and describe brands. It is a **pnpm + Turborepo monorepo** on **Node.js 24** (enforced via `engines`), **TypeScript**, and **PostgreSQL**.
+BeatGeo is an open-source AI visibility platform (Answer Engine Optimization): it tracks how AI answer engines like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention, cite, and describe brands. It is a **pnpm + Turborepo monorepo** on **Node.js 24** (enforced via `engines`), **TypeScript**, and **PostgreSQL**.
 
 - `apps/web` — product dashboard (TanStack Start + Vite, port 3000)
 - `apps/worker` — pg-boss background jobs (AI evaluations, citation tracking, reports)
 - `apps/www` — marketing site, docs, and blog (port 3001)
-- `apps/cli` — `@elmohq/cli`, the Docker Compose deployment CLI
+- `apps/cli` — `@beatapi/geo-cli`, the Docker Compose deployment CLI
 - `packages/lib` — shared logic and the Drizzle schema/migrations
 - `packages/ui` — shared shadcn-based UI components
 - `packages/docs` — user-facing docs content (MDX), rendered by `apps/www`
@@ -53,7 +53,7 @@ Before handing work back or opening a PR, run `pnpm lint` and get it passing; CI
 
 ## Environment
 
-`.env` must exist at **both** the repo root and `apps/web/.env` (Vite reads its project root; the worker reads `apps/web/.env` via `--env-file`). Minimum for local mode: `DATABASE_URL`, `DEPLOYMENT_MODE=local`, `BETTER_AUTH_SECRET`, `ELMO_ENCRYPTION_KEY` (`openssl rand -base64 32`), `APP_URL`/`VITE_APP_URL`, `DISABLE_TELEMETRY=1`, and `SCRAPE_TARGETS` plus the keys of the providers it names. Env validation also requires one direct LLM key (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, or `MISTRAL_API_KEY`) for onboarding and the Opportunities report. For UI-only work, `SCRAPE_TARGETS=stub:stub` and `ONBOARDING_LLM_TARGET=stub:stub` need no keys at all.
+`.env` must exist at **both** the repo root and `apps/web/.env` (Vite reads its project root; the worker reads `apps/web/.env` via `--env-file`). Minimum for local mode: `DATABASE_URL`, `DEPLOYMENT_MODE=local`, `BETTER_AUTH_SECRET`, `BEAT_GEO_ENCRYPTION_KEY` (`openssl rand -base64 32`), `APP_URL`/`VITE_APP_URL`, `DISABLE_TELEMETRY=1`, and `SCRAPE_TARGETS` plus the keys of the providers it names. Env validation also requires one direct LLM key (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, or `MISTRAL_API_KEY`) for onboarding and the Opportunities report. For UI-only work, `SCRAPE_TARGETS=stub:stub` and `ONBOARDING_LLM_TARGET=stub:stub` need no keys at all.
 
 ## Git workflow
 

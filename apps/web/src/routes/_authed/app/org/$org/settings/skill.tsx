@@ -4,9 +4,9 @@ import { CodeBlock, InlineCode } from "@/components/code-block";
 import { useOrganization } from "@/hooks/use-organizations";
 import { pageHead } from "@/lib/route-head";
 
-const INSTALL_COMMAND = "npx skills add elmohq/elmo";
-const SKILL_URL = "https://github.com/elmohq/elmo/tree/main/skills/aeo";
-const LAUNCH_POST_URL = "https://www.elmohq.com/blog/aeo-skill";
+const INSTALL_COMMAND = "npx skills add BeatAPI/beat-geo";
+const SKILL_URL = "https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo";
+const LAUNCH_POST_URL = "https://github.com/BeatAPI/BeatGeo";
 
 const EXAMPLE_ASKS = [
 	"How's our brand doing in AI search this week?",

@@ -7,7 +7,7 @@ import { authorDisplayName, isAiAuthor } from "@/data/authors";
 import { formatPostDate } from "@/lib/format";
 import { breadcrumbJsonLd, canonicalUrl, ogMeta, SITE_NAME } from "@/lib/seo";
 
-const title = "Blog · Elmo";
+const title = "Blog · BeatGeo";
 const description = "Learn how to optimize your brand's AI search visibility.";
 
 interface PostMeta {

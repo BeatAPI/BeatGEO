@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRedis } from "./redis";
 
-const CACHE_KEY = "gh:changelog:elmohq/elmo";
+const CACHE_KEY = "gh:changelog:BeatAPI/beat-geo";
 const TTL_SECONDS = 60 * 60;
 const ERROR_TTL_SECONDS = 60;
 
-const REPO = "elmohq/elmo";
+const REPO = "BeatAPI/beat-geo";
 const API_BASE = `https://api.github.com/repos/${REPO}`;
 
 export interface ChangelogIssue {
@@ -35,7 +35,7 @@ interface RawIssue {
 
 const headers: Record<string, string> = {
 	Accept: "application/vnd.github+json",
-	"User-Agent": "elmo-www",
+	"User-Agent": "beatgeo-www",
 };
 if (process.env.GITHUB_TOKEN) {
 	headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;

@@ -4,7 +4,7 @@ import { refreshHeaderVersion, renderedByHeader, repinImages } from "./compose-p
 import type { PostgresMode } from "./config.js";
 import { indentBlock } from "./util.js";
 
-// Rewrites `elmohq/elmo-*:<tag>` image tags in place, preserving any manual
+// Rewrites `beatapi/beat-geo-*:<tag>` image tags in place, preserving any manual
 // edits the user made to the compose file, then refreshes the version header.
 export async function repinComposeImages(composePath: string, version: string): Promise<void> {
 	const contents = await fs.readFile(composePath, "utf8");
@@ -80,7 +80,7 @@ export function buildComposeYaml(options: {
 		}),
 	);
 
-	const lines = [renderedByHeader(options.version), "", "name: elmo", "", "services:"];
+	const lines = [renderedByHeader(options.version), "", "name: beatgeo", "", "services:"];
 	lines.push(...services.map((service) => indentBlock(service, 2)));
 
 	if (volumes.size > 0) {
@@ -100,7 +100,7 @@ function buildPostgresService(): string {
 		"  environment:",
 		"    POSTGRES_USER: postgres",
 		"    POSTGRES_PASSWORD: postgres",
-		"    POSTGRES_DB: elmo",
+		"    POSTGRES_DB: beatgeo",
 		"  volumes:",
 		// PostgreSQL 18 puts PGDATA in a version-specific child directory and
 		// declares its volume at this parent. Mounting the child path can silently
@@ -132,12 +132,12 @@ function buildDbMigrateService(options: {
 			"    target: migrate",
 		);
 	} else {
-		lines.push(`  image: elmohq/elmo-db-migrate:${options.version}`);
+		lines.push(`  image: beatapi/beat-geo-db-migrate:${options.version}`);
 	}
 
 	lines.push(
 		"  environment:",
-		"    - DATABASE_URL=postgres://postgres:postgres@postgres:5432/elmo",
+		"    - DATABASE_URL=postgres://postgres:postgres@postgres:5432/beatgeo",
 		"  depends_on:",
 		"    postgres:",
 		"      condition: service_healthy",
@@ -164,7 +164,7 @@ function buildWebService(options: {
 			"    target: web",
 		);
 	} else {
-		lines.push(`  image: elmohq/elmo-web:${options.version}`);
+		lines.push(`  image: beatapi/beat-geo-web:${options.version}`);
 	}
 
 	lines.push("  env_file:", "    - path: .env", "      required: true", "  ports:", `    - "${options.port}:3000"`);
@@ -197,7 +197,7 @@ function buildWorkerService(options: {
 			"    target: worker",
 		);
 	} else {
-		lines.push(`  image: elmohq/elmo-worker:${options.version}`);
+		lines.push(`  image: beatapi/beat-geo-worker:${options.version}`);
 	}
 
 	lines.push("  env_file:", "    - path: .env", "      required: true");

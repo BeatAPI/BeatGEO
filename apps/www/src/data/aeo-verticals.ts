@@ -17,7 +17,7 @@ export interface AeoVertical {
 	/** Illustrative prompts buyers in this vertical ask AI engines. */
 	examplePrompts: string[];
 	plays: { name: string; text: string }[];
-	elmoFit: string;
+	beatgeoFit: string;
 	faqs: { question: string; answer: string }[];
 }
 
@@ -28,7 +28,7 @@ export const aeoVerticals: AeoVertical[] = [
 		plan: "business",
 		technical: true,
 		headline: "AI Visibility Software for Agencies",
-		metaTitle: "AI Visibility & SEO Software for Agencies (White-Label) · Elmo",
+		metaTitle: "AI Visibility & SEO Software for Agencies (White-Label) · BeatGeo",
 		metaDescription:
 			"White-label AI visibility software for agencies: track every client's presence in ChatGPT, Perplexity and AI Overviews, report under your own brand, and self-host without per-seat fees.",
 		short:
@@ -56,13 +56,13 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Put the reporting under your own brand and domain so the visibility data looks like part of your service, not a third-party tool.",
 			},
 		],
-		elmoFit:
-			"Elmo is open source with white-label support, so you can run one instance for an entire book of clients, brand the dashboards as your own, and skip the per-seat pricing that does not scale across an agency.",
+		beatgeoFit:
+			"BeatGeo is open source with white-label support, so you can run one instance for an entire book of clients, brand the dashboards as your own, and skip the per-seat pricing that does not scale across an agency.",
 		faqs: [
 			{
 				question: "Can agencies white-label AI visibility reports?",
 				answer:
-					"Yes. Elmo offers white-label deployments, so agencies can run multi-client dashboards under their own brand and domain. You self-host the platform and present the data as part of your own service.",
+					"Yes. BeatGeo offers white-label deployments, so agencies can run multi-client dashboards under their own brand and domain. You self-host the platform and present the data as part of your own service.",
 			},
 			{
 				question: "How do agencies price AEO services?",
@@ -77,7 +77,7 @@ export const aeoVerticals: AeoVertical[] = [
 		plan: "pro",
 		technical: true,
 		headline: "AEO for B2B SaaS",
-		metaTitle: "AEO for B2B SaaS: Tools and Tactics for Software Buyers · Elmo",
+		metaTitle: "AEO for B2B SaaS: Tools and Tactics for Software Buyers · BeatGeo",
 		metaDescription:
 			"How B2B SaaS teams win the 'best [category] software' and 'X vs Y' answers where buyers now build their shortlists, and which AEO tools fit a software company.",
 		short: "Win the 'best [category] software' and 'X vs Y' answers where buyers now build their shortlists.",
@@ -109,13 +109,13 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Models go stale. Monitor for outdated descriptions of your features or pricing and correct the underlying sources.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks exactly these prompts across every major engine, shows which competitors get named with or instead of you, and flags when a model gets your features or pricing wrong.",
+		beatgeoFit:
+			"BeatGeo tracks exactly these prompts across every major engine, shows which competitors get named with or instead of you, and flags when a model gets your features or pricing wrong.",
 		faqs: [
 			{
 				question: "What is the best AEO tool for B2B SaaS?",
 				answer:
-					"There is no single answer, because SaaS teams buy for two different jobs. If you need broad engine coverage and enterprise reporting, the larger hosted platforms cover it. If you want to own the data, audit how the visibility score is calculated, and avoid per-seat pricing across a growing team, a self-hosted open-source tool fits better — Elmo is the most complete one. Whichever you pick, the requirement specific to SaaS is competitor benchmarking on comparison and alternatives prompts, since that is where buyers build shortlists. Compare the options in the AI visibility tool directory.",
+					"There is no single answer, because SaaS teams buy for two different jobs. If you need broad engine coverage and enterprise reporting, the larger hosted platforms cover it. If you want to own the data, audit how the visibility score is calculated, and avoid per-seat pricing across a growing team, a self-hosted open-source tool fits better — BeatGeo is the most complete one. Whichever you pick, the requirement specific to SaaS is competitor benchmarking on comparison and alternatives prompts, since that is where buyers build shortlists. Compare the options in the AI visibility tool directory.",
 			},
 			{
 				question: "How do I show up when buyers ask AI for software recommendations?",
@@ -125,7 +125,7 @@ export const aeoVerticals: AeoVertical[] = [
 			{
 				question: "Can I see which competitors AI tools recommend?",
 				answer:
-					"Yes. Elmo records which competitors get mentioned and cited alongside you on each prompt, so you can measure share of voice against your named rivals.",
+					"Yes. BeatGeo records which competitors get mentioned and cited alongside you on each prompt, so you can measure share of voice against your named rivals.",
 			},
 		],
 	},
@@ -158,8 +158,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Stale prices and stock invite wrong answers. Keep product data current so engines describe you correctly.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks how AI answers describe and recommend your products against competitors, so you can see which categories you win and which you are missing.",
+		beatgeoFit:
+			"BeatGeo tracks how AI answers describe and recommend your products against competitors, so you can see which categories you win and which you are missing.",
 		faqs: [
 			{
 				question: "Do AI engines recommend products?",
@@ -205,8 +205,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "An out-of-date claim about your product can sit in answers for months. Monitor and fix the sources behind it.",
 			},
 		],
-		elmoFit:
-			"Elmo measures your presence across category, competitor, and branded prompts, so you can see where you enter the buyer's research and where you are absent.",
+		beatgeoFit:
+			"BeatGeo measures your presence across category, competitor, and branded prompts, so you can see where you enter the buyer's research and where you are absent.",
 		faqs: [
 			{
 				question: "Why does AEO matter for B2B?",
@@ -226,7 +226,7 @@ export const aeoVerticals: AeoVertical[] = [
 		plan: "starter",
 		technical: true,
 		headline: "Startup SEO and AI Search Visibility",
-		metaTitle: "Startup SEO in the AI Search Era: A Practical Guide · Elmo",
+		metaTitle: "Startup SEO in the AI Search Era: A Practical Guide · BeatGeo",
 		metaDescription:
 			"Startup SEO when a growing share of searches end in an AI answer: which prompts to track first, what to publish, and how to measure visibility on no budget.",
 		short: "Build AI visibility from zero without enterprise pricing, on a tool you can self-host for free.",
@@ -253,13 +253,13 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Visibility moves as you publish and get covered. A weekly read shows whether it is working.",
 			},
 		],
-		elmoFit:
-			"Elmo is free to self-host, so an early-stage team can track AI visibility without an enterprise contract and only pay for the provider API keys it uses.",
+		beatgeoFit:
+			"BeatGeo is free to self-host, so an early-stage team can track AI visibility without an enterprise contract and only pay for the provider API keys it uses.",
 		faqs: [
 			{
 				question: "Is there a free AI visibility tool for startups?",
 				answer:
-					"Yes. Elmo is free and open source to self-host. There is no license fee or per-seat pricing, so you only pay for your own infrastructure and the AI provider keys you use.",
+					"Yes. BeatGeo is free and open source to self-host. There is no license fee or per-seat pricing, so you only pay for your own infrastructure and the AI provider keys you use.",
 			},
 			{
 				question: "When should a startup start doing AEO?",
@@ -274,7 +274,7 @@ export const aeoVerticals: AeoVertical[] = [
 		plan: "business",
 		technical: true,
 		headline: "Enterprise AI Visibility Platforms",
-		metaTitle: "Enterprise AI Visibility & AEO Platform Requirements · Elmo",
+		metaTitle: "Enterprise AI Visibility & AEO Platform Requirements · BeatGeo",
 		metaDescription:
 			"What an enterprise AEO platform has to do: multi-brand tracking, data residency, SSO, export, and a visibility methodology your analysts can audit rather than trust.",
 		short: "Track AI visibility at scale while keeping your prompts and history on your own infrastructure.",
@@ -301,18 +301,18 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Open code means your team can verify how every metric is built, rather than trusting a black-box score.",
 			},
 		],
-		elmoFit:
-			"Elmo is open source and self-hosted, so enterprise teams keep full ownership of their data, avoid vendor lock-in, and can audit the methodology behind every metric.",
+		beatgeoFit:
+			"BeatGeo is open source and self-hosted, so enterprise teams keep full ownership of their data, avoid vendor lock-in, and can audit the methodology behind every metric.",
 		faqs: [
 			{
 				question: "Can we self-host AI visibility tracking?",
 				answer:
-					"Yes. Elmo is built to be self-hosted. You deploy it on your own infrastructure, keep prompts and history in house, and read the code to verify exactly how each metric is calculated.",
+					"Yes. BeatGeo is built to be self-hosted. You deploy it on your own infrastructure, keep prompts and history in house, and read the code to verify exactly how each metric is calculated.",
 			},
 			{
-				question: "How does Elmo handle data ownership?",
+				question: "How does BeatGeo handle data ownership?",
 				answer:
-					"You own everything. Because Elmo is open source and runs on your infrastructure, your data stays with you, you can export it at any time, and there is no vendor lock-in.",
+					"You own everything. Because BeatGeo is open source and runs on your infrastructure, your data stays with you, you can export it at any time, and there is no vendor lock-in.",
 			},
 		],
 	},
@@ -344,8 +344,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Keep prompts and history on your own infrastructure rather than a third-party dashboard.",
 			},
 		],
-		elmoFit:
-			"Elmo lets healthcare teams track how engines describe their brand and catch inaccuracies, while self-hosting keeps sensitive data in house and the methodology fully auditable.",
+		beatgeoFit:
+			"BeatGeo lets healthcare teams track how engines describe their brand and catch inaccuracies, while self-hosting keeps sensitive data in house and the methodology fully auditable.",
 		faqs: [
 			{
 				question: "Why does AEO matter in healthcare?",
@@ -355,7 +355,7 @@ export const aeoVerticals: AeoVertical[] = [
 			{
 				question: "How do I catch AI errors about my health brand?",
 				answer:
-					"Track a consistent set of prompts about your brand and services across engines, and watch for inaccurate or stale claims. Elmo records how each engine describes you so errors surface quickly.",
+					"Track a consistent set of prompts about your brand and services across engines, and watch for inaccurate or stale claims. BeatGeo records how each engine describes you so errors surface quickly.",
 			},
 		],
 	},
@@ -387,8 +387,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Keep prompts and visibility history on your own infrastructure to fit your data and compliance requirements.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks your AI visibility across engines and flags inaccurate descriptions, while open-source self-hosting keeps data in house and every metric auditable for compliance.",
+		beatgeoFit:
+			"BeatGeo tracks your AI visibility across engines and flags inaccurate descriptions, while open-source self-hosting keeps data in house and every metric auditable for compliance.",
 		faqs: [
 			{
 				question: "Why does AEO matter for financial services?",
@@ -398,7 +398,7 @@ export const aeoVerticals: AeoVertical[] = [
 			{
 				question: "Can I keep AI visibility data on our own infrastructure?",
 				answer:
-					"Yes. Elmo is open source and self-hosted, so your prompts and visibility history stay on infrastructure you control, which suits regulated financial environments.",
+					"Yes. BeatGeo is open source and self-hosted, so your prompts and visibility history stay on infrastructure you control, which suits regulated financial environments.",
 			},
 		],
 	},
@@ -436,8 +436,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "A citation that describes your practice areas wrongly, or attributes another firm's outcome to you, is worse than being absent. Sentiment and description accuracy matter more in legal than in most categories.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks practice-area and city-level prompts across every engine and flags when an answer describes your firm inaccurately. Because it is open source and self-hostable, client-adjacent research data never has to leave infrastructure your firm controls.",
+		beatgeoFit:
+			"BeatGeo tracks practice-area and city-level prompts across every engine and flags when an answer describes your firm inaccurately. Because it is open source and self-hostable, client-adjacent research data never has to leave infrastructure your firm controls.",
 		faqs: [
 			{
 				question: "Is AEO different for law firms than for other businesses?",
@@ -490,8 +490,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Pricing ranges, response times, service radius, and what happens on a first visit are exactly what people ask assistants. Publishing them plainly gives the engine something concrete to quote.",
 			},
 		],
-		elmoFit:
-			"Elmo runs the same prompt set across every location you operate and reports visibility per market, so a strong city never hides a weak one. Self-hosting means adding your fiftieth location costs infrastructure, not another per-seat licence.",
+		beatgeoFit:
+			"BeatGeo runs the same prompt set across every location you operate and reports visibility per market, so a strong city never hides a weak one. Self-hosting means adding your fiftieth location costs infrastructure, not another per-seat licence.",
 		faqs: [
 			{
 				question: "Do AI assistants give local recommendations?",
@@ -539,8 +539,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "'Best agent in [city]' and 'best brokerage in [city]' produce different answers from different sources. Both matter, and improving one does not move the other.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks neighbourhood, city, and agent-level prompts side by side so you can see which markets you own and which are still owned by the portals, with the full history kept on infrastructure you control.",
+		beatgeoFit:
+			"BeatGeo tracks neighbourhood, city, and agent-level prompts side by side so you can see which markets you own and which are still owned by the portals, with the full history kept on infrastructure you control.",
 		faqs: [
 			{
 				question: "Can real estate brokerages outrank portals in AI answers?",
@@ -588,8 +588,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "'Is this degree worth it' is asked constantly. An institution that addresses it with real numbers, including the cases where the answer is nuanced, earns citations that promotional copy never will.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks how engines describe each programme, not just whether the institution is named, and flags when an answer misstates cost, length, or accreditation. Self-hosting keeps recruitment research inside institutional infrastructure.",
+		beatgeoFit:
+			"BeatGeo tracks how engines describe each programme, not just whether the institution is named, and flags when an answer misstates cost, length, or accreditation. Self-hosting keeps recruitment research inside institutional infrastructure.",
 		faqs: [
 			{
 				question: "Do students use AI to choose programmes?",
@@ -637,8 +637,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Seasonality, transit times, what is walkable, what is closed in winter. Practical specifics are what assistants quote when building an itinerary, and they are what most brand sites omit.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks destination and segment-level prompts across engines so you can see which itineraries name you and which name a competitor, and which independent sources are driving those citations.",
+		beatgeoFit:
+			"BeatGeo tracks destination and segment-level prompts across engines so you can see which itineraries name you and which name a competitor, and which independent sources are driving those citations.",
 		faqs: [
 			{
 				question: "How do AI assistants pick hotels and destinations to recommend?",
@@ -685,8 +685,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "'Alternatives to [competitor part]' is high-intent and poorly served. A clear cross-reference table is one of the most citable assets a manufacturer can publish.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks specification and application-level prompts so you can see whether engines name you for the parts you actually make, and which competitors and distributors are being named instead.",
+		beatgeoFit:
+			"BeatGeo tracks specification and application-level prompts so you can see whether engines name you for the parts you actually make, and which competitors and distributors are being named instead.",
 		faqs: [
 			{
 				question: "Do B2B industrial buyers use AI search?",
@@ -733,8 +733,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Cost is the most-asked and most-evaded question in the category. Honest ranges with the factors that move them get cited over pages that route straight to a quote form.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks coverage, comparison, and pricing prompts across engines and flags when an answer describes your policies inaccurately. Self-hosting keeps the whole record on infrastructure your compliance team controls and can audit.",
+		beatgeoFit:
+			"BeatGeo tracks coverage, comparison, and pricing prompts across engines and flags when an answer describes your policies inaccurately. Self-hosting keeps the whole record on infrastructure your compliance team controls and can audit.",
 		faqs: [
 			{
 				question: "Why does answer accuracy matter more in insurance?",
@@ -782,8 +782,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "These behave differently. A strong model can sit inside a brand that engines describe poorly, and dealer-level answers are local and driven by entirely different sources.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks model, brand, and dealer-level prompts separately so you can see where the shortlist is actually being formed, and which independent reviewers are driving the citations behind it.",
+		beatgeoFit:
+			"BeatGeo tracks model, brand, and dealer-level prompts separately so you can see where the shortlist is actually being formed, and which independent reviewers are driving the citations behind it.",
 		faqs: [
 			{
 				question: "Do car buyers use AI assistants for research?",
@@ -831,8 +831,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "'How much goes to the programme' is the most common donor question and the most commonly dodged. A clear, current answer earns citations precisely because it is rare.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks cause-area and legitimacy prompts across engines so you can see whether donors researching your cause are being pointed at your organisation. Being open source and self-hostable keeps the cost structure sane for a nonprofit budget.",
+		beatgeoFit:
+			"BeatGeo tracks cause-area and legitimacy prompts across engines so you can see whether donors researching your cause are being pointed at your organisation. Being open source and self-hostable keeps the cost structure sane for a nonprofit budget.",
 		faqs: [
 			{
 				question: "Do donors use AI to decide where to give?",
@@ -881,8 +881,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Engines reward sources that state constraints. Saying what your product does not cover makes the rest of the description more credible and more quotable.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks category, comparison, and compliance prompts across engines so you can see which categories you are actually placed in. Self-hosting matters here for the obvious reason: a security vendor rarely wants its competitive research sitting in someone else's SaaS.",
+		beatgeoFit:
+			"BeatGeo tracks category, comparison, and compliance prompts across engines so you can see which categories you are actually placed in. Self-hosting matters here for the obvious reason: a security vendor rarely wants its competitive research sitting in someone else's SaaS.",
 		faqs: [
 			{
 				question: "Do security buyers really use AI assistants for vendor research?",
@@ -929,8 +929,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "How engines describe you to candidates is a different question from how they describe you to employers, driven by different sources — review platforms rather than industry press.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks role, region, and platform-comparison prompts separately, and shows the employer-facing and candidate-facing pictures side by side rather than collapsing them into one score.",
+		beatgeoFit:
+			"BeatGeo tracks role, region, and platform-comparison prompts separately, and shows the employer-facing and candidate-facing pictures side by side rather than collapsing them into one score.",
 		faqs: [
 			{
 				question: "How do employers use AI to choose a recruiting partner?",
@@ -979,8 +979,8 @@ export const aeoVerticals: AeoVertical[] = [
 				text: "Serving plain markdown alongside the rendered docs gives models a clean, unambiguous source and removes any dependence on their HTML parsing.",
 			},
 		],
-		elmoFit:
-			"Elmo tracks the library and framework recommendation prompts developers actually run, across engines, and reports which sources drove each citation. As an open-source tool it also runs inside the environments developer-tools companies already trust.",
+		beatgeoFit:
+			"BeatGeo tracks the library and framework recommendation prompts developers actually run, across engines, and reports which sources drove each citation. As an open-source tool it also runs inside the environments developer-tools companies already trust.",
 		faqs: [
 			{
 				question: "How do AI coding assistants decide which libraries to recommend?",

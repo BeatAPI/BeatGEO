@@ -15,16 +15,16 @@ Raw answers, account context and tab identifiers stay local and are excluded fro
 ## Code verification
 
 - Browser collector behavior tests: completed evidence, failed-run denominator, source URL filtering, no duplicate submission after ambiguous transport failure, local storage, no-brand scoring and verification handoff.
-- Elmo provider, configuration and text-extraction tests: 101 passed before final documentation-only updates.
+- BeatGeo provider, configuration and text-extraction tests: 101 passed before final documentation-only updates.
 - Environment registry tests: 6 passed.
 - Shared library TypeScript check passed.
 - Whole workspace Biome check passed (818 source files at the first check).
 
-Final collector suite: 9 passed. Final whole-workspace lint passed after the last implementation fixes. Local HTTP checks returned 200 for health/history and 403 for disallowed Host, foreign Origin and unauthenticated writes. CI only runs the dependency-free browser collector test suite; the Elmo checks above were local.
+Final collector suite: 9 passed. Final whole-workspace lint passed after the last implementation fixes. Local HTTP checks returned 200 for health/history and 403 for disallowed Host, foreign Origin and unauthenticated writes. CI only runs the dependency-free browser collector test suite; the BeatGeo checks above were local.
 
 ## Not verified
 
-Full Elmo dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
+Full BeatGeo dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
 
 ## TaskSpace default and desktop workbench follow-up
 
@@ -36,3 +36,16 @@ Full Elmo dashboard + database + worker + browser collector end-to-end; unattend
 - Ego Lite is not a runtime/package dependency. Its local application was moved to Trash at the owner's request; profile data was retained.
 
 Full product/worker/database integration, all Profound modules, native macOS focus guarantees, and a new live ChatGPT/Gemini collection with the default TaskSpace path remain unverified. No migration, npm release or production deployment was performed.
+
+## BeatGeo MVP identity and monitoring verification
+
+Verified locally with Node.js 24.19.0 and pnpm 12.4.1:
+
+- Workspace unit suites: 1,391 passing tests across config, CLI, lib, deployment and web.
+- Browser collector/evidence: 16 passing Node tests; simulated transport, not fresh live-platform collection.
+- Workspace TypeScript checks and Biome lint passed; the web production build passed with dependency bundling warnings.
+- Headless workbench UI with synthetic observations: independent brand selection, 50% from 1/2 scored answers, timeout excluded, error plus partial text retained, elapsed time, JSON export and no JavaScript errors.
+- Interactive product blueprint: 12 clickable steps, no JavaScript errors; README preview generated from that file.
+- No production database migrations, account changes, paid provider calls or user browser windows were used for this verification.
+
+PostgreSQL → worker → BeatBrowser end-to-end scheduled monitoring and live Gemini stability still need deployment acceptance. The README status table is the supported MVP boundary.

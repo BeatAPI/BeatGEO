@@ -15,11 +15,11 @@ import { getMDXComponents } from "@/components/mdx";
 import { Navbar } from "@/components/navbar";
 import type { BlogPostFaqItem, BlogPostLoaderData } from "@/routes/blog/$";
 
-function isElmoHref(href: string): boolean {
+function isBeatGeoHref(href: string): boolean {
 	if (href.startsWith("/") || href.startsWith("#")) return true;
 	try {
 		const { hostname } = new URL(href);
-		return hostname === "elmohq.com" || hostname.endsWith(".elmohq.com");
+		return hostname === "example.invalid" || hostname.endsWith(".example.invalid");
 	} catch {
 		// mailto:, tel:, or other non-http(s) hrefs — not an outbound web link.
 		return true;
@@ -41,11 +41,11 @@ function isDofollowHref(href: string): boolean {
 
 // Links inside post content: outbound links are nofollow and open in a new
 // tab, so blog posts don't pass SEO equity to external sites (e.g. competitors
-// we reference). Internal / elmohq-owned links stay followed; noopener keeps
+// we reference). Internal / beatgeohq-owned links stay followed; noopener keeps
 // the referrer for analytics on owned domains. Hosts in DOFOLLOW_HOSTS are the
 // exception — followed outbound links for agreed partners.
 function BlogLink({ href = "", ...props }: ComponentPropsWithoutRef<"a">) {
-	if (isElmoHref(href)) {
+	if (isBeatGeoHref(href)) {
 		const rel = /^https?:\/\//.test(href) ? "noopener" : undefined;
 		return <a {...props} href={href} rel={rel} />;
 	}

@@ -4,10 +4,10 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { type Competitor, competitors, getComparisonFaqs, getComparisonSlug, isLowDR } from "@/lib/competitors";
 import {
+	BEAT_GEO_LISTING,
 	breadcrumbJsonLd,
 	canonicalUrl,
 	comparisonJsonLd,
-	ELMO_LISTING,
 	faqJsonLd,
 	ogMeta,
 	softwareApplicationJsonLd,
@@ -22,8 +22,8 @@ export const Route = createFileRoute("/ai-visibility-tools/$slug")({
 	head: ({ params, loaderData }) => {
 		if (!loaderData) return {};
 		const { competitor, faqs, noindex } = loaderData;
-		const title = `Elmo vs ${competitor.name} | AI Visibility Tool Comparison · Elmo`;
-		const description = `Compare Elmo and ${competitor.name} for AI visibility tracking. Feature-by-feature breakdown, pricing, and key differences.`;
+		const title = `BeatGeo vs ${competitor.name} | AI Visibility Tool Comparison · BeatGeo`;
+		const description = `Compare BeatGeo and ${competitor.name} for AI visibility tracking. Feature-by-feature breakdown, pricing, and key differences.`;
 		const path = `/ai-visibility-tools/${params.slug}`;
 		const meta = [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })];
 		if (noindex) {
@@ -36,10 +36,10 @@ export const Route = createFileRoute("/ai-visibility-tools/$slug")({
 				breadcrumbJsonLd([
 					{ name: "Home", path: "/" },
 					{ name: "AI Visibility Tool Directory", path: "/ai-visibility-tools" },
-					{ name: `Elmo vs ${competitor.name}`, path },
+					{ name: `BeatGeo vs ${competitor.name}`, path },
 				]),
 				faqJsonLd(faqs),
-				comparisonJsonLd([ELMO_LISTING, { name: competitor.name, url: competitor.url }]),
+				comparisonJsonLd([BEAT_GEO_LISTING, { name: competitor.name, url: competitor.url }]),
 				softwareApplicationJsonLd(),
 			],
 		};

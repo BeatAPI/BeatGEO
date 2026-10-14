@@ -19,8 +19,8 @@ import { breadcrumbJsonLd, canonicalUrl, faqJsonLd, ogMeta } from "@/lib/seo";
 
 const PATH = "/aeo-for/profound-users";
 const TITLE = "The Simpler Profound Alternative";
-const META_TITLE = "Profound Alternative: Simpler, Self-Serve AI Visibility · Elmo";
-const META_DESCRIPTION = `Switching from Profound? Elmo tracks your brand in ChatGPT, Perplexity, Gemini and AI Overviews up to 4× daily, with no sales call, no credit packs, and API access on every plan. From $${CLOUD_ENTRY_PRICE_USD}/mo.`;
+const META_TITLE = "Profound Alternative: Simpler, Self-Serve AI Visibility · BeatGeo";
+const META_DESCRIPTION = `Switching from Profound? BeatGeo tracks your brand in ChatGPT, Perplexity, Gemini and AI Overviews up to 4× daily, with no sales call, no credit packs, and API access on every plan. From $${CLOUD_ENTRY_PRICE_USD}/mo.`;
 const FROM = "marketing-profound-users-hero";
 
 const BUTTON =
@@ -32,7 +32,7 @@ const FOUR_TIMES_DAILY_FROM = PLANS.basic;
 const REASONS = [
 	{
 		name: "No bloat",
-		text: "Profound grew into a suite: content generation, shopping tracking, crawler analytics. Elmo does one job, AI visibility, and every screen is about it.",
+		text: "Profound grew into a suite: content generation, shopping tracking, crawler analytics. BeatGeo does one job, AI visibility, and every screen is about it.",
 	},
 	{
 		name: "Not complicated",
@@ -40,7 +40,7 @@ const REASONS = [
 	},
 	{
 		name: "More data for the price",
-		text: `From the $${FOUR_TIMES_DAILY_FROM.monthlyPriceUsd}/mo ${FOUR_TIMES_DAILY_FROM.name} plan, Elmo asks every prompt ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day. AI answers vary run to run, so more samples means numbers you can trust.`,
+		text: `From the $${FOUR_TIMES_DAILY_FROM.monthlyPriceUsd}/mo ${FOUR_TIMES_DAILY_FROM.name} plan, BeatGeo asks every prompt ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day. AI answers vary run to run, so more samples means numbers you can trust.`,
 	},
 	{
 		name: "Fully self-serve",
@@ -53,27 +53,27 @@ const REASONS = [
 ];
 
 // What tryprofound.com/pricing listed as of October 2026: a 7-day trial, then Enterprise through sales.
-const COMPARISON: { label: string; elmo: string; profound: string; profoundHas?: boolean }[] = [
+const COMPARISON: { label: string; beatgeo: string; profound: string; profoundHas?: boolean }[] = [
 	{
 		label: "Getting started",
-		elmo: `Sign up and pay by card, from $${CLOUD_ENTRY_PRICE_USD}/mo`,
+		beatgeo: `Sign up and pay by card, from $${CLOUD_ENTRY_PRICE_USD}/mo`,
 		profound: "7-day trial, then a call with sales",
 	},
-	{ label: "Published pricing", elmo: "Every plan, on the pricing page", profound: "Enterprise is custom-quoted" },
+	{ label: "Published pricing", beatgeo: "Every plan, on the pricing page", profound: "Enterprise is custom-quoted" },
 	{
 		label: "How often answers are checked",
-		elmo: `Up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× daily`,
+		beatgeo: `Up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× daily`,
 		profound: "Daily",
 		profoundHas: true,
 	},
-	{ label: "API and MCP access", elmo: "Every plan", profound: "API on Enterprise only" },
+	{ label: "API and MCP access", beatgeo: "Every plan", profound: "API on Enterprise only" },
 	{
 		label: "Usage credits",
-		elmo: "None. Plans are priced by prompts and platforms",
+		beatgeo: "None. Plans are priced by prompts and platforms",
 		profound: "Credit allotments, more via sales",
 	},
-	{ label: "Unlimited seats", elmo: "Every plan", profound: "Yes", profoundHas: true },
-	{ label: "Open source and self-hostable", elmo: "MIT-licensed, self-host free", profound: "Closed, hosted only" },
+	{ label: "Unlimited seats", beatgeo: "Every plan", profound: "Yes", profoundHas: true },
+	{ label: "Open source and self-hostable", beatgeo: "MIT-licensed, self-host free", profound: "Closed, hosted only" },
 ];
 
 const STEPS = [
@@ -87,27 +87,27 @@ const STEPS = [
 	},
 	{
 		name: "Add your competitors",
-		text: "Name the rivals you benchmark against, and Elmo tracks their share of voice and citations next to yours.",
+		text: "Name the rivals you benchmark against, and BeatGeo tracks their share of voice and citations next to yours.",
 	},
 ];
 
 const FAQS = [
 	{
-		question: "Do I need to talk to sales to use Elmo?",
-		answer: `No. Every Elmo Cloud plan is self-serve: sign up, pay by card, and start tracking. Plans start at $${CLOUD_ENTRY_PRICE_USD}/mo, and you can change or cancel from the billing page. A tour is available if you want one, but it is never required.`,
+		question: "Do I need to talk to sales to use BeatGeo?",
+		answer: `No. Every BeatGeo Cloud plan is self-serve: sign up, pay by card, and start tracking. Plans start at $${CLOUD_ENTRY_PRICE_USD}/mo, and you can change or cancel from the billing page. A tour is available if you want one, but it is never required.`,
 	},
 	{
 		question: "Can I bring my prompts over from Profound?",
 		answer:
-			"Yes. Paste your existing prompt list into Elmo, one prompt per line, and it is tracked from then on. Your Profound history stays in Profound, so most teams run both for a short overlap before cancelling.",
+			"Yes. Paste your existing prompt list into BeatGeo, one prompt per line, and it is tracked from then on. Your Profound history stays in Profound, so most teams run both for a short overlap before cancelling.",
 	},
 	{
-		question: "Is Elmo's data comparable to Profound's?",
-		answer: `Both track how AI engines answer your buyers' prompts. Elmo checks each prompt up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day rather than once, which smooths out the run-to-run variation in AI answers, and every metric is computed by open-source code you can read.`,
+		question: "Is BeatGeo's data comparable to Profound's?",
+		answer: `Both track how AI engines answer your buyers' prompts. BeatGeo checks each prompt up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day rather than once, which smooths out the run-to-run variation in AI answers, and every metric is computed by open-source code you can read.`,
 	},
 	{
-		question: "Which Elmo plan matches a Profound setup?",
-		answer: `Most teams coming from Profound choose ${RECOMMENDED.name}: ${RECOMMENDED.maxPrompts} prompts across ${RECOMMENDED.platformPicks} AI platforms, checked ${RECOMMENDED.standardRunsPerDay}× daily, with premium grounded models included, for $${RECOMMENDED.monthlyPriceUsd}/mo. Larger programs can step up to ${PLANS.business.name} or self-host Elmo for free.`,
+		question: "Which BeatGeo plan matches a Profound setup?",
+		answer: `Most teams coming from Profound choose ${RECOMMENDED.name}: ${RECOMMENDED.maxPrompts} prompts across ${RECOMMENDED.platformPicks} AI platforms, checked ${RECOMMENDED.standardRunsPerDay}× daily, with premium grounded models included, for $${RECOMMENDED.monthlyPriceUsd}/mo. Larger programs can step up to ${PLANS.business.name} or self-host BeatGeo for free.`,
 	},
 ];
 
@@ -147,7 +147,7 @@ function Reasons() {
 			<div className="mx-auto max-w-6xl px-4 py-20 md:px-6 lg:py-28">
 				<SectionHeading
 					title="Everything you check in Profound, without the rest."
-					lede="Teams switch to Elmo when the tool they bought for a weekly visibility number turns into a suite, a sales process, and a credit balance."
+					lede="Teams switch to BeatGeo when the tool they bought for a weekly visibility number turns into a suite, a sales process, and a credit balance."
 				/>
 				<ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{REASONS.map((r) => (
@@ -179,7 +179,7 @@ function Comparison() {
 		<section className="border-t border-zinc-200/80 bg-white">
 			<div className="mx-auto max-w-6xl px-4 py-20 md:px-6 lg:py-28">
 				<SectionHeading
-					title="Elmo and Profound, side by side."
+					title="BeatGeo and Profound, side by side."
 					lede="How the two compare on the things that decide what you pay and how quickly you get going."
 				/>
 				<div className={`mt-12 overflow-x-auto ${CARD}`}>
@@ -190,7 +190,7 @@ function Comparison() {
 									<span className="sr-only">Feature</span>
 								</th>
 								<th scope="col" className="px-6 py-4 font-semibold text-blue-600">
-									Elmo
+									BeatGeo
 								</th>
 								<th scope="col" className="px-6 py-4 font-medium">
 									Profound
@@ -206,7 +206,7 @@ function Comparison() {
 									<td className="px-6 py-4 text-zinc-900">
 										<span className="flex items-start gap-2">
 											<Check className="mt-0.5 size-4 shrink-0 text-blue-600" strokeWidth={2.5} aria-hidden="true" />
-											{row.elmo}
+											{row.beatgeo}
 										</span>
 									</td>
 									<td className="px-6 py-4 text-zinc-600">
@@ -240,7 +240,7 @@ function Switching() {
 			<div className="mx-auto max-w-6xl px-4 py-20 md:px-6 lg:py-28">
 				<SectionHeading
 					title="Switch in an afternoon."
-					lede={`Bring the prompts you already track, and Elmo starts checking them up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day across the engines you pick.`}
+					lede={`Bring the prompts you already track, and BeatGeo starts checking them up to ${FOUR_TIMES_DAILY_FROM.standardRunsPerDay}× a day across the engines you pick.`}
 				/>
 				<ol className="mt-12 grid gap-4 md:grid-cols-3">
 					{STEPS.map((step, i) => (

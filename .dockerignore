@@ -71,8 +71,8 @@ docker/init-scripts
 
 # Directories not needed in Docker builds
 e2e
-.elmo
-**/.elmo
+.beatgeo
+**/.beatgeo
 apps/cli
 
 # pnpm config (use-node-version breaks Alpine/MUSL Docker builds)
@@ -86,3 +86,11 @@ Thumbs.db
 *.log
 **/*.log
 e2e/artifacts
+
+# Credentials and observations never belong in container build contexts.
+.open-profound
+.beat-geo
+.elmo
+**/.open-profound
+**/.beat-geo
+**/.elmo

@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DirectoryBackLink, DirectoryHero, DirectorySection, ElmoCta } from "@/components/directory-shell";
+import { BeatGeoCta, DirectoryBackLink, DirectoryHero, DirectorySection } from "@/components/directory-shell";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { CATEGORY_LABELS, indexableCategories, indexedCompetitors, toolsInCategory } from "@/lib/competitors";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "AI Visibility Tool Alternatives · Elmo";
+const title = "AI Visibility Tool Alternatives · BeatGeo";
 const description =
-	"Find open-source and self-hosted alternatives to the AI visibility tools you're evaluating. Each guide compares the closest options, with Elmo as the free, auditable pick.";
+	"Find open-source and self-hosted alternatives to the AI visibility tools you're evaluating. Each guide compares the closest options, with BeatGeo as the free, auditable pick.";
 
 const items = indexedCompetitors.map((c) => ({
 	name: `${c.name} alternatives`,
@@ -71,7 +71,7 @@ function AlternativesHub() {
 						</ul>
 					</DirectorySection>
 				))}
-				<ElmoCta />
+				<BeatGeoCta />
 			</main>
 			<Footer />
 		</div>

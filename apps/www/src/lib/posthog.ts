@@ -2,8 +2,8 @@ import { onAnalyticsConsent } from "@workspace/ui/lib/cookie-consent";
 import { afterPageIdle } from "@workspace/ui/lib/idle";
 import type { PostHog } from "posthog-js";
 
-const POSTHOG_KEY = "phc_Jhx9LnI9cTDFHpQmpOzJSDTW127qD9pFU65KRnYym6z";
-const POSTHOG_HOST = "https://var.elmohq.com";
+const POSTHOG_KEY = "";
+const POSTHOG_HOST = "https://us.i.posthog.com";
 
 // posthog-js is ~60KB gzipped and sets cookies, so it is imported dynamically
 // and only once analytics consent is in effect. Visitors who decline never
@@ -74,6 +74,7 @@ function sync(): void {
  * answer for the rest of the session. Returns an unsubscribe.
  */
 export function initAnalytics(consentRequired: boolean): () => void {
+	if (!POSTHOG_KEY) return () => {};
 	return onAnalyticsConsent(consentRequired, (answer) => {
 		allowed = answer;
 		if (answer) {

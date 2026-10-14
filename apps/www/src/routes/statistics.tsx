@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { ArrowUpRight } from "lucide-react";
-import { DirectoryHero, ElmoCta } from "@/components/directory-shell";
+import { BeatGeoCta, DirectoryHero } from "@/components/directory-shell";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { GROUP_BLURBS, STAT_GROUPS, type Stat, type StatGroup, stats, supportingPosts } from "@/data/statistics";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "AI Search Statistics: 22 Findings on Citations & Visibility · Elmo";
+const title = "AI Search Statistics: 22 Findings on Citations & Visibility · BeatGeo";
 const description =
 	"Statistics on AI search, answer engine optimization and AI citations — what share of searches carry an AI Overview, which domains get cited, and which GEO tactics measurably work. Every figure sourced.";
 
@@ -132,7 +132,7 @@ function StatisticsPage() {
 					</div>
 				</section>
 
-				<ElmoCta />
+				<BeatGeoCta />
 			</main>
 			<Footer />
 		</div>

@@ -18,8 +18,8 @@ export {
 	getAlternatives,
 	getAlternativesFaqs,
 	getAlternativesVerdict,
+	getCategoryBeatGeoPitch,
 	getCategoryBySlug,
-	getCategoryElmoPitch,
 	getCategoryFaqs,
 	getCategoryVerdict,
 	getCompareEntry,
@@ -38,10 +38,10 @@ export {
 	toolsWithFeature,
 } from "./directory";
 export {
+	BEAT_GEO_FEATURES,
 	CATEGORY_LABELS,
 	type Competitor,
 	type CompetitorCategory,
-	ELMO_FEATURES,
 	FEATURE_CATEGORIES,
 	type FeatureKey,
 	getFeatureLabel,

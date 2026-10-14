@@ -1,36 +1,36 @@
 {
-	"name": "Elmo — Open Source AI Visibility",
-	"short_name": "Elmo",
+	"name": "BeatGeo — Open Source AI Visibility",
+	"short_name": "BeatGeo",
 	"icons": [
 		{
-			"src": "/icons/elmo-icon.svg",
+			"src": "/icons/beatgeo-icon.svg",
 			"sizes": "any",
 			"type": "image/svg+xml"
 		},
 		{
-			"src": "/icons/elmo-icon-maskable.svg",
+			"src": "/icons/beatgeo-icon-maskable.svg",
 			"sizes": "any",
 			"type": "image/svg+xml",
 			"purpose": "maskable"
 		},
 		{
-			"src": "/icons/elmo-icon-192.png",
+			"src": "/icons/beatgeo-icon-192.png",
 			"sizes": "192x192",
 			"type": "image/png"
 		},
 		{
-			"src": "/icons/elmo-icon-512.png",
+			"src": "/icons/beatgeo-icon-512.png",
 			"sizes": "512x512",
 			"type": "image/png"
 		},
 		{
-			"src": "/icons/elmo-icon-maskable-192.png",
+			"src": "/icons/beatgeo-icon-maskable-192.png",
 			"sizes": "192x192",
 			"type": "image/png",
 			"purpose": "maskable"
 		},
 		{
-			"src": "/icons/elmo-icon-maskable-512.png",
+			"src": "/icons/beatgeo-icon-maskable-512.png",
 			"sizes": "512x512",
 			"type": "image/png",
 			"purpose": "maskable"

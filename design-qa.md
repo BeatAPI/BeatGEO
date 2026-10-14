@@ -4,7 +4,7 @@
 
 ## Evidence
 
-The signed-in Profound Agents page and the prototype were viewed together at the same desktop viewport (1512 × 823 CSS pixels). Both use a 240-pixel sidebar, a 200-pixel education card, dark neutral surfaces, an agent composer and four-column template cards. Source captures and account-bearing DOM remain in the ignored `.open-profound/reference` directory.
+The signed-in Profound Agents page and the prototype were viewed together at the same desktop viewport (1512 × 823 CSS pixels). Both use a 240-pixel sidebar, a 200-pixel education card, dark neutral surfaces, an agent composer and four-column template cards. Source captures and account-bearing DOM remain in the ignored `.beat-geo/reference` directory.
 
 The Figma reference file contains a raster source screenshot; it is not an editable capture of all Profound pages.
 

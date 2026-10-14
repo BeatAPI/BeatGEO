@@ -2,7 +2,6 @@
  * Server functions for providing deployment configuration to the client.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { CRISP_WEBSITE_ID } from "@workspace/config/constants";
 import { getDeploymentModeFromEnv, getEnvValidationState } from "@workspace/config/env";
 import type { ClientConfig } from "@workspace/config/types";
 import { getDeployment } from "@workspace/deployment";
@@ -23,17 +22,16 @@ export type PublicClientConfig = Omit<ClientConfig, "branding"> & {
  * BrandingConfig.onboardingRedirectUrl is a function, so we strip it and send the
  * raw template string instead. The client can reconstruct the function if needed.
  */
-const POSTHOG_PUBLIC_KEY = "phc_Jhx9LnI9cTDFHpQmpOzJSDTW127qD9pFU65KRnYym6z";
 
 function resolvePosthogKey(): string | undefined {
 	if (process.env.DISABLE_TELEMETRY) return undefined;
-	return process.env.VITE_POSTHOG_KEY ?? POSTHOG_PUBLIC_KEY;
+	return process.env.VITE_POSTHOG_KEY;
 }
 
 export function resolveCrispWebsiteId(): string | undefined {
 	const mode = getDeploymentModeFromEnv();
 	if (mode !== "cloud" && mode !== "demo") return undefined;
-	return CRISP_WEBSITE_ID;
+	return process.env.BEAT_GEO_CRISP_WEBSITE_ID;
 }
 
 export const getClientConfig = createServerFn({ method: "GET" }).handler(async (): Promise<PublicClientConfig> => {

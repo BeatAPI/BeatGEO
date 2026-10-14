@@ -2,9 +2,9 @@
 
 ## Base selection
 
-Elmo is the product base because its prompt, brand, competitor, citation and background-job concepts already fit an AI visibility workbench. Oneglanse is useful as a browser-oriented comparison, but merging two whole applications would create competing storage and scheduling systems. Niubigeo remains a Chinese GEO workflow reference; star count alone does not determine the monitoring base.
+BeatGeo is the product base because its prompt, brand, competitor, citation and background-job concepts already fit an AI visibility workbench. Oneglanse is useful as a browser-oriented comparison, but merging two whole applications would create competing storage and scheduling systems. Niubigeo remains a Chinese GEO workflow reference; star count alone does not determine the monitoring base.
 
-The first vertical slice is a local Browser Lab that can be used immediately without a database or model key. Its `POST /api/collect` result is adapted into Elmo's existing Provider contract. Raw evidence is kept so a number can be checked against the actual answer.
+The first vertical slice is a local Browser Lab that can be used immediately without a database or model key. Its `POST /api/collect` result is adapted into BeatGeo's existing Provider contract. Raw evidence is kept so a number can be checked against the actual answer.
 
 ## Evidence contract
 
@@ -16,7 +16,7 @@ The submitted question is not included in mention detection. Input brand is used
 
 1. Ten representative neutral category questions, repeated on multiple days, with account and engine context separated.
 2. Browser render reliability, especially Gemini background animation and completion signals.
-3. One end-to-end Elmo worker run with a local runner and a fresh isolated database.
+3. One end-to-end BeatGeo worker run with a local runner and a fresh isolated database.
 4. Queue idempotency, resume after interruption, browser concurrency budgets and operator attention states.
 5. Controlled comparison of browser answers versus model API answers; publish overlap and sampling method, not an assumed universal percentage.
 6. Only after monitoring works: connect optional BeatAPI research/extraction and content improvement loops.

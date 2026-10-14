@@ -1,7 +1,7 @@
 /** @jsxRuntime automatic */
 // The pragma keeps this file rendering under tsx (the brand-kit script), which
 // compiles it outside any tsconfig that sets the automatic JSX runtime.
-import { DEFAULT_APP_NAME, ELMO_BRAND_COLOR } from "@workspace/config/constants";
+import { BEAT_GEO_BRAND_COLOR, DEFAULT_APP_NAME } from "@workspace/config/constants";
 import type { ReactNode } from "react";
 
 export const ACCENT_COLORS = ["#2563eb", "#f4d35e", "#ee964b", "#f95738"];
@@ -25,7 +25,7 @@ const ZINC = {
 // Only the faces in OG_FONTS exist.
 const SANS = "Geist Sans";
 const MONO = "Geist Mono";
-const WORDMARK = "Titan One";
+const WORDMARK = "Geist Sans";
 
 function parseHex(color: string): number | undefined {
 	const hex = color.trim().replace(/^#/, "");
@@ -190,11 +190,11 @@ export interface OgHeaderOptions {
 
 /** Wordmark (or whitelabel icon + name) on the left, optional label pill on the right. */
 export function OgHeader({ appName, iconDataUri, label }: OgHeaderOptions) {
-	const isElmo = appName === DEFAULT_APP_NAME;
+	const isBeatGeo = appName === DEFAULT_APP_NAME;
 	return (
 		<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 60 }}>
-			{isElmo ? (
-				<div style={{ fontFamily: WORDMARK, fontSize: 60, lineHeight: 1, color: ELMO_BRAND_COLOR }}>elmo</div>
+			{isBeatGeo ? (
+				<div style={{ fontFamily: WORDMARK, fontSize: 60, lineHeight: 1, color: BEAT_GEO_BRAND_COLOR }}>BeatGeo</div>
 			) : (
 				<div style={{ display: "flex", alignItems: "center" }}>
 					{iconDataUri ? (
@@ -246,8 +246,8 @@ function hostOf(url: string | undefined): string | undefined {
 }
 
 export function renderOgImage({ appName, title, description, accentColors, iconDataUri, label, url }: OgImageOptions) {
-	const isElmo = appName === DEFAULT_APP_NAME;
-	const colors = isElmo ? ACCENT_COLORS : (accentColors?.filter(Boolean).slice(0, 4) ?? []);
+	const isBeatGeo = appName === DEFAULT_APP_NAME;
+	const colors = isBeatGeo ? ACCENT_COLORS : (accentColors?.filter(Boolean).slice(0, 4) ?? []);
 	const heading = title || DEFAULT_TAGLINE;
 	const fontSize = titleFontSize(heading);
 	const short = fontSize >= 80;

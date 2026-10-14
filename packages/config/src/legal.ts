@@ -7,7 +7,7 @@
  */
 import type { DeploymentMode } from "./types";
 
-const LEGAL_SITE_URL = "https://www.elmohq.com";
+const LEGAL_SITE_URL = "https://github.com/BeatAPI/BeatGeo";
 
 interface LegalDocument {
 	slug: string;
@@ -23,19 +23,19 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
 ];
 
 export function legalUrl(slug: string): string {
-	return `${LEGAL_SITE_URL}/legal/${slug}`;
+	return `${LEGAL_SITE_URL}/blob/main/docs/privacy.md#${encodeURIComponent(slug)}`;
 }
 
 /**
- * Whether this deployment should link to Elmo's policies. Whitelabel is
+ * Whether this deployment should link to BeatGeo's policies. Whitelabel is
  * excluded: those deployments are operated under someone else's agreements, and
  * pointing their users at ours would be wrong.
  */
-export function showsLegalLinks(mode: DeploymentMode | undefined): boolean {
-	return mode === "cloud" || mode === "demo" || mode === "local";
+export function showsLegalLinks(_mode: DeploymentMode | undefined): boolean {
+	return false;
 }
 
 /** Self-hosted deployments are governed by whoever runs them, so only ours ask for cookie consent. */
-export function isElmoHosted(mode: DeploymentMode | undefined): boolean {
+export function isBeatGeoHosted(mode: DeploymentMode | undefined): boolean {
 	return mode === "cloud" || mode === "demo";
 }

@@ -3,10 +3,19 @@ import { readFile } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { collect, createBrowser, ENGINES, listRuns, saveRun, summarize, validateInput } from "./core.mjs";
+import {
+	collect,
+	createBrowser,
+	defaultRunDirectory,
+	ENGINES,
+	listRuns,
+	saveRun,
+	summarize,
+	validateInput,
+} from "./core.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const directory = process.env.BROWSER_RUNS_DIR || path.resolve(here, "../../.open-profound/runs");
+const directory = defaultRunDirectory();
 const port = Number(process.env.BROWSER_LAB_PORT || 4318);
 const token = process.env.BROWSER_RUNNER_TOKEN || randomBytes(32).toString("hex");
 let active = null;
@@ -54,11 +63,15 @@ async function executeRun(input) {
 }
 
 function authorized(request) {
-	return request.headers["x-open-profound-token"] === token || request.headers.authorization === `Bearer ${token}`;
+	return (
+		request.headers["x-beat-geo-token"] === token ||
+		request.headers["x-open-profound-token"] === token ||
+		request.headers.authorization === `Bearer ${token}`
+	);
 }
 
 async function staticAsset(url, response) {
-	if (/^\/(?:app\.js|evidence\.js|style\.css|assets\/[a-zA-Z0-9._-]+)$/.test(url.pathname)) {
+	if (/^\/(?:app\.js|evidence\.js|metrics\.js|style\.css|assets\/[a-zA-Z0-9._-]+)$/.test(url.pathname)) {
 		const types = { ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 		const content = await readFile(path.join(here, "public", url.pathname.slice(1)));
 		response.writeHead(200, {
@@ -120,6 +133,6 @@ http
 		handle(request, response).catch((error) => json(response, 400, { error: error.message }));
 	})
 	.listen(port, "127.0.0.1", () => {
-		console.log(`Open Profound Browser Lab: http://127.0.0.1:${port}`);
-		console.log("Uses your signed-in Chrome. Runs and answers stay in the gitignored .open-profound directory.");
+		console.log(`BeatGeo Browser Lab: http://127.0.0.1:${port}`);
+		console.log("Uses your signed-in Chrome. Runs and answers stay in the gitignored .beat-geo directory.");
 	});

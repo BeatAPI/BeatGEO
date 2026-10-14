@@ -1,4 +1,3 @@
-import { CLOUD_SIGNUP_URL } from "@workspace/config/plans";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // ../crisp is the module under test. It cannot be a top-level import: it latches
@@ -89,9 +88,9 @@ describe("the demo next steps", () => {
 		const [, nextSteps] = (shown[1]?.[2] ?? []) as [string, string];
 		const linked = [...String(nextSteps).matchAll(/\]\((https?:[^)]+)\)/g)].map((match) => match[1]);
 		expect(linked).toEqual([
-			"https://www.elmohq.com/demo?ref=demo-chat",
-			CLOUD_SIGNUP_URL,
-			"https://www.elmohq.com/docs/getting-started",
+			"https://github.com/BeatAPI/BeatGeo#product-flow",
+			"https://github.com/BeatAPI/BeatGeo/blob/main/docs/self-hosting.md",
+			"https://github.com/BeatAPI/BeatGeo/issues",
 		]);
 	});
 
@@ -211,7 +210,7 @@ describe("session identity", () => {
 		["identified before load", true],
 	])("leaves demo visitors anonymous (%s)", async (_label, identifyFirst) => {
 		const { initCrisp, identifyCrispUser } = await loadCrisp();
-		const demoUser = { id: "demo", email: "demo@elmohq.com", name: "Demo User" };
+		const demoUser = { id: "demo", email: "demo@example.invalid", name: "Demo User" };
 
 		if (identifyFirst) {
 			identifyCrispUser(demoUser);

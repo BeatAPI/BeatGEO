@@ -1,8 +1,10 @@
 import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const execute = promisify(execFile);
@@ -89,18 +91,13 @@ export function cleanCitations(rows, engine) {
 	});
 }
 
-export function summarize(runs) {
-	const completed = runs.filter((run) => run.status === "completed");
-	const scored = completed.filter((run) => typeof run.brandMentioned === "boolean");
-	const mentioned = scored.filter((run) => run.brandMentioned === true);
-	return {
-		total: runs.length,
-		completed: completed.length,
-		failed: runs.filter((run) => ["failed", "needs_attention", "timeout"].includes(run.status)).length,
-		mentions: mentioned.length,
-		mentionRate: scored.length ? mentioned.length / scored.length : null,
-		metric: "literal-brand-mention-rate-over-completed-runs",
-	};
+export { summarize } from "./public/metrics.js";
+
+export function defaultRunDirectory(env = process.env) {
+	if (env.BROWSER_RUNS_DIR) return path.resolve(env.BROWSER_RUNS_DIR);
+	const legacy = fileURLToPath(new URL("../../.open-profound/runs", import.meta.url));
+	const current = fileURLToPath(new URL("../../.beat-geo/runs", import.meta.url));
+	return !existsSync(current) && existsSync(legacy) ? legacy : current;
 }
 
 export async function saveRun(directory, run) {
@@ -185,7 +182,7 @@ async function openRunPage(config, run, transport, useSpaces) {
 			await transport("spaces", {
 				action: "open",
 				url: ENGINES[config.engine].url,
-				label: `Open Profound · ${ENGINES[config.engine].name}`,
+				label: `BeatGeo · ${ENGINES[config.engine].name}`,
 				profileId: config.profileId || process.env.BEAT_BROWSER_PROFILE_ID || undefined,
 			}),
 		);
@@ -199,7 +196,7 @@ async function openRunPage(config, run, transport, useSpaces) {
 		const opened = await transport("tabs", {
 			action: "new",
 			url: ENGINES[config.engine].url,
-			label: `Open Profound · ${ENGINES[config.engine].name}`,
+			label: `BeatGeo · ${ENGINES[config.engine].name}`,
 		});
 		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
 		if (!match) throw new Error("Browser did not return a tab ID.");
@@ -230,13 +227,15 @@ export async function collect(input, options = {}) {
 		startedAt: new Date().toISOString(),
 		surface: "consumer-web-ui",
 		collector: "beat-browser",
-		collectorVersion: "open-profound-browser-v0.1",
+		collectorVersion: "beatgeo-browser-v0.2",
 		accountContext: config.engine === "chatgpt" ? "temporary-chat-requested" : "existing-account-new-chat",
 		region: null,
 		modelVersion: null,
 		brandMentioned: null,
 		citations: [],
 		submissionAttempted: false,
+		attempts: 1,
+		timeoutMs: options.timeoutMs || 900_000,
 	};
 	await publish(run);
 	try {
@@ -276,7 +275,7 @@ export async function collect(input, options = {}) {
 		run.error = String(error.message).slice(0, 500);
 	}
 	await releaseRunPage(run, transport);
-	return { ...run, finishedAt: new Date().toISOString() };
+	return { ...run, finishedAt: new Date().toISOString(), elapsedMs: Date.now() - Date.parse(run.startedAt) };
 }
 
 export async function captureExisting(input, tabId, options = {}) {
@@ -306,7 +305,7 @@ export async function captureExisting(input, tabId, options = {}) {
 		finishedAt: new Date().toISOString(),
 		surface: "consumer-web-ui",
 		collector: "beat-browser-existing-tab",
-		collectorVersion: "open-profound-browser-v0.1",
+		collectorVersion: "beatgeo-browser-v0.2",
 		promptVerification: "operator-supplied; existing-tab prompt not independently matched",
 		accountContext: "operator-supplied-existing-tab",
 		region: null,

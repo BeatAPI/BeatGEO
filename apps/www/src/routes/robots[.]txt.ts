@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const SITE_URL = "https://www.elmohq.com";
+const SITE_URL = "https://github.com/BeatAPI/BeatGeo";
 
 const CONTENT_SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
 

@@ -2,7 +2,7 @@ export function filterRuns(runs, engine = "all", status = "all") {
 	return runs.filter(
 		(run) =>
 			(engine === "all" || run.engine === engine) &&
-			(status === "all" || (status === "completed" ? run.status === "completed" : run.status !== "completed")),
+			(status === "all" || (status === "completed" ? run.status === "completed" : ["timeout", "failed", "needs_attention"].includes(run.status))),
 	);
 }
 

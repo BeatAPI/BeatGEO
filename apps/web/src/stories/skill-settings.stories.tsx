@@ -34,10 +34,10 @@ export const Install: Story = {
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		await expect(await canvas.findByText("npx skills add elmohq/elmo")).toBeVisible();
+		await expect(await canvas.findByText("npx skills add BeatAPI/beat-geo")).toBeVisible();
 		await expect(canvas.getByRole("link", { name: "skills/aeo" })).toHaveAttribute(
 			"href",
-			"https://github.com/elmohq/elmo/tree/main/skills/aeo",
+			"https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo",
 		);
 	},
 };

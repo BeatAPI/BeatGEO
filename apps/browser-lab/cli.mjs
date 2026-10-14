@@ -1,6 +1,4 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { captureExisting, collect, saveRun } from "./core.mjs";
+import { captureExisting, collect, defaultRunDirectory, saveRun } from "./core.mjs";
 
 const args = process.argv.slice(2);
 const option = (key, fallback) => {
@@ -10,11 +8,10 @@ const option = (key, fallback) => {
 const input = {
 	engine: option("--engine", "chatgpt"),
 	prompt: option("--prompt", ""),
-	brand: option("--brand", "BeatAPI"),
+	brand: option("--brand", ""),
 	profileId: option("--profile"),
 };
-const here = path.dirname(fileURLToPath(import.meta.url));
-const directory = process.env.BROWSER_RUNS_DIR || path.resolve(here, "../../.open-profound/runs");
+const directory = defaultRunDirectory();
 const tabId = option("--capture-tab");
 try {
 	const result = tabId

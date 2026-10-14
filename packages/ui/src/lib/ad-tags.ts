@@ -1,12 +1,12 @@
 import { onMarketingConsent } from "./cookie-consent";
 import { afterPageIdle } from "./idle";
 
-const GOOGLE_ADS_ID = "AW-18500607241";
-const META_PIXEL_ID = "2332896134120550";
+const GOOGLE_ADS_ID = "";
+const META_PIXEL_ID = "";
 
 // Everywhere else — local dev, CI, preview deploys, a self-hosted instance
 // running in demo mode — must never count toward our ad accounts.
-const PRODUCTION_HOSTS = new Set(["elmohq.com", "www.elmohq.com", "app.elmohq.com", "demo.elmohq.com"]);
+const PRODUCTION_HOSTS = new Set<string>();
 
 export type AdConversion = "sign_up" | "purchase" | "demo_booked";
 
@@ -26,9 +26,9 @@ export const AD_TAG_CSP = {
 };
 
 const GOOGLE_ADS_CONVERSION_LABELS: Record<AdConversion, string> = {
-	sign_up: "wRDKCLet-JQdEIm64_VE",
-	purchase: "YrPlCO2w-JQdEIm64_VE",
-	demo_booked: "606ZCKDt8JQdEIm64_VE",
+	sign_up: "",
+	purchase: "",
+	demo_booked: "",
 };
 
 const META_EVENTS: Record<AdConversion, string> = {
@@ -48,7 +48,7 @@ const META_EVENT_ID_PREFIXES: Record<AdConversion, string> = {
 // First-party cookies the two tags set on our own domain. Their third-party
 // cookies live on google.com and facebook.com, out of our reach.
 const AD_COOKIE = /^(_gcl_|_fbp$|_fbc$)/;
-const SENT_STORAGE_PREFIX = "elmo.ad-conversion.";
+const SENT_STORAGE_PREFIX = "beatgeo.ad-conversion.";
 
 type Command = (...args: unknown[]) => void;
 type MetaQueue = Command & {

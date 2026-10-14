@@ -52,8 +52,8 @@ test-results/
 test-results-*/
 blob-report/
 
-# e2e generated config (created by `elmo init --dev --defaults`)
-e2e/.elmo/
+# e2e generated config (created by `beatgeo init --dev --defaults`)
+e2e/.beatgeo/
 e2e/.auth/
 
 # vercel
@@ -64,7 +64,7 @@ e2e/.auth/
 next-env.d.ts
 
 # brand kit (generated assets)
-elmo-brand-kit.zip
+beatgeo-brand-kit.zip
 og-default.png
 
 # to remove
@@ -73,7 +73,7 @@ prompt_runs_rows.csv
 prompt_runs.meta.json
 
 # docker
-elmo.yaml
+beatgeo.yaml
 e2e/artifacts
 
 # retroactive cleanup
@@ -93,5 +93,14 @@ apps/web/storybook-static/
 # Built from skills/ by apps/www/scripts/build-agent-skills.mjs.
 apps/www/public/.well-known/agent-skills/
 # Browser sessions, raw answers and local runner credentials are never published.
-.open-profound/
+.beat-geo/
 .env.browser-local
+
+# Keep legacy local evidence private during migration.
+.open-profound/
+
+# Preserve privacy for legacy deployment and evidence directories.
+e2e/.elmo/
+elmo.yaml
+.elmo/
+.beatgeo/

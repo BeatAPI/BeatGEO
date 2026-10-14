@@ -10,14 +10,14 @@ import { openCrispChat } from "@/lib/crisp";
 import { externalRel } from "@/lib/external-link";
 import { breadcrumbJsonLd, canonicalUrl, ogMeta } from "@/lib/seo";
 
-const title = "Support · Elmo";
-const description = "Get help with Elmo: chat with the team, email support, book a call, or ask the community.";
+const title = "Support · BeatGeo";
+const description = "Get help with BeatGeo: chat with the team, email support, book a call, or ask the community.";
 
-const SUPPORT_EMAIL = "contact@elmohq.com";
-const SECURITY_EMAIL = "security@elmohq.com";
-const DISCORD_INVITE_URL = "https://discord.gg/s24nubCtKz";
-const GITHUB_ISSUES_URL = "https://github.com/elmohq/elmo/issues";
-const CLOUD_STATUS_URL = "https://status.elmohq.com/";
+const SUPPORT_EMAIL = "contact@example.invalid";
+const SECURITY_EMAIL = "security@example.invalid";
+const DISCORD_INVITE_URL = "https://github.com/BeatAPI/BeatGeo";
+const GITHUB_ISSUES_URL = "https://github.com/BeatAPI/BeatGeo/issues";
+const CLOUD_STATUS_URL = "https://github.com/BeatAPI/BeatGeo";
 
 export const Route = createFileRoute("/support")({
 	head: () => ({
@@ -115,7 +115,7 @@ function SupportPage() {
 					<p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">/ SUPPORT</p>
 					<h1 className="font-heading text-4xl text-zinc-950 lg:text-5xl">Support</h1>
 					<p className="max-w-2xl text-lg text-balance text-zinc-600">
-						Questions about your account, billing, the MCP server, or self-hosting Elmo? Here is how to reach us.
+						Questions about your account, billing, the MCP server, or self-hosting BeatGeo? Here is how to reach us.
 					</p>
 				</header>
 
@@ -127,7 +127,7 @@ function SupportPage() {
 					/>
 					<ContactCard
 						heading="Email"
-						body="For account, billing, and anything that needs a longer answer. Include your organization name if you use Elmo Cloud."
+						body="For account, billing, and anything that needs a longer answer. Include your organization name if you use BeatGeo Cloud."
 						action={
 							<a href={`mailto:${SUPPORT_EMAIL}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
 								{SUPPORT_EMAIL}
@@ -145,12 +145,12 @@ function SupportPage() {
 					/>
 					<ContactCard
 						heading="Community"
-						body="Ask other Elmo users and the team on Discord, especially about self-hosting and integrations."
+						body="Ask other BeatGeo users and the team on Discord, especially about self-hosting and integrations."
 						action={<ExternalButton href={DISCORD_INVITE_URL}>Join Discord</ExternalButton>}
 					/>
 					<ContactCard
 						heading="Bugs and feature requests"
-						body="Elmo is open source. Report bugs and request features on GitHub, where you can follow the fix."
+						body="BeatGeo is open source. Report bugs and request features on GitHub, where you can follow the fix."
 						action={<ExternalButton href={GITHUB_ISSUES_URL}>Open an issue</ExternalButton>}
 					/>
 					<ContactCard
@@ -171,9 +171,9 @@ function SupportPage() {
 						<ResourceLink
 							href="/docs/api/mcp"
 							label="MCP server"
-							detail="Connecting Elmo to ChatGPT, Claude, Cursor, and other clients."
+							detail="Connecting BeatGeo to ChatGPT, Claude, Cursor, and other clients."
 						/>
-						<ResourceLink href={CLOUD_STATUS_URL} label="Elmo Cloud status" detail="Current uptime and incidents." />
+						<ResourceLink href={CLOUD_STATUS_URL} label="BeatGeo Cloud status" detail="Current uptime and incidents." />
 						<ResourceLink href="/status" label="Provider status" detail="How each AI provider integration is doing." />
 					</div>
 				</section>

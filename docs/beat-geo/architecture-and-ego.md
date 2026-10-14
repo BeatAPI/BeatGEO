@@ -1,18 +1,18 @@
 # One product, BeatBrowser-owned execution
 
-Research checked on 2026-10-14. The product ownership model remains proposed. Browser Lab and the Elmo provider bridge exist; BeatBrowser TaskSpaces are available in the 1.3.1 source preview; the npm stable package is separate.
+Research checked on 2026-10-14. The product ownership model remains proposed. Browser Lab and the BeatGeo provider bridge exist; BeatBrowser TaskSpaces are available in the 1.3.1 source preview; the npm stable package is separate.
 
 ## Decision
 
-Use Elmo as the single product base and BeatBrowser as the execution product. Learn from Ego Lite’s workspace and takeover design, but implement the capability inside BeatBrowser; Ego is not a runtime dependency. Do not merge another application, identity system, scheduler or database. Do not require both browsers to run one task.
+Use BeatGeo as the single product base and BeatBrowser as the execution product. Learn from Ego Lite’s workspace and takeover design, but implement the capability inside BeatBrowser; Ego is not a runtime dependency. Do not merge another application, identity system, scheduler or database. Do not require both browsers to run one task.
 
-The Browser Lab is a development harness. Its local JSON files are evidence from experiments, not a second authoritative product datastore. When integrating the full product, observations must belong to Elmo's existing brand/prompt/run records. The local executor may spool a result for delivery, but must use the product's task ID and must not create a separate customer or scheduler.
+The Browser Lab is a development harness. Its local JSON files are evidence from experiments, not a second authoritative product datastore. When integrating the full product, observations must belong to BeatGeo's existing brand/prompt/run records. The local executor may spool a result for delivery, but must use the product's task ID and must not create a separate customer or scheduler.
 
 ## Ownership
 
 | Concern | Sole owner | Browser runner responsibility |
 |---|---|---|
-| Product users, workspace access | Open Profound product identity | Pair a device; no second signup |
+| Product users, workspace access | BeatGeo product identity | Pair a device; no second signup |
 | Brands, prompts, competitors, observations | One product PostgreSQL database | Receive selected input and return evidence |
 | GEO schedules, run IDs, job state | Existing product worker/queue | Lease and execute one assigned task |
 | Website login sessions | User's browser profile | Use sessions locally; do not upload cookies |
@@ -59,7 +59,7 @@ Hosted product proposal: user pairs local runner once; runner makes an outbound 
 
 ## Open source and commercial boundary
 
-Open: product UI, question/competitor management, data schema, browser execution protocol, default BeatBrowser adapter, scoring definitions, evidence viewer, provider extension points and exports. Preserve Elmo and other copied-source notices.
+Open: product UI, question/competitor management, data schema, browser execution protocol, default BeatBrowser adapter, scoring definitions, evidence viewer, provider extension points and exports. Preserve BeatGeo and other copied-source notices.
 
 Paid optional services: BeatAPI model inference, Web/SEO data, research, content generation and future managed infrastructure. Users can self-host and bring their own supported providers. Browser monitoring itself should not be forced through a model API to manufacture consumption. BeatAPI earns use by making the analysis and improvement workflow convenient, reliable and cost-effective.
 
