@@ -3,7 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const { capture, shutdown, posthog, readFile } = vi.hoisted(() => {
 	const capture = vi.fn();
 	const shutdown = vi.fn().mockResolvedValue(undefined);
-	return { capture, shutdown, posthog: vi.fn(() => ({ capture, shutdown })), readFile: vi.fn() };
+	return {
+		capture,
+		shutdown,
+		posthog: vi.fn(
+			class {
+				capture = capture;
+				shutdown = shutdown;
+			},
+		),
+		readFile: vi.fn(),
+	};
 });
 vi.mock("posthog-node", () => ({ PostHog: posthog }));
 vi.mock("node:fs/promises", () => ({ default: { readFile } }));
