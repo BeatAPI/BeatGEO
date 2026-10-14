@@ -46,16 +46,16 @@ describe("cloud env requirements", () => {
 	it("does not flag the cloud vars once they are set", () => {
 		const env: Record<string, string> = {
 			DEPLOYMENT_MODE: "cloud",
-			DATABASE_URL: "postgres://localhost/elmo",
+			DATABASE_URL: "postgres://localhost/beatgeo",
 			BETTER_AUTH_SECRET: "secret",
 			SCRAPE_TARGETS: "chatgpt:olostep:online",
-			APP_URL: "https://app.elmo.com/",
+			APP_URL: "https://app.beatgeo.com/",
 			STRIPE_SECRET_KEY: "sk_test_x",
 			STRIPE_WEBHOOK_SECRET: "whsec_x",
 			RESEND_API_KEY: "re_test_x",
 			GOOGLE_CLIENT_ID: "test-google-client-id",
 			GOOGLE_CLIENT_SECRET: "test-google-client-secret",
-			RESEND_FROM_EMAIL: "Elmo <notifications@example.com>",
+			RESEND_FROM_EMAIL: "BeatGeo <notifications@example.com>",
 		};
 		const { missing } = validateEnvRequirements(cloudReqs, env);
 		const missingIds = new Set(missing.map((entry) => entry.id));
@@ -65,16 +65,16 @@ describe("cloud env requirements", () => {
 	});
 });
 
-describe("ELMO_ENCRYPTION_KEY", () => {
+describe("BEAT_GEO_ENCRYPTION_KEY", () => {
 	it("is required by local, which the CLI provisions", () => {
 		const ids = new Set(getEnvRequirements("local").map((requirement) => requirement.id));
-		expect(ids.has("ELMO_ENCRYPTION_KEY")).toBe(true);
+		expect(ids.has("BEAT_GEO_ENCRYPTION_KEY")).toBe(true);
 	});
 
 	it("is not required by the modes provisioned out of band", () => {
 		for (const mode of ["demo", "whitelabel", "cloud"] as const) {
 			const ids = new Set(getEnvRequirements(mode).map((requirement) => requirement.id));
-			expect(ids.has("ELMO_ENCRYPTION_KEY"), `${mode} should not require it`).toBe(false);
+			expect(ids.has("BEAT_GEO_ENCRYPTION_KEY"), `${mode} should not require it`).toBe(false);
 		}
 	});
 });
@@ -119,7 +119,7 @@ describe("research provider requirement", () => {
 describe("requireEnvVars", () => {
 	it("reports every missing required env var at once", () => {
 		expect(() =>
-			requireEnvVars(["VITE_APP_NAME", "VITE_APP_ICON", "VITE_APP_URL"], { VITE_APP_URL: "https://app.elmo.com" }),
+			requireEnvVars(["VITE_APP_NAME", "VITE_APP_ICON", "VITE_APP_URL"], { VITE_APP_URL: "https://app.beatgeo.com" }),
 		).toThrow("Missing required environment variables: VITE_APP_NAME, VITE_APP_ICON");
 	});
 
@@ -128,7 +128,7 @@ describe("requireEnvVars", () => {
 	});
 
 	it("returns the resolved values when every var is present", () => {
-		const env = { VITE_APP_NAME: "Acme", VITE_APP_URL: "https://app.elmo.com" };
+		const env = { VITE_APP_NAME: "Acme", VITE_APP_URL: "https://app.beatgeo.com" };
 		expect(requireEnvVars(["VITE_APP_NAME", "VITE_APP_URL"], env)).toEqual(env);
 	});
 });
@@ -150,9 +150,9 @@ describe("assertRequiredEnv", () => {
 		expect(() =>
 			assertRequiredEnv({
 				DEPLOYMENT_MODE: "local",
-				DATABASE_URL: "postgres://localhost/elmo",
+				DATABASE_URL: "postgres://localhost/beatgeo",
 				BETTER_AUTH_SECRET: "secret",
-				ELMO_ENCRYPTION_KEY: "key",
+				BEAT_GEO_ENCRYPTION_KEY: "key",
 				SCRAPE_TARGETS: "chatgpt:olostep:online",
 			}),
 		).not.toThrow();

@@ -60,7 +60,7 @@ test("a fresh browser run waits for finished text and records the actual answer 
 	};
 	const run = await collect(
 		{ engine: "chatgpt", prompt: "Compare BeatAPI", brand: "BeatAPI" },
-		{ browser, delay: async () => {} },
+		{ browser, spaces: false, delay: async () => {} },
 	);
 	assert.equal(run.status, "completed");
 	assert.equal(run.brandMentioned, false);
@@ -80,14 +80,17 @@ test("an uncertain submission is not replayed or counted as a missing mention", 
 		if (tool === "snapshot") return "# ChatGPT";
 		return params.selector.includes("contenteditable") ? '[{"label":"Ask"}]' : "[]";
 	};
-	const run = await collect({ engine: "chatgpt", prompt: "best providers" }, { browser, delay: async () => {} });
+	const run = await collect(
+		{ engine: "chatgpt", prompt: "best providers" },
+		{ browser, spaces: false, delay: async () => {} },
+	);
 	assert.equal(run.status, "needs_attention");
 	assert.equal(run.brandMentioned, null);
 	assert.equal(submissions, 1);
 });
 
 test("run evidence round-trips through private local storage", async () => {
-	const directory = await mkdtemp(path.join(os.tmpdir(), "open-profound-test-"));
+	const directory = await mkdtemp(path.join(os.tmpdir(), "beat-geo-test-"));
 	try {
 		const run = { id: "abcdef-1234", startedAt: "2026-10-14T00:00:00Z", status: "completed", answer: "Raw answer" };
 		await saveRun(directory, run);
@@ -109,8 +112,99 @@ test("verification stops collection before submitting a prompt", async () => {
 		if (tool === "type") submissions++;
 		return '[{"label":"Ask"}]';
 	};
-	const result = await collect({ engine: "chatgpt", prompt: "best providers" }, { browser, delay: async () => {} });
+	const result = await collect(
+		{ engine: "chatgpt", prompt: "best providers" },
+		{ browser, spaces: false, delay: async () => {} },
+	);
 	assert.equal(result.status, "needs_attention");
 	assert.equal(submissions, 0);
 	assert.equal(result.brandMentioned, null);
+});
+
+test("TaskSpace collection pins every page command and releases after an uncertain submission", async () => {
+	const calls = [];
+	const browser = async (tool, params) => {
+		calls.push({ tool, params });
+		if (tool === "spaces") return JSON.stringify({ spaceId: "owned-space", tabId: 42, state: "running" });
+		assert.equal(params.spaceId, "owned-space");
+		assert.equal(params.tabId, 42);
+		if (tool === "snapshot") return "# ChatGPT";
+		if (tool === "type") throw new Error("Connection lost after keypress");
+		return params.selector.includes("contenteditable") ? '[{"label":"Ask"}]' : "[]";
+	};
+	const run = await collect(
+		{ engine: "chatgpt", prompt: "best providers" },
+		{ browser, spaces: true, delay: async () => {} },
+	);
+	assert.equal(run.status, "needs_attention");
+	assert.equal(run.executionMode, "beat-browser-taskspace");
+	assert.equal(calls.filter((c) => c.tool === "type").length, 1);
+	assert.equal(
+		calls.some((c) => c.tool === "tabs"),
+		false,
+	);
+	assert.deepEqual(calls.at(-1), { tool: "spaces", params: { action: "finish", spaceId: "owned-space", keep: "all" } });
+});
+
+test("an interrupted TaskSpace never falls back to an ordinary browser tab", async () => {
+	const calls = [];
+	const run = await collect(
+		{ engine: "chatgpt", prompt: "best providers" },
+		{
+			browser: async (tool, params) => {
+				calls.push({ tool, params });
+				return JSON.stringify({ spaceId: "interrupted-space", tabId: 42, state: "interrupted" });
+			},
+		},
+	);
+	assert.equal(run.status, "needs_attention");
+	assert.equal(run.submissionAttempted, false);
+	assert.equal(calls.length, 2);
+	assert(calls.every((call) => call.tool === "spaces"));
+});
+
+test("default collection uses the chosen profile and preserves evidence pages", async () => {
+	const calls = [];
+	let submitted = false;
+	const run = await collect(
+		{ engine: "chatgpt", prompt: "best providers", brand: "Example", profileId: "chosen-profile" },
+		{
+			delay: async () => {},
+			browser: async (tool, params) => {
+				calls.push({ tool, params });
+				if (tool === "spaces") return JSON.stringify({ spaceId: "test-space", tabId: 9, state: "running" });
+				assert.equal(params.spaceId, "test-space");
+				if (tool === "snapshot") return "# ChatGPT";
+				if (tool === "type") {
+					submitted = true;
+					return "Typed";
+				}
+				if (params.selector.includes("contenteditable")) return '[{"label":"Ask"}]';
+				if (params.selector.includes("aria-busy") || params.selector.includes("a[href]")) return "[]";
+				return submitted ? '[{"text":"Example is one option."}]' : "[]";
+			},
+		},
+	);
+	assert.equal(run.status, "completed");
+	assert.equal(run.brandMentioned, true);
+	assert.equal(calls[0].params.profileId, "chosen-profile");
+	assert.equal(
+		calls.some((call) => call.tool === "tabs"),
+		false,
+	);
+	assert.equal(calls.at(-1).params.keep, "all");
+});
+
+test("duplicate observation IDs and failed attempts do not inflate a brand percentage", () => {
+	const result = summarize([
+		{ id: "a", status: "completed", brandMentioned: true },
+		{ id: "a", status: "completed", brandMentioned: true },
+		{ id: "b", status: "completed", brandMentioned: false },
+		{ id: "c", status: "timeout", brandMentioned: null },
+	]);
+	assert.equal(result.mentionRate, 0.5);
+	assert.equal(result.total, 3);
+	assert.equal(result.timeout, 1);
+	assert.equal(result.statusCounts.timeout, 1);
+	assert.equal(result.metricVersion, "beatgeo-v1");
 });

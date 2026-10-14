@@ -1,6 +1,6 @@
 ---
 title: Development Setup
-description: Set up a local development environment for contributing to Elmo.
+description: Set up a local development environment for contributing to BeatGeo.
 ---
 
 ## Prerequisites
@@ -13,8 +13,8 @@ description: Set up a local development environment for contributing to Elmo.
 ## Clone and Install
 
 ```bash
-git clone https://github.com/elmohq/elmo.git
-cd elmo
+git clone https://github.com/BeatAPI/BeatGeo.git
+cd beatgeo
 pnpm install
 ```
 
@@ -32,7 +32,7 @@ At minimum, you need:
 |----------|-------------|
 | `DATABASE_URL` | PostgreSQL connection string |
 | `BETTER_AUTH_SECRET` | Any random string for session encryption |
-| `ELMO_ENCRYPTION_KEY` | Key for provider credentials stored in the database — `openssl rand -base64 32` |
+| `BEAT_GEO_ENCRYPTION_KEY` | Key for provider credentials stored in the database — `openssl rand -base64 32` |
 
 Add AI provider API keys if you want to test visibility tracking:
 
@@ -73,18 +73,18 @@ For a setup closer to production, use the CLI in dev mode:
 
 ```bash
 # Build from local source instead of pulling images
-elmo init --dev
+beatgeo init --dev
 
 # Rebuild after code changes
-elmo compose build
-elmo compose up -d
+beatgeo compose build
+beatgeo compose up -d
 ```
 
 The Docker build uses a multi-stage `docker/Dockerfile` with separate targets for `web` and `worker`.
 
 ## Component Stories
 
-Elmo uses Storybook for component development in isolation:
+BeatGeo uses Storybook for component development in isolation:
 
 ```bash
 pnpm --filter @workspace/web storybook

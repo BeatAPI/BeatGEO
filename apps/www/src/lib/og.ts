@@ -8,11 +8,11 @@ export function getPageImage(slugs: string[]) {
 }
 
 export function getMarketingOgImage(opts: { title: string; description?: string; label?: string }): string {
-	// The rendered card already shows the "elmo" logo, so a "Pricing · Elmo" or
-	// "Elmo · Open Source AI Visibility" title would render the brand
+	// The rendered card already shows the "beatgeo" logo, so a "Pricing · BeatGeo" or
+	// "BeatGeo · Open Source AI Visibility" title would render the brand
 	// twice. Strip the brand prefix/suffix here. The og:title meta keeps the
 	// full string for crawlers — only the image gets the cleaner version.
-	const cleanTitle = opts.title.replace(/^Elmo\s*[·\-|:]\s*/i, "").replace(/\s*[·\-|:]\s*Elmo$/i, "");
+	const cleanTitle = opts.title.replace(/^BeatGeo\s*[·\-|:]\s*/i, "").replace(/\s*[·\-|:]\s*BeatGeo$/i, "");
 	const params = new URLSearchParams();
 	params.set("title", cleanTitle);
 	if (opts.description) params.set("description", opts.description);

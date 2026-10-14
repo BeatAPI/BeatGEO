@@ -1,7 +1,5 @@
 // Crisp replays anything pushed onto `window.$crisp` once its script loads, so
 // nothing here has to wait for a ready signal.
-import { CLOUD_SIGNUP_URL } from "@workspace/config/plans";
-import { bookDemoUrl } from "@workspace/config/referrals";
 import type { DeploymentMode } from "@workspace/config/types";
 
 type CrispCommand = unknown[];
@@ -16,27 +14,15 @@ declare global {
 
 const CRISP_SCRIPT_URL = "https://client.crisp.chat/l.js";
 
-const DEMO_WALKTHROUGH_URL = bookDemoUrl("demo-chat");
-const SELF_HOST_DOCS_URL = "https://www.elmohq.com/docs/getting-started";
-
-const DEMO_GREETING =
-	"👋 You're in the Elmo demo — it's read-only sample data, so click around freely. Ask me anything as you go.";
-
-// Not a carousel: at chatbox width its track shows one card at a time, which
-// left the last option off screen.
+const PROJECT_URL = "https://github.com/BeatAPI/BeatGeo";
+const DEMO_GREETING = "BeatGeo development preview. Samples are not live monitoring results.";
 const DEMO_NEXT_STEPS = [
-	"Whenever you're ready:",
-	`• [Book a walkthrough](${DEMO_WALKTHROUGH_URL}) — 30 minutes on your own brand's data`,
-	`• [Start with Elmo Cloud](${CLOUD_SIGNUP_URL}) — the managed version, nothing to deploy`,
-	`• [Self-host it free](${SELF_HOST_DOCS_URL}) — open source, running in about five minutes`,
+	"Continue with BeatGeo:",
+	`• [Product flow](${PROJECT_URL}#product-flow)`,
+	`• [Self-hosting](${PROJECT_URL}/blob/main/docs/self-hosting.md)`,
+	`• [Report an issue](${PROJECT_URL}/issues)`,
 ].join("\n");
-
-// So an operator picking up the thread points at the same three places.
-const DEMO_SESSION_DATA: [string, string][] = [
-	["walkthrough_url", DEMO_WALKTHROUGH_URL],
-	["self_host_docs_url", SELF_HOST_DOCS_URL],
-	["cloud_signup_url", CLOUD_SIGNUP_URL],
-];
+const DEMO_SESSION_DATA: [string, string][] = [["project_url", PROJECT_URL]];
 
 interface CrispUser {
 	id: string;

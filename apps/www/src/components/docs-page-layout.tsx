@@ -20,7 +20,7 @@ import { useMDXComponents } from "@/components/mdx";
 import { Navbar } from "@/components/navbar";
 import type { LoaderData } from "@/routes/docs/$";
 
-const REPO = "elmohq/elmo";
+const REPO = "BeatAPI/beat-geo";
 const BRANCH = "main";
 
 // /docs/foo → /docs/foo.md  (/docs index → /docs.md). The same markdown the
@@ -85,7 +85,7 @@ const clientLoader = browserCollections.docs.createClientLoader({
 function DocsPageActions({ filePath, mdUrl }: { filePath: string; mdUrl: string }) {
 	const editUrl = `https://github.com/${REPO}/edit/${BRANCH}/${filePath}`;
 	const issueUrl = `https://github.com/${REPO}/issues/new?labels=docs&title=Docs+issue:+`;
-	const discordUrl = "https://discord.gg/s24nubCtKz";
+	const discordUrl = "https://github.com/BeatAPI/BeatGeo";
 
 	return (
 		<div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t pt-4 text-sm text-muted-foreground">

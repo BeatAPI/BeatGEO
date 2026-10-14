@@ -29,8 +29,8 @@
     "OPENROUTER_API_KEY",
     "JINA_API_KEY",
     "ONBOARDING_LLM_TARGET",
-    "ELMO_ENCRYPTION_KEY",
-    "ELMO_ENCRYPTION_KEY_OLD",
+    "BEAT_GEO_ENCRYPTION_KEY",
+    "BEAT_GEO_ENCRYPTION_KEY_OLD",
     "DEPLOYMENT_MODE",
     "ADMIN_AUTH0_SUB",
     "ADMIN_API_KEYS",
@@ -64,7 +64,17 @@
     "GOOGLE_CLIENT_SECRET",
     "RESEND_FROM_EMAIL",
     "BROWSER_RUNNER_URL",
-    "BROWSER_RUNNER_TOKEN"
+    "BROWSER_RUNNER_TOKEN",
+    "BROWSER_RUNS_DIR",
+    "BROWSER_LAB_PORT",
+    "BEAT_BROWSER_SPACES",
+    "BEAT_BROWSER_PROFILE_ID",
+    "BEAT_BROWSER_COMMAND",
+    "BEAT_BROWSER_ARGS_JSON",
+    "ELMO_ENCRYPTION_KEY",
+    "ELMO_ENCRYPTION_KEY_OLD",
+    "BEAT_GEO_POSTHOG_KEY",
+    "BEAT_GEO_CRISP_WEBSITE_ID"
   ],
   "tasks": {
     "//#format": {
@@ -75,30 +85,61 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["^build", "check-types"],
-      "outputs": [".output/**", ".vercel/output/**", "dist/**"]
+      "dependsOn": [
+        "^build",
+        "check-types"
+      ],
+      "outputs": [
+        ".output/**",
+        ".vercel/output/**",
+        "dist/**"
+      ]
     },
     "@workspace/www#build": {
-      "dependsOn": ["^build", "check-types"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/skills/**"],
-      "outputs": [".output/**", ".vercel/output/**", "dist/**"]
+      "dependsOn": [
+        "^build",
+        "check-types"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/skills/**"
+      ],
+      "outputs": [
+        ".output/**",
+        ".vercel/output/**",
+        "dist/**"
+      ]
     },
     "@workspace/worker#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "codegen": {
-      "outputs": [".source/**"]
+      "outputs": [
+        ".source/**"
+      ]
     },
     "@workspace/lib#codegen": {
-      "inputs": ["$TURBO_DEFAULT$", "!src/db/schema-auth.ts"],
-      "outputs": ["src/db/schema-auth.ts"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!src/db/schema-auth.ts"
+      ],
+      "outputs": [
+        "src/db/schema-auth.ts"
+      ]
     },
     "check-types": {
-      "dependsOn": ["^check-types", "codegen"]
+      "dependsOn": [
+        "^check-types",
+        "codegen"
+      ]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     },
     "dev": {
       "persistent": true,

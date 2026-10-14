@@ -1,4 +1,4 @@
-# The weekly run also installs from GitHub and elmohq.com, whose archive can
+# The weekly run also installs from GitHub and beatgeohq.com, whose archive can
 # break on a site deploy without touching skills/. The CLI is pinned so a new
 # release can't fail this job on its own.
 
@@ -55,8 +55,8 @@ jobs:
 
       - name: Install from GitHub
         if: github.event_name != 'pull_request'
-        run: scripts/check-skill-install.sh elmohq/elmo github
+        run: scripts/check-skill-install.sh BeatAPI/beat-geo github
 
-      - name: Install from elmohq.com
+      - name: Install from beatgeohq.com
         if: github.event_name != 'pull_request'
-        run: scripts/check-skill-install.sh https://www.elmohq.com website
+        run: scripts/check-skill-install.sh https://www.beatgeohq.com website

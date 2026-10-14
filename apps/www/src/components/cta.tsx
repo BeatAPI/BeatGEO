@@ -26,7 +26,7 @@ export function CTA() {
 						<div className="mt-7 flex flex-wrap items-center gap-2">
 							<CloudSignupCTA />
 							<SelfHostCTA />
-							<QuietCTA href="https://github.com/elmohq/elmo">View source</QuietCTA>
+							<QuietCTA href="https://github.com/BeatAPI/BeatGeo">View source</QuietCTA>
 						</div>
 						{/* A fourth button would flatten the three above it, so the call
 						    that suits someone still deciding is offered as a sentence. */}

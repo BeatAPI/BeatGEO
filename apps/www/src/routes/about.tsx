@@ -15,15 +15,15 @@ import { breadcrumbJsonLd, canonicalUrl, faqJsonLd, ogMeta } from "@/lib/seo";
 
 const CLOUD_URL = cloudAppUrl("marketing-about");
 const BOOK_CALL_URL = bookDemoUrl("marketing-about");
-const GITHUB_URL = "https://github.com/elmohq/elmo";
-const DISCORD_URL = "https://discord.gg/s24nubCtKz";
-const SUPPORT_EMAIL = "contact@elmohq.com";
+const GITHUB_URL = "https://github.com/BeatAPI/BeatGeo";
+const DISCORD_URL = "https://github.com/BeatAPI/BeatGeo";
+const SUPPORT_EMAIL = "contact@example.invalid";
 // `ref` preserves attribution when an intermediary strips the Referer.
-const BLUEWHALE_URL = "https://bluewhale.dev?ref=elmo";
+const BLUEWHALE_URL = "https://bluewhale.dev?ref=beatgeo";
 
-const title = "About Elmo · Open-Source AI Visibility Platform";
+const title = "About BeatGeo · Open-Source AI Visibility Platform";
 const description =
-	"Elmo is an open-source AEO and GEO platform for tracking brand visibility in AI search, founded in 2025 by Jared Rhizor, a founding engineer at Airbyte. Company facts, team, pricing, and how we work.";
+	"BeatGeo is an open-source AEO and GEO platform for tracking brand visibility in AI search, founded in 2025 by Jared Rhizor, a founding engineer at Airbyte. Company facts, team, pricing, and how we work.";
 
 export const Route = createFileRoute("/about")({
 	head: () => ({
@@ -51,9 +51,9 @@ const FOUNDER_LINKS = [
 	{ label: "jrhizor.dev", href: "https://jrhizor.dev" },
 ];
 
-const ELMO_LINKS = [
-	{ label: "X", href: "https://x.com/tryelmo" },
-	{ label: "LinkedIn", href: "https://www.linkedin.com/company/elmohq" },
+const BEAT_GEO_LINKS = [
+	{ label: "X", href: "https://x.com/trybeatgeo" },
+	{ label: "LinkedIn", href: "https://github.com/BeatAPI/BeatGeo" },
 	{ label: "GitHub", href: GITHUB_URL },
 	{ label: "Discord", href: DISCORD_URL },
 ];
@@ -61,7 +61,7 @@ const ELMO_LINKS = [
 const services = [
 	{
 		title: "AI search visibility tracking",
-		body: "Elmo runs the prompts your buyers ask across ChatGPT, Google AI Overviews, Google AI Mode, Perplexity, Gemini, Copilot, Claude, and more on a schedule. Each prompt gets a visibility score for how often your brand appears, so you can see where you show up and where you don't.",
+		body: "BeatGeo runs the prompts your buyers ask across ChatGPT, Google AI Overviews, Google AI Mode, Perplexity, Gemini, Copilot, Claude, and more on a schedule. Each prompt gets a visibility score for how often your brand appears, so you can see where you show up and where you don't.",
 	},
 	{
 		title: "Citation analysis",
@@ -69,15 +69,15 @@ const services = [
 	},
 	{
 		title: "Competitor benchmarking",
-		body: "Elmo records which competitors appear alongside you and calculates share of voice across every engine. You see who AI recommends instead of you, and on which questions.",
+		body: "BeatGeo records which competitors appear alongside you and calculates share of voice across every engine. You see who AI recommends instead of you, and on which questions.",
 	},
 	{
-		title: "Elmo Cloud",
+		title: "BeatGeo Cloud",
 		body: `Managed hosting for teams that would rather not run their own infrastructure, from $${CLOUD_ENTRY_PRICE_USD}/mo. Every plan includes unlimited seats plus REST API and MCP server access.`,
 	},
 	{
 		title: "White-label AEO",
-		body: "Agencies and software companies embed Elmo into their own product or client reporting under their own brand. It gives them AI visibility tracking without building and maintaining the scraping and analysis pipeline themselves.",
+		body: "Agencies and software companies embed BeatGeo into their own product or client reporting under their own brand. It gives them AI visibility tracking without building and maintaining the scraping and analysis pipeline themselves.",
 	},
 	{
 		title: "Off-Site AEO",
@@ -88,15 +88,15 @@ const services = [
 const differentiators = [
 	{
 		title: "Open source and free to self-host",
-		body: "Every line of Elmo's code is public on GitHub, and you can run the whole platform on your own servers for free. Profound, Peec AI, and Otterly.AI are closed-source SaaS, so you can't audit how their numbers are produced or keep running them if you leave.",
+		body: "Every line of BeatGeo's code is public on GitHub, and you can run the whole platform on your own servers for free. Profound, Peec AI, and Otterly.AI are closed-source SaaS, so you can't audit how their numbers are produced or keep running them if you leave.",
 	},
 	{
 		title: `Public, self-serve pricing from $${CLOUD_ENTRY_PRICE_USD}/mo`,
-		body: `Elmo Cloud plans are listed publicly at $${starter.monthlyPriceUsd}, $${basic.monthlyPriceUsd}, $${pro.monthlyPriceUsd}, and $${business.monthlyPriceUsd} a month, and you can sign up without a sales call. Profound's pricing page lists a free trial and an Enterprise plan quoted by sales.`,
+		body: `BeatGeo Cloud plans are listed publicly at $${starter.monthlyPriceUsd}, $${basic.monthlyPriceUsd}, $${pro.monthlyPriceUsd}, and $${business.monthlyPriceUsd} a month, and you can sign up without a sales call. Profound's pricing page lists a free trial and an Enterprise plan quoted by sales.`,
 	},
 	{
 		title: "Month-to-month billing",
-		body: "Elmo Cloud bills month to month with no minimum term, and annual billing is optional (two months free). Many enterprise AEO platforms push you into an annual contract before you can see your data.",
+		body: "BeatGeo Cloud bills month to month with no minimum term, and annual billing is optional (two months free). Many enterprise AEO platforms push you into an annual contract before you can see your data.",
 	},
 	{
 		title: `Prompts checked ${basic.standardRunsPerDay}× a day`,
@@ -108,7 +108,7 @@ const differentiators = [
 	},
 	{
 		title: "Unlimited seats, API, and MCP on every plan",
-		body: "Every Elmo Cloud plan includes unlimited team members, the REST API, and an MCP server for Claude Code, Cursor, and other AI assistants. Your whole team and your own tools get the data without per-seat fees or an enterprise upgrade.",
+		body: "Every BeatGeo Cloud plan includes unlimited team members, the REST API, and an MCP server for Claude Code, Cursor, and other AI assistants. Your whole team and your own tools get the data without per-seat fees or an enterprise upgrade.",
 	},
 ];
 
@@ -180,7 +180,7 @@ function AboutPage() {
 			term: "Company Name",
 			detail: (
 				<>
-					Elmo (elmohq.com), built by <ExternalLink href={BLUEWHALE_URL}>Blue Whale Software, LLC</ExternalLink>
+					BeatGeo (example.invalid), built by <ExternalLink href={BLUEWHALE_URL}>Blue Whale Software, LLC</ExternalLink>
 				</>
 			),
 		},
@@ -194,7 +194,7 @@ function AboutPage() {
 		{ term: "Headquarters", detail: "San Francisco, California, USA" },
 		{
 			term: "Website",
-			detail: <ExternalLink href="https://www.elmohq.com">www.elmohq.com</ExternalLink>,
+			detail: <ExternalLink href="https://github.com/BeatAPI/BeatGeo">www.example.invalid</ExternalLink>,
 		},
 		{
 			term: "Core Offering",
@@ -203,7 +203,7 @@ function AboutPage() {
 		},
 		{
 			term: "Pricing",
-			detail: `Free to self-host. Elmo Cloud: Starter $${starter.monthlyPriceUsd}/mo, Basic $${basic.monthlyPriceUsd}/mo, Pro $${pro.monthlyPriceUsd}/mo, Business $${business.monthlyPriceUsd}/mo. Off-Site AEO from $1,950/mo. White label and custom plans on request.`,
+			detail: `Free to self-host. BeatGeo Cloud: Starter $${starter.monthlyPriceUsd}/mo, Basic $${basic.monthlyPriceUsd}/mo, Pro $${pro.monthlyPriceUsd}/mo, Business $${business.monthlyPriceUsd}/mo. Off-Site AEO from $1,950/mo. White label and custom plans on request.`,
 		},
 		{
 			term: "Contract Terms",
@@ -224,8 +224,8 @@ function AboutPage() {
 			term: "Open-Source Adoption",
 			detail:
 				stars > 0
-					? `${formatStarCount(stars)} GitHub stars on elmohq/elmo`
-					: "Public repository at github.com/elmohq/elmo",
+					? `${formatStarCount(stars)} GitHub stars on BeatAPI/beat-geo`
+					: "Public repository at github.com/BeatAPI/BeatGeo",
 		},
 		{
 			term: "Platforms Tracked",
@@ -233,7 +233,7 @@ function AboutPage() {
 				"ChatGPT, Google AI Overviews, Google AI Mode, Gemini, Perplexity, Microsoft Copilot, Claude, Grok, Mistral, DeepSeek, Qwen",
 		},
 		{ term: "Competitors", detail: "Profound, Peec AI, Otterly.AI, Scrunch, Semrush AI Toolkit" },
-		{ term: "Social", detail: <LinkList links={ELMO_LINKS} /> },
+		{ term: "Social", detail: <LinkList links={BEAT_GEO_LINKS} /> },
 	];
 
 	return (
@@ -248,14 +248,16 @@ function AboutPage() {
 					/>
 					<div className="relative mx-auto max-w-6xl px-4 md:px-6">
 						<div className="max-w-3xl">
-							<h1 className="font-heading text-4xl text-balance text-zinc-950 md:text-5xl lg:text-6xl">About Elmo</h1>
+							<h1 className="font-heading text-4xl text-balance text-zinc-950 md:text-5xl lg:text-6xl">
+								About BeatGeo
+							</h1>
 							<p className="mt-6 max-w-2xl text-lg text-pretty text-zinc-600 md:text-xl">
-								Elmo is an open-source answer engine optimization (AEO) platform that tracks how ChatGPT, Google AI
+								BeatGeo is an open-source answer engine optimization (AEO) platform that tracks how ChatGPT, Google AI
 								Overviews, Perplexity, Gemini, Claude, and other AI answer engines mention, cite, and describe brands,
 								for marketing teams, agencies, and software companies.
 							</p>
 							<p className="mt-4 max-w-2xl text-lg text-pretty text-zinc-600">
-								Teams use Elmo for{" "}
+								Teams use BeatGeo for{" "}
 								<Link
 									to="/answer-engine-optimization"
 									className="font-medium text-blue-600 underline-offset-4 hover:underline"
@@ -275,22 +277,22 @@ function AboutPage() {
 					</div>
 				</section>
 
-				<Section heading="What Elmo does">
+				<Section heading="What BeatGeo does">
 					<CardGrid items={services} />
 				</Section>
 
-				<Section heading="What makes Elmo different" tinted>
+				<Section heading="What makes BeatGeo different" tinted>
 					<CardGrid items={differentiators} tinted />
 				</Section>
 
-				<Section heading="Who uses Elmo">
+				<Section heading="Who uses BeatGeo">
 					<ul className="max-w-3xl list-disc space-y-3 pl-5 text-[1.0625rem] leading-relaxed text-zinc-600 marker:text-blue-600">
 						{audiences.map((audience) => (
 							<li key={audience}>{audience}</li>
 						))}
 					</ul>
 					<p className="mt-6 max-w-3xl text-[1.0625rem] leading-relaxed text-zinc-600">
-						Teams using Elmo include {NOTABLE_USERS.join(", ")}, and hundreds of others.
+						Teams using BeatGeo include {NOTABLE_USERS.join(", ")}, and hundreds of others.
 					</p>
 				</Section>
 
@@ -300,7 +302,7 @@ function AboutPage() {
 							<div className="flex items-center gap-5 rounded-lg border border-zinc-200 bg-white p-6">
 								<img
 									src="/authors/jared.png"
-									alt="Jared Rhizor, founder of Elmo"
+									alt="Jared Rhizor, founder of BeatGeo"
 									width={96}
 									height={96}
 									className="size-24 shrink-0 rounded-full object-cover"
@@ -323,11 +325,11 @@ function AboutPage() {
 							<p>
 								After Airbyte, Jared built and exited two companies of his own: MealByMeal, calorie tracking over text
 								message, and poach.vc, which helped VCs find undiscovered early-stage founders. In July 2025 he started
-								Elmo, after seeing AI search starting to reshape how customers made purchasing decisions. Today Elmo
-								helps hundreds of teams understand and improve how AI answer engines talk about their brands.
+								BeatGeo, after seeing AI search starting to reshape how customers made purchasing decisions. Today
+								BeatGeo helps hundreds of teams understand and improve how AI answer engines talk about their brands.
 							</p>
 							<p>
-								Elmo is built by <ExternalLink href={BLUEWHALE_URL}>Blue Whale Software, LLC</ExternalLink>, a San
+								BeatGeo is built by <ExternalLink href={BLUEWHALE_URL}>Blue Whale Software, LLC</ExternalLink>, a San
 								Francisco software company, together with a community of open-source contributors on{" "}
 								<ExternalLink href={GITHUB_URL}>GitHub</ExternalLink>. Read more about how we think about AI visibility
 								in{" "}
@@ -340,12 +342,12 @@ function AboutPage() {
 					</div>
 				</Section>
 
-				<Section heading="How Elmo works">
+				<Section heading="How BeatGeo works">
 					<div className="grid gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200 md:grid-cols-2">
 						<div className="bg-white p-6">
 							<h3 className="text-lg font-semibold tracking-tight text-zinc-950">Who you work with</h3>
 							<p className="mt-2 text-sm leading-relaxed text-zinc-600">
-								You work directly with the team that builds Elmo, not a tiered support queue. Questions about your
+								You work directly with the team that builds BeatGeo, not a tiered support queue. Questions about your
 								setup, data, or results are answered by people who know the product inside out.
 							</p>
 						</div>
@@ -368,7 +370,7 @@ function AboutPage() {
 						<div className="bg-white p-6">
 							<h3 className="text-lg font-semibold tracking-tight text-zinc-950">Onboarding</h3>
 							<p className="mt-2 text-sm leading-relaxed text-zinc-600">
-								Sign up for Elmo Cloud and add your website. The Prompt Wizard suggests the questions your buyers ask
+								Sign up for BeatGeo Cloud and add your website. The Prompt Wizard suggests the questions your buyers ask
 								based on your products, competitors, and personas, and tracking starts right away. No demo or sales call
 								required.
 							</p>
@@ -376,8 +378,8 @@ function AboutPage() {
 						<div className="bg-white p-6">
 							<h3 className="text-lg font-semibold tracking-tight text-zinc-950">Turnaround</h3>
 							<p className="mt-2 text-sm leading-relaxed text-zinc-600">
-								Self-hosting takes under five minutes with the Elmo CLI. Off-Site AEO placements go live within 30 days
-								of your kickoff call, and new features ship continuously, as you can see in the{" "}
+								Self-hosting takes under five minutes with the BeatGeo CLI. Off-Site AEO placements go live within 30
+								days of your kickoff call, and new features ship continuously, as you can see in the{" "}
 								<Link to="/changelog" className="font-medium text-blue-600 underline-offset-4 hover:underline">
 									changelog
 								</Link>
@@ -387,7 +389,7 @@ function AboutPage() {
 					</div>
 				</Section>
 
-				<Section heading="Key facts about Elmo" tinted>
+				<Section heading="Key facts about BeatGeo" tinted>
 					<dl className="divide-y divide-zinc-200 overflow-hidden rounded-lg border border-zinc-200 bg-white">
 						{keyFacts.map((fact) => (
 							<div key={fact.term} className="grid gap-1 px-5 py-4 sm:grid-cols-[13rem_1fr] sm:gap-6">
@@ -405,7 +407,7 @@ function AboutPage() {
 					<div className="mx-auto max-w-6xl px-4 text-center md:px-6">
 						<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">See how AI talks about your brand</h2>
 						<p className="mx-auto mt-4 max-w-xl text-lg text-balance text-zinc-600">
-							Start on Elmo Cloud from ${CLOUD_ENTRY_PRICE_USD}/mo, or self-host the open-source platform for free.
+							Start on BeatGeo Cloud from ${CLOUD_ENTRY_PRICE_USD}/mo, or self-host the open-source platform for free.
 						</p>
 						<div className="mt-8 flex flex-wrap justify-center gap-3">
 							<a href={CLOUD_URL} className={buttonVariants({ size: "sm" })}>

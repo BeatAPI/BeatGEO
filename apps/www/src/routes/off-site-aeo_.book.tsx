@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BookingPage } from "@/components/booking-page";
 import { canonicalUrl } from "@/lib/seo";
 
-const title = "Book an off-site AEO call · Elmo";
+const title = "Book an off-site AEO call · BeatGeo";
 const description = "Book a call to map your AEO gaps and plan placements on the sites AI answer engines cite.";
 
 export const Route = createFileRoute("/off-site-aeo_/book")({
@@ -22,7 +22,7 @@ function OffSiteAeoBookPage() {
 			eyebrow="/ OFF-SITE AEO"
 			heading="Book a call"
 			intro="We'll map where you're invisible in AI answers today and plan the placements that fix it."
-			calLink="jrhizor/elmo-aeo"
+			calLink="jrhizor/beatgeo-aeo"
 			// Prefills the booking's "plan" question so each call arrives pre-qualified.
 			params={plan ? { plan } : undefined}
 		/>

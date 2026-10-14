@@ -20,7 +20,7 @@ import {
 import { listLegalPages } from "@/lib/legal";
 import { source } from "@/lib/source";
 
-const SITE_URL = "https://www.elmohq.com";
+const SITE_URL = "https://github.com/BeatAPI/BeatGeo";
 
 interface SitemapEntry {
 	path: string;

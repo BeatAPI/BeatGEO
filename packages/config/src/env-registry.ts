@@ -46,7 +46,7 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		name: "BROWSER_RUNNER_URL",
 		scope: "server",
 		requiredBy: "optional",
-		description: "Local Open Profound Browser Lab URL.",
+		description: "Local BeatGeo Browser Lab URL.",
 	},
 	{
 		name: "BROWSER_RUNNER_TOKEN",
@@ -66,7 +66,7 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		scope: "server",
 		requiredBy: ["cloud"],
 		description:
-			"Public base URL of the web app. Required in cloud (used for auth, email links, and Stripe redirects); written by `elmo init` for local.",
+			"Public base URL of the web app. Required in cloud (used for auth, email links, and Stripe redirects); written by `beatgeo init` for local.",
 	},
 	{
 		name: "BETTER_AUTH_SECRET",
@@ -237,9 +237,9 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 			"Optional Jina Reader API key for website-excerpt fetching. When set, requests are authenticated (tracked by key, not IP), which raises the rate limit and avoids the anonymous 'bad network reputation' 401 block.",
 	},
 	{
-		name: "ELMO_ENCRYPTION_KEY",
+		name: "BEAT_GEO_ENCRYPTION_KEY",
 		scope: "server",
-		// Local only: `elmo init` generates it and the CLI backfills it on
+		// Local only: `beatgeo init` generates it and the CLI backfills it on
 		// upgrade, so every self-hosted deployment has one. The hosted modes are
 		// provisioned out of band and store no credentials of their own.
 		requiredBy: ["local"],
@@ -247,11 +247,71 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 			"Base64-encoded 32-byte key used to encrypt provider credentials stored in the database. Generate one with: openssl rand -base64 32",
 	},
 	{
-		name: "ELMO_ENCRYPTION_KEY_OLD",
+		name: "BEAT_GEO_ENCRYPTION_KEY_OLD",
 		scope: "server",
 		requiredBy: "optional",
 		description:
-			"Previous ELMO_ENCRYPTION_KEY values, comma-separated, kept readable while rotating. Set only during a rotation.",
+			"Previous BEAT_GEO_ENCRYPTION_KEY values, comma-separated, kept readable while rotating. Set only during a rotation.",
+	},
+	{
+		name: "ELMO_ENCRYPTION_KEY",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Legacy encryption key fallback. Do not rotate merely to rename it.",
+	},
+	{
+		name: "ELMO_ENCRYPTION_KEY_OLD",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Legacy previous encryption keys used only for decryption compatibility.",
+	},
+	{
+		name: "BEAT_GEO_POSTHOG_KEY",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Optional operator-owned analytics key. No telemetry is sent without an explicit key.",
+	},
+	{
+		name: "BEAT_GEO_CRISP_WEBSITE_ID",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Optional operator-owned support project. No default support connection.",
+	},
+	{
+		name: "BROWSER_RUNS_DIR",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Private directory for local browser evidence.",
+	},
+	{
+		name: "BROWSER_LAB_PORT",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Loopback port for the local browser workbench.",
+	},
+	{
+		name: "BEAT_BROWSER_SPACES",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Enable independent BeatBrowser TaskSpaces. Defaults to enabled.",
+	},
+	{
+		name: "BEAT_BROWSER_PROFILE_ID",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Chrome profile chosen for browser observations.",
+	},
+	{
+		name: "BEAT_BROWSER_COMMAND",
+		scope: "server",
+		requiredBy: "optional",
+		description: "Executable for the BeatBrowser bridge.",
+	},
+	{
+		name: "BEAT_BROWSER_ARGS_JSON",
+		scope: "server",
+		requiredBy: "optional",
+		description: "JSON array of fixed arguments for the BeatBrowser executable.",
 	},
 	{
 		name: "DEPLOYMENT_MODE",
@@ -452,7 +512,7 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		scope: "server",
 		requiredBy: ["cloud"],
 		description:
-			"Sender address for transactional email, in the form: Elmo <notifications@updates.example.com>. The domain must be verified in Resend.",
+			"Sender address for transactional email, in the form: BeatGeo <notifications@updates.example.com>. The domain must be verified in Resend.",
 	},
 ];
 

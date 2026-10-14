@@ -1,0 +1,68 @@
+id,模块,功能,当前判断,复用参考,需要补齐,阶段,验收标准,官方模块参考
+F01,品牌与入门,网站输入与业务识别,现有代码，待接通新流程,Elmo onboarding,展示识别依据与可编辑结果,P0,不同网站生成不同业务信息,https://docs.tryprofound.com/context-manager/about.md
+F02,品牌与入门,品牌域名、子域与别名,现有代码，待接通,Elmo brands,确认规则与实体版本,P0,别名不误归并竞品,https://docs.tryprofound.com/context-manager/about.md
+F03,品牌与入门,多产品/业务分类,需要产品化,Elmo brand/org,定义 category 与品牌关系,P1,两个业务的结果可独立过滤,https://docs.tryprofound.com/context-manager/about.md
+F04,品牌与入门,竞品推荐和人工确认,现有代码，待补确认,Elmo onboarding,区分直接竞品、替代品、上游,P0,每个候选有理由且可删除,https://docs.tryprofound.com/context-manager/about.md
+F05,品牌与入门,品牌知识库与事实,需新增闭环,Profound Context Manager 参考,来源、版本、人工确认,P1,事实有可信来源及更新时间,https://docs.tryprofound.com/context-manager/about.md
+F06,品牌与入门,目标市场、语言与受众,部分基础，待统一,Elmo prompts,保存到计划快照,P0,报告可追溯实际采集条件,https://docs.tryprofound.com/context-manager/about.md
+F07,问题库,行业主题与问题生成,现有代码，待接通,Elmo analyze.ts,保留来源和生成版本,P0,AI 图片业务不使用 API 行业问题,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F08,问题库,手动输入与批量导入,底座相关能力待逐项验收,Elmo,导入校验、预览、去重,P1,导入错误不污染问题集,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F09,问题库,问题来源标注,需新增,自建,区分推导、实搜、用户提供,P0,生成问题不冒充真实搜索量,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F10,问题库,主题、标签、意图分类,底座已有基础,Elmo,统一过滤器与路由,P1,筛选后分母同步变化,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F11,问题库,固定问题组与版本,需增强,niubigeo / geo-score 方法,保存配置与历史对比组,P0,修改问题后不静默混算历史,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F12,问题库,Persona 变体,需新增,Profound personas 参考,基础问题与变体分组计费,P2,不同受众结果可区分,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F13,问题库,真实 AI 提问量,无等价数据源,不能靠开源代码补齐,授权数据合作；先做问题发现,扩展,无数据时不显示估造的量,https://help.tryprofound.com/articles/3730240593-create-manage-and-tag-prompts
+F14,站点诊断,HTTP 与重定向检查,需接入,geo-aeo-tracker / Canonry,限域抓取、错误和范围记录,P0,失败页和未扫描页分开,https://docs.tryprofound.com/pages/about.md
+F15,站点诊断,robots/noindex/canonical,需接入,geo-aeo-tracker,规则证据及影响解释,P0,能跳到具体标签或规则,https://docs.tryprofound.com/pages/about.md
+F16,站点诊断,Sitemap 与页面发现,需接入,geo-score,范围、配额、去重,P1,抽样扫描不标成全站完成,https://docs.tryprofound.com/pages/about.md
+F17,站点诊断,HTTP/JS 内容差异,需新增集成,BeatBrowser + 页面抓取,对比正文与重要信息,P1,展示两种实际读取结果,https://docs.tryprofound.com/pages/about.md
+F18,站点诊断,Schema、标题与内容结构,需接入,geo-aeo-tracker / geo-score,可解释检查，不夸大效果,P0,各项结果含证据和修复方式,https://docs.tryprofound.com/pages/about.md
+F19,站点诊断,页面 × 目标问题评分,需新增,Profound Scorecard / Ansvisor,开放规则、版本、引用对手比较,P1,评分不冒充曝光预测,https://docs.tryprofound.com/pages/about.md
+F20,站点诊断,页面健康与性能,需集成,Lighthouse / Canonry,独立指标和数据来源,P2,与 AI 可见度分开显示,https://docs.tryprofound.com/pages/about.md
+F21,站点诊断,重新抓取与索引请求,需新增,IndexNow 等正式接口,授权、回执、限额,P2,提交请求不显示已收录,https://docs.tryprofound.com/pages/about.md
+F22,采集执行,ChatGPT 网页回答,已有 provider，需真实验收,BeatBrowser,完成识别、模式记录、原文,P0,真实登录网页采集可追溯,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F23,采集执行,Gemini 网页回答,已有 provider，稳定性待验收,BeatBrowser,超时、长回答、引用完整性,P1,通过各类状态验收再标支持,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F24,采集执行,Claude / Perplexity,未确认集成,BeatBrowser + oneglanse 方法,逐平台适配,P1,各自有独立验收记录,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F25,采集执行,Google AI Overviews / AI Mode,未确认集成,独立搜索适配器,两种模式分开，无概览单独状态,P2,未触发概览不记品牌未提及,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F26,采集执行,Copilot / DeepSeek / 更多,未确认集成,插件化 provider,逐家验收与能力表,P2,不以 API 支持冒充网页支持,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F27,采集执行,引用侧栏与来源提取,已有基础，需增强,oneglanse extractSources,合入 BeatBrowser 的来源读取,P0,引用链接不混入导航链接,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F28,采集执行,独立工作区与人工接管,BeatBrowser 已有能力,BeatBrowser TaskSpace,关联品牌/runId 与产品状态,P0,日常窗口不被拿来执行任务,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F29,采集执行,隔离问题与品牌背景,需强化契约,niubigeo,确认计划、独立会话、记录模式,P0,测量会话不预先喂品牌资料,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F30,采集执行,多设备与云本地桥接,需完善,统一队列 + 本地执行器,主动领取、租约、权限、幂等,P0,云端不假定可访问 localhost,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F31,采集执行,登录失效/验证码/限流,已有零散处理，需统一,BeatBrowser,明确状态、有限退避、人工恢复,P0,失败不计入正常未提及,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F32,采集执行,执行预算与并发,底座已有策略，需增强,Elmo run-policy,次数预估与实际消耗,P1,超预算停止并显示原因,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F33,结果与指标,原答案与来源证据,已有基础,Elmo runs / Browser Lab,统一存储和访问控制,P0,任意指标可钻取到原答案,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F34,结果与指标,品牌实体识别,字面命中与底座能力需统一,Elmo + BeatAPI 分析,别名、歧义、人工校正,P0,品牌名重复不重复计数,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F35,结果与指标,Visibility 口径,当前 Browser Lab 不等价,官方 metrics 契约,公式、有效分母、模型等权,P0,样例数据手工核算一致,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F36,结果与指标,SoV / 首次出现顺位,底座基础待核验,Elmo + 官方公式,统一派生与解释,P1,未出现不伪造排名,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F37,结果与指标,引用份额与回答覆盖率,已有基础，需区分,Elmo citations,两个指标分开,P1,分母明确且可追溯,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F38,结果与指标,平台/主题/日期/地区过滤,底座已有基础,Elmo reports,统一过滤及可分享视图,P1,图表与表格范围一致,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F39,结果与指标,情感主张与主题,需扩展验证,Elmo / BeatAPI,原句、主题、证据及未知状态,P2,人工可复核每条主张,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F40,结果与指标,事实核查,需新增,Context + BeatAPI,原子事实、证据、人工纠错,P2,知识不足不直接判错误,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F41,结果与指标,历史配置与指标重算,需增强,自建版本契约,原始观测不覆盖,P1,配置改变能解释历史差异,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F42,结果与指标,异常趋势与变化标注,需新增,报告与行动事件,变更、模型、采样覆盖标记,P1,波动不自动声称因果,https://docs.tryprofound.com/cookbook/metrics/how-metrics-are-calculated.md
+F43,竞品与来源,竞品库与别名维护,已有基础,Elmo,确认、停用、历史版本,P0,更换竞品不抹掉旧记录,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F44,竞品与来源,引用来源分类,已有基础待接通,Elmo + 分类规则,自有、竞品、媒体、社区等,P1,同一链接分类可人工修正,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F45,竞品与来源,获胜页面与缺口比较,机会结构已有，需产品化,Elmo opportunities / Ansvisor,按问题与页面比较,P1,建议指向实际竞争证据,https://help.tryprofound.com/articles/5194011335-interpret-answer-engine-insights-v2
+F46,优化与执行,优先行动清单,已有机会，缺执行闭环,Elmo opportunities,影响、证据、成本、负责人,P0,先展示可操作的三个行动,https://docs.tryprofound.com/agents/getting-started.md
+F47,优化与执行,内容改写与补充草稿,需新增集成,BeatAPI + 品牌上下文,事实约束、引用、差异查看,P1,不补造产品功能,https://docs.tryprofound.com/agents/getting-started.md
+F48,优化与执行,技术修复任务,需新增,审计结果转行动,目标 URL、修复项、验收,P0,修复后可重新执行检查,https://docs.tryprofound.com/agents/getting-started.md
+F49,优化与执行,第三方来源机会,需新增,Ansvisor Action Center,目标来源、联系/内容草稿,P1,外发需用户审核授权,https://docs.tryprofound.com/agents/getting-started.md
+F50,优化与执行,人工审核/编辑/拒绝,需新增闭环,Elmo 任务产物扩展,状态和审计记录,P1,未批准内容不会发布,https://docs.tryprofound.com/agents/getting-started.md
+F51,优化与执行,发布与 CMS 连接,未确认集成,正式连接器,授权、内容版本、发布回执,P2,回执与公开结果分别核验,https://docs.tryprofound.com/agents/getting-started.md
+F52,优化与执行,复测与行动效果,需新增闭环,geo-score / Ansvisor,冻结目标问题、基线与变更,P0,完成行动后能比较同组观测,https://docs.tryprofound.com/agents/getting-started.md
+F53,优化与执行,AI Marketer / 调查入口,需新增,BeatAPI + 数据查询工具,图表上下文、引用、建议行动,P2,回答引用当前项目数据,https://docs.tryprofound.com/agents/getting-started.md
+F54,优化与执行,Agent 模板与运行日志,需产品化,复用任务与产物,先做小量完整模板,P2,节点失败可定位，输出可审核,https://docs.tryprofound.com/agents/getting-started.md
+F55,优化与执行,Sheets 批量执行,需新增,同一任务系统,行级状态、预算、导出,P2,失败行可恢复且不重扣成功行,https://docs.tryprofound.com/agents/getting-started.md
+F56,持续运营,周期调度与维护,已有 Elmo 队列代码,pg-boss,浏览器设备状态与排期联动,P0,计划能再次运行而非只跑一次,https://docs.tryprofound.com/agent-analytics/overview.md
+F57,持续运营,暂停/取消/恢复,需统一前后端,队列 + TaskSpace,状态机、租约与幂等,P0,用户接管后不被其他 worker 继续操作,https://docs.tryprofound.com/agent-analytics/overview.md
+F58,持续运营,周报与通知,底座报告基础,Elmo + BeatAPI,变化、证据、待审核行动,P1,报告指出失败覆盖率,https://docs.tryprofound.com/agent-analytics/overview.md
+F59,持续运营,GSC / GA4 接入,未确认集成,正式 API 连接,权限与字段映射,P2,未连接显示未知而非 0,https://docs.tryprofound.com/agent-analytics/overview.md
+F60,持续运营,CDN 机器人日志,未确认集成,日志适配 + 身份校验,训练/索引/检索分类,P2,不把 UA 字符串当身份验证,https://docs.tryprofound.com/agent-analytics/overview.md
+F61,持续运营,注册/询盘/购买归因,未确认集成,分析事件与连接,未知来源和多触点说明,P2,不把所有自然增长归因 AEO,https://docs.tryprofound.com/agent-analytics/overview.md
+F62,持续运营,公开 API / MCP / 导出,底座有接口基础,Elmo / 同一数据权限,补齐计划、证据、行动接口,P1,Agent 与 UI 使用同一业务实体,https://docs.tryprofound.com/agent-analytics/overview.md
+F63,持续运营,组织、成员与数据隔离,底座已有基础，需集成验收,Elmo,设备/凭证/产物权限,P0,不同组织不能获取对方观测,https://docs.tryprofound.com/agent-analytics/overview.md
+F64,持续运营,数据保留与删除,需明确方案,统一存储,原文、截图、日志保留政策,P1,删除可验证，密钥不进结果包,https://docs.tryprofound.com/agent-analytics/overview.md
+F65,扩展,Shopping 商品卡监测,未确认集成,独立商品模型,SKU、商家、价格、触发率,扩展,不与普通品牌指标混算,https://docs.tryprofound.com/shopping/about.md
+F66,扩展,跨站基准网络,无等价数据资产,需要用户授权与规模积累,先用自身历史对比,扩展,不冒充 Profound 网络基准,https://docs.tryprofound.com/shopping/about.md
+F67,扩展,Dynamic Bot Rendering,非首版前置,独立技术评估,公开内容渲染与可回退发布,扩展,不保证索引或引用,https://docs.tryprofound.com/shopping/about.md

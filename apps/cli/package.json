@@ -1,5 +1,5 @@
 {
-	"name": "@elmohq/cli",
+	"name": "@beatapi/geo-cli",
 	"version": "0.4.5",
 	"license": "MIT",
 	"keywords": [
@@ -20,7 +20,7 @@
 		"ai-visibility"
 	],
 	"bin": {
-		"elmo": "dist/index.js"
+		"beatgeo": "dist/index.js"
 	},
 	"files": [
 		"dist",
@@ -47,5 +47,6 @@
 		"rolldown": "^1.2.12",
 		"typescript": "^7.0.2",
 		"vitest": "^5.0.3"
-	}
+	},
+	"private": true
 }

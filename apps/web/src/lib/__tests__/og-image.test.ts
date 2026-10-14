@@ -31,11 +31,13 @@ const ONE_PIXEL_PNG =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
 
 describe("Open Graph card", () => {
-	it("renders the default Elmo card without a title or description", async () => {
-		await expect(renderCard({ appName: DEFAULT_APP_NAME, url: "https://www.elmohq.com" })).resolves.toEqual({
-			width: OG_WIDTH,
-			height: OG_HEIGHT,
-		});
+	it("renders the default BeatGeo card without a title or description", async () => {
+		await expect(renderCard({ appName: DEFAULT_APP_NAME, url: "https://github.com/BeatAPI/BeatGeo" })).resolves.toEqual(
+			{
+				width: OG_WIDTH,
+				height: OG_HEIGHT,
+			},
+		);
 	});
 
 	it("keeps a full-size canvas when the title and description are far too long to fit", async () => {
@@ -43,7 +45,13 @@ describe("Open Graph card", () => {
 			"How to Track Your Brand's Visibility in ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews ".repeat(4);
 		const description = "A step-by-step guide to measuring where your brand shows up in AI answers. ".repeat(10);
 		await expect(
-			renderCard({ appName: DEFAULT_APP_NAME, title, description, label: "Blog", url: "https://www.elmohq.com" }),
+			renderCard({
+				appName: DEFAULT_APP_NAME,
+				title,
+				description,
+				label: "Blog",
+				url: "https://github.com/BeatAPI/BeatGeo",
+			}),
 		).resolves.toEqual({ width: OG_WIDTH, height: OG_HEIGHT });
 	});
 

@@ -221,7 +221,7 @@ function YouTubeThumbnail() {
 						lineHeight: 1,
 					}}
 				>
-					elmo
+					beatgeo
 				</div>
 				<div
 					style={{
@@ -341,7 +341,7 @@ function YouTubeThumbnail() {
 						letterSpacing: 1,
 					}}
 				>
-					elmohq.com
+					example.invalid
 				</div>
 			</div>
 		</div>

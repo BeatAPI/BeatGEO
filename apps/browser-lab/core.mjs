@@ -1,8 +1,10 @@
 import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const execute = promisify(execFile);
@@ -47,12 +49,13 @@ export function createBrowser(env = process.env) {
 			timeout: 45_000,
 			maxBuffer: 4 * 1024 * 1024,
 		});
-		if (/^\[(?:INTERNAL|TIMEOUT|NOT_INTERACTABLE|REF_NOT_FOUND)\]/m.test(stdout)) throw new Error(stdout);
+		if (/^\[[A-Z][A-Z_]+\]/m.test(stdout)) throw new Error(stdout);
 		return stdout;
 	};
 }
 
 export function validateInput(input) {
+	if (!input || typeof input !== "object") throw new Error("Collection input is required.");
 	if (!Object.hasOwn(ENGINES, input.engine)) throw new Error("Choose chatgpt or gemini.");
 	if (typeof input.prompt !== "string" || !input.prompt.trim() || input.prompt.length > 4000) {
 		throw new Error("Prompt must contain 1–4000 characters.");
@@ -62,6 +65,7 @@ export function validateInput(input) {
 		prompt: input.prompt.trim(),
 		brand: typeof input.brand === "string" ? input.brand.trim().slice(0, 120) : "BeatAPI",
 		aliases: Array.isArray(input.aliases) ? input.aliases.filter((x) => typeof x === "string").slice(0, 10) : [],
+		profileId: typeof input.profileId === "string" ? input.profileId.trim().slice(0, 120) : undefined,
 	};
 }
 
@@ -87,18 +91,13 @@ export function cleanCitations(rows, engine) {
 	});
 }
 
-export function summarize(runs) {
-	const completed = runs.filter((run) => run.status === "completed");
-	const scored = completed.filter((run) => typeof run.brandMentioned === "boolean");
-	const mentioned = scored.filter((run) => run.brandMentioned === true);
-	return {
-		total: runs.length,
-		completed: completed.length,
-		failed: runs.filter((run) => ["failed", "needs_attention", "timeout"].includes(run.status)).length,
-		mentions: mentioned.length,
-		mentionRate: scored.length ? mentioned.length / scored.length : null,
-		metric: "literal-brand-mention-rate-over-completed-runs",
-	};
+export { summarize } from "./public/metrics.js";
+
+export function defaultRunDirectory(env = process.env) {
+	if (env.BROWSER_RUNS_DIR) return path.resolve(env.BROWSER_RUNS_DIR);
+	const legacy = fileURLToPath(new URL("../../.open-profound/runs", import.meta.url));
+	const current = fileURLToPath(new URL("../../.beat-geo/runs", import.meta.url));
+	return !existsSync(current) && existsSync(legacy) ? legacy : current;
 }
 
 export async function saveRun(directory, run) {
@@ -177,9 +176,48 @@ async function awaitAnswer(browser, run, deadline, delay, publish) {
 	throw new Error("Timed out waiting for a completed answer. The prompt will not be resubmitted automatically.");
 }
 
+async function openRunPage(config, run, transport, useSpaces) {
+	if (useSpaces) {
+		const space = JSON.parse(
+			await transport("spaces", {
+				action: "open",
+				url: ENGINES[config.engine].url,
+				label: `BeatGeo · ${ENGINES[config.engine].name}`,
+				profileId: config.profileId || process.env.BEAT_BROWSER_PROFILE_ID || undefined,
+			}),
+		);
+		run.spaceId = space.spaceId;
+		run.tabId = space.tabId;
+		run.executionMode = "beat-browser-taskspace";
+		if (!run.spaceId || !Number.isInteger(run.tabId)) throw new Error("TaskSpace returned no usable page handle.");
+		if (space.state !== "running")
+			throw new Error("Background TaskSpace could not start; inspect its state before retrying.");
+	} else {
+		const opened = await transport("tabs", {
+			action: "new",
+			url: ENGINES[config.engine].url,
+			label: `BeatGeo · ${ENGINES[config.engine].name}`,
+		});
+		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
+		if (!match) throw new Error("Browser did not return a tab ID.");
+		run.tabId = Number(match[1]);
+		run.executionMode = "background-tab";
+	}
+}
+
+async function releaseRunPage(run, transport) {
+	if (!run.spaceId) return;
+	try {
+		await transport("spaces", { action: "finish", spaceId: run.spaceId, keep: "all" });
+	} catch {
+		run.cleanupWarning = "TaskSpace did not confirm release. Inspect it before another task.";
+	}
+}
+
 export async function collect(input, options = {}) {
 	const config = validateInput(input);
-	const browser = options.browser || createBrowser();
+	const transport = options.browser || createBrowser();
+	const browser = (tool, params) => transport(tool, run.spaceId ? { ...params, spaceId: run.spaceId } : params);
 	const delay = options.delay || sleep;
 	const publish = options.publish || (async () => {});
 	const run = {
@@ -189,24 +227,19 @@ export async function collect(input, options = {}) {
 		startedAt: new Date().toISOString(),
 		surface: "consumer-web-ui",
 		collector: "beat-browser",
-		collectorVersion: "open-profound-browser-v0.1",
+		collectorVersion: "beatgeo-browser-v0.2",
 		accountContext: config.engine === "chatgpt" ? "temporary-chat-requested" : "existing-account-new-chat",
 		region: null,
 		modelVersion: null,
 		brandMentioned: null,
 		citations: [],
 		submissionAttempted: false,
+		attempts: 1,
+		timeoutMs: options.timeoutMs || 900_000,
 	};
 	await publish(run);
 	try {
-		const opened = await browser("tabs", {
-			action: "new",
-			url: ENGINES[config.engine].url,
-			label: `Open Profound · ${ENGINES[config.engine].name}`,
-		});
-		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
-		if (!match) throw new Error("Browser did not return a tab ID.");
-		run.tabId = Number(match[1]);
+		await openRunPage(config, run, transport, options.spaces ?? process.env.BEAT_BROWSER_SPACES !== "0");
 		await waitForInput(browser, run.tabId, ENGINES[config.engine].input, delay);
 		checkAttention(await browser("snapshot", { tabId: run.tabId }));
 		const existing = await currentAnswer(browser, run.tabId, config.engine);
@@ -241,7 +274,8 @@ export async function collect(input, options = {}) {
 		run.status = String(error.message).startsWith("Timed out") ? "timeout" : "needs_attention";
 		run.error = String(error.message).slice(0, 500);
 	}
-	return { ...run, finishedAt: new Date().toISOString() };
+	await releaseRunPage(run, transport);
+	return { ...run, finishedAt: new Date().toISOString(), elapsedMs: Date.now() - Date.parse(run.startedAt) };
 }
 
 export async function captureExisting(input, tabId, options = {}) {
@@ -271,7 +305,7 @@ export async function captureExisting(input, tabId, options = {}) {
 		finishedAt: new Date().toISOString(),
 		surface: "consumer-web-ui",
 		collector: "beat-browser-existing-tab",
-		collectorVersion: "open-profound-browser-v0.1",
+		collectorVersion: "beatgeo-browser-v0.2",
 		promptVerification: "operator-supplied; existing-tab prompt not independently matched",
 		accountContext: "operator-supplied-existing-tab",
 		region: null,

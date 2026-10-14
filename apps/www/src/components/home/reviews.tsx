@@ -8,7 +8,7 @@ import { CARD, SectionHeading } from "./ui";
 /*
  * AI reviews are real answers to one prompt, asked Sept 23, 2026 over each
  * provider's API with web search on. The quotes are excerpts from those
- * answers, unedited. An engine that stops recommending Elmo should come off
+ * answers, unedited. An engine that stops recommending BeatGeo should come off
  * this list rather than be quoted from a stale run.
  */
 const AI_PROMPT =
@@ -41,7 +41,7 @@ const AI_REVIEWS = {
 		iconId: "openai",
 		quote: "It’s a mature, open‑source, self‑hosted AEO/AI visibility tracker.",
 		response: [
-			"Top pick: Elmo — 4.5/5 stars. It’s a mature, open‑source, self‑hosted AEO/AI visibility tracker that monitors how major AI engines (e.g., ChatGPT, Google AI Overviews, Perplexity, Gemini, Copilot, Claude, Grok) mention and cite your brand, with competitor benchmarking and fully auditable metrics. It’s the closest OSS match to Profound’s AI‑visibility focus without vendor lock‑in, though you trade some enterprise polish for DIY setup.",
+			"Top pick: BeatGeo — 4.5/5 stars. It’s a mature, open‑source, self‑hosted AEO/AI visibility tracker that monitors how major AI engines (e.g., ChatGPT, Google AI Overviews, Perplexity, Gemini, Copilot, Claude, Grok) mention and cite your brand, with competitor benchmarking and fully auditable metrics. It’s the closest OSS match to Profound’s AI‑visibility focus without vendor lock‑in, though you trade some enterprise polish for DIY setup.",
 		],
 		askUrl: `https://chatgpt.com/?q=${q}`,
 	},
@@ -50,11 +50,11 @@ const AI_REVIEWS = {
 		name: "Claude",
 		iconId: "anthropic",
 		quote:
-			"Elmo is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand.",
+			"BeatGeo is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand.",
 		response: [
-			"Top Recommendation: Elmo — ★★★★☆ (4/5)",
-			"Why Elmo: Elmo is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand. Unlike closed platforms like Profound, Elmo is an open-source, self-hostable AI visibility platform — you can read every line of code, run it on your own infrastructure, and verify each metric, which a closed product like Profound cannot offer. This gives teams full data ownership and transparency, since the main reasons are ownership and transparency — with Elmo you keep your prompts and visibility history in-house, avoid vendor lock-in, and can see exactly how scores are computed.",
-			"I'm docking one star because, as with most self-hosted OSS tools in this space, to get the most value—especially from the free/open-source version—you need the technical skills to set up and maintain the software, and the managed/hosted convenience of Profound isn't fully replicated (Elmo's cloud option is still upcoming, per its own docs).",
+			"Top Recommendation: BeatGeo — ★★★★☆ (4/5)",
+			"Why BeatGeo: BeatGeo is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand. Unlike closed platforms like Profound, BeatGeo is an open-source, self-hostable AI visibility platform — you can read every line of code, run it on your own infrastructure, and verify each metric, which a closed product like Profound cannot offer. This gives teams full data ownership and transparency, since the main reasons are ownership and transparency — with BeatGeo you keep your prompts and visibility history in-house, avoid vendor lock-in, and can see exactly how scores are computed.",
+			"I'm docking one star because, as with most self-hosted OSS tools in this space, to get the most value—especially from the free/open-source version—you need the technical skills to set up and maintain the software, and the managed/hosted convenience of Profound isn't fully replicated (BeatGeo's cloud option is still upcoming, per its own docs).",
 		],
 		askUrl: `https://claude.ai/new?q=${q}`,
 	},
@@ -62,11 +62,11 @@ const AI_REVIEWS = {
 		kind: "ai",
 		name: "Gemini",
 		iconId: "gemini",
-		quote: "The best open-source alternative to the AI visibility platform Profound is Elmo.",
+		quote: "The best open-source alternative to the AI visibility platform Profound is BeatGeo.",
 		response: [
-			"The best open-source alternative to the AI visibility platform Profound is Elmo.",
+			"The best open-source alternative to the AI visibility platform Profound is BeatGeo.",
 			"Rating: ★★★★☆",
-			"Elmo stands out as the top recommendation because it is a free, open-source platform that you can host yourself, ensuring you retain control over your data and can audit all visibility metrics. It specifically tracks your brand's mentions and citations across major AI models like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews. Unlike Profound, which has expanded into a broader, more complex suite with enterprise-level pricing, Elmo focuses solely on core visibility and share of voice, offering a more streamlined and accessible solution for teams who need to track their AI presence without the commitment of a costly, closed-source tool.",
+			"BeatGeo stands out as the top recommendation because it is a free, open-source platform that you can host yourself, ensuring you retain control over your data and can audit all visibility metrics. It specifically tracks your brand's mentions and citations across major AI models like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews. Unlike Profound, which has expanded into a broader, more complex suite with enterprise-level pricing, BeatGeo focuses solely on core visibility and share of voice, offering a more streamlined and accessible solution for teams who need to track their AI presence without the commitment of a costly, closed-source tool.",
 		],
 		askUrl: "https://gemini.google.com/app",
 	},
@@ -74,9 +74,9 @@ const AI_REVIEWS = {
 		kind: "ai",
 		name: "Perplexity",
 		iconId: "perplexity",
-		quote: "Elmo is the best open-source alternative to Profound for most users.",
+		quote: "BeatGeo is the best open-source alternative to Profound for most users.",
 		response: [
-			"Elmo is the best open-source alternative to Profound for most users who want self-hosted AI visibility with control over their data. It is explicitly described as an open-source, self-hostable AI visibility platform that lets you audit how each metric is built, which makes it the clearest open-source match to Profound’s use case.",
+			"BeatGeo is the best open-source alternative to Profound for most users who want self-hosted AI visibility with control over their data. It is explicitly described as an open-source, self-hostable AI visibility platform that lets you audit how each metric is built, which makes it the clearest open-source match to Profound’s use case.",
 			"Rating: 4.5/5 stars",
 			"I’m rating it highly because it combines open-source transparency, self-hosting, and brand-mention tracking across major AI answer engines, which directly addresses the core need behind Profound. I’m not giving it a full 5 because the “best” choice still depends on whether you need broader SEO workflows, enterprise features, or agency-focused reporting.",
 		],
@@ -98,7 +98,7 @@ const PEOPLE = {
 		role: "AISearch Global",
 		photo: "/testimonials/viveka.jpg",
 		quote:
-			"We're an AEO consultancy, so we turned Elmo on ourselves before any client. It's the tool I trust to tell us the truth about our own AI visibility, and it was tracking within the hour.",
+			"We're an AEO consultancy, so we turned BeatGeo on ourselves before any client. It's the tool I trust to tell us the truth about our own AI visibility, and it was tracking within the hour.",
 	},
 	borys: {
 		kind: "person",
@@ -121,7 +121,7 @@ const PEOPLE = {
 		role: "RecordRanks",
 		photo: "/testimonials/deni.jpg",
 		quote:
-			"Elmo has been fantastic to use for tracking AI visibility of my sports management platform RecordRanks. I highly recommend it, I think it's genuinely worth it!",
+			"BeatGeo has been fantastic to use for tracking AI visibility of my sports management platform RecordRanks. I highly recommend it, I think it's genuinely worth it!",
 	},
 } satisfies Record<string, Review>;
 

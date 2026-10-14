@@ -3,10 +3,10 @@ import { buttonVariants } from "@workspace/ui/components/button";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
 import {
+	BEAT_GEO_FEATURES,
 	CATEGORY_LABELS,
 	type Competitor,
 	type CompetitorCategory,
-	ELMO_FEATURES,
 	FEATURE_CATEGORIES,
 	type FeatureKey,
 	getComparisonSlug,
@@ -87,10 +87,10 @@ export function CompetitorDirectory() {
 				</div>
 			</section>
 
-			{/* Elmo CTA */}
+			{/* BeatGeo CTA */}
 			<section className="border-b border-zinc-200 bg-white py-16 lg:py-24">
 				<div className="mx-auto max-w-3xl px-4 text-center md:px-6">
-					<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">Why teams choose Elmo</h2>
+					<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">Why teams choose BeatGeo</h2>
 					<p className="mx-auto mt-4 max-w-xl text-lg text-balance text-zinc-600">
 						Open source, self-hosted, and transparent. Track AI visibility without vendor lock-in or inflated pricing.
 					</p>
@@ -99,7 +99,7 @@ export function CompetitorDirectory() {
 							Read the Docs
 						</Link>
 						<a
-							href="https://github.com/elmohq/elmo"
+							href="https://github.com/BeatAPI/BeatGeo"
 							target="_blank"
 							rel="noopener noreferrer"
 							className={buttonVariants({ variant: "outline", size: "sm" })}
@@ -135,7 +135,7 @@ function FeatureMatrix({ competitors: items }: { competitors: Competitor[] }) {
 					<tr className="border-b border-zinc-200">
 						<th className={`${stickyCell} py-3 pr-4 text-left font-semibold text-zinc-950`}>Feature</th>
 						<th className="border-x border-zinc-200 bg-blue-50 px-2 py-3 text-center font-semibold text-zinc-950">
-							Elmo
+							BeatGeo
 						</th>
 						{items.map((c) => (
 							<th key={c.slug} className="px-2 py-3 text-center font-normal">
@@ -160,7 +160,7 @@ function FeatureMatrix({ competitors: items }: { competitors: Competitor[] }) {
 									{getFeatureLabel(featureKey as FeatureKey)}
 								</td>
 								<td className="border-x border-zinc-200 bg-blue-50 px-2 py-2">
-									<FeatureIcon has={ELMO_FEATURES[featureKey as FeatureKey] ?? false} />
+									<FeatureIcon has={BEAT_GEO_FEATURES[featureKey as FeatureKey] ?? false} />
 								</td>
 								{items.map((c) => (
 									<td key={c.slug} className="px-2 py-2">

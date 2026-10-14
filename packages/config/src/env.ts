@@ -21,7 +21,9 @@ export const hasValue = (value: string | undefined): boolean => typeof value ===
 export const requireAll =
 	(keys: string[]) =>
 	(env: EnvMap): boolean =>
-		keys.every((key) => hasValue(env[key]));
+		keys.every((key) =>
+			hasValue(env[key] ?? (key === "BEAT_GEO_ENCRYPTION_KEY" ? env.ELMO_ENCRYPTION_KEY : undefined)),
+		);
 
 /**
  * Create a requirement checker that is satisfied when any key has a value.

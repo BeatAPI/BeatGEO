@@ -136,7 +136,7 @@ jobs:
           file: docker/Dockerfile
           target: web
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=elmohq/elmo-web,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=beatapi/beat-geo-web,push-by-digest=true,name-canonical=true,push=true
 
       - name: Build and push worker image by digest
         id: build-worker
@@ -146,7 +146,7 @@ jobs:
           file: docker/Dockerfile
           target: worker
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=elmohq/elmo-worker,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=beatapi/beat-geo-worker,push-by-digest=true,name-canonical=true,push=true
 
       - name: Build and push db-migrate image by digest
         id: build-db-migrate
@@ -156,7 +156,7 @@ jobs:
           file: docker/Dockerfile
           target: migrate
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=elmohq/elmo-db-migrate,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=beatapi/beat-geo-db-migrate,push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digests
         env:
@@ -204,9 +204,9 @@ jobs:
           VERSION: ${{ needs.release.outputs.version }}
         run: |
           docker buildx imagetools create \
-            -t "elmohq/elmo-web:${VERSION}" \
-            -t "elmohq/elmo-web:latest" \
-            $(printf 'elmohq/elmo-web@sha256:%s ' *)
+            -t "beatapi/beat-geo-web:${VERSION}" \
+            -t "beatapi/beat-geo-web:latest" \
+            $(printf 'beatapi/beat-geo-web@sha256:%s ' *)
 
       - name: Create multi-arch worker manifest
         working-directory: /tmp/digests/worker
@@ -214,9 +214,9 @@ jobs:
           VERSION: ${{ needs.release.outputs.version }}
         run: |
           docker buildx imagetools create \
-            -t "elmohq/elmo-worker:${VERSION}" \
-            -t "elmohq/elmo-worker:latest" \
-            $(printf 'elmohq/elmo-worker@sha256:%s ' *)
+            -t "beatapi/beat-geo-worker:${VERSION}" \
+            -t "beatapi/beat-geo-worker:latest" \
+            $(printf 'beatapi/beat-geo-worker@sha256:%s ' *)
 
       - name: Create multi-arch db-migrate manifest
         working-directory: /tmp/digests/db-migrate
@@ -224,6 +224,6 @@ jobs:
           VERSION: ${{ needs.release.outputs.version }}
         run: |
           docker buildx imagetools create \
-            -t "elmohq/elmo-db-migrate:${VERSION}" \
-            -t "elmohq/elmo-db-migrate:latest" \
-            $(printf 'elmohq/elmo-db-migrate@sha256:%s ' *)
+            -t "beatapi/beat-geo-db-migrate:${VERSION}" \
+            -t "beatapi/beat-geo-db-migrate:latest" \
+            $(printf 'beatapi/beat-geo-db-migrate@sha256:%s ' *)

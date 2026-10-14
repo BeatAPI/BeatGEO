@@ -3,8 +3,8 @@ import { CompactEncrypt, compactDecrypt, decodeProtectedHeader } from "jose";
 
 const KEY_BYTES = 32; // 256-bit
 
-export const ENCRYPTION_KEY_ENV = "ELMO_ENCRYPTION_KEY";
-export const RETIRED_KEYS_ENV = "ELMO_ENCRYPTION_KEY_OLD";
+export const ENCRYPTION_KEY_ENV = "BEAT_GEO_ENCRYPTION_KEY";
+export const RETIRED_KEYS_ENV = "BEAT_GEO_ENCRYPTION_KEY_OLD";
 
 /** Compact JWE using direct symmetric encryption (`dir`) and AES-256-GCM. */
 export type EncryptedPayload = string;
@@ -103,18 +103,18 @@ function decodeKey(raw: string, source: string): Buffer {
 	return key;
 }
 
-/** Resolve the keyring from the environment: ELMO_ENCRYPTION_KEY encrypts, and
- *  the comma-separated ELMO_ENCRYPTION_KEY_OLD keys stay readable so a rotation
+/** Resolve the keyring from the environment: BEAT_GEO_ENCRYPTION_KEY encrypts, and
+ *  the comma-separated BEAT_GEO_ENCRYPTION_KEY_OLD keys stay readable so a rotation
  *  doesn't strand existing rows. Returns null when no key is set at all
  *  (storage disabled, environment credentials unaffected); throws
  *  EncryptionKeyError when a key is set but unusable. */
 export function getKeyring(env: NodeJS.ProcessEnv = process.env): Keyring | null {
-	const retired = (env[RETIRED_KEYS_ENV] ?? "")
+	const retired = (env[RETIRED_KEYS_ENV] ?? env.ELMO_ENCRYPTION_KEY_OLD ?? "")
 		.split(",")
 		.map((part) => part.trim())
 		.filter((part) => part.length > 0);
 
-	const raw = env[ENCRYPTION_KEY_ENV];
+	const raw = env[ENCRYPTION_KEY_ENV] ?? env.ELMO_ENCRYPTION_KEY;
 	if (typeof raw !== "string" || raw.trim().length === 0) {
 		// Silently ignoring this would leave a half-finished rotation looking
 		// complete while every stored secret had quietly stopped being read.

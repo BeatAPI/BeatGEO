@@ -1,4 +1,4 @@
-name: Check Open Profound
+name: Check BeatGeo
 on:
   push:
     branches: [main]
@@ -13,4 +13,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: node --test apps/browser-lab/core.test.mjs
+      - run: node --test apps/browser-lab/*.test.mjs
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm -r --if-present check-types
+      - run: pnpm -r --if-present test

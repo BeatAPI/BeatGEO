@@ -40,15 +40,15 @@ tests {
     // covered.
     for (const [path, operations] of Object.entries(res.getBody().paths)) {
       for (const [method, operation] of Object.entries(operations)) {
-        if (!operation["x-elmo-admin-only"]) continue;
-        expect(operation["x-elmo-scopes"] || [], `${method} ${path}`).to.eql([]);
+        if (!operation["x-beatgeo-admin-only"]) continue;
+        expect(operation["x-beatgeo-scopes"] || [], `${method} ${path}`).to.eql([]);
       }
     }
   });
 
   test("deleting a prompt is admin-only and points at the alternative", function() {
     const operation = res.getBody().paths["/prompts/{promptId}"].delete;
-    expect(operation["x-elmo-admin-only"]).to.equal(true);
+    expect(operation["x-beatgeo-admin-only"]).to.equal(true);
     expect(operation.description).to.contain("enabled: false");
   });
 
@@ -73,7 +73,7 @@ tests {
     for (const [path, operations] of Object.entries(res.getBody().paths)) {
       for (const [method, operation] of Object.entries(operations)) {
         if (!methods.includes(method)) continue;
-        const scopes = operation["x-elmo-scopes"];
+        const scopes = operation["x-beatgeo-scopes"];
         expect(scopes, `${method} ${path}`).to.be.an("array");
         for (const scope of scopes) expect(["read", "write"], `${method} ${path}`).to.include(scope);
       }

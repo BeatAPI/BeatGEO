@@ -6,9 +6,9 @@ import { formatPostDate } from "@/lib/format";
 import type { LegalPageSummary } from "@/lib/legal";
 import { breadcrumbJsonLd, canonicalUrl, ogMeta } from "@/lib/seo";
 
-const title = "Legal · Elmo";
+const title = "Legal · BeatGeo";
 const description =
-	"Elmo's terms of service, privacy policy, cookie policy, subprocessor list, and acceptable use policy — all versioned in public.";
+	"BeatGeo's terms of service, privacy policy, cookie policy, subprocessor list, and acceptable use policy — all versioned in public.";
 
 const getLegalPages = createServerFn({ method: "GET" }).handler(async (): Promise<LegalPageSummary[]> => {
 	const { listLegalPages } = await import("@/lib/legal");
@@ -44,7 +44,7 @@ function LegalIndex() {
 							The fine print, in public
 						</h1>
 						<p className="mt-4 max-w-3xl text-lg text-balance text-zinc-600">
-							These policies cover Elmo Cloud and our websites. They live in the same repository as the product, so
+							These policies cover BeatGeo Cloud and our websites. They live in the same repository as the product, so
 							every revision is a diff you can read.
 						</p>
 					</div>
@@ -68,8 +68,8 @@ function LegalIndex() {
 							))}
 						</dl>
 						<p className="mt-8 max-w-3xl text-sm text-zinc-600">
-							Running Elmo yourself instead? The{" "}
-							<a href="https://github.com/elmohq/elmo" className="text-zinc-950 underline hover:text-blue-700">
+							Running BeatGeo yourself instead? The{" "}
+							<a href="https://github.com/BeatAPI/BeatGeo" className="text-zinc-950 underline hover:text-blue-700">
 								source
 							</a>{" "}
 							is MIT-licensed, and these terms don't govern your instance. Telemetry it sends us is covered by the{" "}

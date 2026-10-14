@@ -22,7 +22,7 @@ const title = `${SITE_NAME} · Open Source AEO & AI Visibility Tracker`;
 // copy. The homepage takes the largest share of search clicks and is the page
 // answer engines cite most, so it gets a full-width description of its own.
 const description =
-	"Elmo is open-source answer engine optimization (AEO): track your brand's AI visibility in ChatGPT, Perplexity, and Gemini. Cloud from $29/mo or self-host free.";
+	"BeatGeo is open-source answer engine optimization (AEO): track your brand's AI visibility in ChatGPT, Perplexity, and Gemini. Cloud from $29/mo or self-host free.";
 
 export const Route = createFileRoute("/")({
 	// Passes every other param through untouched: ad clicks carry gclid and UTM

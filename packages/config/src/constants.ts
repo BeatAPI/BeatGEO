@@ -9,8 +9,8 @@
  * NOTE: Whitelabel mode does NOT use these defaults - all values must be
  * provided via environment variables.
  */
-export const DEFAULT_APP_NAME = "Elmo";
-export const DEFAULT_APP_ICON = "/icons/elmo-icon.svg";
+export const DEFAULT_APP_NAME = "BeatGeo";
+export const DEFAULT_APP_ICON = "/icons/beatgeo-icon.svg";
 export const DEFAULT_APP_URL = "http://localhost:3000/";
 
 /**
@@ -18,25 +18,26 @@ export const DEFAULT_APP_URL = "http://localhost:3000/";
  * Per-provider anchors are appended to it, so it has to stay the page itself
  * rather than the docs index.
  */
-export const PROVIDERS_DOCS_URL = "https://www.elmohq.com/docs/user-guide/providers";
+export const PROVIDERS_DOCS_URL =
+	"https://github.com/BeatAPI/BeatGeo/blob/main/packages/docs/content/docs/user-guide/providers.mdx";
 
 /** The public docs, for the hosted product. In the app itself the API and MCP
  * pages document the deployment the viewer is signed in to. */
-export const API_DOCS_URL = "https://www.elmohq.com/docs/api";
+export const API_DOCS_URL = "https://github.com/BeatAPI/BeatGeo/tree/main/packages/docs/content/docs/api";
 
 /** Public identifier for the support chat, shared by the app and the marketing site. */
-export const CRISP_WEBSITE_ID = "2f79a110-4e29-41a8-b45d-4993df6ff487";
+export const CRISP_WEBSITE_ID = "";
 
 /**
- * Elmo brand constants — used for icon generation, manifest, and the brand kit.
+ * BeatGeo brand constants — used for icon generation, manifest, and the brand kit.
  */
-export const ELMO_BRAND_COLOR = "#2563eb"; // blue-600
-export const ELMO_BRAND_FONT = "Titan One";
-export const ELMO_THEME_COLOR = "#2563eb";
-export const ELMO_BACKGROUND_COLOR = "#ffffff";
+export const BEAT_GEO_BRAND_COLOR = "#2563eb"; // blue-600
+export const BEAT_GEO_BRAND_FONT = "Geist Sans";
+export const BEAT_GEO_THEME_COLOR = "#2563eb";
+export const BEAT_GEO_BACKGROUND_COLOR = "#ffffff";
 
 /**
- * Default chart colors for the Elmo product.
+ * Default chart colors for the BeatGeo product.
  *
  * 11 base hues (Observable + Tableau, anchored to brand blue) expanded
  * into 55 colors across five lightness tiers: base → dark → light →

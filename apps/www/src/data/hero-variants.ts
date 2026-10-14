@@ -18,7 +18,7 @@ export const heroVariants: Record<string, HeroVariant> = {
 	},
 	chatgpt: {
 		title: "Is ChatGPT Mentioning You?",
-		lede: "Elmo asks ChatGPT and every other major AI model the questions your buyers ask, then shows whether you're in the answer, who's there instead, and what to fix.",
+		lede: "BeatGeo asks ChatGPT and every other major AI model the questions your buyers ask, then shows whether you're in the answer, who's there instead, and what to fix.",
 	},
 	"see-what-ai-says": {
 		title: "See What AI Says About Your Brand",
@@ -26,11 +26,11 @@ export const heroVariants: Record<string, HeroVariant> = {
 	},
 	"stop-checking": {
 		title: "Stop Checking ChatGPT by Hand",
-		lede: "Elmo runs your buyers' prompts across AI models on a schedule and tracks every answer, so you see trends instead of one-off screenshots.",
+		lede: "BeatGeo runs your buyers' prompts across AI models on a schedule and tracks every answer, so you see trends instead of one-off screenshots.",
 	},
 	"aeo-tool": {
 		title: "The AEO Tool That Tells You What to Fix",
-		lede: "Elmo tracks your visibility across AI answer engines and turns it into a ranked list of fixes, from the pages to update to the sources AI trusts.",
+		lede: "BeatGeo tracks your visibility across AI answer engines and turns it into a ranked list of fixes, from the pages to update to the sources AI trusts.",
 	},
 	geo: {
 		title: "Generative Engine Optimization, Measured",
@@ -42,7 +42,7 @@ export const heroVariants: Record<string, HeroVariant> = {
 	},
 	citations: {
 		title: "Know Which Sources AI Cites",
-		lede: "Elmo shows which pages and domains ChatGPT, Perplexity, and Google AI Overviews cite when they answer your buyers, so you know where to show up.",
+		lede: "BeatGeo shows which pages and domains ChatGPT, Perplexity, and Google AI Overviews cite when they answer your buyers, so you know where to show up.",
 	},
 	"ai-overviews": {
 		title: "Track Your Brand in AI Overviews",
@@ -54,7 +54,7 @@ export const heroVariants: Record<string, HeroVariant> = {
 	},
 	"open-source": {
 		title: "Open-Source AI Visibility Tracking",
-		lede: "Elmo is MIT-licensed AEO software. Track your brand across ChatGPT, Claude, Gemini, and more on Elmo Cloud, or self-host it for free.",
+		lede: "BeatGeo is MIT-licensed AEO software. Track your brand across ChatGPT, Claude, Gemini, and more on BeatGeo Cloud, or self-host it for free.",
 	},
 };
 

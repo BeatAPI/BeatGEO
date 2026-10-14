@@ -3,7 +3,7 @@
 import { Check, Copy, Terminal } from "lucide-react";
 import { useState } from "react";
 
-const COMMANDS = ["npm install -g @elmohq/cli", "elmo init"];
+const COMMANDS = ["npm install -g @beatapi/geo-cli", "beatgeo init"];
 
 /** `lg` is for when the terminal is the centerpiece of a section rather than a sidebar. */
 export function QuickstartBlock({ size = "md" }: { size?: "md" | "lg" }) {
@@ -43,12 +43,12 @@ export function QuickstartBlock({ size = "md" }: { size?: "md" | "lg" }) {
 				<div className="flex gap-3">
 					<span className="text-zinc-500 select-none">$</span>
 					<span>
-						npm install -g <span className="text-blue-400">@elmohq/cli</span>
+						npm install -g <span className="text-blue-400">@beatapi/geo-cli</span>
 					</span>
 				</div>
 				<div className="flex gap-3">
 					<span className="text-zinc-500 select-none">$</span>
-					<span>elmo init</span>
+					<span>beatgeo init</span>
 				</div>
 			</div>
 		</div>

@@ -3,14 +3,13 @@
  *
  * Each one carries a `ref` naming the surface it was clicked from, so the
  * marketing site can tell a self-hosted operator who arrived from the sign-in
- * page apart from one who arrived from `elmo init` — the two want different
+ * page apart from one who arrived from `beatgeo init` — the two want different
  * things and convert at very different rates.
  */
 
-export const MARKETING_SITE_URL = "https://www.elmohq.com";
-export const CLOUD_APP_URL = "https://app.elmohq.com";
+export const MARKETING_SITE_URL = "https://github.com/BeatAPI/BeatGeo";
+export const CLOUD_APP_URL = "https://github.com/BeatAPI/BeatGeo";
 /** The read-only instance anyone can poke at without an account. */
-const DEMO_SITE_URL = "https://demo.elmohq.com";
 
 /**
  * Where a link back to us was clicked. A closed set rather than free-form
@@ -47,38 +46,27 @@ export type ReferralSource =
 	| "marketing-pricing-pro"
 	| "marketing-pricing-business";
 
-function tagged(url: string, ref: ReferralSource): string {
-	const link = new URL(url);
-	link.searchParams.set("ref", ref);
-	return link.toString();
+function projectLink(ref: ReferralSource, anchor = "readme"): string {
+	const url = new URL("https://github.com/BeatAPI/BeatGeo");
+	url.searchParams.set("ref", ref);
+	url.hash = anchor;
+	return url.toString();
 }
-
-/** A marketing-site page, tagged with where the click came from. */
-export function marketingUrl(path: string, ref: ReferralSource): string {
-	return tagged(new URL(path, MARKETING_SITE_URL).toString(), ref);
+export function marketingUrl(_path: string, ref: ReferralSource): string {
+	return projectLink(ref);
 }
-
-/** The cloud app itself, tagged with where the click came from. It routes new visitors to sign-up on its own. */
 export function cloudAppUrl(ref: ReferralSource): string {
-	return tagged(`${CLOUD_APP_URL}/`, ref);
+	return projectLink(ref, "quick-start");
 }
-
-/** Cloud registration, tagged with where the click came from. */
 export function cloudSignupUrl(ref: ReferralSource): string {
-	return tagged(`${CLOUD_APP_URL}/auth/register`, ref);
+	return projectLink(ref, "quick-start");
 }
-
-/** The cloud pricing table, tagged with where the click came from. */
 export function cloudPricingUrl(ref: ReferralSource): string {
-	return marketingUrl("/pricing", ref);
+	return projectLink(ref, "mvp-status");
 }
-
-/** The demo booking page, tagged with where the click came from. */
 export function bookDemoUrl(ref: ReferralSource): string {
-	return marketingUrl("/demo", ref);
+	return projectLink(ref, "product-flow");
 }
-
-/** The live demo instance, tagged with where the click came from. */
 export function demoSiteUrl(ref: ReferralSource): string {
-	return tagged(DEMO_SITE_URL, ref);
+	return projectLink(ref, "product-flow");
 }

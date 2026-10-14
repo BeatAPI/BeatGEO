@@ -3,25 +3,25 @@ title: Skill
 description: Install the aeo skill to give Claude Code, Cursor, Codex, and other agents an evidence-based AEO workflow.
 ---
 
-The [`aeo` skill](https://github.com/elmohq/elmo/tree/main/skills/aeo) teaches Claude Code, Cursor,
+The [`aeo` skill](https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo) teaches Claude Code, Cursor,
 Codex, and other coding agents an evidence-based answer engine optimization workflow: measure,
-diagnose, fix, then measure again. It works with or without Elmo, and it is MIT-licensed.
+diagnose, fix, then measure again. It works with or without BeatGeo, and it is MIT-licensed.
 
 ## Install
 
 ```bash
-npx skills add elmohq/elmo
+npx skills add BeatAPI/beat-geo
 ```
 
 The skills CLI finds the agents on your machine and installs the skill, with its reference files and
 audit script, for each. To install by hand, copy
-[`skills/aeo`](https://github.com/elmohq/elmo/tree/main/skills/aeo) into your agent's skills directory
+[`skills/aeo`](https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo) into your agent's skills directory
 (for Claude Code, `~/.claude/skills/aeo`). On claude.ai, zip the `aeo` folder and upload it in the
 Skills settings.
 
 ## Connect it to your data
 
-With Elmo connected over [MCP](/docs/api/mcp), the agent reads your tracked visibility, citations,
+With BeatGeo connected over [MCP](/docs/api/mcp), the agent reads your tracked visibility, citations,
 and fan-out queries instead of guessing. Without it, the skill falls back to sampling answers by hand.
 
 Every deployment also shows these instructions at **Settings → Skill** in the organization's settings
