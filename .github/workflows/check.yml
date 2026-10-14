@@ -27,3 +27,29 @@ jobs:
       - run: pnpm lint
       - run: pnpm -r --if-present check-types
       - run: pnpm -r --if-present test
+  postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: beatgeo_test
+          POSTGRES_PASSWORD: local-ci-only
+          POSTGRES_DB: beatgeo_ci_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U beatgeo_test -d beatgeo_ci_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://beatgeo_test:local-ci-only@127.0.0.1:5432/beatgeo_ci_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @workspace/web test:integration

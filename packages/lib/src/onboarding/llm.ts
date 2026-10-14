@@ -2,7 +2,7 @@
  * Provider-agnostic onboarding research.
  *
  * Onboarding always runs against a direct API provider (Anthropic / OpenAI /
- * OpenRouter / Mistral) — the deployment guarantees one is configured, and
+ * OpenRouter / Mistral / BeatAPI) — the deployment guarantees one is configured, and
  * the CLI's setup wizard enforces it. Each provider implements
  * `runStructuredResearch<T>(prompt, schema)` itself, picking the most
  * idiomatic combo for its API:
@@ -30,7 +30,7 @@ export type ResearchProviderId = (typeof RESEARCH_PROVIDER_PREFERENCE)[number];
 
 const ONBOARDING_LLM_TARGET_HELP =
 	"Set ONBOARDING_LLM_TARGET (e.g. claude:anthropic-api) " +
-	"or configure ANTHROPIC_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / MISTRAL_API_KEY.";
+	"or configure BEATAPI_API_KEY + BEATAPI_RESEARCH_MODEL / ANTHROPIC_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / MISTRAL_API_KEY.";
 
 /**
  * Pick which direct-API provider the onboarding flow should use.
@@ -41,9 +41,8 @@ const ONBOARDING_LLM_TARGET_HELP =
  *   2. First provider in `RESEARCH_PROVIDER_PREFERENCE` that's configured AND
  *      implements `runStructuredResearch`.
  *
- * Each provider supplies its own research model internally — there's no way
- * to override the model via env or option. Operators who want a different
- * model edit the provider's `DEFAULT_RESEARCH_MODEL` constant in source.
+ * BeatAPI uses BEATAPI_RESEARCH_MODEL; other providers supply their research
+ * model internally. The target model segment does not override either choice.
  */
 export function resolveResearchProvider(env: Record<string, string | undefined> = process.env): Provider {
 	const explicit = env.ONBOARDING_LLM_TARGET?.trim();
@@ -51,6 +50,8 @@ export function resolveResearchProvider(env: Record<string, string | undefined> 
 		const [parsed] = parseScrapeTargets(explicit);
 		if (!parsed) throw new Error(`Invalid ONBOARDING_LLM_TARGET: "${explicit}"`);
 		const provider = getProvider(parsed.provider);
+		if (parsed.provider === "beatapi" && !env.BEATAPI_RESEARCH_MODEL?.trim())
+			throw new Error("Set BEATAPI_RESEARCH_MODEL for BeatAPI research.");
 		if (!provider.isConfigured()) {
 			throw new Error(
 				`ONBOARDING_LLM_TARGET points at "${parsed.provider}" but it isn't configured. ${ONBOARDING_LLM_TARGET_HELP}`,
@@ -64,12 +65,8 @@ export function resolveResearchProvider(env: Record<string, string | undefined> 
 		return provider;
 	}
 
-	for (const id of RESEARCH_PROVIDER_PREFERENCE) {
-		const provider = getProvider(id);
-		if (!provider.isConfigured()) continue;
-		if (!provider.runStructuredResearch) continue;
-		return provider;
-	}
+	const preferred = RESEARCH_PROVIDER_PREFERENCE.map(getProvider).find((provider) => researchReady(provider, env));
+	if (preferred) return preferred;
 
 	throw new Error(`Onboarding requires at least one direct LLM API provider. ${ONBOARDING_LLM_TARGET_HELP}`);
 }
@@ -106,4 +103,9 @@ export async function runStructuredCompletionPrompt<T>(
 		throw new Error(`Provider "${provider.id}" does not implement structured research`);
 	}
 	return provider.runStructuredResearch({ prompt, schema, webSearch: false });
+}
+
+function researchReady(provider: Provider, env: Record<string, string | undefined>): boolean {
+	if (provider.id === "beatapi" && !env.BEATAPI_RESEARCH_MODEL?.trim()) return false;
+	return provider.isConfigured() && Boolean(provider.runStructuredResearch);
 }

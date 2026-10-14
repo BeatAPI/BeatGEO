@@ -1,6 +1,7 @@
 import { getDefaultDelayHours } from "@workspace/lib/constants";
 import { db } from "@workspace/lib/db/db";
 import { brands, prompts } from "@workspace/lib/db/schema";
+import { PROMPT_JOB_OPTIONS } from "@workspace/lib/monitoring";
 import { eq } from "drizzle-orm";
 import { getBoss } from "@/lib/boss-client";
 
@@ -66,10 +67,7 @@ export async function createPromptJobScheduler(promptId: string, options: Schedu
 				{
 					singletonKey: `prompt-${promptId}`,
 					singletonSeconds: 60 * 60, // 1 hour - prevent duplicate jobs
-					retryLimit: 3,
-					retryDelay: 60,
-					retryBackoff: true,
-					expireInSeconds: 60 * 15, // 15 minute timeout
+					...PROMPT_JOB_OPTIONS,
 				},
 			);
 		} else {
@@ -81,10 +79,7 @@ export async function createPromptJobScheduler(promptId: string, options: Schedu
 					singletonKey: `prompt-${promptId}`,
 					singletonSeconds: startAfterSeconds, // Prevent duplicates for the cadence period
 					startAfter: startAfterSeconds,
-					retryLimit: 3,
-					retryDelay: 60,
-					retryBackoff: true,
-					expireInSeconds: 60 * 15,
+					...PROMPT_JOB_OPTIONS,
 				},
 			);
 		}
@@ -137,10 +132,7 @@ export async function sendImmediatePromptJob(promptId: string): Promise<boolean>
 			"process-prompt",
 			{ promptId, cadenceHours },
 			{
-				retryLimit: 3,
-				retryDelay: 60,
-				retryBackoff: true,
-				expireInSeconds: 60 * 15,
+				...PROMPT_JOB_OPTIONS,
 			},
 		);
 

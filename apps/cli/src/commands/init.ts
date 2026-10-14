@@ -208,12 +208,13 @@ async function configureProvidersRecommended(env: EnvMap): Promise<void> {
 	const direct = await p.select({
 		message: "Direct LLM API (powers onboarding analysis + sentiment scoring)",
 		options: [
-			{ value: "openrouter" as const, label: "OpenRouter — one key, all major models (recommended)" },
+			{ value: "beatapi" as const, label: "BeatAPI — research and analysis (recommended)" },
+			{ value: "openrouter" as const, label: "OpenRouter" },
 			{ value: "anthropic" as const, label: "Anthropic — direct Claude" },
 			{ value: "openai" as const, label: "OpenAI — direct GPT-* models" },
 			{ value: "mistral" as const, label: "Mistral — direct Mistral models" },
 		],
-		initialValue: "openrouter" as const,
+		initialValue: "beatapi" as const,
 	});
 	assertNotCancelled(direct);
 	await collectDirectApiQuick(direct, env);

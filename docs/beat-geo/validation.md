@@ -49,3 +49,17 @@ Verified locally with Node.js 24.19.0 and pnpm 12.4.1:
 - No production database migrations, account changes, paid provider calls or user browser windows were used for this verification.
 
 PostgreSQL → worker → BeatBrowser end-to-end scheduled monitoring and live Gemini stability still need deployment acceptance. The README status table is the supported MVP boundary.
+
+## Monitoring loop and BeatAPI integration — 2026-10-15
+
+This entry supersedes the earlier unverified database/worker boundary for the specific path below; it does not certify every engine or unattended operation.
+
+- Created a disposable PostgreSQL 17 instance on loopback port 55439, with a dedicated `beatgeo_mvp_test` database. Applied all migrations, including collection attempts and optimization actions. No BeatAPI main-site or gateway database was changed.
+- Real pg-boss → worker → local collector → signed-in ChatGPT: one fresh category question completed, yielding 1,457 answer characters and 10 visible source links. The worker stored the answer/citations/observation atomically and scheduled the next cycle 24 hours later. The answer did not literally mention BeatAPI. This is one smoke test, not a visibility estimate; the future cycle was queued, not waited for or observed executing.
+- An earlier attempt stopped on `PAGE_BUSY` before submission. Added bounded, read-only composer readiness polling, then completed the trial above. Regression tests cover transient/persistent busy states and human pause without refresh, focus changes or duplicate submission.
+- PostgreSQL integration: 40 tests passed, including five new loop tests for baseline → implementation → actual queue → matched retest, duplicate job handling, timeout, empty answer, cross-brand isolation, changed questions and transaction rollback when citations cannot be saved. Provider replies in these integration tests are synthetic.
+- Workspace unit suites: 1,408 passed (config 119, CLI 35, lib 660, deployment 52, web 542). Browser collector/evidence: 19 passed. All workspace TypeScript checks and Biome lint passed. Web production build passed with dependency directive/chunk-size warnings.
+- Local authenticated dashboard UI: saved a synthetic recommendation and baseline, recorded implementation, queued a retest, and displayed missing comparable coverage. Desktop and mobile inspected; no horizontal overflow or browser page errors. UI fixtures are explicitly labeled synthetic and kept out of Git.
+- BeatAPI provider contract tests cover search → page reading → structured analysis, fixed credential destination, API-simulation separation, truncated/empty answers, and no automatic retries for 401/402/429/5xx. These tests mock HTTP responses. Anonymous public capability discovery found Web Search; it does not validate billed requests.
+
+Still unverified: a real BeatAPI key/model/charge, new Gemini live collection, overnight cadence execution, multi-worker/device leasing, account/region/model pinning, complete citation side panels, production deployment and long-term reliability. SEO dedicated endpoints are not connected. Website technical audit and a complete content publication workflow remain roadmap features. See [self-hosting](../self-hosting.md) and [product/API boundaries](beatapi-product-loop.md).

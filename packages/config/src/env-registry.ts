@@ -43,6 +43,19 @@ const VALIDATED_MODES: DeploymentMode[] = ["local", "demo", "whitelabel", "cloud
 
 export const ENV_REGISTRY: EnvVarSpec[] = [
 	{
+		name: "BEATAPI_API_KEY",
+		scope: "server",
+		requiredBy: "dynamic-scrape-targets",
+		provider: "beatapi",
+		description: "BeatAPI key for research, analysis and optional API simulations.",
+	},
+	{
+		name: "BEATAPI_RESEARCH_MODEL",
+		scope: "server",
+		requiredBy: "optional",
+		description: "BeatAPI model ID for structured research and opportunity analysis.",
+	},
+	{
 		name: "BROWSER_RUNNER_URL",
 		scope: "server",
 		requiredBy: "optional",
@@ -525,7 +538,13 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
  * Lives here, not with the onboarding code, so startup validation can require
  * one of them.
  */
-export const RESEARCH_PROVIDER_PREFERENCE = ["openai-api", "openrouter", "anthropic-api", "mistral-api"] as const;
+export const RESEARCH_PROVIDER_PREFERENCE = [
+	"beatapi",
+	"openai-api",
+	"openrouter",
+	"anthropic-api",
+	"mistral-api",
+] as const;
 
 export const CREDENTIAL_ENV_NAMES: ReadonlySet<string> = new Set(
 	ENV_REGISTRY.filter((spec) => spec.requiredBy === "dynamic-scrape-targets" && spec.provider).map((spec) => spec.name),

@@ -1,3 +1,4 @@
+import { MonitoringLoop } from "@/components/monitoring-loop";
 /**
  * The page renders a structured opportunities report. We assemble a deterministic
  * digest of the brand's tracked citation data (per-query standing vs the leading
@@ -52,6 +53,7 @@ function OpportunitiesPage() {
 			infoContent={infoContent}
 		>
 			<div className="space-y-6">
+				<MonitoringLoop brandId={brandId} />
 				{data?.report && data.lastEvaluatedAt && <LastEvaluatedAt date={data.lastEvaluatedAt} />}
 				{content}
 			</div>

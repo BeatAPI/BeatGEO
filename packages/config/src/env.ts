@@ -95,7 +95,9 @@ function buildProviderKeyRequirements(env: EnvMap = process.env): EnvRequirement
  * would otherwise boot fine and fail the first time either is used.
  */
 function buildResearchProviderRequirement(): EnvRequirement {
-	const candidates = RESEARCH_PROVIDER_PREFERENCE.map(providerKeys);
+	const candidates = RESEARCH_PROVIDER_PREFERENCE.map((id) =>
+		id === "beatapi" ? [...providerKeys(id), "BEATAPI_RESEARCH_MODEL"] : providerKeys(id),
+	);
 	return {
 		id: "RESEARCH_PROVIDER",
 		label: candidates.map((keys) => keys.join(" + ")).join(" or "),
@@ -106,7 +108,12 @@ function buildResearchProviderRequirement(): EnvRequirement {
 			if (!target) return candidates.some((keys) => requireAll(keys)(env));
 			try {
 				const [parsed] = parseScrapeTargets(target);
-				return parsed !== undefined && requireAll(providerKeys(parsed.provider))(env);
+				if (!parsed) return false;
+				if (parsed.provider === "stub") return true;
+				if (!RESEARCH_PROVIDER_PREFERENCE.includes(parsed.provider as (typeof RESEARCH_PROVIDER_PREFERENCE)[number]))
+					return false;
+				const keys = providerKeys(parsed.provider);
+				return requireAll(parsed.provider === "beatapi" ? [...keys, "BEATAPI_RESEARCH_MODEL"] : keys)(env);
 			} catch {
 				return false;
 			}
