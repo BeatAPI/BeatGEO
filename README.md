@@ -6,13 +6,13 @@ An open-source AEO/GEO monitoring workbench by BeatAPI, built on [Elmo](https://
 
 ## Try the browser experiment first
 
-Requires Node.js 22+, Chrome, and [BeatBrowser](https://github.com/BeatAPI/beat-browser) connected to your own browser. Check `beat-browser doctor --json` before starting. Sign in to ChatGPT or Gemini yourself.
+Requires Node.js 22+, Chrome, and the matching [BeatBrowser 1.3.1 source preview](https://github.com/BeatAPI/beat-browser) CLI and extension connected to your own browser. Check `beat-browser doctor --json` before starting. Sign in to ChatGPT or Gemini yourself.
 
 ```sh
 node apps/browser-lab/server.mjs
 ```
 
-Open **http://127.0.0.1:4318**. Choose an engine, enter a neutral question and a brand, then run one observation. Each run opens a fresh background tab and uses the account's currently selected mode. Model versions and location are not pinned. ChatGPT requests temporary chat; Gemini uses a new conversation with the existing account context.
+Open **http://127.0.0.1:4318**. Open Answer Engine Insights, choose an engine and connected Chrome profile, enter a neutral question and a brand, then run one observation. Each run opens an independent BeatBrowser background TaskSpace and uses the account's currently selected mode. Model versions and location are not pinned. ChatGPT requests temporary chat; Gemini uses a new conversation with the existing account context.
 
 CLI alternative:
 
@@ -21,11 +21,13 @@ node apps/browser-lab/cli.mjs --engine chatgpt --brand Example --prompt 'Which p
 node --test apps/browser-lab/core.test.mjs
 ```
 
-If using a BeatBrowser source checkout, set `BEAT_BROWSER_COMMAND=node` and `BEAT_BROWSER_ARGS_JSON` to a JSON array containing its absolute `src/cli.js` path. No model API key is required for Browser Lab. Browser subscriptions and account limits still apply.
+If using a BeatBrowser source checkout, set `BEAT_BROWSER_COMMAND=node` and `BEAT_BROWSER_ARGS_JSON` to a JSON array containing its absolute `src/cli.js` path. TaskSpaces are the default and never fall back to ordinary tabs on failure. `BEAT_BROWSER_PROFILE_ID` (or CLI `--profile`) pins a profile for worker/CLI runs. `BEAT_BROWSER_SPACES=0` is an explicit legacy CLI compatibility option; the UI rejects that mode. No model API key is required for Browser Lab. Browser subscriptions and account limits still apply.
 
 ## What works, and what remains
 
-- Local UI, CLI, one-at-a-time UI submissions, answer evidence, visible citations, literal brand mention checks, and separate incomplete/error states.
+- Profound-inspired desktop workbench: Agents overview/template drafts and Answer Engine Insights with visibility, citation, question and original-answer views; shared filters and evidence export.
+- Local UI/CLI collection runs through BeatBrowser TaskSpaces, reuses website sessions, and retains pages for review. No Ego browser required.
+- Browser Lab remains a development harness, not a second production identity, database or queue. The Elmo product remains the sole product base.
 - ChatGPT: a real existing-tab capture and a complete automated fresh-chat run passed. See [validation notes](docs/open-profound/validation.md).
 - Gemini adapter exists; background rendering can remain busy with invisible pending text. It must not be scored as a completed answer until rendered and finished.
 - Elmo provider bridge (`beat-browser`) and stored-answer/citation rendering are implemented and unit tested. The full Elmo worker/database path is not yet an end-to-end verified deployment.

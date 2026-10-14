@@ -24,4 +24,15 @@ Final collector suite: 9 passed. Final whole-workspace lint passed after the las
 
 ## Not verified
 
-Full Elmo dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; Ego browser integration; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
+Full Elmo dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
+
+## TaskSpace default and desktop workbench follow-up
+
+- Browser/evidence suite: 15 passed. Default collection chooses the supplied profile, scopes every page command, never falls back to ordinary tabs, and retains pages after completion or ambiguous submission.
+- Workspace lint: 819 files passed. The installed pnpm wrapper had an execution-format error; checks used the installed pnpm 12.4.1 JavaScript entrypoint, with the workspace security settings unchanged.
+- Isolated headless Chrome: visibility/citations/prompts/raw-answer switching, denominator handling, filters, selected profile submission and local draft saving passed without page errors. Fixture data was intercepted only inside the disposable test context, never written into the user's evidence store.
+- Daily Chrome: the local workbench opened inside a named BeatBrowser TaskSpace, alongside the signed-in Profound reference page. The profile-discovery endpoint confirmed a connected 1.3.1 extension and TaskSpace mode. This was a UI/read check, not a fresh model submission.
+- Public UI assets use Lucide (ISC) and Geist (OFL), with included licenses. Private source-page captures and the reference font remain untracked.
+- Ego Lite is not a runtime/package dependency. Its local application was moved to Trash at the owner's request; profile data was retained.
+
+Full product/worker/database integration, all Profound modules, native macOS focus guarantees, and a new live ChatGPT/Gemini collection with the default TaskSpace path remain unverified. No migration, npm release or production deployment was performed.

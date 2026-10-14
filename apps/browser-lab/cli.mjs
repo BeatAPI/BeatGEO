@@ -11,6 +11,7 @@ const input = {
 	engine: option("--engine", "chatgpt"),
 	prompt: option("--prompt", ""),
 	brand: option("--brand", "BeatAPI"),
+	profileId: option("--profile"),
 };
 const here = path.dirname(fileURLToPath(import.meta.url));
 const directory = process.env.BROWSER_RUNS_DIR || path.resolve(here, "../../.open-profound/runs");

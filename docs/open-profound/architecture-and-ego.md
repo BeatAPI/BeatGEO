@@ -1,10 +1,10 @@
-# One product, interchangeable browser execution
+# One product, BeatBrowser-owned execution
 
-Research checked on 2026-10-14. Architecture below is proposed; only the Browser Lab and local Elmo provider bridge are implemented in v0.1.
+Research checked on 2026-10-14. The product ownership model remains proposed. Browser Lab and the Elmo provider bridge exist; BeatBrowser TaskSpaces are available in the 1.3.1 source preview; the npm stable package is separate.
 
 ## Decision
 
-Use Elmo as the single product base and BeatBrowser as the default execution transport. Offer Ego Lite as a future optional adapter after a real compatibility trial. Do not merge another application, identity system, scheduler or database. Do not require both browsers to run one task.
+Use Elmo as the single product base and BeatBrowser as the execution product. Learn from Ego Lite’s workspace and takeover design, but implement the capability inside BeatBrowser; Ego is not a runtime dependency. Do not merge another application, identity system, scheduler or database. Do not require both browsers to run one task.
 
 The Browser Lab is a development harness. Its local JSON files are evidence from experiments, not a second authoritative product datastore. When integrating the full product, observations must belong to Elmo's existing brand/prompt/run records. The local executor may spool a result for delivery, but must use the product's task ID and must not create a separate customer or scheduler.
 
@@ -31,13 +31,15 @@ The first self-hosted edition has one product login and optional API credentials
 - Useful designs: stable page handles, action receipts, foreground-user takeover, event-based waits, iframe resolution and per-task workspace isolation. A Space must not be assumed to isolate website cookies or anonymize sampling.
 - Browser onboarding can import Chrome data. Some sites may still require login again. Ego does not eliminate the need for valid website sessions.
 - Current install documentation is macOS-focused. Cross-platform support and background-completion reliability need their own tests.
-- No Ego binary was installed, no profile data was migrated, and no Ego live benchmark was run for this review.
+- Ego was installed and its onboarding/import was evaluated locally. This does not validate background completion and is not a shipped product dependency. User profile data stays outside the repository.
 
 ## Execution contract
 
-A future BrowserDriver adapter should implement open session, observe, submit prompt, wait for completion, extract answer/citations, hand off and release. Both BeatBrowser and Ego adapters return the same Observation envelope. Site-specific ChatGPT/Gemini code lives above this transport, with engine-aware completion signals.
+BeatBrowser implements open, observe, submit, handoff, resume, stop and release. Site-specific ChatGPT/Gemini collection lives above this transport, with engine-aware completion signals. Browser Lab defaults to TaskSpaces and requires the matching 1.3.1 extension and bridge. The collection form lists connected Chrome profiles; CLI/worker runs can pin BEAT_BROWSER_PROFILE_ID. An unavailable TaskSpace never causes fallback into the user’s ordinary window.
 
-Keep backend-specific handles private (`tabId` for BeatBrowser; `spaceId/pageLabel` for Ego). Capability detection must admit missing features rather than pretend the backends are equivalent. Do not have both drivers control the same page.
+Keep tabId and spaceId as executor handles, separate from the product run ID. Pin commands to the browser connection that opened the space. Lost connections stop the run without switching browsers. TaskSpace state is transient chrome.storage.session data, not a new product database or scheduler.
+
+The current space is a minimized ordinary Chrome window in one connected profile. It shares that profile’s logins and website storage. It is not a separate browser engine, cookie sandbox or aggregation of all Chrome profiles. The window can be restored for inspection; focus pauses subsequent automated commands. BeatBrowser provides a task-space sidebar, opt-in progress notifications and explicit takeover/resume controls. The collector currently ends incomplete runs with their pages retained for review; continuing the same collection after human intervention remains separate work. Minimized screenshot support is not reliable on the tested macOS Chromium; capture now has a bounded failure and never foregrounds the window automatically.
 
 ## Local versus hosted
 

@@ -33,7 +33,7 @@
     "test:scripts": "node --test 'scripts/*.test.mjs'",
     "license-check": "node scripts/check-licenses.mjs",
     "browser:lab": "node apps/browser-lab/server.mjs",
-    "test:browser": "node --test apps/browser-lab/core.test.mjs"
+    "test:browser": "node --test apps/browser-lab/*.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

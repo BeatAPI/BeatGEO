@@ -47,12 +47,13 @@ export function createBrowser(env = process.env) {
 			timeout: 45_000,
 			maxBuffer: 4 * 1024 * 1024,
 		});
-		if (/^\[(?:INTERNAL|TIMEOUT|NOT_INTERACTABLE|REF_NOT_FOUND)\]/m.test(stdout)) throw new Error(stdout);
+		if (/^\[[A-Z][A-Z_]+\]/m.test(stdout)) throw new Error(stdout);
 		return stdout;
 	};
 }
 
 export function validateInput(input) {
+	if (!input || typeof input !== "object") throw new Error("Collection input is required.");
 	if (!Object.hasOwn(ENGINES, input.engine)) throw new Error("Choose chatgpt or gemini.");
 	if (typeof input.prompt !== "string" || !input.prompt.trim() || input.prompt.length > 4000) {
 		throw new Error("Prompt must contain 1–4000 characters.");
@@ -62,6 +63,7 @@ export function validateInput(input) {
 		prompt: input.prompt.trim(),
 		brand: typeof input.brand === "string" ? input.brand.trim().slice(0, 120) : "BeatAPI",
 		aliases: Array.isArray(input.aliases) ? input.aliases.filter((x) => typeof x === "string").slice(0, 10) : [],
+		profileId: typeof input.profileId === "string" ? input.profileId.trim().slice(0, 120) : undefined,
 	};
 }
 
@@ -177,9 +179,48 @@ async function awaitAnswer(browser, run, deadline, delay, publish) {
 	throw new Error("Timed out waiting for a completed answer. The prompt will not be resubmitted automatically.");
 }
 
+async function openRunPage(config, run, transport, useSpaces) {
+	if (useSpaces) {
+		const space = JSON.parse(
+			await transport("spaces", {
+				action: "open",
+				url: ENGINES[config.engine].url,
+				label: `Open Profound · ${ENGINES[config.engine].name}`,
+				profileId: config.profileId || process.env.BEAT_BROWSER_PROFILE_ID || undefined,
+			}),
+		);
+		run.spaceId = space.spaceId;
+		run.tabId = space.tabId;
+		run.executionMode = "beat-browser-taskspace";
+		if (!run.spaceId || !Number.isInteger(run.tabId)) throw new Error("TaskSpace returned no usable page handle.");
+		if (space.state !== "running")
+			throw new Error("Background TaskSpace could not start; inspect its state before retrying.");
+	} else {
+		const opened = await transport("tabs", {
+			action: "new",
+			url: ENGINES[config.engine].url,
+			label: `Open Profound · ${ENGINES[config.engine].name}`,
+		});
+		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
+		if (!match) throw new Error("Browser did not return a tab ID.");
+		run.tabId = Number(match[1]);
+		run.executionMode = "background-tab";
+	}
+}
+
+async function releaseRunPage(run, transport) {
+	if (!run.spaceId) return;
+	try {
+		await transport("spaces", { action: "finish", spaceId: run.spaceId, keep: "all" });
+	} catch {
+		run.cleanupWarning = "TaskSpace did not confirm release. Inspect it before another task.";
+	}
+}
+
 export async function collect(input, options = {}) {
 	const config = validateInput(input);
-	const browser = options.browser || createBrowser();
+	const transport = options.browser || createBrowser();
+	const browser = (tool, params) => transport(tool, run.spaceId ? { ...params, spaceId: run.spaceId } : params);
 	const delay = options.delay || sleep;
 	const publish = options.publish || (async () => {});
 	const run = {
@@ -199,14 +240,7 @@ export async function collect(input, options = {}) {
 	};
 	await publish(run);
 	try {
-		const opened = await browser("tabs", {
-			action: "new",
-			url: ENGINES[config.engine].url,
-			label: `Open Profound · ${ENGINES[config.engine].name}`,
-		});
-		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
-		if (!match) throw new Error("Browser did not return a tab ID.");
-		run.tabId = Number(match[1]);
+		await openRunPage(config, run, transport, options.spaces ?? process.env.BEAT_BROWSER_SPACES !== "0");
 		await waitForInput(browser, run.tabId, ENGINES[config.engine].input, delay);
 		checkAttention(await browser("snapshot", { tabId: run.tabId }));
 		const existing = await currentAnswer(browser, run.tabId, config.engine);
@@ -241,6 +275,7 @@ export async function collect(input, options = {}) {
 		run.status = String(error.message).startsWith("Timed out") ? "timeout" : "needs_attention";
 		run.error = String(error.message).slice(0, 500);
 	}
+	await releaseRunPage(run, transport);
 	return { ...run, finishedAt: new Date().toISOString() };
 }
 
