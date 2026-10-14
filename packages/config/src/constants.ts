@@ -32,7 +32,7 @@ export const CRISP_WEBSITE_ID = "";
  * BeatGeo brand constants — used for icon generation, manifest, and the brand kit.
  */
 export const BEAT_GEO_BRAND_COLOR = "#2563eb"; // blue-600
-export const BEAT_GEO_BRAND_FONT = "Titan One";
+export const BEAT_GEO_BRAND_FONT = "Geist Sans";
 export const BEAT_GEO_THEME_COLOR = "#2563eb";
 export const BEAT_GEO_BACKGROUND_COLOR = "#ffffff";
 
