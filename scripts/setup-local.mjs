@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { requireLocalEnvironment } from "./local-doctor.mjs";
 import { localCompose, localEnvironment, prepareExtension } from "./local-runtime.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -30,7 +31,7 @@ try {
 		throw new Error(
 			"Existing configuration found; it has not been changed. Use pnpm local:start. For an interrupted automatic setup, run pnpm local:setup --resume.",
 		);
-	run("docker", ["info", "--format", "{{.ServerVersion}}"]);
+	requireLocalEnvironment();
 	let env;
 	if (resume) {
 		const rootText = await readFile(path.join(root, ".env"), "utf8");

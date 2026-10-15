@@ -20,3 +20,27 @@ test("database binds only to loopback and uses an independent named volume", () 
 	assert.match(compose, /beatgeo-data:/);
 	assert.doesNotMatch(compose, /external: true/);
 });
+
+test("installation preflight distinguishes missing tools, wrong versions and a stopped Docker engine", async () => {
+	const { inspectLocalRequirements } = await import("./local-doctor.mjs");
+	const checks = inspectLocalRequirements({
+		nodeVersion: "22.0.0",
+		run: (command, args) => {
+			if (command === "pnpm") return { status: 0, stdout: "11.0.0" };
+			if (command === "git") return { status: null, error: new Error("not found") };
+			return { status: args[0] === "info" ? 1 : 0, stdout: "" };
+		},
+	});
+	assert.deepEqual(checks.filter((check) => !check.ok).map((check) => check.name), [
+		"Node.js 24", "pnpm 12.4.1", "Git", "Docker engine",
+	]);
+	assert(checks.every((check) => check.fix.length > 0));
+});
+test("installation preflight accepts the supported source-install environment", async () => {
+	const { inspectLocalRequirements } = await import("./local-doctor.mjs");
+	const checks = inspectLocalRequirements({
+		nodeVersion: "24.19.0",
+		run: () => ({ status: 0, stdout: "12.4.1\n" }),
+	});
+	assert(checks.every((check) => check.ok));
+});

@@ -1,6 +1,8 @@
 # Self-hosting
 
-For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/setup. This source installer requires Node.js 24, pnpm 12.4.1, Docker and Chrome; it prepares its own PostgreSQL and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGeo npm CLI, SDK or container images are published in this MVP.
+For the complete first-use journey, see [Getting started](beat-geo/getting-started.md). Run `node scripts/local-doctor.mjs` to check prerequisites without changing data.
+
+For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/setup. This source installer requires Git, Node.js 24, pnpm 12.4.1, Docker and Chrome; it prepares its own PostgreSQL and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGeo npm CLI, SDK or container images are published in this MVP.
 
 ## Configure one local instance
 
@@ -47,7 +49,7 @@ pnpm --filter @workspace/worker dev
 
 For source BeatBrowser, also set `BEAT_BROWSER_COMMAND=node` and `BEAT_BROWSER_ARGS_JSON` to a JSON array containing the absolute path to `beat-browser/src/cli.js`. Set `BEAT_BROWSER_PROFILE_ID` if multiple Chrome profiles are connected. Share the same `BROWSER_RUNNER_TOKEN` between collector and worker; it is distinct from a model API key.
 
-Open **http://localhost:3000**, register the local administrator, add a brand/website, use Connections to configure optional research credentials, then enter questions manually or review research suggestions and start collection. In Opportunities, save a recommendation with a completed baseline, record the change you made, and choose Retest. The queue processes the same questions and shows matched comparisons; changing a question or model configuration creates a different cohort. Timeouts and failures remain visible and do not count as zero exposure.
+Open **http://localhost:3000**, register the local administrator, add a brand/website, use Connections to configure optional research credentials, then generate and review website-based questions (or an industry starter set without a key) and start collection. In Opportunities, save a recommendation with a completed baseline, record the change you made, and choose Retest. The queue processes the same questions and shows matched comparisons; changing a question or model configuration creates a different cohort. Timeouts and failures remain visible and do not count as zero exposure.
 
 The browser bridge is serial, synchronous and loopback-only: run **one worker per collector**, with `RUNS_PER_PROMPT=1`. Add `gemini:beat-browser` only after validating that platform with your account; its background completion remains less reliable. A cloud worker cannot reach a user's localhost. Device leasing and offline recovery remain roadmap work. A sleeping laptop cannot provide continuous monitoring.
 

@@ -381,6 +381,10 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 				</div>
 			)}
 
+			<p className="text-sm text-muted-foreground">
+				Browser tasks run one at a time. Keep Chrome and the local app running; the first batch may take a while. Each
+				answer or failure appears as it finishes.
+			</p>
 			<Button
 				onClick={handleSubmit}
 				disabled={isSaving || previewCounts.totalNew === 0}

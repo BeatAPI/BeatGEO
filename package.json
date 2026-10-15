@@ -35,7 +35,8 @@
     "browser:lab": "node apps/browser-lab/server.mjs",
     "test:browser": "node --test apps/browser-lab/*.test.mjs",
     "local:setup": "node scripts/setup-local.mjs",
-    "local:start": "node scripts/start-local.mjs"
+    "local:start": "node scripts/start-local.mjs",
+    "local:doctor": "node scripts/local-doctor.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

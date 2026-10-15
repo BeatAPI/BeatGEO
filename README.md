@@ -32,20 +32,24 @@ flowchart TD
 
 ## Quick start
 
-需要 **Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
+需要 **Git、Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGeo.git
 cd BeatGeo
+node scripts/local-doctor.mjs
 pnpm local:setup
 pnpm local:start
 ```
 
 打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
 
-1. **连接 Chrome**：已有 BeatBrowser 会直接复用；没有时，在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension` 文件夹。浏览器会要求你确认安装，网页不能静默安装扩展。选择已连接配置，并在该配置登录需要采集的网站。
-2. **连接 BeatAPI（可选）**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。key 加密存入同一个 PostgreSQL，页面只回显前四位；不填也可以选择行业生成题库，无需自己写问题。
-3. **创建品牌**：填写网站 → 研究业务并从通用题库生成问题 → 确认问题 → 开始采集 → 查看原回答与引用 → 记录优化 → 复测比较。
+1. **连接 BeatAPI**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。网站自动研究需要研究提供方；Key 加密保存后持续复用。没有 Key 也能选择行业生成备用模板题单。
+2. **连接 Chrome**：已有 BeatBrowser 直接复用；没有时，在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension` 文件夹。选择已连接配置，并在同一配置登录 ChatGPT。浏览器要求用户确认安装，连接成功不代表网站已经登录。
+3. **创建品牌**：填写网站 → 研究业务并生成问题 → 确认题单 → 首次采集 → 查看回答与引用 → 记录优化 → 同组复测。
+4. **保持运行**：可关闭网页，电脑需唤醒、联网，Docker、Chrome 和 `local:start` 需持续运行。再次启动保留数据库及已保存 Key；本地版不是托管的全天监控。
+
+[完整用户流程：安装、账号、Key、浏览器、费用和持续运行](docs/beat-geo/getting-started.md)。
 
 `local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGeo 退出。
 
