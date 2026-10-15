@@ -44,7 +44,7 @@ if (!version || !repo) {
 }
 
 const releaseUrl = `https://github.com/${repo}/releases/tag/v${version}`;
-const header = `🚀 **BeatGeo v${version}** is out!`;
+const header = `🚀 **BeatGEO v${version}** is out!`;
 
 /**
  * Cut to `max` characters without splitting a surrogate pair — release notes
@@ -62,7 +62,7 @@ function truncate(text, max) {
  * GitHub renders a bare pull request URL as `#123` and Discord does not, which
  * leaves every bullet trailing 40 characters of noise. Webhook messages honour
  * `[text](url)`, so shorten them the same way — but only for this repository,
- * since `#123` in an BeatGeo announcement reads as an BeatGeo pull request.
+ * since `#123` in an BeatGEO announcement reads as an BeatGEO pull request.
  */
 function maskPullLinks(line) {
   return line.replace(

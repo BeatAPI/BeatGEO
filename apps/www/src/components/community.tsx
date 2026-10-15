@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
-const DISCORD_INVITE_URL = "https://github.com/BeatAPI/BeatGeo";
+const DISCORD_INVITE_URL = "https://github.com/BeatAPI/BeatGEO";
 
 function DiscordIcon({ className = "" }: { className?: string }) {
 	return (

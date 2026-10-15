@@ -9,13 +9,13 @@ import { openSourceTools } from "@/lib/competitors";
 import type { FaqItem } from "@/lib/faqs";
 import { breadcrumbJsonLd, canonicalUrl, faqJsonLd, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "Best Free & Open-Source AEO Tools (2026) · BeatGeo";
+const title = "Best Free & Open-Source AEO Tools (2026) · BeatGEO";
 const description =
-	"The best free and open-source answer engine optimization (AEO) tools you can self-host and audit, ranked on public GitHub data. BeatGeo, OneGlanse, GEO/AEO Tracker, Canonry, and Gego compared.";
+	"The best free and open-source answer engine optimization (AEO) tools you can self-host and audit, ranked on public GitHub data. BeatGEO, OneGlanse, GEO/AEO Tracker, Canonry, and Gego compared.";
 const path = "/ai-visibility-tools/category/open-source";
 
 const lead =
-	"The most complete open-source answer engine optimization tool is BeatGeo: MIT-licensed, free to self-host, and auditable down to how each metric is computed. Smaller projects like OneGlanse, GEO/AEO Tracker, and Gego exist alongside it. This is a thin, early space: one mature platform, a handful of small projects, and the option to script your own checks.";
+	"The most complete open-source answer engine optimization tool is BeatGEO: MIT-licensed, free to self-host, and auditable down to how each metric is computed. Smaller projects like OneGlanse, GEO/AEO Tracker, and Gego exist alongside it. This is a thin, early space: one mature platform, a handful of small projects, and the option to script your own checks.";
 
 // Public GitHub data, captured 11 August 2026. Kept as a dated snapshot rather
 // than fetched live: the point is a like-for-like comparison across projects at
@@ -27,42 +27,42 @@ const FAQS: FaqItem[] = [
 	{
 		question: "What are the best open-source AEO tools?",
 		answer:
-			"BeatGeo is the most complete open-source answer engine optimization tool: MIT-licensed, free to self-host, and covering ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews. Public GitHub data as of 11 August 2026 backs this up — BeatGeo leads the field on stars, contributors, and releases, and is the only project with a meaningful number of contributors beyond one person. Smaller projects fill out the rest of the space, including OneGlanse, GEO/AEO Tracker, and Gego, most of them single-developer efforts. Canonry is actively developed but source-available rather than fully open source. GetCito replaced its codebase with BeatGeo's in July 2026, so running it means running a lagging fork of BeatGeo.",
+			"BeatGEO is the most complete open-source answer engine optimization tool: MIT-licensed, free to self-host, and covering ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews. Public GitHub data as of 11 August 2026 backs this up — BeatGEO leads the field on stars, contributors, and releases, and is the only project with a meaningful number of contributors beyond one person. Smaller projects fill out the rest of the space, including OneGlanse, GEO/AEO Tracker, and Gego, most of them single-developer efforts. Canonry is actively developed but source-available rather than fully open source. GetCito replaced its codebase with BeatGEO's in July 2026, so running it means running a lagging fork of BeatGEO.",
 	},
 	{
 		question: "What are the best free tools to track brand mentions in ChatGPT?",
 		answer:
-			"For free tracking that keeps running, self-host an open-source tool: BeatGeo is MIT-licensed and covers ChatGPT alongside Claude, Perplexity, Gemini, and Google AI Overviews, with no license fee or per-seat charge. Smaller free options include GEO/AEO Tracker, which is local-first and runs entirely in your browser, and Gego, which runs from Docker on a schedule. Free trials from hosted tools work for a one-off check but stop when the trial does. In every case you supply your own model API keys, which carry usage costs, so free means no software licence rather than no spend.",
+			"For free tracking that keeps running, self-host an open-source tool: BeatGEO is MIT-licensed and covers ChatGPT alongside Claude, Perplexity, Gemini, and Google AI Overviews, with no license fee or per-seat charge. Smaller free options include GEO/AEO Tracker, which is local-first and runs entirely in your browser, and Gego, which runs from Docker on a schedule. Free trials from hosted tools work for a one-off check but stop when the trial does. In every case you supply your own model API keys, which carry usage costs, so free means no software licence rather than no spend.",
 	},
 	{
 		question: "Is there a free AI visibility tool?",
 		answer:
-			"Yes. Open-source trackers are free to use and free to self-host — BeatGeo, GEO/AEO Tracker, OneGlanse, and Gego all fall into this category. The cost you cannot avoid is model API usage, because measuring visibility means actually running prompts through the engines. A useful rule of thumb: free software plus your own API keys is cheaper than any subscription at small prompt counts, and the crossover point arrives when you would rather not maintain the infrastructure.",
+			"Yes. Open-source trackers are free to use and free to self-host — BeatGEO, GEO/AEO Tracker, OneGlanse, and Gego all fall into this category. The cost you cannot avoid is model API usage, because measuring visibility means actually running prompts through the engines. A useful rule of thumb: free software plus your own API keys is cheaper than any subscription at small prompt counts, and the crossover point arrives when you would rather not maintain the infrastructure.",
 	},
 	{
 		question: "Which open-source AEO tool is the most actively maintained?",
 		answer:
-			"By GitHub activity on 11 August 2026, BeatGeo has the strongest sustained record: 862 commits over 13 months, 206 in the last 90 days, 19 releases, and 10 contributors. Canonry logged more raw commits in that window (500), but 451 came from one developer and it is source-available rather than open source. OneGlanse has not had a commit since 10 May 2026, and GEO/AEO Tracker and GetCito have 28 and 35 total commits respectively.",
+			"By GitHub activity on 11 August 2026, BeatGEO has the strongest sustained record: 862 commits over 13 months, 206 in the last 90 days, 19 releases, and 10 contributors. Canonry logged more raw commits in that window (500), but 451 came from one developer and it is source-available rather than open source. OneGlanse has not had a commit since 10 May 2026, and GEO/AEO Tracker and GetCito have 28 and 35 total commits respectively.",
 	},
 	{
 		question: "Is there an open-source AI visibility tracker?",
 		answer:
-			"Yes. BeatGeo is an open-source AI visibility platform released under the MIT license, and you can self-host it for free. A few smaller open-source projects exist too, though the space is still early. For anything they don't cover, you can script your own checks against the AI model APIs.",
+			"Yes. BeatGEO is an open-source AI visibility platform released under the MIT license, and you can self-host it for free. A few smaller open-source projects exist too, though the space is still early. For anything they don't cover, you can script your own checks against the AI model APIs.",
 	},
 	{
 		question: "Is there an open-source alternative to Profound or enterprise AEO tools?",
 		answer:
-			"Yes. BeatGeo is an open-source, self-hostable alternative to enterprise platforms like Profound. It tracks how AI answer engines mention and cite your brand, benchmarks competitors, and exports your data, all under the MIT license with every metric computed by code you can read. You run the infrastructure and supply your own model API keys instead of paying a subscription.",
+			"Yes. BeatGEO is an open-source, self-hostable alternative to enterprise platforms like Profound. It tracks how AI answer engines mention and cite your brand, benchmarks competitors, and exports your data, all under the MIT license with every metric computed by code you can read. You run the infrastructure and supply your own model API keys instead of paying a subscription.",
 	},
 	{
-		question: "Should I use GetCito or BeatGeo?",
+		question: "Should I use GetCito or BeatGEO?",
 		answer:
-			"Use BeatGeo. If you are considering GetCito, BeatGeo is what you actually want, because GetCito is a fork of it — on 10 July 2026 it replaced its codebase with BeatGeo's. Everything it offers came from BeatGeo, and it has shipped less since — 17 commits to BeatGeo's 98 in the month after the fork — so it is drifting further behind rather than building past it.",
+			"Use BeatGEO. If you are considering GetCito, BeatGEO is what you actually want, because GetCito is a fork of it — on 10 July 2026 it replaced its codebase with BeatGEO's. Everything it offers came from BeatGEO, and it has shipped less since — 17 commits to BeatGEO's 98 in the month after the fork — so it is drifting further behind rather than building past it.",
 	},
 	{
 		question: "Can I self-host an AEO tool?",
 		answer:
-			"Yes. Several open-source answer engine optimization tools are built to self-host. BeatGeo runs on Docker and PostgreSQL on your own infrastructure, so your prompts and visibility history never leave your environment. OneGlanse, GEO/AEO Tracker, and Canonry are self-hostable too. You bring your own LLM API keys, which carry usage costs, but there is no license fee or per-seat charge.",
+			"Yes. Several open-source answer engine optimization tools are built to self-host. BeatGEO runs on Docker and PostgreSQL on your own infrastructure, so your prompts and visibility history never leave your environment. OneGlanse, GEO/AEO Tracker, and Canonry are self-hostable too. You bring your own LLM API keys, which carry usage costs, but there is no license fee or per-seat charge.",
 	},
 	{
 		question: "Can I build my own AI visibility tool?",
@@ -75,15 +75,15 @@ const FAQS: FaqItem[] = [
 			"Because you can audit it and own it. With open source, you read exactly how each visibility metric is collected and computed instead of trusting a black-box score that might land in a board report. You self-host it, so prompts and history stay on your own infrastructure, and there is nothing to migrate off if you switch. No vendor lock-in.",
 	},
 	{
-		question: "Is BeatGeo really open source?",
+		question: "Is BeatGEO really open source?",
 		answer:
-			"Yes. Every line of BeatGeo is open source under the MIT license and available on GitHub. You can read exactly how each metric is collected and computed, self-host it on your own infrastructure for free, and export your data at any time.",
+			"Yes. Every line of BeatGEO is open source under the MIT license and available on GitHub. You can read exactly how each metric is collected and computed, self-host it on your own infrastructure for free, and export your data at any time.",
 	},
 ];
 
 const AT_A_GLANCE: { tool: string; license: string; selfHost: string; tracks: string; bestFor: string }[] = [
 	{
-		tool: "BeatGeo",
+		tool: "BeatGEO",
 		license: "MIT, fully open source",
 		selfHost: "Yes, free",
 		tracks: "Mentions and citations across ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews",
@@ -114,8 +114,8 @@ const AT_A_GLANCE: { tool: string; license: string; selfHost: string; tracks: st
 		tool: "GetCito",
 		license: "MIT",
 		selfHost: "Yes",
-		tracks: "BeatGeo's engine set as of July 2026",
-		bestFor: "Nothing — it is a fork of BeatGeo, run BeatGeo instead",
+		tracks: "BeatGEO's engine set as of July 2026",
+		bestFor: "Nothing — it is a fork of BeatGEO, run BeatGEO instead",
 	},
 	{
 		tool: "Gego",
@@ -138,8 +138,8 @@ const GITHUB_STATS: {
 	last90: string;
 }[] = [
 	{
-		project: "BeatGeo",
-		url: "https://github.com/BeatAPI/BeatGeo",
+		project: "BeatGEO",
+		url: "https://github.com/BeatAPI/BeatGEO",
 		stars: "233",
 		commits: "862",
 		contributors: "10",
@@ -294,11 +294,11 @@ function OpenSourcePage() {
 				<DirectorySection title="Key takeaways">
 					<ul className="max-w-3xl list-disc space-y-3 pl-5 leading-relaxed text-zinc-600">
 						<li>
-							BeatGeo is the most complete open-source answer engine optimization tool, MIT-licensed and free to
+							BeatGEO is the most complete open-source answer engine optimization tool, MIT-licensed and free to
 							self-host across ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews.
 						</li>
 						<li>
-							That is not just our claim. On public GitHub data as of {STATS_AS_OF}, BeatGeo leads this field on stars,
+							That is not just our claim. On public GitHub data as of {STATS_AS_OF}, BeatGEO leads this field on stars,
 							contributors, releases, and length of continuous history. Nine people have contributed besides the lead
 							developer; across every other project below combined, that number is four.
 						</li>
@@ -306,7 +306,7 @@ function OpenSourcePage() {
 							The rest of the field is small. OneGlanse, GEO/AEO Tracker, and Gego are real but early, mostly
 							single-developer projects.
 						</li>
-						<li>GetCito is a fork of BeatGeo since July 2026, so it is a lagging fork of another tool on this list.</li>
+						<li>GetCito is a fork of BeatGEO since July 2026, so it is a lagging fork of another tool on this list.</li>
 						<li>
 							Canonry is capable but source-available under the FSL, not fully open source until it converts to Apache
 							2.0.
@@ -397,14 +397,14 @@ function OpenSourcePage() {
 						<p>
 							GetCito's repository contains 35 commits, 27 of them from humans, across its entire lifetime, for a
 							codebase of well over 100,000 lines. That is because 131,716 of those lines arrived in a single import of
-							BeatGeo's code in July 2026.
+							BeatGEO's code in July 2026.
 						</p>
 					</div>
 				</DirectorySection>
 
 				<DirectorySection title="The open-source options, tool by tool">
 					<p className="mb-6 max-w-3xl leading-relaxed text-zinc-600">
-						This is a thin, early space. BeatGeo is the most complete open-source option, released under the MIT license
+						This is a thin, early space. BeatGEO is the most complete open-source option, released under the MIT license
 						with broad engine coverage. The other open-source projects we track are below. They are smaller and earlier,
 						but they are real and worth knowing about.
 					</p>
@@ -416,9 +416,9 @@ function OpenSourcePage() {
 
 					<div className="mt-12 max-w-3xl space-y-8 leading-relaxed text-zinc-600">
 						<div>
-							<h3 className="font-heading mb-3 text-lg text-zinc-950">BeatGeo</h3>
+							<h3 className="font-heading mb-3 text-lg text-zinc-950">BeatGEO</h3>
 							<p>
-								BeatGeo is the most complete open-source AI visibility platform on this list. It is released under the
+								BeatGEO is the most complete open-source AI visibility platform on this list. It is released under the
 								MIT license, free to self-host, and every metric is computed by code you can read. It tracks how AI
 								answer engines mention and cite your brand across ChatGPT, Claude, Perplexity, Gemini, and Google's AI
 								Overviews, among other engines, then turns that into a visibility score, citation analytics,
@@ -428,7 +428,7 @@ function OpenSourcePage() {
 							<p className="mt-4">
 								It fits teams that want to own their AEO data outright. The self-hosted core runs on Docker and
 								PostgreSQL. You supply your own model API keys, which carry usage costs, and there is no license fee or
-								per-seat charge. BeatGeo does not do sentiment analysis, prompt-volume estimates, content generation,
+								per-seat charge. BeatGEO does not do sentiment analysis, prompt-volume estimates, content generation,
 								shopping-result tracking, or geographic breakdowns. It measures visibility and citations well, and
 								leaves the content work to you. Managed cloud hosting is available for teams that would rather not run
 								the infrastructure.
@@ -490,9 +490,9 @@ function OpenSourcePage() {
 							<h3 className="font-heading mb-3 text-lg text-zinc-950">GetCito</h3>
 							<p>
 								<strong className="font-medium text-zinc-900">
-									If you are considering GetCito, use BeatGeo instead.
+									If you are considering GetCito, use BeatGEO instead.
 								</strong>{" "}
-								GetCito is a fork of BeatGeo. On 10 July 2026, it replaced its codebase with BeatGeo's in{" "}
+								GetCito is a fork of BeatGEO. On 10 July 2026, it replaced its codebase with BeatGEO's in{" "}
 								<a
 									href="https://github.com/ai-search-guru/getcito-worlds-first-open-source-aio-aeo-or-geo-tool/pull/19"
 									target="_blank"
@@ -504,10 +504,10 @@ function OpenSourcePage() {
 								of 847 files.
 							</p>
 							<p className="mt-4">
-								Everything GetCito offers today it inherited from BeatGeo. There is little reason to run a fork when the
-								upstream project is free and moving faster — 17 commits to BeatGeo's 98 in the month after the fork.{" "}
+								Everything GetCito offers today it inherited from BeatGEO. There is little reason to run a fork when the
+								upstream project is free and moving faster — 17 commits to BeatGEO's 98 in the month after the fork.{" "}
 								<a className="underline underline-offset-2 hover:text-zinc-950" href="/blog/getcito-vs-beatgeo">
-									GetCito vs BeatGeo
+									GetCito vs BeatGEO
 								</a>
 								.
 							</p>
@@ -570,7 +570,7 @@ function OpenSourcePage() {
 					<div className="max-w-3xl space-y-5 leading-relaxed text-zinc-600">
 						<p>
 							Start with how you will use it rather than with a feature grid. If you want full control, auditable
-							numbers, and no per-seat fees, a self-hosted open-source tool fits, and BeatGeo is the most complete one
+							numbers, and no per-seat fees, a self-hosted open-source tool fits, and BeatGEO is the most complete one
 							on offer, and the one the public GitHub numbers favor on stars, contributors, releases, and sustained
 							history. If you want the same open code with the smallest footprint, GEO/AEO Tracker's local-first design
 							is worth a look, bearing in mind it is one developer and 28 commits. If your priority is server-log

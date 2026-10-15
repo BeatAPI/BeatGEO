@@ -10,93 +10,93 @@ export interface FaqItem {
 // crawler) sees on the page.
 export const HOME_FAQS: FaqItem[] = [
 	{
-		question: "What is BeatGeo?",
+		question: "What is BeatGEO?",
 		answer:
-			"BeatGeo is an open-source AI visibility platform for Answer Engine Optimization (AEO) — an alternative to tools like Profound, Peec, and Otterly that you can self-host for free or run on BeatGeo Cloud. It tracks how AI answer engines — including ChatGPT, Google AI Overviews, Perplexity, Gemini, Claude, and Copilot — mention your brand, which competitors appear alongside you, and which sources each model cites.",
+			"BeatGEO is an open-source AI visibility platform for Answer Engine Optimization (AEO) — an alternative to tools like Profound, Peec, and Otterly that you can self-host for free or run on BeatGEO Cloud. It tracks how AI answer engines — including ChatGPT, Google AI Overviews, Perplexity, Gemini, Claude, and Copilot — mention your brand, which competitors appear alongside you, and which sources each model cites.",
 	},
 	{
 		question: "What is Answer Engine Optimization (AEO)?",
 		answer:
-			"Answer Engine Optimization (AEO) — also called Generative Engine Optimization (GEO) or LLM Optimization (LLMO) — is the practice of measuring and improving how often AI answer engines mention and cite your brand. Instead of ranking in a list of blue links, the goal is to be the source an AI quotes in its answer. (LLMO is also where BeatGeo gets its name.)",
+			"Answer Engine Optimization (AEO) — also called Generative Engine Optimization (GEO) or LLM Optimization (LLMO) — is the practice of measuring and improving how often AI answer engines mention and cite your brand. Instead of ranking in a list of blue links, the goal is to be the source an AI quotes in its answer. (LLMO is also where BeatGEO gets its name.)",
 	},
 	{
 		question: "What is the difference between AEO, GEO, and SEO?",
 		answer:
-			"SEO is about ranking pages in traditional search results, while AEO and GEO are two names for the same newer discipline: getting mentioned and cited inside AI-generated answers from tools like ChatGPT, Perplexity, and Google AI Overviews. The two overlap, because AI engines run web searches and cite the pages they find, but success is measured differently — by how often and how favorably an AI names your brand, not by your position on a results page. BeatGeo measures the AEO side, including the web searches AI engines fan a prompt out into and the sources they cite.",
+			"SEO is about ranking pages in traditional search results, while AEO and GEO are two names for the same newer discipline: getting mentioned and cited inside AI-generated answers from tools like ChatGPT, Perplexity, and Google AI Overviews. The two overlap, because AI engines run web searches and cite the pages they find, but success is measured differently — by how often and how favorably an AI names your brand, not by your position on a results page. BeatGEO measures the AEO side, including the web searches AI engines fan a prompt out into and the sources they cite.",
 	},
 	{
-		question: "Which AI models does BeatGeo track?",
+		question: "Which AI models does BeatGEO track?",
 		answer:
-			"BeatGeo tracks ChatGPT, Google AI Mode, Google AI Overviews, Gemini, Perplexity, Copilot, and Claude, plus models like Grok, Mistral, DeepSeek, and Qwen. Consumer products like ChatGPT and Google AI Mode are scraped from the real interface your customers see, not approximated through an API. For each answer, BeatGeo records whether your brand appears, which competitors show up alongside it, and which sources the model cites.",
+			"BeatGEO tracks ChatGPT, Google AI Mode, Google AI Overviews, Gemini, Perplexity, Copilot, and Claude, plus models like Grok, Mistral, DeepSeek, and Qwen. Consumer products like ChatGPT and Google AI Mode are scraped from the real interface your customers see, not approximated through an API. For each answer, BeatGEO records whether your brand appears, which competitors show up alongside it, and which sources the model cites.",
 	},
 	{
 		question: "How is AI visibility measured?",
 		answer:
-			"BeatGeo runs a fixed set of prompts across AI engines on a schedule and scores each prompt by how often your brand appears in the answers, from 0 to 100%. It also calculates share of voice — your share of brand mentions versus your competitors — and breaks down which domains and URLs the models cite. Because AI answers vary from run to run, BeatGeo samples repeatedly and reports trends, not single results.",
+			"BeatGEO runs a fixed set of prompts across AI engines on a schedule and scores each prompt by how often your brand appears in the answers, from 0 to 100%. It also calculates share of voice — your share of brand mentions versus your competitors — and breaks down which domains and URLs the models cite. Because AI answers vary from run to run, BeatGEO samples repeatedly and reports trends, not single results.",
 	},
 	{
 		question: "How do I track my brand in ChatGPT?",
 		answer:
-			"Add your website to BeatGeo and its Prompt Wizard generates the questions your buyers are likely to ask ChatGPT, based on your products, competitors, and personas. BeatGeo then runs those prompts in ChatGPT on a schedule and records every answer: whether your brand was mentioned, which competitors were named, and which sources were cited. Every BeatGeo Cloud plan includes ChatGPT, starting with the $29/mo Starter plan.",
+			"Add your website to BeatGEO and its Prompt Wizard generates the questions your buyers are likely to ask ChatGPT, based on your products, competitors, and personas. BeatGEO then runs those prompts in ChatGPT on a schedule and records every answer: whether your brand was mentioned, which competitors were named, and which sources were cited. Every BeatGEO Cloud plan includes ChatGPT, starting with the $29/mo Starter plan.",
 	},
 	{
-		question: "How much does BeatGeo cost compared to Profound?",
+		question: "How much does BeatGEO cost compared to Profound?",
 		answer:
-			"BeatGeo is much cheaper and simpler to buy. Profound's pricing page lists a free trial and an Enterprise plan quoted by sales, while BeatGeo Cloud is self-serve with public prices, starting at $29/mo for the Starter plan. From the $99/mo Basic plan, every prompt is checked 4× a day, where Profound checks daily. Pro ($299/mo) and Business ($649/mo) add more brands, more prompts, and premium grounded models, and self-hosting BeatGeo is free.",
+			"BeatGEO is much cheaper and simpler to buy. Profound's pricing page lists a free trial and an Enterprise plan quoted by sales, while BeatGEO Cloud is self-serve with public prices, starting at $29/mo for the Starter plan. From the $99/mo Basic plan, every prompt is checked 4× a day, where Profound checks daily. Pro ($299/mo) and Business ($649/mo) add more brands, more prompts, and premium grounded models, and self-hosting BeatGEO is free.",
 	},
 	{
-		question: "Is BeatGeo free?",
+		question: "Is BeatGEO free?",
 		answer:
-			"BeatGeo is free and open source to self-host — there is no license fee and no per-seat pricing. You only pay for your own infrastructure and any AI provider API keys you choose to use. If you'd rather not run it yourself, managed BeatGeo Cloud starts at $29/mo, and white-label plans are available for agencies.",
+			"BeatGEO is free and open source to self-host — there is no license fee and no per-seat pricing. You only pay for your own infrastructure and any AI provider API keys you choose to use. If you'd rather not run it yourself, managed BeatGEO Cloud starts at $29/mo, and white-label plans are available for agencies.",
 	},
 ];
 
 // Pricing page FAQ.
 export const PRICING_FAQS: FaqItem[] = [
 	{
-		question: "Is BeatGeo free?",
+		question: "Is BeatGEO free?",
 		answer:
-			"Yes. BeatGeo is free and open source to self-host, forever. There is no license fee and no per-seat pricing — you only pay for your own infrastructure and the AI provider API keys you choose to use.",
+			"Yes. BeatGEO is free and open source to self-host, forever. There is no license fee and no per-seat pricing — you only pay for your own infrastructure and the AI provider API keys you choose to use.",
 	},
 	{
-		question: "Is there a hosted or cloud version of BeatGeo?",
+		question: "Is there a hosted or cloud version of BeatGEO?",
 		answer:
-			"Yes. BeatGeo Cloud is managed hosting for teams that would rather not run their own infrastructure, starting at $29/mo. You can also self-host BeatGeo for free, or get in touch about white-label deployments.",
+			"Yes. BeatGEO Cloud is managed hosting for teams that would rather not run their own infrastructure, starting at $29/mo. You can also self-host BeatGEO for free, or get in touch about white-label deployments.",
 	},
 	{
-		question: "Can agencies white-label BeatGeo?",
+		question: "Can agencies white-label BeatGEO?",
 		answer:
 			"White-label deployments are available for agencies that want to offer AI visibility tracking under their own brand, with multi-client dashboards and custom branding. Get in touch about setting up a white-label instance for your agency.",
 	},
 	{
-		question: "What do I need to run BeatGeo myself?",
+		question: "What do I need to run BeatGEO myself?",
 		answer:
-			"BeatGeo runs as a Docker Compose stack managed by a CLI. Install it, run the interactive init, and it's up in a couple of commands. You can use the bundled database or connect BeatGeo to your own PostgreSQL database.",
+			"BeatGEO runs as a Docker Compose stack managed by a CLI. Install it, run the interactive init, and it's up in a couple of commands. You can use the bundled database or connect BeatGEO to your own PostgreSQL database.",
 	},
 	{
 		question: "Do I need a credit card to get started?",
 		answer:
-			"No. Self-hosting BeatGeo does not require an account or a credit card. Clone the open-source repository, deploy with the CLI, and start tracking your AI visibility.",
+			"No. Self-hosting BeatGEO does not require an account or a credit card. Clone the open-source repository, deploy with the CLI, and start tracking your AI visibility.",
 	},
 	{
-		question: "Do I need to talk to sales to use BeatGeo Cloud?",
+		question: "Do I need to talk to sales to use BeatGEO Cloud?",
 		answer:
-			"No. BeatGeo Cloud is fully self-serve: you sign up, pick a plan, and start tracking without a demo or sales call. Every plan includes unlimited seats plus API and MCP access, and annual billing gets you two months free. Only custom contracts (higher sampling rates, custom limits, or white label) go through a conversation.",
+			"No. BeatGEO Cloud is fully self-serve: you sign up, pick a plan, and start tracking without a demo or sales call. Every plan includes unlimited seats plus API and MCP access, and annual billing gets you two months free. Only custom contracts (higher sampling rates, custom limits, or white label) go through a conversation.",
 	},
 	{
-		question: "How often does BeatGeo run my prompts?",
+		question: "How often does BeatGEO run my prompts?",
 		answer:
-			"On BeatGeo Cloud, the Starter plan runs each prompt once a day, and the Basic, Pro, and Business plans run each prompt up to 4 times a day on every platform you choose. Premium grounded models run once a day, and custom plans can sample more often. When you self-host BeatGeo, you set the schedule yourself.",
+			"On BeatGEO Cloud, the Starter plan runs each prompt once a day, and the Basic, Pro, and Business plans run each prompt up to 4 times a day on every platform you choose. Premium grounded models run once a day, and custom plans can sample more often. When you self-host BeatGEO, you set the schedule yourself.",
 	},
 	{
-		question: "Does BeatGeo have an API or MCP server?",
+		question: "Does BeatGEO have an API or MCP server?",
 		answer:
-			"Yes. BeatGeo has a REST API for brands, prompts, competitors, analytics, citations, runs, and reports, and an MCP server so AI assistants like Claude Code, Codex, Cursor, and VS Code can query your visibility data and manage prompts directly. Both are included on every BeatGeo Cloud plan and in every self-hosted instance. API keys can be read-only or read-write and limited to specific brands.",
+			"Yes. BeatGEO has a REST API for brands, prompts, competitors, analytics, citations, runs, and reports, and an MCP server so AI assistants like Claude Code, Codex, Cursor, and VS Code can query your visibility data and manage prompts directly. Both are included on every BeatGEO Cloud plan and in every self-hosted instance. API keys can be read-only or read-write and limited to specific brands.",
 	},
 	{
-		question: "Is my data private if I self-host BeatGeo?",
+		question: "Is my data private if I self-host BeatGEO?",
 		answer:
-			"Yes. A self-hosted BeatGeo instance stores your brands, prompts, and AI responses in your own PostgreSQL database, and prompts are only sent to the scraping and AI providers you configure. BeatGeo's optional telemetry sends anonymous usage counts and never includes brand names, prompt text, responses, or API keys, and you can turn it off completely with DISABLE_TELEMETRY=1.",
+			"Yes. A self-hosted BeatGEO instance stores your brands, prompts, and AI responses in your own PostgreSQL database, and prompts are only sent to the scraping and AI providers you configure. BeatGEO's optional telemetry sends anonymous usage counts and never includes brand names, prompt text, responses, or API keys, and you can turn it off completely with DISABLE_TELEMETRY=1.",
 	},
 ];
 
@@ -104,40 +104,40 @@ export const PRICING_FAQS: FaqItem[] = [
 // them unstated: who runs it, where it is, and how it is paid for.
 export const ABOUT_FAQS: FaqItem[] = [
 	{
-		question: "Who founded BeatGeo?",
+		question: "Who founded BeatGEO?",
 		answer:
-			"BeatGeo was founded in July 2025 by Jared Rhizor, previously a founding engineer at the open-source data integration platform Airbyte and a tech lead at LiveRamp. He leads BeatGeo's product and engineering.",
+			"BeatGEO was founded in July 2025 by Jared Rhizor, previously a founding engineer at the open-source data integration platform Airbyte and a tech lead at LiveRamp. He leads BeatGEO's product and engineering.",
 	},
 	{
-		question: "Who owns BeatGeo?",
+		question: "Who owns BeatGEO?",
 		answer:
-			"BeatGeo is built and operated by Blue Whale Software, LLC, a software company headquartered in San Francisco. It provides BeatGeo Cloud, white-label deployments, and the Off-Site AEO service.",
+			"BeatGEO is built and operated by Blue Whale Software, LLC, a software company headquartered in San Francisco. It provides BeatGEO Cloud, white-label deployments, and the Off-Site AEO service.",
 	},
 	{
-		question: "Where is BeatGeo based?",
+		question: "Where is BeatGEO based?",
 		answer:
-			"BeatGeo is headquartered in San Francisco, California. The product is used by teams worldwide, either on BeatGeo Cloud or self-hosted on their own infrastructure.",
+			"BeatGEO is headquartered in San Francisco, California. The product is used by teams worldwide, either on BeatGEO Cloud or self-hosted on their own infrastructure.",
 	},
 	{
-		question: "Is BeatGeo open source?",
+		question: "Is BeatGEO open source?",
 		answer:
-			"Yes. The full BeatGeo platform is open source on GitHub at github.com/BeatAPI/BeatGeo, and you can self-host it for free. BeatGeo Cloud runs the same code as a managed service.",
-		links: [{ text: "github.com/BeatAPI/BeatGeo", href: "https://github.com/BeatAPI/BeatGeo" }],
+			"Yes. The full BeatGEO platform is open source on GitHub at github.com/BeatAPI/BeatGEO, and you can self-host it for free. BeatGEO Cloud runs the same code as a managed service.",
+		links: [{ text: "github.com/BeatAPI/BeatGEO", href: "https://github.com/BeatAPI/BeatGEO" }],
 	},
 	{
-		question: "Does BeatGeo require an annual contract?",
+		question: "Does BeatGEO require an annual contract?",
 		answer:
-			"No. BeatGeo Cloud is billed month to month and you can cancel any time; annual billing is optional and gets you two months free. Self-hosting needs no contract at all.",
+			"No. BeatGEO Cloud is billed month to month and you can cancel any time; annual billing is optional and gets you two months free. Self-hosting needs no contract at all.",
 	},
 	{
-		question: "Is BeatGeo an AEO, GEO, or AI SEO tool?",
+		question: "Is BeatGEO an AEO, GEO, or AI SEO tool?",
 		answer:
-			"All three. Answer engine optimization (AEO), generative engine optimization (GEO), and AI SEO are different names for the same work: getting your brand mentioned and cited in AI search results from ChatGPT, Perplexity, Google AI Overviews, and other answer engines. BeatGeo measures that visibility so you can track and improve it.",
+			"All three. Answer engine optimization (AEO), generative engine optimization (GEO), and AI SEO are different names for the same work: getting your brand mentioned and cited in AI search results from ChatGPT, Perplexity, Google AI Overviews, and other answer engines. BeatGEO measures that visibility so you can track and improve it.",
 	},
 	{
-		question: "Where does the name BeatGeo come from?",
+		question: "Where does the name BeatGEO come from?",
 		answer:
-			"BeatGeo comes from LLMO, short for LLM optimization: the practice of improving how large language models like ChatGPT, Claude, and Gemini mention and cite your brand. Say LLMO out loud and you get BeatGeo.",
+			"BeatGEO comes from LLMO, short for LLM optimization: the practice of improving how large language models like ChatGPT, Claude, and Gemini mention and cite your brand. Say LLMO out loud and you get BeatGEO.",
 	},
 ];
 
@@ -191,7 +191,7 @@ export const DIRECTORY_FAQS: FaqItem[] = [
 	{
 		question: "Is there an open-source AI visibility tool?",
 		answer:
-			"Yes. BeatGeo is an open-source, self-hostable AI visibility platform. You can run it on your own infrastructure for free, audit exactly how each metric is calculated, and export your data at any time.",
+			"Yes. BeatGEO is an open-source, self-hostable AI visibility platform. You can run it on your own infrastructure for free, audit exactly how each metric is calculated, and export your data at any time.",
 	},
 	{
 		question: "How does AI visibility tracking work?",

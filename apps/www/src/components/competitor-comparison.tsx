@@ -87,7 +87,7 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 					<Badge variant="outline" className="mb-4">
 						{CATEGORY_LABELS[competitor.category]}
 					</Badge>
-					<h1 className="font-heading text-4xl text-balance text-zinc-950 md:text-5xl">BeatGeo vs {competitor.name}</h1>
+					<h1 className="font-heading text-4xl text-balance text-zinc-950 md:text-5xl">BeatGEO vs {competitor.name}</h1>
 					<p className="mt-4 max-w-3xl text-lg text-balance text-zinc-600">{getComparisonVerdict(competitor)}</p>
 					{competitor.status === "shutting-down" && (
 						<div className="mt-4 rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
@@ -113,7 +113,7 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 			<section className="border-b border-zinc-200 bg-zinc-50 py-8">
 				<div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 md:px-6">
 					<div>
-						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGeo</h3>
+						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGEO</h3>
 						<div className="mt-2 flex flex-wrap gap-2">
 							<Badge variant="secondary">Open Source</Badge>
 							<Badge variant="secondary">Self-Hosted</Badge>
@@ -196,7 +196,7 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 							<thead>
 								<tr className="border-b border-zinc-200">
 									<th className="py-3 pr-4 text-left font-semibold text-zinc-950">Feature</th>
-									<th className="w-32 px-4 py-3 text-center font-semibold text-zinc-950">BeatGeo</th>
+									<th className="w-32 px-4 py-3 text-center font-semibold text-zinc-950">BeatGEO</th>
 									<th className="w-32 px-4 py-3 text-center font-semibold text-zinc-950">{competitor.name}</th>
 								</tr>
 							</thead>
@@ -233,7 +233,7 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 						{beatgeoOnlyFeatures.length > 0 && (
 							<div className="rounded-md border border-zinc-200 bg-zinc-50 p-5">
 								<h3 className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-									Only in BeatGeo
+									Only in BeatGEO
 								</h3>
 								<ul className="space-y-2">
 									{beatgeoOnlyFeatures.map((f) => (
@@ -279,10 +279,10 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 				</div>
 			</section>
 
-			{/* Why BeatGeo */}
+			{/* Why BeatGEO */}
 			<section className="border-b border-zinc-200 bg-white py-12">
 				<div className="mx-auto max-w-6xl px-4 md:px-6">
-					<h2 className="font-heading mb-4 text-2xl text-zinc-950">Why choose BeatGeo over {competitor.name}?</h2>
+					<h2 className="font-heading mb-4 text-2xl text-zinc-950">Why choose BeatGEO over {competitor.name}?</h2>
 					<div className="grid gap-6 sm:grid-cols-2">
 						<div className="rounded-md border border-zinc-200 bg-white p-5">
 							<h3 className="font-semibold text-zinc-950">Open source and transparent</h3>
@@ -294,8 +294,8 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 						<div className="rounded-md border border-zinc-200 bg-white p-5">
 							<h3 className="font-semibold text-zinc-950">Self-host for free, forever</h3>
 							<p className="mt-2 text-sm text-zinc-600">
-								Run BeatGeo on your own infrastructure. The core platform is free and always will be, even when we
-								release a cloud version of BeatGeo.
+								Run BeatGEO on your own infrastructure. The core platform is free and always will be, even when we
+								release a cloud version of BeatGEO.
 							</p>
 						</div>
 						<div className="rounded-md border border-zinc-200 bg-white p-5">
@@ -324,15 +324,15 @@ export function CompetitorComparison({ competitor }: { competitor: Competitor })
 				<div className="mx-auto max-w-3xl px-4 text-center md:px-6">
 					<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">Ready to track your AI visibility?</h2>
 					<p className="mx-auto mt-4 max-w-xl text-lg text-balance text-zinc-600">
-						Deploy BeatGeo in minutes and start monitoring how ChatGPT, Claude, and Google AI Overviews talk about your
+						Deploy BeatGEO in minutes and start monitoring how ChatGPT, Claude, and Google AI Overviews talk about your
 						brand.
 					</p>
 					<div className="mt-8 flex flex-wrap justify-center gap-3">
 						<Link {...SELF_HOST_LINK} className={buttonVariants({ size: "sm" })}>
-							Deploy BeatGeo
+							Deploy BeatGEO
 						</Link>
 						<a
-							href="https://github.com/BeatAPI/BeatGeo"
+							href="https://github.com/BeatAPI/BeatGEO"
 							target="_blank"
 							rel="noopener noreferrer"
 							className={buttonVariants({ variant: "outline", size: "sm" })}

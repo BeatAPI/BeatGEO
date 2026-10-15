@@ -1,8 +1,8 @@
 cff-version: 1.2.0
-message: "Please cite BeatGeo and acknowledge the upstream projects in THIRD_PARTY_NOTICES.md."
-title: "BeatGeo"
+message: "Please cite BeatGEO and acknowledge the upstream projects in THIRD_PARTY_NOTICES.md."
+title: "BeatGEO"
 type: software
 authors:
   - name: "BeatAPI"
-repository-code: "https://github.com/BeatAPI/BeatGeo"
+repository-code: "https://github.com/BeatAPI/BeatGEO"
 license: MIT

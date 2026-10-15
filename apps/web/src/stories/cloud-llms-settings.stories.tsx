@@ -423,7 +423,7 @@ export const CloudHidesCostEstimates: Story = {
 
 /**
  * Self-hosted instances rarely configure everything, so the page names what else
- * BeatGeo can track and which provider account each one needs, linking straight to
+ * BeatGEO can track and which provider account each one needs, linking straight to
  * that provider's section of the setup guide.
  */
 export const SelfHostedSuggestsMorePlatforms: Story = {

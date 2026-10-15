@@ -7,7 +7,7 @@ import { setMockLoaderData, setMockRouteContext } from "./_mocks/tanstack-router
 
 const McpSettingsPage = (Route as unknown as { options: { component: ComponentType } }).options.component;
 
-function load(page: Partial<McpPageData>, appName = "BeatGeo", appUrl = "http://localhost:3000") {
+function load(page: Partial<McpPageData>, appName = "BeatGEO", appUrl = "http://localhost:3000") {
 	const readOnly = page.readOnlyDeployment ?? false;
 	setMockMcpPage(page);
 	setMockRouteContext({

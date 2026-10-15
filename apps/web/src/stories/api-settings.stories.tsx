@@ -6,7 +6,7 @@ import { setMockRouteContext } from "./_mocks/tanstack-router";
 
 const ApiSettingsPage = (Route as unknown as { options: { component: ComponentType } }).options.component;
 
-function load(mode = "cloud", appName = "BeatGeo", appUrl = "http://localhost:3000", readOnly = false) {
+function load(mode = "cloud", appName = "BeatGEO", appUrl = "http://localhost:3000", readOnly = false) {
 	setMockRouteContext({ clientConfig: { mode, branding: { name: appName, url: appUrl }, features: { readOnly } } });
 }
 
@@ -68,14 +68,14 @@ export const Whitelabel: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		await expect(await canvas.findByText("Programmatic interface for Acme Visibility.")).toBeVisible();
-		// Nothing on the page names the vendor, so the BeatGeo-branded SDKs stay hidden.
+		// Nothing on the page names the vendor, so the BeatGEO-branded SDKs stay hidden.
 		await expect(canvas.queryByText(/npm install/)).toBeNull();
 	},
 };
 
 export const ReadOnlyDeployment: Story = {
 	render: () => {
-		load("demo", "BeatGeo", "http://localhost:3000", true);
+		load("demo", "BeatGEO", "http://localhost:3000", true);
 		return <ApiSettingsPage />;
 	},
 	play: async ({ canvasElement }) => {

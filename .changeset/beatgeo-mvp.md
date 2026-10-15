@@ -5,4 +5,4 @@
 "@workspace/deployment": patch
 ---
 
-Present the self-hosted product as BeatGeo, remove inherited commercial and default tracking destinations, and retain legacy encrypted credentials.
+Present the self-hosted product as BeatGEO, remove inherited commercial and default tracking destinations, and retain legacy encrypted credentials.

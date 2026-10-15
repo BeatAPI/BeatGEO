@@ -31,7 +31,7 @@
   <!-- User → Web Server -->
   <line x1="150" y1="100" x2="236" y2="100" stroke="#a1a1aa" stroke-width="2"/>
   <polygon points="250,100 236,95 236,105" fill="#a1a1aa"/>
-  <!-- Postgres ↔ BeatGeo S-curve -->
+  <!-- Postgres ↔ BeatGEO S-curve -->
   <path d="M 162 260 C 190 260, 190 195, 204 195" stroke="#a1a1aa" stroke-width="2" fill="none"/>
   <polygon points="148,260 162,255 162,265" fill="#a1a1aa"/>
   <polygon points="218,195 204,190 204,200" fill="#a1a1aa"/>

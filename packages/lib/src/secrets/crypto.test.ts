@@ -203,7 +203,7 @@ describe("getKeyring", () => {
 	});
 });
 
-describe("BeatGeo key compatibility", () => {
+describe("BeatGEO key compatibility", () => {
 	it("decrypts an existing credential when only the legacy environment name is configured", async () => {
 		const key = randomBytes(32);
 		const encrypted = await encryptSecret("retained credential", { key, aad: "compatibility" });

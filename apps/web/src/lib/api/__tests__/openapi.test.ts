@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { deploymentOpenApiSpec } from "../openapi";
 
-const BEAT_GEO = { name: "BeatGeo", url: "https://github.com/BeatAPI/BeatGeo" };
+const BEAT_GEO = { name: "BeatGEO", url: "https://github.com/BeatAPI/BeatGEO" };
 const AGENCY = { name: "Acme Visibility", url: "https://visibility.acme.com" };
 
 describe("deploymentOpenApiSpec", () => {
 	it("answers with the host the spec was fetched from", () => {
 		const spec = deploymentOpenApiSpec(BEAT_GEO, "https://geo.example.com");
 
-		expect(spec.servers).toEqual([{ url: "https://geo.example.com/api/v1", description: "BeatGeo API" }]);
+		expect(spec.servers).toEqual([{ url: "https://geo.example.com/api/v1", description: "BeatGEO API" }]);
 	});
 
 	it("does not leak the vendor into a whitelabel deployment", () => {
@@ -23,7 +23,7 @@ describe("deploymentOpenApiSpec", () => {
 	});
 
 	it("serves a self-hosted instance its own address, port and all", () => {
-		const spec = deploymentOpenApiSpec({ name: "BeatGeo", url: "http://localhost:3000" }, "http://localhost:3000");
+		const spec = deploymentOpenApiSpec({ name: "BeatGEO", url: "http://localhost:3000" }, "http://localhost:3000");
 
 		expect(spec.servers?.[0].url).toBe("http://localhost:3000/api/v1");
 	});

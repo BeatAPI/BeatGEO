@@ -59,7 +59,7 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		name: "BROWSER_RUNNER_URL",
 		scope: "server",
 		requiredBy: "optional",
-		description: "Local BeatGeo Browser Lab URL.",
+		description: "Local BeatGEO Browser Lab URL.",
 	},
 	{
 		name: "BROWSER_RUNNER_TOKEN",
@@ -525,7 +525,7 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		scope: "server",
 		requiredBy: ["cloud"],
 		description:
-			"Sender address for transactional email, in the form: BeatGeo <notifications@updates.example.com>. The domain must be verified in Resend.",
+			"Sender address for transactional email, in the form: BeatGEO <notifications@updates.example.com>. The domain must be verified in Resend.",
 	},
 ];
 

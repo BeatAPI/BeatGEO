@@ -243,7 +243,7 @@ async function main(): Promise<void> {
 	await send(ENTER);
 
 	// Access mode select — default "On this machine (localhost)"
-	await waitFor("How will you access BeatGeo?");
+	await waitFor("How will you access BeatGEO?");
 	await send(ENTER);
 
 	// Web app port (default 1515) → accept default

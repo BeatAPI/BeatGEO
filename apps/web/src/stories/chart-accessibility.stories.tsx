@@ -85,7 +85,7 @@ function makeData(days: number): ChartDataPoint[] {
 const clientConfig: ClientConfig = {
 	mode: "local",
 	features: { readOnly: false, showOptimizeButton: false, canCreateBrands: true },
-	branding: { name: "BeatGeo", chartColors: DEFAULT_CHART_COLORS },
+	branding: { name: "BeatGEO", chartColors: DEFAULT_CHART_COLORS },
 	analytics: {},
 };
 

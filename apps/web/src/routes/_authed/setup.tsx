@@ -54,7 +54,7 @@ function SetupPage() {
 		<main className="beat-workspace min-h-svh bg-muted/20">
 			<header className="border-b bg-background">
 				<div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5 md:px-10">
-					<Link to="/app" aria-label="BeatGeo home">
+					<Link to="/app" aria-label="BeatGEO home">
 						<Logo />
 					</Link>
 					<Link to="/app" className={buttonVariants({ variant: "outline", size: "sm" })}>
@@ -96,9 +96,9 @@ function SetupPage() {
 					<details className="rounded-xl border p-4 text-sm">
 						<summary className="cursor-pointer font-medium">Where does my data live?</summary>
 						<p className="mt-2 text-muted-foreground">
-							BeatGeo stores accounts, brands, questions and results in its own PostgreSQL database. The standard
+							BeatGEO stores accounts, brands, questions and results in its own PostgreSQL database. The standard
 							installer creates it in Docker for you. You do not need to create tables or connect to BeatAPI's database.
-							Your local BeatGeo login and your BeatAPI key serve different purposes.
+							Your local BeatGEO login and your BeatAPI key serve different purposes.
 						</p>
 						<p className="mt-2 text-muted-foreground">
 							If setup is incomplete, run <code>pnpm local:doctor</code>. It checks Node.js, pnpm, Git and Docker

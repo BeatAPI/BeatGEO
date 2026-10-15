@@ -60,7 +60,7 @@ function HttpExample({ baseUrl }: { baseUrl: string }) {
 			<h2 className="text-lg font-semibold">HTTP API</h2>
 			<CodeBlock code={code} />
 			<p className="text-sm text-muted-foreground">
-				Use this instance's API reference below. A BeatGeo SDK is not published yet.
+				Use this instance's API reference below. A BeatGEO SDK is not published yet.
 			</p>
 		</section>
 	);

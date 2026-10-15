@@ -22,20 +22,20 @@
       "package": {
         "name": "@beatapi/geo-sdk",
         "destination": ["github", "npm"],
-        "repository": "https://github.com/BeatAPI/BeatGeo-sdk-typescript",
-        "homepage": "https://github.com/BeatAPI/BeatGeo"
+        "repository": "https://github.com/BeatAPI/BeatGEO-sdk-typescript",
+        "homepage": "https://github.com/BeatAPI/BeatGEO"
       }
     },
     "python": {
       "package": {
         "name": "beatgeo-sdk",
         "destination": ["github", "pypi"],
-        "repository": "https://github.com/BeatAPI/BeatGeo-sdk-python",
-        "homepage": "https://github.com/BeatAPI/BeatGeo"
+        "repository": "https://github.com/BeatAPI/BeatGEO-sdk-python",
+        "homepage": "https://github.com/BeatAPI/BeatGEO"
       }
     }
   },
   "plugins": [
-    { "name": "@hey-api/client", "baseURL": "https://github.com/BeatAPI/BeatGeo" }
+    { "name": "@hey-api/client", "baseURL": "https://github.com/BeatAPI/BeatGEO" }
   ]
 }

@@ -17,7 +17,7 @@ import { setMockRouteContext } from "./_mocks/tanstack-router";
 const beatgeoConfig: ClientConfig = {
 	mode: "local",
 	features: { readOnly: false, showOptimizeButton: false, canCreateBrands: true },
-	branding: { name: "BeatGeo", chartColors: DEFAULT_CHART_COLORS.map((c) => c) },
+	branding: { name: "BeatGEO", chartColors: DEFAULT_CHART_COLORS.map((c) => c) },
 	analytics: {},
 	defaultDelayHours: 24,
 	canRegister: true,

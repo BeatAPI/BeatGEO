@@ -1,5 +1,5 @@
 /**
- * Logos for the AI platforms BeatGeo tracks.
+ * Logos for the AI platforms BeatGEO tracks.
  *
  * Shared so the product and the marketing site show the same mark for the same
  * platform. Which logo a model uses is decided by `iconId` in

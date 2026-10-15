@@ -22,8 +22,8 @@ function openrouterHeaders(): Record<string, string> {
 	return {
 		Authorization: `Bearer ${getCredential("OPENROUTER_API_KEY")}`,
 		"Content-Type": "application/json",
-		"HTTP-Referer": process.env.APP_URL ?? "https://github.com/BeatAPI/BeatGeo",
-		"X-Title": "BeatGeo AEO",
+		"HTTP-Referer": process.env.APP_URL ?? "https://github.com/BeatAPI/BeatGEO",
+		"X-Title": "BeatGEO AEO",
 	};
 }
 
@@ -129,7 +129,7 @@ export const openrouter: Provider = {
 
 		// ":online" is exactly equivalent to plugins: [{ id: "web" }], and with the
 		// engine unset OpenRouter routes to the model provider's native web search
-		// (Exa only as a fallback) — which is the consumer surface BeatGeo tracks.
+		// (Exa only as a fallback) — which is the consumer surface BeatGEO tracks.
 		if (options?.webSearch && !modelSlug.includes(":online")) {
 			modelSlug = `${modelSlug}:online`;
 		}

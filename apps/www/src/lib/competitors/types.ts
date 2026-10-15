@@ -62,7 +62,7 @@ export interface Competitor {
 	highlights?: string[];
 	notes?: string;
 	/**
-	 * Why people tell us they leave this tool, and what BeatGeo does about it.
+	 * Why people tell us they leave this tool, and what BeatGEO does about it.
 	 * Hand-written and set only for the handful of tools with real "alternatives"
 	 * search demand — everything else falls back to the generated copy. Frame
 	 * `reasons` as reported user sentiment, not as claims of fact about a rival.

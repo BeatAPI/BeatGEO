@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-/** Generate BeatGeo's bars mark. Run pnpm --filter @workspace/web generate-icons. */
+/** Generate BeatGEO's bars mark. Run pnpm --filter @workspace/web generate-icons. */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -55,4 +55,4 @@ for (const size of [96, 192, 512]) {
 }
 writeFileSync(resolve(directory, "apple-touch-icon.png"), await png(180));
 writeFileSync(resolve(directory, "favicon.ico"), await pngToIco(await Promise.all([16, 32, 48].map(png))));
-console.log("BeatGeo icons generated.");
+console.log("BeatGEO icons generated.");

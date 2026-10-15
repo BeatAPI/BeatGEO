@@ -6,7 +6,7 @@ import { OffSiteCTA, OffSiteHero, OffSitePricing, OffSiteProcess, OffSiteValue }
 import { OFFSITE_FAQS } from "@/lib/faqs";
 import { breadcrumbJsonLd, canonicalUrl, faqJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "Off-Site AEO — Get Cited by AI on High-Authority Sites · BeatGeo";
+const title = "Off-Site AEO — Get Cited by AI on High-Authority Sites · BeatGEO";
 const description =
 	"Managed off-site AEO: we place human-edited guest articles on high-authority (DR20–60+) sites so AI answer engines cite your brand. Placements target your gaps, refresh monthly, and come with a report — plus the backlinks.";
 

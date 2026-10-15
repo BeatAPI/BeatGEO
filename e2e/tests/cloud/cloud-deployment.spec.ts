@@ -1,5 +1,5 @@
 /**
- * What makes an BeatGeo Cloud deployment different.
+ * What makes an BeatGEO Cloud deployment different.
  *
  * Cloud is the multi-tenant hosted product: anyone allowed by the signup
  * allowlist can register, addresses must be verified before sign-in, teammates

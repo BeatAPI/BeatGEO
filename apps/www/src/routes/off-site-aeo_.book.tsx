@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BookingPage } from "@/components/booking-page";
 import { canonicalUrl } from "@/lib/seo";
 
-const title = "Book an off-site AEO call · BeatGeo";
+const title = "Book an off-site AEO call · BeatGEO";
 const description = "Book a call to map your AEO gaps and plan placements on the sites AI answer engines cite.";
 
 export const Route = createFileRoute("/off-site-aeo_/book")({

@@ -6,9 +6,9 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { breadcrumbJsonLd, canonicalUrl, ogMeta } from "@/lib/seo";
 
-const title = "Brand · BeatGeo";
+const title = "Brand · BeatGEO";
 const description =
-	"Download BeatGeo logos, icons, and brand assets. Everything you need to represent the BeatGeo brand.";
+	"Download BeatGEO logos, icons, and brand assets. Everything you need to represent the BeatGEO brand.";
 
 export const Route = createFileRoute("/brand")({
 	head: () => ({
@@ -171,8 +171,8 @@ function BrandPage() {
 					<p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">/ BRAND</p>
 					<h1 className="font-heading text-4xl text-zinc-950 lg:text-5xl">Brand Assets</h1>
 					<p className="max-w-2xl text-lg text-balance text-zinc-600">
-						Writing about BeatGeo or building an integration? Download official logos and icons to use in blog posts,
-						videos, partner pages, or anywhere you reference BeatGeo.
+						Writing about BeatGEO or building an integration? Download official logos and icons to use in blog posts,
+						videos, partner pages, or anywhere you reference BeatGEO.
 					</p>
 				</header>
 
@@ -274,7 +274,7 @@ function BrandPage() {
 					</p>
 					<div className="mt-4 flex flex-wrap items-center justify-center gap-3">
 						<a
-							href="https://github.com/BeatAPI/BeatGeo"
+							href="https://github.com/BeatAPI/BeatGEO"
 							target="_blank"
 							rel="noopener noreferrer"
 							className={buttonVariants({ variant: "outline", size: "sm" })}
@@ -282,7 +282,7 @@ function BrandPage() {
 							Ask on Discord
 						</a>
 						<a
-							href="https://github.com/BeatAPI/BeatGeo/issues/new"
+							href="https://github.com/BeatAPI/BeatGEO/issues/new"
 							target="_blank"
 							rel="noopener noreferrer"
 							className={buttonVariants({ variant: "outline", size: "sm" })}

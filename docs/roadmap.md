@@ -1,4 +1,4 @@
-# BeatGeo roadmap
+# BeatGEO roadmap
 
 [Interactive blueprint](product/flow.html) · [67-item feature inventory](product/features.csv). These describe the target product, not completed functionality.
 

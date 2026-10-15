@@ -72,7 +72,7 @@ function organizationGroups(
 		{ title: "MCP", link: { to: "/app/org/$org/settings/mcp", params }, icon: IconPlugConnected },
 	];
 
-	// The skill is BeatGeo's, and whitelabel deployments never point users at BeatGeo.
+	// The skill is BeatGEO's, and whitelabel deployments never point users at BeatGEO.
 	if (mode !== "whitelabel") {
 		docs.push({ title: "Skill", link: { to: "/app/org/$org/settings/skill", params }, icon: IconSchool });
 	}

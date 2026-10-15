@@ -9,6 +9,6 @@ describe("self-hosted product notices", () => {
 		},
 	);
 	it("keeps information on the project", () => {
-		expect(legalUrl("privacy")).toBe("https://github.com/BeatAPI/BeatGeo/blob/main/docs/privacy.md#privacy");
+		expect(legalUrl("privacy")).toBe("https://github.com/BeatAPI/BeatGEO/blob/main/docs/privacy.md#privacy");
 	});
 });

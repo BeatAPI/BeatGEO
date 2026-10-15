@@ -6,7 +6,7 @@ describe("project destinations", () => {
 		"never advertises a nonexistent hosted offering",
 		(build) => {
 			const url = new URL(build("cli"));
-			expect(url.origin + url.pathname).toBe("https://github.com/BeatAPI/BeatGeo");
+			expect(url.origin + url.pathname).toBe("https://github.com/BeatAPI/BeatGEO");
 			expect(url.searchParams.get("ref")).toBe("cli");
 		},
 	);

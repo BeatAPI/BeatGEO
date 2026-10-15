@@ -13,7 +13,7 @@ import pngToIco from "png-to-ico";
  *   - apps/www/public/            favicon.ico, apple-touch-icon.png (root — so
  *                                 default browser probes for /favicon.ico and
  *                                 /apple-touch-icon.png resolve without needing
- *                                 explicit <link> tags). www is always BeatGeo-
+ *                                 explicit <link> tags). www is always BeatGEO-
  *                                 branded, so there's no whitelabel concern
  *                                 about these being served from the root.
  *   - apps/www/public/icons/      beatgeo-icon.svg, beatgeo-icon-maskable.svg,

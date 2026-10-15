@@ -1,5 +1,5 @@
 /**
- * Display metadata for the models BeatGeo can track: the label a customer sees and
+ * Display metadata for the models BeatGEO can track: the label a customer sees and
  * which brand logo represents it.
  *
  * Lives in config rather than with the providers because the model *names* do

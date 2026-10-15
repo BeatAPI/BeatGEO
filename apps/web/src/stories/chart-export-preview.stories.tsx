@@ -66,7 +66,7 @@ function generateChartData(days: number) {
 const defaultClientConfig: ClientConfig = {
 	mode: "local",
 	features: { readOnly: false, showOptimizeButton: false, canCreateBrands: true },
-	branding: { name: "BeatGeo", chartColors: DEFAULT_CHART_COLORS },
+	branding: { name: "BeatGEO", chartColors: DEFAULT_CHART_COLORS },
 	analytics: {},
 };
 
@@ -104,7 +104,7 @@ export const BeatGeoDefault = () => {
 	return (
 		<MockRouteContextProvider value={{ clientConfig: defaultClientConfig }}>
 			<div className="p-6 space-y-8">
-				<Section label="Default (BeatGeo) — standard prompt">
+				<Section label="Default (BeatGEO) — standard prompt">
 					<ExportPreview
 						promptName="What are the best running shoes for marathon training?"
 						visibility={80}
@@ -116,7 +116,7 @@ export const BeatGeoDefault = () => {
 					/>
 				</Section>
 
-				<Section label="Default (BeatGeo) — long prompt name (should truncate)">
+				<Section label="Default (BeatGEO) — long prompt name (should truncate)">
 					<ExportPreview
 						promptName="What are the best running shoes for long distance marathon training on trails and roads with good arch support and cushioning for heavy runners who overpronate?"
 						visibility={55}
@@ -128,7 +128,7 @@ export const BeatGeoDefault = () => {
 					/>
 				</Section>
 
-				<Section label="Default (BeatGeo) — high visibility">
+				<Section label="Default (BeatGEO) — high visibility">
 					<ExportPreview
 						promptName="Best trail running shoes 2025"
 						visibility={95}

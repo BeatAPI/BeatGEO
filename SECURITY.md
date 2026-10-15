@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We apply security fixes only to the **latest released version** of BeatGeo. If
+We apply security fixes only to the **latest released version** of BeatGEO. If
 you are running an older version, please upgrade before reporting an issue.
 
 ## Reporting a Vulnerability

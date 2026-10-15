@@ -30,7 +30,7 @@ export type InitOptions = {
 	dockerDir?: string;
 };
 
-const DEFAULT_APP_NAME = "BeatGeo";
+const DEFAULT_APP_NAME = "BeatGEO";
 const DEFAULT_APP_ICON = "/icons/beatgeo-icon.svg";
 const DEFAULT_APP_PORT = 1515;
 const LOCAL_DATABASE_URL = "postgres://postgres:postgres@postgres:5432/beatgeo";
@@ -49,8 +49,8 @@ async function confirmEnvOverwrite(configDir: string): Promise<string | undefine
 
 	p.log.warn(
 		isBeatGeoEnv
-			? `An existing BeatGeo config was found at ${configDir}.`
-			: `A .env file already exists in ${configDir} and was NOT created by BeatGeo.`,
+			? `An existing BeatGEO config was found at ${configDir}.`
+			: `A .env file already exists in ${configDir} and was NOT created by BeatGEO.`,
 	);
 	const overwrite = await p.confirm({
 		message: isBeatGeoEnv
@@ -130,7 +130,7 @@ function validatePublicUrl(value: string | undefined): string | undefined {
 	if (!value) return "Required";
 	const url = toPublicUrl(value.trim());
 	if (!url?.hostname.includes(".")) return "Enter a domain, e.g. beatgeo.example.com";
-	// Auth trusts only this origin, so BeatGeo can't be served from a subpath.
+	// Auth trusts only this origin, so BeatGEO can't be served from a subpath.
 	if (url.pathname !== "/") return "Must not include a path";
 	return undefined;
 }
@@ -138,7 +138,7 @@ function validatePublicUrl(value: string | undefined): string | undefined {
 async function configureProvidersInteractive(env: EnvMap): Promise<"recommended" | "custom"> {
 	p.note(
 		[
-			"BeatGeo needs two kinds of providers:",
+			"BeatGEO needs two kinds of providers:",
 			"",
 			pc.bold("1. A scraper") + " — to track ChatGPT and Google AI Mode (no public APIs):",
 			`     • ${pc.cyan("Cloro")}      — most reliable, every surface, ~$0.65/mo per prompt ($30/mo min)`,
@@ -153,7 +153,7 @@ async function configureProvidersInteractive(env: EnvMap): Promise<"recommended"
 			`     • ${pc.cyan("OpenRouter")} — one key, all major models (recommended)`,
 			`     • ${pc.cyan("Anthropic / OpenAI / Mistral")} — direct provider keys`,
 			"",
-			"Pricing assumes BeatGeo's default cadence (5 runs/day × 2 surfaces).",
+			"Pricing assumes BeatGEO's default cadence (5 runs/day × 2 surfaces).",
 		].join("\n"),
 		"AI providers",
 	);
@@ -281,7 +281,7 @@ async function doStart(configDir: string): Promise<void> {
 
 export async function runInit(options: InitOptions, version: string): Promise<void> {
 	printBanner();
-	p.intro(pc.bold("Setting up BeatGeo"));
+	p.intro(pc.bold("Setting up BeatGEO"));
 
 	// Said before the wizard asks for anything, not after: someone who would
 	// rather buy the managed version should find that out before they have gone
@@ -289,11 +289,11 @@ export async function runInit(options: InitOptions, version: string): Promise<vo
 	// someone without Docker still sees the option that needs none.
 	p.note(
 		[
-			"Self-hosting BeatGeo is free, and always will be. But it does mean",
+			"Self-hosting BeatGEO is free, and always will be. But it does mean",
 			"running Postgres and a worker, and opening your own scraper and",
 			"model provider accounts.",
 			"",
-			`BeatGeo Cloud is the same open-source product, hosted by us, from`,
+			`BeatGEO Cloud is the same open-source product, hosted by us, from`,
 			`${pc.bold(`$${CLOUD_ENTRY_PRICE_USD}/month`)} — scraper and model access included, nothing to`,
 			"keep running.",
 			"",
@@ -362,7 +362,7 @@ export async function runInit(options: InitOptions, version: string): Promise<vo
 
 	// ── Access ──────────────────────────────────────────────────────────
 	const access = await p.select({
-		message: "How will you access BeatGeo?",
+		message: "How will you access BeatGEO?",
 		options: [
 			{ value: "local" as const, label: "On this machine (localhost)" },
 			{ value: "public" as const, label: "From a domain (e.g. behind a reverse proxy)" },
@@ -452,7 +452,7 @@ export async function runInit(options: InitOptions, version: string): Promise<vo
 	});
 
 	p.log.message(
-		`If you find BeatGeo useful, star us on GitHub!\n  ${link(pc.cyan("https://github.com/BeatAPI/BeatGeo"), "https://github.com/BeatAPI/BeatGeo")}`,
+		`If you find BeatGEO useful, star us on GitHub!\n  ${link(pc.cyan("https://github.com/BeatAPI/BeatGEO"), "https://github.com/BeatAPI/BeatGEO")}`,
 	);
 
 	p.outro(pc.green("Setup complete!"));

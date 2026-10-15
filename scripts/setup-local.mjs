@@ -16,7 +16,7 @@ async function available(port) {
 	await new Promise((resolve, reject) => {
 		const server = net.createServer();
 		server.on("error", () =>
-			reject(new Error(`Port ${port} is occupied. Stop that service or configure BeatGeo manually.`)),
+			reject(new Error(`Port ${port} is occupied. Stop that service or configure BeatGEO manually.`)),
 		);
 		server.listen(port, "127.0.0.1", () => server.close(resolve));
 	});
@@ -73,7 +73,7 @@ try {
 	);
 	const extension = await prepareExtension(root);
 	console.log(
-		`BeatGeo is ready. Included BeatBrowser ${extension.version}.\nRun pnpm local:start, then open ${env.APP_URL}/setup\nLoad the Chrome extension from ${extension.destination}`,
+		`BeatGEO is ready. Included BeatBrowser ${extension.version}.\nRun pnpm local:start, then open ${env.APP_URL}/setup\nLoad the Chrome extension from ${extension.destination}`,
 	);
 } catch (error) {
 	console.error(error.message);

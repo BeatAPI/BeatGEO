@@ -88,9 +88,9 @@ describe("the demo next steps", () => {
 		const [, nextSteps] = (shown[1]?.[2] ?? []) as [string, string];
 		const linked = [...String(nextSteps).matchAll(/\]\((https?:[^)]+)\)/g)].map((match) => match[1]);
 		expect(linked).toEqual([
-			"https://github.com/BeatAPI/BeatGeo#product-flow",
-			"https://github.com/BeatAPI/BeatGeo/blob/main/docs/self-hosting.md",
-			"https://github.com/BeatAPI/BeatGeo/issues",
+			"https://github.com/BeatAPI/BeatGEO#product-flow",
+			"https://github.com/BeatAPI/BeatGEO/blob/main/docs/self-hosting.md",
+			"https://github.com/BeatAPI/BeatGEO/issues",
 		]);
 	});
 

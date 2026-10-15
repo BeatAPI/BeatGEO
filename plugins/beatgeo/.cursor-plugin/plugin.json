@@ -1,13 +1,13 @@
 {
   "name": "beatgeo",
-  "displayName": "BeatGeo",
+  "displayName": "BeatGEO",
   "version": "1.0.0",
   "description": "Track how ChatGPT, Claude, Perplexity, Gemini and Google AI Overviews mention and cite your brand. Read visibility, citations, competitors and the searches models ran, and add or edit tracked prompts.",
   "author": {
-    "name": "BeatGeo"
+    "name": "BeatGEO"
   },
-  "homepage": "https://github.com/BeatAPI/BeatGeo",
-  "repository": "https://github.com/BeatAPI/BeatGeo",
+  "homepage": "https://github.com/BeatAPI/BeatGEO",
+  "repository": "https://github.com/BeatAPI/BeatGEO",
   "license": "MIT",
   "keywords": ["ai visibility", "aeo", "geo", "seo", "brand monitoring", "mcp"],
   "logo": "assets/logo.svg"

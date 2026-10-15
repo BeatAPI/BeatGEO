@@ -59,5 +59,5 @@ export function authorDisplayName(value: string): string {
 	const resolved = resolveAuthor(value);
 	if (resolved.kind === "team") return resolved.author.name;
 	if (resolved.kind === "unknown") return resolved.name;
-	return "BeatGeo";
+	return "BeatGEO";
 }

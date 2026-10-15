@@ -332,7 +332,7 @@ jobs:
           STRIPE_SECRET_KEY: sk_test_ci
           STRIPE_WEBHOOK_SECRET: whsec_ci
           RESEND_API_KEY: re_ci
-          RESEND_FROM_EMAIL: BeatGeo <ci@example.com>
+          RESEND_FROM_EMAIL: BeatGEO <ci@example.com>
           GOOGLE_CLIENT_ID: ci
           GOOGLE_CLIENT_SECRET: ci
         run: |

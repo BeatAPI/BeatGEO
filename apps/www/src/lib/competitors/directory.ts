@@ -245,9 +245,9 @@ export function getAlternativesVerdict(c: Competitor): string {
 	const noun = CATEGORY_NOUN[c.category];
 	const open = isOpenSource(c);
 	if (open) {
-		return `The best open-source alternative to ${c.name} is BeatGeo: a free, self-hostable AI visibility platform you can read, run, and audit. Like ${c.name} it is open source, and it focuses on transparent, independently verifiable tracking of how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand, with white-label support for agencies.`;
+		return `The best open-source alternative to ${c.name} is BeatGEO: a free, self-hostable AI visibility platform you can read, run, and audit. Like ${c.name} it is open source, and it focuses on transparent, independently verifiable tracking of how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand, with white-label support for agencies.`;
 	}
-	return `The best free, open-source alternative to ${c.name} is BeatGeo. ${c.name} is ${indefiniteArticle(noun)} ${noun} tool, and like most of the field it is closed-source and hosted. BeatGeo you self-host for free: no license fee and no per-seat pricing, and you can audit exactly how every visibility metric is built while keeping your prompts and data in-house.`;
+	return `The best free, open-source alternative to ${c.name} is BeatGEO. ${c.name} is ${indefiniteArticle(noun)} ${noun} tool, and like most of the field it is closed-source and hosted. BeatGEO you self-host for free: no license fee and no per-seat pricing, and you can audit exactly how every visibility metric is built while keeping your prompts and data in-house.`;
 }
 
 export function getAlternativesFaqs(c: Competitor, alts: Competitor[]): FaqItem[] {
@@ -256,21 +256,21 @@ export function getAlternativesFaqs(c: Competitor, alts: Competitor[]): FaqItem[
 	return [
 		{
 			question: `What are the best alternatives to ${c.name}?`,
-			answer: `The closest alternatives to ${c.name} are other ${CATEGORY_LABELS[c.category].toLowerCase()} tools such as ${formatList(names)}. BeatGeo is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand.`,
+			answer: `The closest alternatives to ${c.name} are other ${CATEGORY_LABELS[c.category].toLowerCase()} tools such as ${formatList(names)}. BeatGEO is the open-source pick: you self-host it for free and track how every major AI answer engine mentions and cites your brand.`,
 		},
 		{
 			question: `Is there a free alternative to ${c.name}?`,
-			answer: `Yes. BeatGeo is free and open source to self-host. There is no license fee and no per-seat pricing, so you only pay for your own infrastructure and the AI provider keys you choose to use.`,
+			answer: `Yes. BeatGEO is free and open source to self-host. There is no license fee and no per-seat pricing, so you only pay for your own infrastructure and the AI provider keys you choose to use.`,
 		},
 		{
 			question: `Is there an open-source alternative to ${c.name}?`,
 			answer: open
-				? `${c.name} is itself open source, and so is BeatGeo. BeatGeo is built specifically for self-hosted, independently verifiable AI visibility tracking, so you can audit how each metric is calculated and run it on your own infrastructure.`
-				: `Yes. BeatGeo is an open-source, self-hostable AI visibility platform. You can read every line of code, run it on your own infrastructure, and verify each metric, which a closed product like ${c.name} cannot offer.`,
+				? `${c.name} is itself open source, and so is BeatGEO. BeatGEO is built specifically for self-hosted, independently verifiable AI visibility tracking, so you can audit how each metric is calculated and run it on your own infrastructure.`
+				: `Yes. BeatGEO is an open-source, self-hostable AI visibility platform. You can read every line of code, run it on your own infrastructure, and verify each metric, which a closed product like ${c.name} cannot offer.`,
 		},
 		{
-			question: `Why switch from ${c.name} to BeatGeo?`,
-			answer: `The main reasons are ownership and transparency. With BeatGeo you keep your prompts and visibility history in-house, avoid vendor lock-in, and can see exactly how scores are computed. The self-hosted core is free and managed cloud hosting starts at $29 a month.`,
+			question: `Why switch from ${c.name} to BeatGEO?`,
+			answer: `The main reasons are ownership and transparency. With BeatGEO you keep your prompts and visibility history in-house, avoid vendor lock-in, and can see exactly how scores are computed. The self-hosted core is free and managed cloud hosting starts at $29 a month.`,
 		},
 	];
 }
@@ -280,7 +280,7 @@ export function getAlternativesFaqs(c: Competitor, alts: Competitor[]): FaqItem[
 function getPairVerdict(a: Competitor, b: Competitor): string {
 	const sameCat = a.category === b.category;
 	const clause = sameCat ? `${CATEGORY_NOUN[a.category]} tools` : "AI visibility tools";
-	return `${a.name} and ${b.name} are both ${clause} that measure how AI answer engines describe your brand. ${a.name} is pitched as "${a.tagline}". ${b.name} leans on "${b.tagline}". Both are closed and hosted, so neither lets you see how its scores are built. BeatGeo tracks the same engines as an open-source tool you run yourself, which makes it the third option worth weighing here.`;
+	return `${a.name} and ${b.name} are both ${clause} that measure how AI answer engines describe your brand. ${a.name} is pitched as "${a.tagline}". ${b.name} leans on "${b.tagline}". Both are closed and hosted, so neither lets you see how its scores are built. BeatGEO tracks the same engines as an open-source tool you run yourself, which makes it the third option worth weighing here.`;
 }
 
 function getPairFaqs(a: Competitor, b: Competitor): FaqItem[] {
@@ -306,11 +306,11 @@ function getPairFaqs(a: Competitor, b: Competitor): FaqItem[] {
 		},
 		{
 			question: `Is ${a.name} or ${b.name} better for AI visibility tracking?`,
-			answer: `Neither is simply better; it depends on your priorities. Both track how AI engines mention and cite your brand across the major models, so the decision comes down to which feature set and workflow suit your team. Since both are proprietary and hosted, it is also worth trying an open-source option like BeatGeo, which you can self-host and audit before committing.`,
+			answer: `Neither is simply better; it depends on your priorities. Both track how AI engines mention and cite your brand across the major models, so the decision comes down to which feature set and workflow suit your team. Since both are proprietary and hosted, it is also worth trying an open-source option like BeatGEO, which you can self-host and audit before committing.`,
 		},
 		{
 			question: `Is there an open-source alternative to ${a.name} and ${b.name}?`,
-			answer: `Yes. BeatGeo is an open-source AI visibility platform you can self-host for free. It tracks mentions, citations, and competitor share across ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews, and every metric is auditable in the code.`,
+			answer: `Yes. BeatGEO is an open-source AI visibility platform you can self-host for free. It tracks mentions, citations, and competitor share across ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews, and every metric is auditable in the code.`,
 		},
 	];
 }
@@ -353,7 +353,7 @@ function getSetVerdict(tools: Competitor[]): string {
 		cats.has("seo-traditional") && cats.has("tracking")
 			? " They come at it from different angles: some are dedicated AI visibility trackers, others are established SEO suites that added AI search monitoring."
 			: "";
-	return `${list} all measure how AI answer engines mention and cite your brand.${angle} Every one of them is closed-source and hosted, so you cannot audit how its scores are built. BeatGeo tracks the same engines as an open-source tool you run yourself, so it belongs in this comparison as the transparent, self-hostable option.`;
+	return `${list} all measure how AI answer engines mention and cite your brand.${angle} Every one of them is closed-source and hosted, so you cannot audit how its scores are built. BeatGEO tracks the same engines as an open-source tool you run yourself, so it belongs in this comparison as the transparent, self-hostable option.`;
 }
 
 function getSetFaqs(tools: Competitor[]): FaqItem[] {
@@ -363,17 +363,17 @@ function getSetFaqs(tools: Competitor[]): FaqItem[] {
 	return [
 		{
 			question: `Which is the best tool for AI visibility among ${list}?`,
-			answer: `There is no single best pick; it depends on the answer engines you track, your budget, and whether you want a dedicated tracker or an add-on to an SEO suite. All of them are closed and hosted, so it is worth also trying BeatGeo, an open-source alternative you can self-host for free and audit before you commit.`,
+			answer: `There is no single best pick; it depends on the answer engines you track, your budget, and whether you want a dedicated tracker or an add-on to an SEO suite. All of them are closed and hosted, so it is worth also trying BeatGEO, an open-source alternative you can self-host for free and audit before you commit.`,
 		},
 		{
 			question: `Which of these AI visibility tools is free or open source?`,
 			answer: free.length
-				? `Among ${list}, ${formatList(free, free.length, false)} offer a free option, though free tiers are usually limited in the engines or history they cover. For a fully free, open-source option, BeatGeo is self-hostable at no license cost and every metric is auditable in the code.`
-				: `Most of these (${list}) are paid, hosted products. BeatGeo is the free, open-source option: self-host it at no license cost, with no per-seat pricing, and audit exactly how each metric is built.`,
+				? `Among ${list}, ${formatList(free, free.length, false)} offer a free option, though free tiers are usually limited in the engines or history they cover. For a fully free, open-source option, BeatGEO is self-hostable at no license cost and every metric is auditable in the code.`
+				: `Most of these (${list}) are paid, hosted products. BeatGEO is the free, open-source option: self-host it at no license cost, with no per-seat pricing, and audit exactly how each metric is built.`,
 		},
 		{
 			question: `How do ${list} differ?`,
-			answer: `They differ mainly in focus and delivery: dedicated AI visibility trackers versus SEO suites that bolted on AI search monitoring, plus which answer engines, languages, and analytics each one covers. The feature table on this page compares them side by side, with BeatGeo, the open-source option, included as a reference point.`,
+			answer: `They differ mainly in focus and delivery: dedicated AI visibility trackers versus SEO suites that bolted on AI search monitoring, plus which answer engines, languages, and analytics each one covers. The feature table on this page compares them side by side, with BeatGEO, the open-source option, included as a reference point.`,
 		},
 	];
 }
@@ -404,8 +404,8 @@ export function getFeatureVerdict(key: FeatureKey, tools: Competitor[]): string 
 	const names = tools.map((t) => t.name);
 	const beatgeoHas = BEAT_GEO_FEATURES[key] === true;
 	const beatgeoLine = beatgeoHas
-		? `BeatGeo includes it too, as an open-source tool you can self-host for free.`
-		: `BeatGeo concentrates on core, verifiable tracking and does not include this, so if it is essential the tools below are the better fit.`;
+		? `BeatGEO includes it too, as an open-source tool you can self-host for free.`
+		: `BeatGEO concentrates on core, verifiable tracking and does not include this, so if it is essential the tools below are the better fit.`;
 	return `${tools.length} of the AI visibility tools we track offer ${label}, including ${formatList(names)}. ${desc}. ${beatgeoLine}`;
 }
 
@@ -423,10 +423,10 @@ export function getFeatureFaqs(key: FeatureKey, tools: Competitor[]): FaqItem[] 
 			answer: `${getFeatureDescription(key)}. It is one of the capabilities buyers weigh when choosing an AI visibility or answer engine optimization tool.`,
 		},
 		{
-			question: `Does BeatGeo support ${label.toLowerCase()}?`,
+			question: `Does BeatGEO support ${label.toLowerCase()}?`,
 			answer: beatgeoHas
-				? `Yes. BeatGeo supports ${label.toLowerCase()}, and because it is open source you can verify exactly how it works and self-host it for free.`
-				: `Not currently. BeatGeo focuses on transparent, independently verifiable tracking of mentions, citations, and competitor share. If ${label.toLowerCase()} is a hard requirement, the tools listed here cover it.`,
+				? `Yes. BeatGEO supports ${label.toLowerCase()}, and because it is open source you can verify exactly how it works and self-host it for free.`
+				: `Not currently. BeatGEO focuses on transparent, independently verifiable tracking of mentions, citations, and competitor share. If ${label.toLowerCase()} is a hard requirement, the tools listed here cover it.`,
 		},
 	];
 }
@@ -435,7 +435,7 @@ export function getFeatureFaqs(key: FeatureKey, tools: Competitor[]): FaqItem[] 
 
 export function getCategoryVerdict(category: CompetitorCategory, tools: Competitor[]): string {
 	const names = tools.map((t) => t.name);
-	return `The ${CATEGORY_LABELS[category].toLowerCase()} category covers ${tools.length} of the tools we track, including ${formatList(names)}. ${CATEGORY_BLURB[category]} BeatGeo is the open-source option in this space: self-host it for free and audit how every number is built.`;
+	return `The ${CATEGORY_LABELS[category].toLowerCase()} category covers ${tools.length} of the tools we track, including ${formatList(names)}. ${CATEGORY_BLURB[category]} BeatGEO is the open-source option in this space: self-host it for free and audit how every number is built.`;
 }
 
 export function getCategoryFaqs(category: CompetitorCategory, tools: Competitor[]): FaqItem[] {
@@ -448,31 +448,31 @@ export function getCategoryFaqs(category: CompetitorCategory, tools: Competitor[
 		},
 		{
 			question: `Is there an open-source ${label} tool?`,
-			answer: `BeatGeo is an open-source AI visibility platform you can self-host for free. It tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand, with every metric open to inspection.`,
+			answer: `BeatGEO is an open-source AI visibility platform you can self-host for free. It tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand, with every metric open to inspection.`,
 		},
 	];
 }
 
 /**
- * Category-tailored pitch for the "BeatGeo: the open-source alternative" banner.
- * Each one frames BeatGeo against what that category actually leads with, so the
+ * Category-tailored pitch for the "BeatGEO: the open-source alternative" banner.
+ * Each one frames BeatGEO against what that category actually leads with, so the
  * CTA reads as specific to the page rather than a generic blurb.
  */
 const CATEGORY_BEAT_GEO_PITCH: Record<CompetitorCategory, string> = {
 	tracking:
-		"BeatGeo does the same core job as the tools on this page: it measures how AI engines mention and cite your brand. The difference is that it is open source. You can self-host it for free, keep your prompts and history on your own infrastructure, and check exactly how each score is built instead of trusting a number from a closed dashboard.",
+		"BeatGEO does the same core job as the tools on this page: it measures how AI engines mention and cite your brand. The difference is that it is open source. You can self-host it for free, keep your prompts and history on your own infrastructure, and check exactly how each score is built instead of trusting a number from a closed dashboard.",
 	content:
-		"Most tools in this category lead with content generation. BeatGeo takes a narrower path and focuses on transparent tracking, so you can measure how AI engines mention and cite your brand before you decide what to publish. It is open source and self-hosted, with no per-seat fees and no scores you cannot inspect.",
+		"Most tools in this category lead with content generation. BeatGEO takes a narrower path and focuses on transparent tracking, so you can measure how AI engines mention and cite your brand before you decide what to publish. It is open source and self-hosted, with no per-seat fees and no scores you cannot inspect.",
 	"api-developer":
-		"The tools here are API-first. BeatGeo gives you the data and the code: self-host the whole platform, read how every metric is produced, and pull mentions and citations into your own dashboards without paying per call or depending on a pipeline you cannot see.",
+		"The tools here are API-first. BeatGEO gives you the data and the code: self-host the whole platform, read how every metric is produced, and pull mentions and citations into your own dashboards without paying per call or depending on a pipeline you cannot see.",
 	ecommerce:
-		"BeatGeo tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews describe your brand across the major engines. It is the open-source choice in this space, so you run it yourself for free and verify every number rather than trusting a hosted score.",
+		"BeatGEO tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews describe your brand across the major engines. It is the open-source choice in this space, so you run it yourself for free and verify every number rather than trusting a hosted score.",
 	"seo-traditional":
-		"The platforms in this category bolted AI search tracking onto an existing SEO suite. BeatGeo was built for the AI layer from the start, and it is open source, so you can self-host it for free and confirm how each visibility metric is calculated instead of taking a bundled feature on faith.",
+		"The platforms in this category bolted AI search tracking onto an existing SEO suite. BeatGEO was built for the AI layer from the start, and it is open source, so you can self-host it for free and confirm how each visibility metric is calculated instead of taking a bundled feature on faith.",
 	"open-source":
-		"Like the other projects here, BeatGeo is open source, so you can read the code and run it yourself. It is built specifically for verifiable AI visibility tracking across ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews, and it adds white-label support for agencies with no per-seat pricing.",
+		"Like the other projects here, BeatGEO is open source, so you can read the code and run it yourself. It is built specifically for verifiable AI visibility tracking across ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews, and it adds white-label support for agencies with no per-seat pricing.",
 	other:
-		"BeatGeo is the open-source AI visibility platform in this directory. Self-host it for free, keep your data in-house, and verify how it tracks the way AI engines mention and cite your brand.",
+		"BeatGEO is the open-source AI visibility platform in this directory. Self-host it for free, keep your data in-house, and verify how it tracks the way AI engines mention and cite your brand.",
 };
 
 export function getCategoryBeatGeoPitch(category: CompetitorCategory): string {

@@ -38,7 +38,7 @@ export const blog = defineDocs({
 			tags: z.array(z.string()).optional(),
 			// Optional SEO <title> override. The post `title` is the on-page H1;
 			// when these diverge (e.g. a tighter, click-worthy ≤60-char title)
-			// set this. Falls back to `${title} · BeatGeo` when omitted.
+			// set this. Falls back to `${title} · BeatGEO` when omitted.
 			metaTitle: z.string().optional(),
 			// FAQ pairs rendered at the foot of the post AND emitted as FAQPage
 			// JSON-LD — one source of truth for the markup an answer engine lifts.

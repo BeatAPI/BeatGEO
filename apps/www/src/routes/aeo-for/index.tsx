@@ -9,7 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { aeoHeadline, aeoVerticals } from "@/data/aeo-verticals";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "Answer Engine Optimization by Industry · BeatGeo";
+const title = "Answer Engine Optimization by Industry · BeatGEO";
 const description =
 	"How answer engine optimization applies to your industry — 20 guides covering the prompts that matter, what to publish, and how AI engines pick sources in each one.";
 

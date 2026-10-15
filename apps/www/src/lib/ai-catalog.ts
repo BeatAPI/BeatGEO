@@ -9,7 +9,7 @@ const mcpServerCard = {
 	description: "Read AI visibility data — brands, prompts, citations, competitors — and manage prompts.",
 	websiteUrl: canonicalUrl("/docs/api/mcp"),
 	repository: {
-		url: "https://github.com/BeatAPI/BeatGeo",
+		url: "https://github.com/BeatAPI/BeatGEO",
 		source: "github",
 	},
 	remotes: [

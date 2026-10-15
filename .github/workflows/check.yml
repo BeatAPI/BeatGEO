@@ -1,4 +1,4 @@
-name: Check BeatGeo
+name: Check BeatGEO
 on:
   push:
     branches: [main]

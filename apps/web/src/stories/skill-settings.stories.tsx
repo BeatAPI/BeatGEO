@@ -37,7 +37,7 @@ export const Install: Story = {
 		await expect(await canvas.findByText("npx skills add BeatAPI/beat-geo")).toBeVisible();
 		await expect(canvas.getByRole("link", { name: "skills/aeo" })).toHaveAttribute(
 			"href",
-			"https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo",
+			"https://github.com/BeatAPI/BeatGEO/tree/main/skills/aeo",
 		);
 	},
 };

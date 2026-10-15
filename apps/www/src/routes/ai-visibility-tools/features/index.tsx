@@ -12,7 +12,7 @@ import {
 } from "@/lib/competitors";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "AI Visibility Tools by Feature · BeatGeo";
+const title = "AI Visibility Tools by Feature · BeatGEO";
 const description =
 	"Browse AI visibility tools by capability: multi-LLM tracking, citation analytics, sentiment, white-label, and more. See which tools offer each feature.";
 

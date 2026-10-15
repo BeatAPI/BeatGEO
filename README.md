@@ -1,4 +1,4 @@
-# BeatGeo
+# BeatGEO
 
 **Open-source AI visibility monitoring and optimization, by [BeatAPI](https://beatapi.io).**
 
@@ -26,7 +26,7 @@ flowchart TD
     K --> G
 ```
 
-[![BeatGeo 产品蓝图：12 个步骤、输入输出和复用模块](docs/product/flow.png)](docs/product/flow.html)
+[![BeatGEO 产品蓝图：12 个步骤、输入输出和复用模块](docs/product/flow.png)](docs/product/flow.html)
 
 下载仓库后，用浏览器打开 [交互蓝图](docs/product/flow.html)，可点击步骤、切换 BeatAPI / AI 图片业务、查看指标和搜索功能。图中数字为合成示例。
 
@@ -35,8 +35,8 @@ flowchart TD
 需要 **Git、Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
 
 ```sh
-git clone https://github.com/BeatAPI/BeatGeo.git
-cd BeatGeo
+git clone https://github.com/BeatAPI/BeatGEO.git
+cd BeatGEO
 node scripts/local-doctor.mjs
 pnpm local:setup
 pnpm local:start
@@ -44,11 +44,11 @@ pnpm local:start
 
 ### Fork 和团队试用
 
-Fork 本仓库会保留 BeatBrowser 的固定版本依赖，**不会自动创建一个 BeatBrowser 仓库的 fork**。`pnpm local:setup` 从 GitHub 下载锁定的 BeatBrowser 源码，并把扩展准备到 `.beat-geo/extension`。使用者只需克隆 BeatGeo；首次安装需要联网，Chrome 扩展和网站登录需手动完成。
+Fork 本仓库会保留 BeatBrowser 的固定版本依赖，**不会自动创建一个 BeatBrowser 仓库的 fork**。`pnpm local:setup` 从 GitHub 下载锁定的 BeatBrowser 源码，并把扩展准备到 `.beat-geo/extension`。使用者只需克隆 BeatGEO；首次安装需要联网，Chrome 扩展和网站登录需手动完成。
 
 ```mermaid
 flowchart LR
-    A[Fork 或克隆 BeatGeo] --> B[local:setup]
+    A[Fork 或克隆 BeatGEO] --> B[local:setup]
     B --> C[安装锁定的 BeatBrowser]
     B --> D[创建本机独立 PostgreSQL]
     C --> E[Chrome 加载扩展并登录目标网站]
@@ -57,7 +57,7 @@ flowchart LR
     F --> G
 ```
 
-团队成员各自在本机安装时，账号、数据库、API Key 和 Chrome 登录态相互独立，不会共享维护者的数据。已有 BeatBrowser 的成员可复用连接，不要同时启用两份扩展；如需本次的任务清理功能，请使用本仓库依赖的扩展版本。修改 BeatBrowser 源码的开发者才需要另外 fork 它，再显式更新 BeatGeo 的依赖和锁文件；依赖不会自动追踪主分支。
+团队成员各自在本机安装时，账号、数据库、API Key 和 Chrome 登录态相互独立，不会共享维护者的数据。已有 BeatBrowser 的成员可复用连接，不要同时启用两份扩展；如需本次的任务清理功能，请使用本仓库依赖的扩展版本。修改 BeatBrowser 源码的开发者才需要另外 fork 它，再显式更新 BeatGEO 的依赖和锁文件；依赖不会自动追踪主分支。
 
 打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
 
@@ -68,7 +68,7 @@ flowchart LR
 
 [完整用户流程：安装、账号、Key、浏览器、费用和持续运行](docs/beat-geo/getting-started.md)。
 
-`local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGeo 退出。
+`local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGEO 退出。
 
 Chrome 连接成功不等于每个网站已登录。任务在独立 TaskSpace 中执行，无法创建时明确报错，不回退到日常标签页。首次采集也会显示超时、需要登录和连接失败，失败不计作零曝光。网站账号自身限制仍然适用。
 
@@ -117,7 +117,7 @@ pnpm browser:lab
 ## One product system
 
 ```text
-BeatGeo UI / API / MCP
+BeatGEO UI / API / MCP
   └─ 品牌、问题、证据、行动与报告 / PostgreSQL
       └─ pg-boss 统一业务队列
           ├─ BeatBrowser：网页观测与引用
@@ -135,7 +135,7 @@ BeatGeo UI / API / MCP
 ## Privacy and independence
 
 - 没有上游默认遥测项目、广告账号或客服项目；分析服务仅由操作者显式配置启用。
-- 产品使用 BeatGeo 品牌，无上游购买入口、客户评价或评分背书。原营销站入口停用，历史商业文案不属于本项目承诺。
+- 产品使用 BeatGEO 品牌，无上游购买入口、客户评价或评分背书。原营销站入口停用，历史商业文案不属于本项目承诺。
 - cookies 不导出。证据默认位于 gitignored `.beat-geo/runs/`；没有新目录时可兼容读取已有 `.open-profound/runs/`，不自动搬迁或删除。
 - 本地服务只绑定 loopback，校验 Host/Origin 和提交令牌；不要通过公网隧道暴露。
 - 密钥兼容旧配置，改名不重置数据库或加密密钥。[隐私与迁移](docs/privacy.md)
@@ -155,4 +155,4 @@ pnpm test
 
 MIT。见 [LICENSE.md](LICENSE.md)、[第三方声明](THIRD_PARTY_NOTICES.md)。
 
-基于 Elmo 的开源产品基础修改，保留原作者版权和历史。GeoScore、oneglanse、niubigeo、Ansvisor 等为研究及模块评估参考，不代表本版已经复制其全部代码。BeatGeo 与 Profound 无隶属关系。
+基于 Elmo 的开源产品基础修改，保留原作者版权和历史。GeoScore、oneglanse、niubigeo、Ansvisor 等为研究及模块评估参考，不代表本版已经复制其全部代码。BeatGEO 与 Profound 无隶属关系。

@@ -1,5 +1,5 @@
 /**
- * Provision a Stripe account (test or live) with the BeatGeo Cloud catalog:
+ * Provision a Stripe account (test or live) with the BeatGEO Cloud catalog:
  * one product per plan plus the extra premium slots add-on, with monthly and
  * annual prices carrying the lookup keys the app resolves at checkout.
  *
@@ -43,7 +43,7 @@ function desiredCatalog(): DesiredPrice[] {
 		for (const [interval, usd, stripeInterval] of entries) {
 			prices.push({
 				lookupKey: stripePlanLookupKey(key, interval),
-				productName: `BeatGeo Cloud ${plan.name}`,
+				productName: `BeatGEO Cloud ${plan.name}`,
 				productKey: key,
 				unitAmountUsd: usd,
 				interval: stripeInterval,
@@ -52,14 +52,14 @@ function desiredCatalog(): DesiredPrice[] {
 	}
 	prices.push({
 		lookupKey: PREMIUM_ADDON_LOOKUP_KEYS.monthly,
-		productName: "BeatGeo Cloud Extra Premium Prompts",
+		productName: "BeatGEO Cloud Extra Premium Prompts",
 		productKey: "premium-addon",
 		unitAmountUsd: PREMIUM_ADDON_MONTHLY_USD,
 		interval: "month",
 	});
 	prices.push({
 		lookupKey: PREMIUM_ADDON_LOOKUP_KEYS.annual,
-		productName: "BeatGeo Cloud Extra Premium Prompts",
+		productName: "BeatGEO Cloud Extra Premium Prompts",
 		productKey: "premium-addon",
 		unitAmountUsd: PREMIUM_ADDON_ANNUAL_USD,
 		interval: "year",

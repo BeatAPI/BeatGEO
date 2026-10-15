@@ -1,13 +1,13 @@
 ---
 title: MCP
-description: Connect Claude Code, Codex, Cursor, VS Code, or another AI client to BeatGeo.
+description: Connect Claude Code, Codex, Cursor, VS Code, or another AI client to BeatGEO.
 ---
 
-BeatGeo serves a [Model Context Protocol](https://modelcontextprotocol.io) endpoint at `/api/mcp`, so an
+BeatGEO serves a [Model Context Protocol](https://modelcontextprotocol.io) endpoint at `/api/mcp`, so an
 AI client can read your visibility data and manage prompts without you copying numbers between
 windows.
 
-On cloud that is `https://github.com/BeatAPI/BeatGeo`. A self-hosted instance serves the same endpoint on
+On cloud that is `https://github.com/BeatAPI/BeatGEO`. A self-hosted instance serves the same endpoint on
 its own address, so swap `app.example.invalid` for yours in everything below.
 
 Every deployment also documents its own connection at **Settings → MCP** in the organization's settings
@@ -26,7 +26,7 @@ register first, on cloud or on your own instance.
 ### Claude Code
 
 ```bash
-claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGeo
+claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGEO
 ```
 
 Then run `/mcp` and choose **Authenticate**.
@@ -34,7 +34,7 @@ Then run `/mcp` and choose **Authenticate**.
 ### VS Code
 
 ```bash
-code --add-mcp '{"name":"beatgeo","type":"http","url":"https://github.com/BeatAPI/BeatGeo"}'
+code --add-mcp '{"name":"beatgeo","type":"http","url":"https://github.com/BeatAPI/BeatGEO"}'
 ```
 
 Or put it under `servers` in `mcp.json`:
@@ -42,7 +42,7 @@ Or put it under `servers` in `mcp.json`:
 ```json
 {
   "servers": {
-    "beatgeo": { "type": "http", "url": "https://github.com/BeatAPI/BeatGeo" }
+    "beatgeo": { "type": "http", "url": "https://github.com/BeatAPI/BeatGEO" }
   }
 }
 ```
@@ -59,7 +59,7 @@ In `opencode.json`:
   "mcp": {
     "beatgeo": {
       "type": "remote",
-      "url": "https://github.com/BeatAPI/BeatGeo",
+      "url": "https://github.com/BeatAPI/BeatGEO",
       "enabled": true
     }
   }
@@ -75,18 +75,18 @@ In `~/.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "beatgeo": { "url": "https://github.com/BeatAPI/BeatGeo" }
+    "beatgeo": { "url": "https://github.com/BeatAPI/BeatGEO" }
   }
 }
 ```
 
 Cursor shows the server as needing login; sign in from there. Older Cursor releases send a callback
-BeatGeo can't accept, so if signing in fails, use an API key instead.
+BeatGEO can't accept, so if signing in fails, use an API key instead.
 
 ### Codex
 
 ```bash
-codex mcp add beatgeo --url https://github.com/BeatAPI/BeatGeo
+codex mcp add beatgeo --url https://github.com/BeatAPI/BeatGEO
 codex mcp login beatgeo
 ```
 
@@ -101,14 +101,14 @@ Send it as a bearer token.
 Claude Code:
 
 ```bash
-claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGeo \
+claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGEO \
   --header "Authorization: Bearer beatgeo_..."
 ```
 
 Codex, which reads the key from the environment rather than the config file:
 
 ```bash
-codex mcp add beatgeo --url https://github.com/BeatAPI/BeatGeo \
+codex mcp add beatgeo --url https://github.com/BeatAPI/BeatGEO \
   --bearer-token-env-var BEAT_GEO_API_KEY
 ```
 
@@ -118,7 +118,7 @@ Cursor, in `~/.cursor/mcp.json`:
 {
   "mcpServers": {
     "beatgeo": {
-      "url": "https://github.com/BeatAPI/BeatGeo",
+      "url": "https://github.com/BeatAPI/BeatGEO",
       "headers": { "Authorization": "Bearer beatgeo_..." }
     }
   }
@@ -132,7 +132,7 @@ VS Code, in `mcp.json`:
   "servers": {
     "beatgeo": {
       "type": "http",
-      "url": "https://github.com/BeatAPI/BeatGeo",
+      "url": "https://github.com/BeatAPI/BeatGEO",
       "headers": { "Authorization": "Bearer beatgeo_..." }
     }
   }
@@ -147,7 +147,7 @@ OpenCode, in `opencode.json`:
   "mcp": {
     "beatgeo": {
       "type": "remote",
-      "url": "https://github.com/BeatAPI/BeatGeo",
+      "url": "https://github.com/BeatAPI/BeatGEO",
       "enabled": true,
       "headers": { "Authorization": "Bearer beatgeo_..." }
     }
@@ -170,7 +170,7 @@ be configured server-side through the `ADMIN_API_KEYS` environment variable.
 
 ## Try
 
-> What is the visibility and share of voice for each tagged prompt in BeatGeo for `<brand>`?
+> What is the visibility and share of voice for each tagged prompt in BeatGEO for `<brand>`?
 
 > What are some AEO opportunities for my `<brand>`?
 
