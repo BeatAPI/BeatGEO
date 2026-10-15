@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/component
 import { ListFilter } from "lucide-react";
 import { useMemo, useState } from "react";
 import { FilterTriggerButton } from "@/components/filter-bar";
+import { useT } from "@/lib/i18n";
 
 export interface PromptOption {
 	id: string;
@@ -20,6 +21,7 @@ export function PromptsFilterDropdown({
 	selected: readonly string[];
 	onChange: (next: string[]) => void;
 }) {
+	const t = useT();
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
 
@@ -40,7 +42,7 @@ export function PromptsFilterDropdown({
 				render={
 					<FilterTriggerButton
 						icon={<ListFilter className="size-3.5" />}
-						label="Prompts"
+						label={t("Prompts")}
 						active={selected.length > 0}
 						badgeCount={selected.length > 0 ? selected.length : undefined}
 					/>
@@ -48,14 +50,14 @@ export function PromptsFilterDropdown({
 			/>
 			<PopoverContent align="start" className="w-96 p-0">
 				<div className="flex items-center justify-between px-3 h-10 border-b">
-					<span className="font-medium text-sm">Prompts</span>
+					<span className="font-medium text-sm">{t("Prompts")}</span>
 					{selected.length > 0 && (
 						<button
 							type="button"
 							onClick={() => onChange([])}
 							className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
 						>
-							Clear
+							{t("Clear")}
 						</button>
 					)}
 				</div>
@@ -63,12 +65,12 @@ export function PromptsFilterDropdown({
 					<Input
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search prompts..."
+						placeholder={t("Search prompts...")}
 						className="h-8 text-sm"
 					/>
 				</div>
 				{visible.length === 0 ? (
-					<p className="text-sm text-muted-foreground py-6 text-center">No prompts match</p>
+					<p className="text-sm text-muted-foreground py-6 text-center">{t("No prompts match")}</p>
 				) : (
 					<div className="py-1 max-h-72 overflow-y-auto">
 						{visible.map((prompt) => {

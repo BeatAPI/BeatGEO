@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /admin - Admin dashboard with brand statistics and charts
  */
@@ -79,6 +80,7 @@ function timeUnitsToHours(units: { weeks: number; days: number; hours: number })
 }
 
 function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate: () => void }) {
+	const t = useT();
 	const defaultDelayHours = useDefaultDelayHours();
 	const [open, setOpen] = useState(false);
 	const writeError = useWriteErrorMessage();
@@ -143,18 +145,22 @@ function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate:
 			</DialogTrigger>
 			<DialogContent className="max-w-2xl">
 				<DialogHeader>
-					<DialogTitle>Configure Job Delay for {brand.name}</DialogTitle>
+					<DialogTitle>
+						{t("Configure Job Delay for ")}
+						{brand.name}
+					</DialogTitle>
 					<DialogDescription>
-						Set a custom delay for how often prompt jobs run. Default is {formatDelayHours(defaultDelayHours)}.
+						{t("Set a custom delay for how often prompt jobs run. Default is ")}
+						{formatDelayHours(defaultDelayHours)}.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="space-y-4 py-4">
 					<div className="space-y-3">
-						<Label>Custom Delay</Label>
+						<Label>{t("Custom Delay")}</Label>
 						<div className="grid grid-cols-3 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="weeks" className="text-xs text-muted-foreground">
-									Weeks
+									{t("Weeks")}
 								</Label>
 								<Input
 									id="weeks"
@@ -168,7 +174,7 @@ function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate:
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="days" className="text-xs text-muted-foreground">
-									Days
+									{t("Days")}
 								</Label>
 								<Input
 									id="days"
@@ -182,7 +188,7 @@ function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate:
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="hours" className="text-xs text-muted-foreground">
-									Hours
+									{t("Hours")}
 								</Label>
 								<Input
 									id="hours"
@@ -196,12 +202,14 @@ function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate:
 							</div>
 						</div>
 						<p className="text-sm text-muted-foreground">
-							Current: <strong>{formatDelayHours(currentDelay)}</strong>
+							{t("Current: ")}
+							<strong>{formatDelayHours(currentDelay)}</strong>
 							{brand.delayOverrideHours !== null && " (custom)"}
 							{brand.delayOverrideHours === null && " (default)"}
 						</p>
 						<p className="text-sm text-muted-foreground">
-							Total: <strong>{formatDelayHours(timeUnitsToHours(timeUnits))}</strong>
+							{t("Total: ")}
+							<strong>{formatDelayHours(timeUnitsToHours(timeUnits))}</strong>
 						</p>
 					</div>
 					{error && <p className="text-sm text-destructive">{error}</p>}
@@ -210,15 +218,15 @@ function DelayOverrideDialog({ brand, onUpdate }: { brand: BrandStats; onUpdate:
 					<div className="flex justify-between w-full">
 						{brand.delayOverrideHours !== null && (
 							<Button variant="outline" onClick={handleClearOverride} disabled={isUpdating} className="cursor-pointer">
-								Clear Override
+								{t("Clear Override")}
 							</Button>
 						)}
 						<div className="flex gap-2 ml-auto">
 							<Button variant="outline" onClick={() => setOpen(false)} disabled={isUpdating} className="cursor-pointer">
-								Cancel
+								{t("Cancel")}
 							</Button>
 							<Button onClick={handleUpdate} disabled={isUpdating} className="cursor-pointer">
-								{isUpdating ? "Updating..." : "Update"}
+								{isUpdating ? t("Updating...") : t("Update")}
 							</Button>
 						</div>
 					</div>
@@ -258,6 +266,7 @@ function ActivityIndicator({ added, removed }: { added: number; removed: number 
 /** One brand's row in the admin table. A brand is overdue when its last run is
  *  older than the delay it currently runs on. */
 function BrandStatsRow({ brand, onUpdate }: { brand: BrandStats; onUpdate: () => void }) {
+	const t = useT();
 	const defaultDelayHours = useDefaultDelayHours();
 	const currentDelayHours = brand.delayOverrideHours ?? defaultDelayHours;
 	const isOverdue =
@@ -300,14 +309,14 @@ function BrandStatsRow({ brand, onUpdate }: { brand: BrandStats; onUpdate: () =>
 						{new Date(brand.lastPromptRunAt).toLocaleDateString()}
 					</span>
 				) : (
-					<span className="text-muted-foreground">Never</span>
+					<span className="text-muted-foreground">{t("Never")}</span>
 				)}
 			</TableCell>
 			<TableCell>
 				<div className="space-y-1">
 					<div className="font-medium">{formatDelayHours(currentDelayHours)}</div>
 					<span className="text-xs text-muted-foreground">
-						{brand.delayOverrideHours !== null ? "Custom" : "Default"}
+						{brand.delayOverrideHours !== null ? t("Custom") : t("Default")}
 					</span>
 				</div>
 			</TableCell>
@@ -325,6 +334,7 @@ export const Route = createFileRoute("/_authed/admin/")({
 });
 
 function AdminDashboard() {
+	const t = useT();
 	const [brands, setBrands] = useState<BrandStats[]>([]);
 	const [brandsOverTime, setBrandsOverTime] = useState<{ date: string; count: number }[]>([]);
 	const [activeBrandsOverTime, setActiveBrandsOverTime] = useState<{ date: string; count: number }[]>([]);
@@ -379,7 +389,7 @@ function AdminDashboard() {
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-destructive">Error</CardTitle>
+					<CardTitle className="text-destructive">{t("Error")}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<p>{error}</p>
@@ -419,8 +429,8 @@ function AdminDashboard() {
 		<div className="space-y-8">
 			<div className="flex items-center justify-between">
 				<div className="space-y-2">
-					<h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-					<p className="text-muted-foreground">Monitor and manage brands, prompts, and job scheduling</p>
+					<h1 className="text-3xl font-bold tracking-tight">{t("Admin Dashboard")}</h1>
+					<p className="text-muted-foreground">{t("Monitor and manage brands, prompts, and job scheduling")}</p>
 				</div>
 			</div>
 
@@ -428,8 +438,12 @@ function AdminDashboard() {
 			<div className="grid gap-4 sm:grid-cols-2">
 				<Card>
 					<CardHeader>
-						<CardTitle>All Brands</CardTitle>
-						<CardDescription>Total: {totals.totalBrands} brands</CardDescription>
+						<CardTitle>{t("All Brands")}</CardTitle>
+						<CardDescription>
+							{t("Total: ")}
+							{totals.totalBrands}
+							{t(" brands")}
+						</CardDescription>
 					</CardHeader>
 					<CardContent className="p-0 pb-4">
 						<ChartContainer
@@ -467,9 +481,10 @@ function AdminDashboard() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Active Brands</CardTitle>
+						<CardTitle>{t("Active Brands")}</CardTitle>
 						<CardDescription>
-							With runs in last 30 days: {activeBrandsOverTime[activeBrandsOverTime.length - 1]?.count ?? 0}
+							{t("With runs in last 30 days: ")}
+							{activeBrandsOverTime[activeBrandsOverTime.length - 1]?.count ?? 0}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="p-0 pb-4">
@@ -514,9 +529,12 @@ function AdminDashboard() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Prompts</CardTitle>
+						<CardTitle>{t("Prompts")}</CardTitle>
 						<CardDescription>
-							Active: {totals.activePrompts} | Total: {totals.totalPrompts}
+							{t("Active: ")}
+							{totals.activePrompts}
+							{t(" | Total: ")}
+							{totals.totalPrompts}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="p-0 pb-4">
@@ -591,9 +609,12 @@ function AdminDashboard() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Runs</CardTitle>
+						<CardTitle>{t("Runs")}</CardTitle>
 						<CardDescription>
-							7d: {totals.promptRuns7Days.toLocaleString()} | 30d: {totals.promptRuns30Days.toLocaleString()}
+							{t("7d: ")}
+							{totals.promptRuns7Days.toLocaleString()}
+							{t(" | 30d: ")}
+							{totals.promptRuns30Days.toLocaleString()}
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="p-0 pb-4">
@@ -625,23 +646,23 @@ function AdminDashboard() {
 			{/* Brand Statistics Table */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Brand Statistics</CardTitle>
-					<CardDescription>Detailed statistics and configuration for each brand</CardDescription>
+					<CardTitle>{t("Brand Statistics")}</CardTitle>
+					<CardDescription>{t("Detailed statistics and configuration for each brand")}</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="overflow-x-auto">
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Brand</TableHead>
-									<TableHead className="text-right">Prompts</TableHead>
-									<TableHead className="text-right">Prompts (7d)</TableHead>
-									<TableHead className="text-right">Prompts (30d)</TableHead>
-									<TableHead className="text-right">Runs (7d)</TableHead>
-									<TableHead className="text-right">Runs (30d)</TableHead>
-									<TableHead>Last Run</TableHead>
-									<TableHead>Run Delay</TableHead>
-									<TableHead>Actions</TableHead>
+									<TableHead>{t("Brand")}</TableHead>
+									<TableHead className="text-right">{t("Prompts")}</TableHead>
+									<TableHead className="text-right">{t("Prompts (7d)")}</TableHead>
+									<TableHead className="text-right">{t("Prompts (30d)")}</TableHead>
+									<TableHead className="text-right">{t("Runs (7d)")}</TableHead>
+									<TableHead className="text-right">{t("Runs (30d)")}</TableHead>
+									<TableHead>{t("Last Run")}</TableHead>
+									<TableHead>{t("Run Delay")}</TableHead>
+									<TableHead>{t("Actions")}</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>

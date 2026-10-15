@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/component
 import { useState } from "react";
 import { SiteIcon } from "@/components/site-icon";
 import { useBrand } from "@/hooks/use-brands";
+import { useT } from "@/lib/i18n";
 import { addDomainToBrandFn, addDomainToCompetitorFn, createCompetitorFromDomainFn } from "@/server/brands";
 
 export function TrackDomainPopover({
@@ -23,6 +24,7 @@ export function TrackDomainPopover({
 	competitors: Array<{ id: string; name: string; domains: string[] }>;
 	onAdded?: () => void;
 }) {
+	const t = useT();
 	const { data: brand } = useBrand(brandId);
 	const [open, setOpen] = useState(false);
 	const [newName, setNewName] = useState("");
@@ -103,19 +105,21 @@ export function TrackDomainPopover({
 			<PopoverContent className="w-72 p-3" align="end">
 				<div className="space-y-3">
 					<p className="text-xs font-medium">
-						Track <strong>{domain}</strong>
+						{t("Track ")}
+						<strong>{domain}</strong>
 					</p>
 
 					{error && <p className="text-xs text-destructive bg-destructive/10 rounded px-2 py-1.5">{error}</p>}
 
 					<div className="space-y-1">
 						<div className="flex items-center gap-1">
-							<p className="text-[11px] text-muted-foreground">Add as brand domain</p>
+							<p className="text-[11px] text-muted-foreground">{t("Add as brand domain")}</p>
 							<Tooltip>
 								<TooltipTrigger render={<IconInfoCircle className="h-3 w-3 text-muted-foreground cursor-help" />} />
 								<TooltipContent className="max-w-xs text-xs font-normal">
-									Applies <strong>retroactively</strong> &mdash; all existing and future citations from this domain will
-									be classified as your brand.
+									{t("Applies ")}
+									<strong>{t("retroactively")}</strong>
+									{t(" — all existing and future citations from this domain will be classified as your brand.")}
 								</TooltipContent>
 							</Tooltip>
 						</div>
@@ -133,12 +137,15 @@ export function TrackDomainPopover({
 					{competitors.length > 0 && (
 						<div className="space-y-1">
 							<div className="flex items-center gap-1">
-								<p className="text-[11px] text-muted-foreground">Add to existing competitor</p>
+								<p className="text-[11px] text-muted-foreground">{t("Add to existing competitor")}</p>
 								<Tooltip>
 									<TooltipTrigger render={<IconInfoCircle className="h-3 w-3 text-muted-foreground cursor-help" />} />
 									<TooltipContent className="max-w-xs text-xs font-normal">
-										Applies <strong>retroactively</strong> &mdash; all existing and future citations from this domain
-										will be classified under the selected competitor.
+										{t("Applies ")}
+										<strong>{t("retroactively")}</strong>
+										{t(
+											" — all existing and future citations from this domain will be classified under the selected competitor.",
+										)}
 									</TooltipContent>
 								</Tooltip>
 							</div>
@@ -160,12 +167,12 @@ export function TrackDomainPopover({
 					)}
 
 					<div className="space-y-1.5">
-						<p className="text-[11px] text-muted-foreground">Or create new competitor:</p>
+						<p className="text-[11px] text-muted-foreground">{t("Or create new competitor:")}</p>
 						<div className="flex gap-1.5">
 							<Input
 								value={newName}
 								onChange={(e) => setNewName(e.target.value)}
-								placeholder="Competitor name"
+								placeholder={t("Competitor name")}
 								className="h-7 text-xs"
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
@@ -181,7 +188,7 @@ export function TrackDomainPopover({
 								disabled={saving || !newName.trim()}
 								className="h-7 px-2 text-xs cursor-pointer shrink-0"
 							>
-								Add
+								{t("Add")}
 							</Button>
 						</div>
 					</div>

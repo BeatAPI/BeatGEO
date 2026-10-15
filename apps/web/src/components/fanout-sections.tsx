@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * Shared fan-out UI sections, used by the Query Fan-Out page and the prompt
  * details "Web Queries" tab: variation lines with prompt-keyword bolding and
@@ -45,13 +46,15 @@ export function InfoTip({ children }: { children: React.ReactNode }) {
  * queries.
  */
 export function UnknownQueriesNote({ byModel }: { byModel: ModelFanoutStat[] }) {
+	const t = useT();
 	const hidden = byModel.filter((m) => m.runs > 0 && m.totalQueries === 0);
 	if (hidden.length === 0) return null;
 	return (
 		<div className="text-muted-foreground text-xs">
-			{hidden.map((m) => getModelDisplayName(m.model)).join(", ")} ran with web search enabled but the queries are
-			unknown — the engine may not have searched, searched with just the prompt itself, or searched without revealing
-			its queries.
+			{hidden.map((m) => getModelDisplayName(m.model)).join(", ")}
+			{t(
+				" ran with web search enabled but the queries are unknown — the engine may not have searched, searched with just the prompt itself, or searched without revealing its queries.",
+			)}
 		</div>
 	);
 }
@@ -76,6 +79,7 @@ export function VariationLine({
 	/** When provided, replaces the plain total with per-model counts. */
 	modelCounts?: VariationModelCount[];
 }) {
+	const t = useT();
 	const seen = new Map<string, number>();
 	const segs = variation.query
 		.split(/\s+/)
@@ -97,12 +101,15 @@ export function VariationLine({
 			{modelCounts?.length ? (
 				<span
 					className="text-muted-foreground shrink-0 text-right text-xs tabular-nums leading-6"
-					title="Times each engine ran this search"
+					title={t("Times each engine ran this search")}
 				>
 					{modelCounts.map((mc) => `${mc.count.toLocaleString()}× ${getModelDisplayName(mc.model)}`).join(" · ")}
 				</span>
 			) : (
-				<span className="text-muted-foreground shrink-0 text-sm tabular-nums" title="Times engines ran this search">
+				<span
+					className="text-muted-foreground shrink-0 text-sm tabular-nums"
+					title={t("Times engines ran this search")}
+				>
 					{variation.count.toLocaleString()}×
 				</span>
 			)}
@@ -123,8 +130,9 @@ export function VariationsList({
 	/** query → per-model counts, for the inline "2× ChatGPT" breakdown. */
 	modelCounts?: Map<string, VariationModelCount[]>;
 }) {
+	const t = useT();
 	if (variations.length === 0) {
-		return <div className="text-muted-foreground py-4 text-sm">No web queries for this selection.</div>;
+		return <div className="text-muted-foreground py-4 text-sm">{t("No web queries for this selection.")}</div>;
 	}
 	return (
 		<div className="space-y-2">
@@ -133,7 +141,11 @@ export function VariationsList({
 			))}
 			{totalUnique !== undefined && totalUnique > variations.length && (
 				<div className="text-muted-foreground text-xs">
-					Top {variations.length} of {totalUnique.toLocaleString()} variations shown
+					{t("Top ")}
+					{variations.length}
+					{t(" of ")}
+					{totalUnique.toLocaleString()}
+					{t(" variations shown")}
 				</div>
 			)}
 		</div>
@@ -153,6 +165,7 @@ const WORD_TAB_HELP: Record<WordTab, string> = {
 };
 
 export function QueryWordsSection({ terms, wordChanges }: { terms: TermStat[]; wordChanges: WordChanges }) {
+	const t = useT();
 	const [tab, setTab] = useState<WordTab>("added");
 	const [hideStop, setHideStop] = useState(true);
 
@@ -177,23 +190,23 @@ export function QueryWordsSection({ terms, wordChanges }: { terms: TermStat[]; w
 					<div className="flex flex-wrap items-center justify-between gap-3">
 						<div>
 							<CardTitle className="flex items-center gap-1.5 text-base">
-								Word Changes
+								{t("Word Changes")}
 								<InfoTip>{WORD_TAB_HELP[tab]}</InfoTip>
 							</CardTitle>
-							<CardDescription>How engines rewrite your prompt wording.</CardDescription>
+							<CardDescription>{t("How engines rewrite your prompt wording.")}</CardDescription>
 						</div>
 						<div className="flex items-center gap-4">
 							<div className="flex items-center gap-2">
 								<Switch id="qf-hide-stop" checked={hideStop} onCheckedChange={setHideStop} />
 								<label htmlFor="qf-hide-stop" className="text-muted-foreground cursor-pointer text-sm">
-									Hide stop words
+									{t("Hide stop words")}
 								</label>
 							</div>
 							<Tabs value={tab} onValueChange={(v) => setTab(v as WordTab)}>
 								<TabsList>
-									<TabsTrigger value="added">Added</TabsTrigger>
-									<TabsTrigger value="preserved">Preserved</TabsTrigger>
-									<TabsTrigger value="dropped">Dropped</TabsTrigger>
+									<TabsTrigger value="added">{t("Added")}</TabsTrigger>
+									<TabsTrigger value="preserved">{t("Preserved")}</TabsTrigger>
+									<TabsTrigger value="dropped">{t("Dropped")}</TabsTrigger>
 								</TabsList>
 							</Tabs>
 						</div>
@@ -205,7 +218,10 @@ export function QueryWordsSection({ terms, wordChanges }: { terms: TermStat[]; w
 						<ProgressBarChart items={items} defaultColor={FANOUT_PURPLE} />
 					) : (
 						<div className="text-muted-foreground py-6 text-center text-sm">
-							No {tab} words{hideStop ? " (try showing stop words)" : ""}.
+							{t("No ")}
+							{tab}
+							{t(" words")}
+							{hideStop ? t(" (try showing stop words)") : ""}.
 						</div>
 					)}
 				</CardContent>

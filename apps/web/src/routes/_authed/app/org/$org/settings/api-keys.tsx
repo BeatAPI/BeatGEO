@@ -46,6 +46,7 @@ import { useDeploymentFeatures } from "@/hooks/use-deployment-features";
 import { useIsTruncated } from "@/hooks/use-is-truncated";
 import { useOrganization } from "@/hooks/use-organizations";
 import { API_SCOPES } from "@/lib/api/scopes";
+import { useT } from "@/lib/i18n";
 import { trackEvent } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
 import {
@@ -89,6 +90,7 @@ function inactiveReason(key: ApiKeySummary): string {
 }
 
 function ApiKeysSettingsPage() {
+	const t = useT();
 	const { keys, brands, expiryOptions, canManage: isKeyAdmin, organization } = Route.useLoaderData();
 	const readOnly = useDeploymentFeatures()?.readOnly ?? false;
 	const canManage = isKeyAdmin && !readOnly;
@@ -129,41 +131,41 @@ function ApiKeysSettingsPage() {
 	return (
 		<div className="max-w-6xl space-y-8">
 			<header className="space-y-1">
-				<h1 className="text-3xl font-bold">API Keys</h1>
+				<h1 className="text-3xl font-bold">{t("API Keys")}</h1>
 				<p className="max-w-2xl text-muted-foreground">
-					Keys authenticate the{" "}
+					{t("Keys authenticate the")}{" "}
 					<Link to="/app/org/$org/settings/api" params={linkParams} className="underline underline-offset-4">
-						REST API
+						{t("REST API")}
 					</Link>{" "}
-					and{" "}
+					{t("and")}{" "}
 					<Link to="/app/org/$org/settings/mcp" params={linkParams} className="underline underline-offset-4">
 						MCP
 					</Link>{" "}
-					connections for this organization.
+					{t("connections for this organization.")}
 				</p>
 			</header>
 
 			{issuedKey && <IssuedKeyCard value={issuedKey} />}
 
-			<DemoModeAlert>API access is disabled in demo mode.</DemoModeAlert>
+			<DemoModeAlert>{t("API access is disabled in demo mode.")}</DemoModeAlert>
 
 			{!isKeyAdmin && !readOnly && (
 				<Alert className="border-yellow-200 bg-yellow-50 text-yellow-800">
 					<IconAlertTriangle />
-					<AlertTitle>Limited Access</AlertTitle>
+					<AlertTitle>{t("Limited Access")}</AlertTitle>
 					<AlertDescription className="text-yellow-700">
-						Only organization admins can issue or revoke keys.
+						{t("Only organization admins can issue or revoke keys.")}
 					</AlertDescription>
 				</Alert>
 			)}
 
 			<section className="space-y-3">
 				<div className="flex flex-wrap items-center justify-between gap-3">
-					<h2 className="text-lg font-semibold">Active</h2>
+					<h2 className="text-lg font-semibold">{t("Active")}</h2>
 					{canManage && (
 						<Button type="button" size="sm" onClick={() => setCreatingOpen(true)}>
 							<IconPlus className="size-4" />
-							Add Key
+							{t("Add Key")}
 						</Button>
 					)}
 				</div>
@@ -194,8 +196,10 @@ function ApiKeysSettingsPage() {
 			{inactive.length > 0 && (
 				<section className="space-y-3">
 					<div className="space-y-1">
-						<h2 className="text-lg font-semibold text-muted-foreground">Inactive</h2>
-						<p className="text-sm text-muted-foreground">Revoked or expired — they no longer authenticate anything.</p>
+						<h2 className="text-lg font-semibold text-muted-foreground">{t("Inactive")}</h2>
+						<p className="text-sm text-muted-foreground">
+							{t("Revoked or expired — they no longer authenticate anything.")}
+						</p>
 					</div>
 					<KeyTable keys={inactive} brandNames={brandNames} inactive />
 				</section>
@@ -204,7 +208,7 @@ function ApiKeysSettingsPage() {
 			<Dialog open={creatingOpen} onOpenChange={setCreatingOpen}>
 				<DialogContent className="flex max-h-[85vh] flex-col gap-4 sm:max-w-2xl">
 					<DialogHeader className="shrink-0">
-						<DialogTitle>Create a key</DialogTitle>
+						<DialogTitle>{t("Create a key")}</DialogTitle>
 					</DialogHeader>
 					<CreateKeyForm
 						organizationId={organization.id}
@@ -224,8 +228,13 @@ function ApiKeysSettingsPage() {
 			>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Revoke “{revokeTarget?.name ?? "Untitled key"}”?</DialogTitle>
-						<DialogDescription>This key will immediately and permanently have its access revoked.</DialogDescription>
+						<DialogTitle>
+							{t("Revoke “")}
+							{revokeTarget?.name ?? "Untitled key"}”?
+						</DialogTitle>
+						<DialogDescription>
+							{t("This key will immediately and permanently have its access revoked.")}
+						</DialogDescription>
 					</DialogHeader>
 					{revokeError && (
 						<Alert variant="destructive">
@@ -235,7 +244,7 @@ function ApiKeysSettingsPage() {
 					)}
 					<DialogFooter>
 						<Button type="button" variant="outline" disabled={revoking} onClick={() => setRevokeTarget(null)}>
-							Cancel
+							{t("Cancel")}
 						</Button>
 						<Button
 							type="button"
@@ -244,7 +253,7 @@ function ApiKeysSettingsPage() {
 							onClick={() => revokeTarget && handleRevoke(revokeTarget.id)}
 						>
 							{revoking ? <Spinner /> : null}
-							{revoking ? "Revoking…" : "Revoke"}
+							{revoking ? t("Revoking…") : t("Revoke")}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -266,6 +275,7 @@ function CreateKeyForm({
 	onCreated: (key: string) => void;
 	onCancel: () => void;
 }) {
+	const t = useT();
 	const [name, setName] = useState("");
 	const [access, setAccess] = useState<ApiKeyAccess>("read");
 	const [restrictBrands, setRestrictBrands] = useState(false);
@@ -311,17 +321,17 @@ function CreateKeyForm({
 
 				<div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_10rem]">
 					<div className="space-y-2">
-						<Label htmlFor="key-name">Name</Label>
+						<Label htmlFor="key-name">{t("Name")}</Label>
 						<Input
 							id="key-name"
-							placeholder="Reporting pipeline"
+							placeholder={t("Reporting pipeline")}
 							value={name}
 							onChange={(event) => setName(event.target.value)}
 							required
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="key-expiry">Expires</Label>
+						<Label htmlFor="key-expiry">{t("Expires")}</Label>
 						<Select
 							items={{
 								never: "Never",
@@ -334,10 +344,12 @@ function CreateKeyForm({
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="never">Never</SelectItem>
+								<SelectItem value="never">{t("Never")}</SelectItem>
 								{expiryOptions.map((days) => (
 									<SelectItem key={days} value={String(days)}>
-										In {days} days
+										{t("In ")}
+										{days}
+										{t(" days")}
 									</SelectItem>
 								))}
 							</SelectContent>
@@ -362,11 +374,11 @@ function CreateKeyForm({
 
 			<DialogFooter className="shrink-0 items-center border-t pt-4">
 				<Button type="button" variant="outline" disabled={creating} onClick={onCancel}>
-					Cancel
+					{t("Cancel")}
 				</Button>
 				<Button type="submit" disabled={creating}>
 					{creating && <Spinner />}
-					{creating ? "Creating…" : "Create"}
+					{creating ? t("Creating…") : t("Create")}
 				</Button>
 			</DialogFooter>
 		</form>
@@ -374,9 +386,10 @@ function CreateKeyForm({
 }
 
 function AccessPicker({ access, onAccess }: { access: ApiKeyAccess; onAccess: (access: ApiKeyAccess) => void }) {
+	const t = useT();
 	return (
 		<section className="space-y-3">
-			<p className="text-sm font-medium">Access</p>
+			<p className="text-sm font-medium">{t("Access")}</p>
 			<Tabs value={access} onValueChange={(value) => onAccess((value ?? "read") as ApiKeyAccess)}>
 				<TabsList>
 					<TabsTrigger value="read">{ACCESS_LABELS.read}</TabsTrigger>
@@ -400,6 +413,7 @@ function BrandPicker({
 	onRestricted: (restricted: boolean) => void;
 	onSelected: (brandIds: string[]) => void;
 }) {
+	const t = useT();
 	// Ids are what the key is issued against; the combobox filters and labels
 	// them by name.
 	const brandIds = brands.map((brand) => brand.id);
@@ -408,19 +422,19 @@ function BrandPicker({
 
 	return (
 		<section className="space-y-3">
-			<p className="text-sm font-medium">Brand access</p>
+			<p className="text-sm font-medium">{t("Brand access")}</p>
 			<Tabs value={restricted ? "custom" : "all"} onValueChange={(value) => onRestricted(value === "custom")}>
 				<TabsList>
-					<TabsTrigger value="all">All brands</TabsTrigger>
-					<TabsTrigger value="custom">Specific brands</TabsTrigger>
+					<TabsTrigger value="all">{t("All brands")}</TabsTrigger>
+					<TabsTrigger value="custom">{t("Specific brands")}</TabsTrigger>
 				</TabsList>
 				<TabsContent value="all" className="pt-1 text-sm text-muted-foreground">
-					Every brand in this organization, including brands added later.
+					{t("Every brand in this organization, including brands added later.")}
 				</TabsContent>
 				<TabsContent value="custom" className="pt-1">
 					{brands.length === 0 ? (
 						<p className="text-sm text-muted-foreground">
-							This organization has no brands yet, so there is nothing to narrow the key to.
+							{t("This organization has no brands yet, so there is nothing to narrow the key to.")}
 						</p>
 					) : (
 						<BrandCombobox brandIds={brandIds} nameOf={nameOf} selected={selected} onSelected={onSelected} />
@@ -442,6 +456,7 @@ function BrandCombobox({
 	selected: string[];
 	onSelected: (brandIds: string[]) => void;
 }) {
+	const t = useT();
 	const anchor = useComboboxAnchor();
 
 	return (
@@ -460,13 +475,13 @@ function BrandCombobox({
 							{ids.map((id) => (
 								<ComboboxChip key={id}>{nameOf(id)}</ComboboxChip>
 							))}
-							<ComboboxChipsInput placeholder={ids.length === 0 ? "Search brands…" : undefined} />
+							<ComboboxChipsInput placeholder={ids.length === 0 ? t("Search brands…") : undefined} />
 						</>
 					)}
 				</ComboboxValue>
 			</ComboboxChips>
 			<ComboboxContent anchor={anchor}>
-				<ComboboxEmpty>No brands found.</ComboboxEmpty>
+				<ComboboxEmpty>{t("No brands found.")}</ComboboxEmpty>
 				<ComboboxList>
 					{(id: string) => (
 						<ComboboxItem key={id} value={id}>
@@ -480,11 +495,12 @@ function BrandCombobox({
 }
 
 function IssuedKeyCard({ value }: { value: string }) {
+	const t = useT();
 	return (
 		<Card className="flex-row flex-wrap items-center justify-between gap-3 border-emerald-500/40 bg-emerald-50/60 px-4 py-3">
 			<CardTitle className="flex items-center gap-2 text-emerald-700">
 				<IconCircleCheck className="size-5" />
-				Key Created
+				{t("Key Created")}
 			</CardTitle>
 			<div className="flex min-w-0 items-center gap-2">
 				<code className="truncate rounded-md border bg-background px-3 py-1.5 font-mono text-sm">{value}</code>
@@ -497,8 +513,9 @@ function IssuedKeyCard({ value }: { value: string }) {
 /** One pill per grant, always in scope order rather than the order the key
  * happens to hold them in. */
 function AccessCell({ scopes }: { scopes: readonly string[] }) {
+	const t = useT();
 	const held = API_SCOPES.filter((scope) => scopes.includes(scope));
-	if (held.length === 0) return <span className="text-muted-foreground">No access</span>;
+	if (held.length === 0) return <span className="text-muted-foreground">{t("No access")}</span>;
 
 	return (
 		<div className="flex flex-wrap gap-1">
@@ -522,21 +539,22 @@ function KeyTable({
 	inactive?: boolean;
 	onRevoke?: (key: ApiKeySummary) => void;
 }) {
+	const t = useT();
 	return (
 		<Card className={cn("gap-0 overflow-hidden py-0", inactive && "bg-muted/40 text-muted-foreground")}>
 			{/* Fixed widths so the two tables line up as one grid when stacked. */}
 			<Table className="min-w-[58rem] table-fixed [&_td]:px-4 [&_th]:px-4">
 				<TableHeader>
 					<TableRow className="hover:bg-transparent">
-						<TableHead className="w-[22%]">Name</TableHead>
-						<TableHead className="w-[10%]">Key</TableHead>
-						<TableHead className="w-[14%]">Access</TableHead>
-						<TableHead className="w-[12%]">Brands</TableHead>
-						<TableHead className="w-[10%]">Created</TableHead>
-						<TableHead className="w-[10%]">Last used</TableHead>
-						<TableHead className="w-[15%]">{inactive ? "Reason" : "Expires"}</TableHead>
+						<TableHead className="w-[22%]">{t("Name")}</TableHead>
+						<TableHead className="w-[10%]">{t("Key")}</TableHead>
+						<TableHead className="w-[14%]">{t("Access")}</TableHead>
+						<TableHead className="w-[12%]">{t("Brands")}</TableHead>
+						<TableHead className="w-[10%]">{t("Created")}</TableHead>
+						<TableHead className="w-[10%]">{t("Last used")}</TableHead>
+						<TableHead className="w-[15%]">{inactive ? t("Reason") : t("Expires")}</TableHead>
 						<TableHead className="w-[7%] text-right">
-							<span className="sr-only">Actions</span>
+							<span className="sr-only">{t("Actions")}</span>
 						</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -576,6 +594,7 @@ function KeyTable({
 /** Only the opening characters of a key are kept, so the cell says where the
  * rest went rather than leaving a bare stub. */
 function KeyCell({ start }: { start: string | null }) {
+	const t = useT();
 	if (!start) return <span className="text-muted-foreground">—</span>;
 
 	return (
@@ -586,7 +605,7 @@ function KeyCell({ start }: { start: string | null }) {
 				{start}…
 			</TooltipTrigger>
 			<TooltipContent className="max-w-xs">
-				You can't view a key after it's created. Create a new key if you need one.
+				{t("You can't view a key after it's created. Create a new key if you need one.")}
 			</TooltipContent>
 		</Tooltip>
 	);
@@ -609,6 +628,7 @@ function BrandsCell({ names }: { names: string[] | null }) {
 /** Icon-only: one row per key, and the action is rare enough that a column of
  * outlined buttons was louder than the keys themselves. */
 function RevokeButton({ onClick }: { onClick: () => void }) {
+	const t = useT();
 	return (
 		<Tooltip>
 			<TooltipTrigger
@@ -621,11 +641,11 @@ function RevokeButton({ onClick }: { onClick: () => void }) {
 						onClick={onClick}
 					>
 						<IconX className="size-4" />
-						<span className="sr-only">Revoke</span>
+						<span className="sr-only">{t("Revoke")}</span>
 					</Button>
 				}
 			/>
-			<TooltipContent>Revoke Key</TooltipContent>
+			<TooltipContent>{t("Revoke Key")}</TooltipContent>
 		</Tooltip>
 	);
 }
@@ -641,6 +661,7 @@ function EmptyKeys({
 	hasInactive: boolean;
 	onCreate: () => void;
 }) {
+	const t = useT();
 	const reason = readOnly ? "Keys can't be issued in demo mode." : "An organization admin can issue one.";
 
 	return (
@@ -649,15 +670,15 @@ function EmptyKeys({
 				<IconKey className="size-5" />
 			</span>
 			<div className="space-y-1">
-				<p className="font-medium">{hasInactive ? "No active API keys" : "No API keys yet"}</p>
+				<p className="font-medium">{hasInactive ? t("No active API keys") : t("No API keys yet")}</p>
 				<p className="max-w-sm text-sm text-muted-foreground">
-					{canManage ? "Issue one to call the REST API or connect an MCP client." : reason}
+					{canManage ? t("Issue one to call the REST API or connect an MCP client.") : reason}
 				</p>
 			</div>
 			{canManage && (
 				<Button type="button" onClick={onCreate}>
 					<IconPlus className="size-4" />
-					{hasInactive ? "Create a key" : "Create your first key"}
+					{hasInactive ? t("Create a key") : t("Create your first key")}
 				</Button>
 			)}
 		</div>

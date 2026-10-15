@@ -1,6 +1,7 @@
 import { getModelMeta } from "@workspace/config/models";
 import { Button } from "@workspace/ui/components/button";
 import { PlatformPicker } from "@/components/platform-picker";
+import { useT } from "@/lib/i18n";
 import type { OnboardingPlatformState } from "@/server/platform-picks";
 
 interface PlatformSelectionStepProps {
@@ -30,6 +31,7 @@ export function PlatformSelectionStep({
 	onSubmit,
 	submitLabel,
 }: PlatformSelectionStepProps) {
+	const t = useT();
 	const limit = state.platformPicks;
 	const locked = state.available.length === 1;
 	const onlyOption = state.available[0];
@@ -38,8 +40,12 @@ export function PlatformSelectionStep({
 		<div className="space-y-4">
 			<p className="text-sm text-muted-foreground">
 				{locked && onlyOption
-					? `Your plan includes ${getModelMeta(onlyOption.model).label} tracking. You can change platforms anytime in settings.`
-					: `Your plan tracks up to ${limit} platform${limit === 1 ? "" : "s"} for this brand. You can change these anytime in settings.`}
+					? t("Your plan includes {model} tracking. You can change platforms anytime in settings.", {
+							model: getModelMeta(onlyOption.model).label,
+						})
+					: t("Your plan tracks up to {count} platforms for this brand. You can change these anytime in settings.", {
+							count: limit,
+						})}
 			</p>
 
 			<PlatformPicker
@@ -53,15 +59,17 @@ export function PlatformSelectionStep({
 
 			{!locked && (
 				<p className="text-xs text-muted-foreground">
-					{selected.size === 0 ? "Pick at least one platform." : `${selected.size} of ${limit} selected`}
+					{selected.size === 0
+						? t("Pick at least one platform.")
+						: t("{selected} of {limit} selected", { selected: selected.size, limit })}
 				</p>
 			)}
 
-			{error && <p className="text-sm text-destructive">{error}</p>}
+			{error && <p className="text-sm text-destructive">{t(error)}</p>}
 
 			<div className="flex gap-2">
 				<Button type="button" variant="outline" onClick={onBack} disabled={disabled}>
-					Back
+					{t("Back")}
 				</Button>
 				<Button type="button" className="flex-1" onClick={onSubmit} disabled={disabled || selected.size === 0}>
 					{submitLabel}

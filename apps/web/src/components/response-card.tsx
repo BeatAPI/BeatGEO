@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { ResponseMarkdown } from "@/components/response-markdown";
 import { SiteIcon } from "@/components/site-icon";
 import { HIGHLIGHT_CLASS, splitHighlights } from "@/lib/highlight";
+import { useT } from "@/lib/i18n";
 import { skeletonRows } from "@/lib/skeleton-rows";
 import { getModelDisplayName } from "@/lib/utils";
 
@@ -39,26 +40,27 @@ export function ResponseCard({
 	brandName?: string;
 	domainFor: (name: string) => string | undefined;
 }) {
+	const t = useT();
 	return (
 		<Card>
 			<CardHeader className="pb-0 gap-y-0">
 				{prompt && (
 					<div className="mb-3 text-sm">
-						<span className="text-muted-foreground block text-xs mb-0.5">Prompt</span>
+						<span className="text-muted-foreground block text-xs mb-0.5">{t("Prompt")}</span>
 						{prompt}
 					</div>
 				)}
 				<div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
 					<div>
-						<span className="text-muted-foreground block text-xs mb-0.5">Model</span>
+						<span className="text-muted-foreground block text-xs mb-0.5">{t("Model")}</span>
 						<span>{getModelDisplayName(run.model)}</span>
 					</div>
 					<div>
-						<span className="text-muted-foreground block text-xs mb-0.5">Version</span>
-						<span>{run.version === "beat-browser" ? "Account default (not pinned)" : run.version}</span>
+						<span className="text-muted-foreground block text-xs mb-0.5">{t("Version")}</span>
+						<span>{run.version === "beat-browser" ? t("Account default (not pinned)") : run.version}</span>
 					</div>
 					<div>
-						<span className="text-muted-foreground block text-xs mb-0.5">Evaluated</span>
+						<span className="text-muted-foreground block text-xs mb-0.5">{t("Evaluated")}</span>
 						<span>{formatDate(run.createdAt)}</span>
 					</div>
 				</div>
@@ -67,7 +69,7 @@ export function ResponseCard({
 			<CardContent className="space-y-5">
 				{run.webQueries && run.webQueries.length > 0 && (
 					<div>
-						<span className="text-xs text-muted-foreground block mb-1.5">Web Queries</span>
+						<span className="text-xs text-muted-foreground block mb-1.5">{t("Web Queries")}</span>
 						<div className="flex flex-wrap gap-1.5">
 							{[...new Set<string>(run.webQueries)].map((query) => (
 								<Badge key={query} variant="outline" className="text-xs font-normal">
@@ -79,7 +81,7 @@ export function ResponseCard({
 				)}
 
 				<div>
-					<span className="text-xs text-muted-foreground block mb-1.5">Tracked brands mentioned</span>
+					<span className="text-xs text-muted-foreground block mb-1.5">{t("Tracked brands mentioned")}</span>
 					<div className="flex flex-wrap gap-1.5">
 						{run.brandMentioned && brandName && (
 							<Badge className="text-xs font-normal">
@@ -94,13 +96,13 @@ export function ResponseCard({
 							</Badge>
 						))}
 						{!run.brandMentioned && (!run.competitorsMentioned || run.competitorsMentioned.length === 0) && (
-							<span className="text-xs text-muted-foreground">None of your tracked brands</span>
+							<span className="text-xs text-muted-foreground">{t("None of your tracked brands")}</span>
 						)}
 					</div>
 				</div>
 
 				<div>
-					<span className="text-xs text-muted-foreground block mb-1.5">Answer</span>
+					<span className="text-xs text-muted-foreground block mb-1.5">{t("Answer")}</span>
 					<div className="rounded-md border bg-muted/30 p-4 max-h-64 overflow-auto">
 						<ResponseMarkdown highlight={highlight}>{text}</ResponseMarkdown>
 					</div>
@@ -108,7 +110,7 @@ export function ResponseCard({
 
 				<details>
 					<summary className="cursor-pointer text-xs font-medium text-muted-foreground mb-2">
-						Raw collection data
+						{t("Raw collection data")}
 					</summary>
 					<div className="rounded-md border bg-muted/20 p-4 max-h-64 overflow-auto">
 						<pre className="text-xs font-mono leading-relaxed whitespace-pre-wrap">

@@ -12,6 +12,7 @@ import { Button, buttonVariants } from "@workspace/ui/components/button";
 import { useState } from "react";
 import FullPageCard from "@/components/full-page-card";
 import { useOrganizationsChanged } from "@/hooks/use-organizations";
+import { useT } from "@/lib/i18n";
 import { buildTitle, getAppName } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { acceptInvitationFn, getInvitationFn } from "@/server/team";
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/_authed/accept-invitation/$invitationId")
 });
 
 function AcceptInvitationPage() {
+	const t = useT();
 	const { invitationId } = Route.useParams();
 	const { invitation, error: loadError } = Route.useLoaderData();
 	const organizationsChanged = useOrganizationsChanged();
@@ -51,16 +53,16 @@ function AcceptInvitationPage() {
 
 	if (loadError || !invitation) {
 		return (
-			<FullPageCard title="Invitation unavailable">
+			<FullPageCard title={t("Invitation unavailable")}>
 				<div className="space-y-4 w-full">
 					<Alert variant="destructive">
 						<AlertDescription>{loadError ?? "This invitation could not be loaded"}</AlertDescription>
 					</Alert>
 					<p className="text-sm text-muted-foreground text-center">
-						Make sure you're signed in with the email address that received this invitation.
+						{t("Make sure you're signed in with the email address that received this invitation.")}
 					</p>
 					<Link to="/auth/logout" className={buttonVariants({ variant: "outline", className: "w-full" })}>
-						Switch account
+						{t("Switch account")}
 					</Link>
 				</div>
 			</FullPageCard>
@@ -91,7 +93,7 @@ function AcceptInvitationPage() {
 					</Alert>
 				)}
 				<Button className="w-full" onClick={handleAccept} disabled={accepting}>
-					{accepting ? "Accepting..." : "Accept invitation"}
+					{accepting ? t("Accepting...") : t("Accept invitation")}
 				</Button>
 			</div>
 		</FullPageCard>

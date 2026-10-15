@@ -5,6 +5,7 @@ import { Label } from "@workspace/ui/components/label";
 import { useState } from "react";
 import FullPageCard from "@/components/full-page-card";
 import { useOrganizationsChanged } from "@/hooks/use-organizations";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { createOrganizationFn } from "@/server/organizations";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authed/app/new")({
 });
 
 function NewOrganizationPage() {
+	const t = useT();
 	const organizationsChanged = useOrganizationsChanged();
 	const navigate = useNavigate();
 	const writeError = useWriteErrorMessage();
@@ -49,18 +51,18 @@ function NewOrganizationPage() {
 
 	return (
 		<FullPageCard
-			title="Create an organization"
-			subtitle="An organization holds its own brands, team, and plan."
+			title={t("Create an organization")}
+			subtitle={t("An organization holds its own brands, team, and plan.")}
 			showBackButton
 		>
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div className="space-y-2">
-					<Label htmlFor="organization-name">Organization Name</Label>
+					<Label htmlFor="organization-name">{t("Organization Name")}</Label>
 					<Input
 						id="organization-name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
-						placeholder="Acme"
+						placeholder={t("Acme")}
 						required
 						disabled={isLoading}
 					/>
@@ -69,7 +71,7 @@ function NewOrganizationPage() {
 				{error && <p className="text-sm text-destructive">{error}</p>}
 
 				<Button type="submit" className="w-full" disabled={isLoading || trimmed.length === 0}>
-					{isLoading ? "Creating..." : "Create organization"}
+					{isLoading ? t("Creating...") : t("Create organization")}
 				</Button>
 			</form>
 		</FullPageCard>

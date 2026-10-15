@@ -17,6 +17,7 @@ import { TopDomainsCard } from "@/components/citations/top-domains-card";
 import { TopUrlsCard } from "@/components/citations/top-urls-card";
 import { TrendAreaChart } from "@/components/citations/trend-area-chart";
 import type { CitationData } from "@/components/citations/types";
+import { useT } from "@/lib/i18n";
 
 export type { CitationData } from "@/components/citations/types";
 
@@ -108,6 +109,7 @@ function CitationTrendCharts({
 	chartSourceCategories: CitationCategory[];
 	chartPageTypes: CitationPageType[];
 }) {
+	const t = useT();
 	const sourceSeries = citationData.citationTimeSeries ?? [];
 	const pageTypeSeries = citationData.pageTypeTimeSeries ?? [];
 
@@ -115,7 +117,7 @@ function CitationTrendCharts({
 		<>
 			{sourceSeries.length > 0 && (
 				<TrendAreaChart
-					title="Citation Categories"
+					title={t("Citation Categories")}
 					tooltip="Share of citations by source category over time, as a percentage of all citations each day. Smoothed to account for staggered prompt schedules; Google AI Mode search/shopping are excluded (see the Google Shopping section)."
 					data={sourceSeries as unknown as Array<Record<string, number | string>>}
 					keys={chartSourceCategories}
@@ -125,7 +127,7 @@ function CitationTrendCharts({
 
 			{pageTypeSeries.length > 0 && (
 				<TrendAreaChart
-					title="Citation Page Types"
+					title={t("Citation Page Types")}
 					tooltip="Share of citations by page type over time — what kind of page each citation points to, inferred from the URL and title."
 					data={pageTypeSeries as unknown as Array<Record<string, number | string>>}
 					keys={chartPageTypes}

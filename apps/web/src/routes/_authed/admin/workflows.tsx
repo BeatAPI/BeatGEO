@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /admin/workflows - Monitor prompt scheduling, job execution, and worker health
  */
@@ -170,6 +171,7 @@ function formatFutureTime(timestamp: number | null): string {
 // ============================================================================
 
 function QueueStatsCard({ stats, title }: { stats: QueueStats; title: string }) {
+	const t = useT();
 	const hasIssues = stats.failed > 0;
 
 	return (
@@ -179,32 +181,32 @@ function QueueStatsCard({ stats, title }: { stats: QueueStats; title: string }) 
 					<Server className="h-4 w-4" />
 					{title}
 				</CardTitle>
-				<CardDescription>pg-boss Job Queue Status</CardDescription>
+				<CardDescription>{t("pg-boss Job Queue Status")}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className="grid grid-cols-3 gap-4 text-sm">
-					<div title="Jobs waiting to be picked up by a worker">
-						<p className="text-muted-foreground">Created</p>
+					<div title={t("Jobs waiting to be picked up by a worker")}>
+						<p className="text-muted-foreground">{t("Created")}</p>
 						<p className="text-xl font-semibold text-blue-600">{stats.created}</p>
 					</div>
-					<div title="Jobs currently being processed">
-						<p className="text-muted-foreground">Active</p>
+					<div title={t("Jobs currently being processed")}>
+						<p className="text-muted-foreground">{t("Active")}</p>
 						<p className="text-xl font-semibold text-emerald-600">{stats.active}</p>
 					</div>
-					<div title="Jobs waiting to be retried after failure">
-						<p className="text-muted-foreground">Retry</p>
+					<div title={t("Jobs waiting to be retried after failure")}>
+						<p className="text-muted-foreground">{t("Retry")}</p>
 						<p className="text-xl font-semibold text-amber-600">{stats.retry}</p>
 					</div>
 					<div>
-						<p className="text-muted-foreground">Completed</p>
+						<p className="text-muted-foreground">{t("Completed")}</p>
 						<p className="text-xl font-semibold">{stats.completed.toLocaleString()}</p>
 					</div>
 					<div>
-						<p className="text-muted-foreground">Failed</p>
+						<p className="text-muted-foreground">{t("Failed")}</p>
 						<p className={`text-xl font-semibold ${stats.failed > 0 ? "text-red-600" : ""}`}>{stats.failed}</p>
 					</div>
 					<div>
-						<p className="text-muted-foreground">Total Pending</p>
+						<p className="text-muted-foreground">{t("Total Pending")}</p>
 						<p className="text-xl font-semibold text-violet-600">{stats.totalPending}</p>
 					</div>
 				</div>
@@ -214,13 +216,17 @@ function QueueStatsCard({ stats, title }: { stats: QueueStats; title: string }) 
 }
 
 function SchedulerCell({ info }: { info: SchedulerInfo }) {
+	const t = useT();
 	if (!info.exists) {
 		return <span className="text-muted-foreground text-xs">&mdash;</span>;
 	}
 	const nextText = info.nextRunAt ? formatFutureTime(info.nextRunAt) : "Unknown";
 	return (
 		<div className="flex flex-col gap-0.5">
-			<span className="text-xs font-medium">Next: {nextText}</span>
+			<span className="text-xs font-medium">
+				{t("Next: ")}
+				{nextText}
+			</span>
 		</div>
 	);
 }
@@ -257,6 +263,7 @@ function TargetStatus({ status }: { status?: TargetRunStatus }) {
 }
 
 function RetryButton({ promptId, onSuccess }: { promptId?: string; jobId?: string; onSuccess: () => void }) {
+	const t = useT();
 	const [isLoading, setIsLoading] = useState(false);
 	const writeError = useWriteErrorMessage();
 	const [error, setError] = useState<string | null>(null);
@@ -282,7 +289,7 @@ function RetryButton({ promptId, onSuccess }: { promptId?: string; jobId?: strin
 		return (
 			<Button size="sm" variant="outline" disabled className="cursor-default">
 				<CheckCircle2 className="h-3 w-3 mr-1 text-emerald-500" />
-				{success === "recreated" ? "Scheduler Reset" : "Queued"}
+				{success === "recreated" ? t("Scheduler Reset") : t("Queued")}
 			</Button>
 		);
 	}
@@ -291,7 +298,7 @@ function RetryButton({ promptId, onSuccess }: { promptId?: string; jobId?: strin
 		<div className="flex flex-col gap-1">
 			<Button size="sm" variant="outline" onClick={handleRetry} disabled={isLoading} className="cursor-pointer text-xs">
 				{isLoading ? <Spinner className="mr-1 size-3" /> : <Play className="h-3 w-3 mr-1" />}
-				Retry
+				{t("Retry")}
 			</Button>
 			{error && <span className="text-xs text-red-500">{error}</span>}
 		</div>
@@ -318,22 +325,24 @@ function useJobLogs(jobId: string, isOpen: boolean) {
 }
 
 function JobLogsPanel({ logs, loading, error }: { logs: string[]; loading: boolean; error: string | null }) {
+	const t = useT();
 	if (loading) {
 		return (
 			<div className="flex items-center gap-2 text-sm text-muted-foreground">
 				<Spinner />
-				Loading logs...
+				{t("Loading logs...")}
 			</div>
 		);
 	}
 	if (error) {
 		return (
 			<div className="bg-red-50 border border-red-200 rounded p-3 text-sm text-red-800">
-				Error loading logs: {error}
+				{t("Error loading logs: ")}
+				{error}
 			</div>
 		);
 	}
-	if (logs.length === 0) return <p className="text-sm text-muted-foreground italic">No logs available</p>;
+	if (logs.length === 0) return <p className="text-sm text-muted-foreground italic">{t("No logs available")}</p>;
 
 	return (
 		<pre className="bg-muted rounded p-3 text-xs overflow-x-auto max-h-80 whitespace-pre-wrap">{logs.join("\n")}</pre>
@@ -351,6 +360,7 @@ function RetryJobFooter({
 	onClose: () => void;
 	onRetrySuccess?: () => void;
 }) {
+	const t = useT();
 	const writeError = useWriteErrorMessage();
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -380,13 +390,13 @@ function RetryJobFooter({
 			{succeeded ? (
 				<div className="flex items-center gap-2 text-emerald-600">
 					<CheckCircle2 className="h-4 w-4" />
-					<span>Job queued for retry</span>
+					<span>{t("Job queued for retry")}</span>
 				</div>
 			) : (
 				<>
 					<Button onClick={handleRetry} disabled={isLoading} className="cursor-pointer">
 						{isLoading ? <Spinner className="mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-						Retry This Job
+						{t("Retry This Job")}
 					</Button>
 					{error && <span className="text-sm text-red-600">{error}</span>}
 				</>
@@ -396,6 +406,7 @@ function RetryJobFooter({
 }
 
 function JobDetailsDialog({ job, onRetrySuccess }: { job: RecentJob; onRetrySuccess?: () => void }) {
+	const t = useT();
 	const isFailed = job.status === "failed";
 	const [isOpen, setIsOpen] = useState(false);
 	const { logs, loading: logsLoading, error: logsError } = useJobLogs(job.id, isOpen);
@@ -411,7 +422,7 @@ function JobDetailsDialog({ job, onRetrySuccess }: { job: RecentJob; onRetrySucc
 					/>
 				}
 			>
-				View Logs
+				{t("View Logs")}
 			</DialogTrigger>
 			<DialogContent className="max-w-[90vw] sm:max-w-[90vw] w-full max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
@@ -421,33 +432,36 @@ function JobDetailsDialog({ job, onRetrySuccess }: { job: RecentJob; onRetrySucc
 						) : (
 							<CheckCircle2 className="h-5 w-5 text-emerald-500" />
 						)}
-						{isFailed ? "Failed Job Details" : "Completed Job Details"}
+						{isFailed ? t("Failed Job Details") : t("Completed Job Details")}
 					</DialogTitle>
-					<DialogDescription>Job ID: {job.id}</DialogDescription>
+					<DialogDescription>
+						{t("Job ID: ")}
+						{job.id}
+					</DialogDescription>
 				</DialogHeader>
 				<div className="space-y-4">
 					<div className="grid grid-cols-2 gap-4 text-sm">
 						<div>
-							<p className="text-muted-foreground">Status</p>
+							<p className="text-muted-foreground">{t("Status")}</p>
 							<Badge className={isFailed ? "bg-red-500" : "bg-emerald-600"}>{job.status}</Badge>
 						</div>
 						<div>
-							<p className="text-muted-foreground">Prompt ID</p>
+							<p className="text-muted-foreground">{t("Prompt ID")}</p>
 							<p className="font-mono text-xs">{job.data?.promptId || "N/A"}</p>
 						</div>
 						<div>
-							<p className="text-muted-foreground">Finished At</p>
-							<p>{job.finishedOn ? new Date(job.finishedOn).toLocaleString() : "Unknown"}</p>
+							<p className="text-muted-foreground">{t("Finished At")}</p>
+							<p>{job.finishedOn ? new Date(job.finishedOn).toLocaleString() : t("Unknown")}</p>
 						</div>
 					</div>
 					{isFailed && job.failedReason && (
 						<div>
-							<p className="text-muted-foreground mb-1">Error Message</p>
+							<p className="text-muted-foreground mb-1">{t("Error Message")}</p>
 							<div className="bg-red-50 border border-red-200 rounded p-3 text-sm text-red-800">{job.failedReason}</div>
 						</div>
 					)}
 					<div>
-						<p className="text-muted-foreground mb-1">Execution Logs</p>
+						<p className="text-muted-foreground mb-1">{t("Execution Logs")}</p>
 						<JobLogsPanel logs={logs} loading={logsLoading} error={logsError} />
 					</div>
 					{isFailed && <RetryJobFooter job={job} onClose={() => setIsOpen(false)} onRetrySuccess={onRetrySuccess} />}
@@ -470,6 +484,7 @@ function BrandRow({
 	recentJobs: RecentJob[];
 	onRefresh: () => void;
 }) {
+	const t = useT();
 	const hasOverdue = brand.overduePrompts > 0;
 	const scheduleHealth =
 		brand.enabledPrompts > 0 ? Math.round((brand.onSchedulePrompts / brand.enabledPrompts) * 100) : 100;
@@ -517,11 +532,12 @@ function BrandRow({
 				<TableCell className="text-center">
 					{brand.overduePrompts > 0 ? (
 						<Badge variant="destructive" className="bg-amber-500">
-							{brand.overduePrompts} overdue
+							{brand.overduePrompts}
+							{t(" overdue")}
 						</Badge>
 					) : (
 						<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
-							All on schedule
+							{t("All on schedule")}
 						</Badge>
 					)}
 				</TableCell>
@@ -533,16 +549,16 @@ function BrandRow({
 							<Table>
 								<TableHeader>
 									<TableRow>
-										<TableHead className="w-[250px]">Prompt</TableHead>
-										<TableHead className="text-center">Status</TableHead>
+										<TableHead className="w-[250px]">{t("Prompt")}</TableHead>
+										<TableHead className="text-center">{t("Status")}</TableHead>
 										{brand.targetColumns.map((column) => (
 											<TableHead key={column.key} className="text-center">
 												{column.label}
 											</TableHead>
 										))}
-										<TableHead className="text-center">Prod Scheduler</TableHead>
-										<TableHead className="text-center">Last Job</TableHead>
-										<TableHead className="text-center">Actions</TableHead>
+										<TableHead className="text-center">{t("Prod Scheduler")}</TableHead>
+										<TableHead className="text-center">{t("Last Job")}</TableHead>
+										<TableHead className="text-center">{t("Actions")}</TableHead>
 									</TableRow>
 								</TableHeader>
 								<TableBody>
@@ -574,25 +590,25 @@ function BrandRow({
 													</TableCell>
 													<TableCell className="text-center">
 														{!prompt.enabled ? (
-															<Badge variant="outline">Disabled</Badge>
+															<Badge variant="outline">{t("Disabled")}</Badge>
 														) : (
 															<div className="flex flex-col items-center gap-1">
 																<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
-																	Enabled
+																	{t("Enabled")}
 																</Badge>
 																{prompt.jobStatus === "active" && (
 																	<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
-																		Active
+																		{t("Active")}
 																	</Badge>
 																)}
 																{prompt.jobStatus === "created" && (
 																	<Badge variant="secondary" className="bg-blue-100 text-blue-700">
-																		Queued
+																		{t("Queued")}
 																	</Badge>
 																)}
 																{prompt.jobStatus === "retry" && (
 																	<Badge variant="secondary" className="bg-amber-100 text-amber-700">
-																		Retry
+																		{t("Retry")}
 																	</Badge>
 																)}
 															</div>
@@ -614,13 +630,13 @@ function BrandRow({
 													<TableCell className="text-center">
 														{showRetry && <RetryButton promptId={prompt.promptId} onSuccess={onRefresh} />}
 														{prompt.jobStatus === "active" && (
-															<span className="text-xs text-muted-foreground">Processing...</span>
+															<span className="text-xs text-muted-foreground">{t("Processing...")}</span>
 														)}
 														{prompt.jobStatus === "created" && (
-															<span className="text-xs text-muted-foreground">In queue</span>
+															<span className="text-xs text-muted-foreground">{t("In queue")}</span>
 														)}
 														{prompt.jobStatus === "retry" && (
-															<span className="text-xs text-muted-foreground">Retrying soon</span>
+															<span className="text-xs text-muted-foreground">{t("Retrying soon")}</span>
 														)}
 													</TableCell>
 												</TableRow>
@@ -650,6 +666,7 @@ export const Route = createFileRoute("/_authed/admin/workflows")({
 const REFRESH_INTERVAL_MS = 30_000;
 
 function WorkflowsPage() {
+	const t = useT();
 	const [data, setData] = useState<WorkflowsData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -720,7 +737,7 @@ function WorkflowsPage() {
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-destructive">Error</CardTitle>
+					<CardTitle className="text-destructive">{t("Error")}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<p>{error}</p>
@@ -750,13 +767,13 @@ function WorkflowsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div className="space-y-2">
-					<h1 className="text-3xl font-bold tracking-tight">Workflows</h1>
-					<p className="text-muted-foreground">Monitor prompt scheduling, job execution, and worker health</p>
+					<h1 className="text-3xl font-bold tracking-tight">{t("Workflows")}</h1>
+					<p className="text-muted-foreground">{t("Monitor prompt scheduling, job execution, and worker health")}</p>
 				</div>
 				<div className="flex items-center gap-2">
 					<Button variant="outline" onClick={() => fetchData(true)} disabled={isRefreshing} className="cursor-pointer">
 						<RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
-						Refresh
+						{t("Refresh")}
 					</Button>
 				</div>
 			</div>
@@ -767,7 +784,7 @@ function WorkflowsPage() {
 					<CardHeader className="pb-2">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<Activity className="h-4 w-4" />
-							Schedule Health
+							{t("Schedule Health")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
@@ -777,7 +794,7 @@ function WorkflowsPage() {
 							>
 								{data.summary.percentOnSchedule}%
 							</span>
-							<span className="text-muted-foreground text-sm">on schedule</span>
+							<span className="text-muted-foreground text-sm">{t("on schedule")}</span>
 						</div>
 						<Progress value={data.summary.percentOnSchedule} className="mt-2" />
 					</CardContent>
@@ -787,15 +804,19 @@ function WorkflowsPage() {
 					<CardHeader className="pb-2">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<CheckCircle2 className="h-4 w-4 text-emerald-500" />
-							On Schedule
+							{t("On Schedule")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="flex items-baseline gap-2">
 							<span className="text-3xl font-bold text-emerald-600">{data.summary.totalOnSchedule}</span>
-							<span className="text-muted-foreground text-sm">prompts</span>
+							<span className="text-muted-foreground text-sm">{t("prompts")}</span>
 						</div>
-						<p className="text-xs text-muted-foreground mt-1">of {data.summary.totalEnabled} enabled</p>
+						<p className="text-xs text-muted-foreground mt-1">
+							{t("of ")}
+							{data.summary.totalEnabled}
+							{t(" enabled")}
+						</p>
 					</CardContent>
 				</Card>
 
@@ -807,7 +828,7 @@ function WorkflowsPage() {
 					<CardHeader className="pb-2">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<AlertTriangle className={`h-4 w-4 ${overdueBreakdown.severe > 0 ? "text-red-500" : "text-amber-500"}`} />
-							Overdue &gt;30min
+							{t("Overdue >30min")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
@@ -817,10 +838,11 @@ function WorkflowsPage() {
 							>
 								{overdueBreakdown.severe}
 							</span>
-							<span className="text-muted-foreground text-sm">prompts</span>
+							<span className="text-muted-foreground text-sm">{t("prompts")}</span>
 						</div>
 						<p className="text-xs text-muted-foreground mt-1">
-							{overdueBreakdown.total - overdueBreakdown.severe} additional recently expired
+							{overdueBreakdown.total - overdueBreakdown.severe}
+							{t(" additional recently expired")}
 						</p>
 					</CardContent>
 				</Card>
@@ -829,37 +851,40 @@ function WorkflowsPage() {
 					<CardHeader className="pb-2">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<Clock className="h-4 w-4" />
-							Total Brands
+							{t("Total Brands")}
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="flex items-baseline gap-2">
 							<span className="text-3xl font-bold">{data.summary.totalBrands}</span>
-							<span className="text-muted-foreground text-sm">brands</span>
+							<span className="text-muted-foreground text-sm">{t("brands")}</span>
 						</div>
-						<p className="text-xs text-muted-foreground mt-1">{data.summary.totalPrompts} total prompts</p>
+						<p className="text-xs text-muted-foreground mt-1">
+							{data.summary.totalPrompts}
+							{t(" total prompts")}
+						</p>
 					</CardContent>
 				</Card>
 			</div>
 
 			{/* Queue Stats */}
-			<QueueStatsCard stats={data.queue} title="Prompt Queue" />
+			<QueueStatsCard stats={data.queue} title={t("Prompt Queue")} />
 
 			{/* Brands Table */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Brand Workflow Status</CardTitle>
-					<CardDescription>Click on a brand to expand and see individual prompt status</CardDescription>
+					<CardTitle>{t("Brand Workflow Status")}</CardTitle>
+					<CardDescription>{t("Click on a brand to expand and see individual prompt status")}</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead>Brand</TableHead>
-								<TableHead className="text-center">Prompts</TableHead>
-								<TableHead className="text-center">Run Frequency</TableHead>
-								<TableHead className="text-center">Health</TableHead>
-								<TableHead className="text-center">Status</TableHead>
+								<TableHead>{t("Brand")}</TableHead>
+								<TableHead className="text-center">{t("Prompts")}</TableHead>
+								<TableHead className="text-center">{t("Run Frequency")}</TableHead>
+								<TableHead className="text-center">{t("Health")}</TableHead>
+								<TableHead className="text-center">{t("Status")}</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>

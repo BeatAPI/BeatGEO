@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /reports - Reports list page
  *
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/_authed/reports/")({
 });
 
 function ReportsPage() {
+	const t = useT();
 	const queryClient = useQueryClient();
 
 	const {
@@ -100,21 +102,21 @@ function ReportsPage() {
 	return (
 		<div className="space-y-8">
 			<div className="space-y-2">
-				<h1 className="text-3xl font-bold tracking-tight">Reports</h1>
-				<p className="text-muted-foreground">Generate one-time brand reports.</p>
+				<h1 className="text-3xl font-bold tracking-tight">{t("Reports")}</h1>
+				<p className="text-muted-foreground">{t("Generate one-time brand reports.")}</p>
 			</div>
 			<div className="space-y-6 max-w-4xl">
 				<div className="space-y-4">
-					<h2 className="text-2xl font-semibold">Create New Report</h2>
+					<h2 className="text-2xl font-semibold">{t("Create New Report")}</h2>
 
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="brandName">Brand Name</Label>
+								<Label htmlFor="brandName">{t("Brand Name")}</Label>
 								<Input
 									id="brandName"
 									type="text"
-									placeholder="Enter brand name"
+									placeholder={t("Enter brand name")}
 									value={formData.brandName}
 									onChange={(e) => setFormData({ ...formData, brandName: e.target.value })}
 									required
@@ -122,7 +124,7 @@ function ReportsPage() {
 								/>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="brandWebsite">Brand Website</Label>
+								<Label htmlFor="brandWebsite">{t("Brand Website")}</Label>
 								<Input
 									id="brandWebsite"
 									type="url"
@@ -137,29 +139,32 @@ function ReportsPage() {
 
 						<div className="space-y-2">
 							<Label>
-								Other Brand Names <span className="text-muted-foreground font-normal">(Optional)</span>
+								{t("Other Brand Names ")}
+								<span className="text-muted-foreground font-normal">{t("(Optional)")}</span>
 							</Label>
 							<TagsInput
 								value={formData.brandAliases}
 								onValueChange={(brandAliases) => setFormData({ ...formData, brandAliases })}
-								placeholder="Add a name variant..."
+								placeholder={t("Add a name variant...")}
 								searchPlaceholder="Add a name variant..."
 								maxItems={10}
 								disabled={createMutation.isPending}
 							/>
 							<p className="text-xs text-muted-foreground">
-								Spellings, abbreviations, or product names the brand also goes by. A mention of any of them counts as a
-								brand mention.
+								{t(
+									"Spellings, abbreviations, or product names the brand also goes by. A mention of any of them counts as a brand mention.",
+								)}
 							</p>
 						</div>
 
 						<div className="space-y-2">
 							<Label htmlFor="manualPrompts">
-								Manual Prompts <span className="text-muted-foreground font-normal">(Optional)</span>
+								{t("Manual Prompts ")}
+								<span className="text-muted-foreground font-normal">{t("(Optional)")}</span>
 							</Label>
 							<Textarea
 								id="manualPrompts"
-								placeholder="Enter one prompt per line, up to 50"
+								placeholder={t("Enter one prompt per line, up to 50")}
 								value={formData.manualPrompts}
 								onChange={(e) => setFormData({ ...formData, manualPrompts: e.target.value })}
 								disabled={createMutation.isPending}
@@ -169,24 +174,25 @@ function ReportsPage() {
 							<p className="text-xs text-muted-foreground">
 								{formData.manualPrompts.trim() ? (
 									<>
-										<strong>Note:</strong> Prompts will NOT be auto-generated. Using your{" "}
+										<strong>{t("Note:")}</strong>
+										{t(" Prompts will NOT be auto-generated. Using your")}{" "}
 										{
 											formData.manualPrompts
 												.trim()
 												.split("\n")
 												.filter((line) => line.trim()).length
 										}{" "}
-										manual prompt
+										{t("manual prompt")}
 										{formData.manualPrompts
 											.trim()
 											.split("\n")
 											.filter((line) => line.trim()).length !== 1
-											? "s"
+											? t("s")
 											: ""}
 										.
 									</>
 								) : (
-									"Leave empty to auto-generate prompts based on website analysis, competitors, and keywords."
+									t("Leave empty to auto-generate prompts based on website analysis, competitors, and keywords.")
 								)}
 							</p>
 						</div>
@@ -195,18 +201,20 @@ function ReportsPage() {
 						{success && <p className="text-sm text-green-600">{success}</p>}
 
 						<Button type="submit" disabled={createMutation.isPending} className="cursor-pointer">
-							{createMutation.isPending ? "Creating Report..." : "Create Report"}
+							{createMutation.isPending ? t("Creating Report...") : t("Create Report")}
 						</Button>
 					</form>
 				</div>
 
 				<div className="space-y-4">
-					<h2 className="text-2xl font-semibold">Report History</h2>
+					<h2 className="text-2xl font-semibold">{t("Report History")}</h2>
 
 					{error && (
 						<Card>
 							<CardContent className="py-8 text-center">
-								<p className="text-destructive">{error instanceof Error ? error.message : "Failed to load reports"}</p>
+								<p className="text-destructive">
+									{error instanceof Error ? error.message : t("Failed to load reports")}
+								</p>
 							</CardContent>
 						</Card>
 					)}
@@ -215,13 +223,13 @@ function ReportsPage() {
 						<div className="flex items-center justify-center py-8">
 							<div className="flex items-center space-x-2">
 								<Spinner className="size-6 text-primary" />
-								<span>Loading reports...</span>
+								<span>{t("Loading reports...")}</span>
 							</div>
 						</div>
 					) : !error && reports.length === 0 ? (
 						<Card>
 							<CardContent className="py-8 text-center">
-								<p className="text-muted-foreground">No reports found.</p>
+								<p className="text-muted-foreground">{t("No reports found.")}</p>
 							</CardContent>
 						</Card>
 					) : (
@@ -247,7 +255,7 @@ function ReportsPage() {
 													>
 														<Button variant="default" size="sm" className="cursor-pointer h-6 px-2 text-xs">
 															<ExternalLink className="size-3 mr-0.5" />
-															View Report
+															{t("View Report")}
 														</Button>
 													</Link>
 												) : (

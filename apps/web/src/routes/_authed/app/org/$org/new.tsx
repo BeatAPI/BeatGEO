@@ -8,6 +8,7 @@ import { PlatformSelectionStep } from "@/components/platform-selection-step";
 import { useOrganizationsChanged } from "@/hooks/use-organizations";
 import { useOrganizationParams } from "@/hooks/use-route-params";
 import { validateWebsiteUrl } from "@/lib/brand-website";
+import { useT } from "@/lib/i18n";
 import { trackEvent } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/new")({
 });
 
 function NewBrandPage() {
+	const t = useT();
 	const { organizationId, organizationName, blocked } = Route.useLoaderData();
 	const organizationParams = useOrganizationParams();
 	const [step, setStep] = useState<"details" | "platforms">("details");
@@ -107,7 +109,9 @@ function NewBrandPage() {
 		return (
 			<FullPageCard
 				title={
-					blocked.code === "no-active-plan" ? "This organization has no plan" : "You've used every brand on your plan"
+					blocked.code === "no-active-plan"
+						? t("This organization has no plan")
+						: t("You've used every brand on your plan")
 				}
 				subtitle={blocked.message}
 				showBackButton
@@ -117,7 +121,7 @@ function NewBrandPage() {
 					params={organizationParams}
 					className={buttonVariants({ className: "w-full" })}
 				>
-					Go to billing
+					{t("Go to billing")}
 				</Link>
 			</FullPageCard>
 		);
@@ -125,7 +129,7 @@ function NewBrandPage() {
 
 	if (step === "platforms" && platformState) {
 		return (
-			<FullPageCard title={`Create ${details.brandName}`} subtitle="Choose which AI platforms to track">
+			<FullPageCard title={`Create ${details.brandName}`} subtitle={t("Choose which AI platforms to track")}>
 				<PlatformSelectionStep
 					state={platformState}
 					selected={selected}
@@ -141,15 +145,19 @@ function NewBrandPage() {
 	}
 
 	return (
-		<FullPageCard title="Create a new brand" subtitle={`Start tracking a brand in ${organizationName}`} showBackButton>
+		<FullPageCard
+			title={t("Create a new brand")}
+			subtitle={`Start tracking a brand in ${organizationName}`}
+			showBackButton
+		>
 			<form action={handleDetailsSubmit} className="space-y-4">
 				<div className="space-y-2">
-					<Label htmlFor="brandName">Brand Name</Label>
+					<Label htmlFor="brandName">{t("Brand Name")}</Label>
 					<Input
 						id="brandName"
 						name="brandName"
 						type="text"
-						placeholder="Acme"
+						placeholder={t("Acme")}
 						required
 						disabled={isLoading}
 						defaultValue={details.brandName}
@@ -157,12 +165,12 @@ function NewBrandPage() {
 				</div>
 
 				<div className="space-y-2">
-					<Label htmlFor="website">Website</Label>
+					<Label htmlFor="website">{t("Website")}</Label>
 					<Input
 						id="website"
 						name="website"
 						type="text"
-						placeholder="example.com"
+						placeholder={t("example.com")}
 						required
 						disabled={isLoading}
 						defaultValue={details.website}
@@ -172,7 +180,7 @@ function NewBrandPage() {
 				{error && <p className="text-sm text-destructive">{error}</p>}
 
 				<Button type="submit" className="w-full" disabled={isLoading}>
-					{isLoading ? "Creating..." : "Continue"}
+					{isLoading ? t("Creating...") : t("Continue")}
 				</Button>
 			</form>
 		</FullPageCard>

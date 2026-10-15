@@ -3,6 +3,7 @@ import type { Competitor } from "@workspace/lib/db/schema";
 import { Badge } from "@workspace/ui/components/badge";
 import type { ChartDataPoint, ChartSubject } from "@/lib/chart-utils";
 import { visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 import { BaseChart } from "./base-chart";
 
@@ -43,6 +44,7 @@ export function ChartExportPreview({
 	competitors,
 	branding,
 }: ChartExportPreviewProps) {
+	const t = useT();
 	const name = branding.name || DEFAULT_APP_NAME;
 	const isWhitelabel = branding.isWhitelabel && branding.name !== DEFAULT_APP_NAME;
 	const domain = isWhitelabel
@@ -69,7 +71,8 @@ export function ChartExportPreview({
 						className={`${visibilityBadgeProps(visibility).className} shrink-0`}
 						style={{ fontSize: 16, padding: "4px 14px" }}
 					>
-						{visibility}% Visibility
+						{visibility}
+						{t("% Visibility")}
 					</Badge>
 				)}
 			</div>

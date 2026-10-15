@@ -6,6 +6,7 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { useState } from "react";
+import { useT } from "@/lib/i18n";
 import { trackEvent } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/settings/members")({
 });
 
 function TeamSettingsPage() {
+	const t = useT();
 	const { members, invitations, currentUserId, organization } = Route.useLoaderData();
 	const organizationId = organization.id;
 	const writeError = useWriteErrorMessage();
@@ -72,7 +74,7 @@ function TeamSettingsPage() {
 
 	return (
 		<div className="space-y-6">
-			<h1 className="text-3xl font-bold">Team</h1>
+			<h1 className="text-3xl font-bold">{t("Team")}</h1>
 
 			{error && (
 				<Alert variant="destructive">
@@ -82,7 +84,7 @@ function TeamSettingsPage() {
 
 			<form onSubmit={handleInvite} className="flex flex-wrap items-end gap-3">
 				<div className="flex flex-col gap-2">
-					<Label htmlFor="invite-email">Email</Label>
+					<Label htmlFor="invite-email">{t("Email")}</Label>
 					<Input
 						id="invite-email"
 						type="email"
@@ -98,7 +100,7 @@ function TeamSettingsPage() {
 					/>
 				</div>
 				<div className="flex flex-col gap-2">
-					<Label htmlFor="invite-role">Role</Label>
+					<Label htmlFor="invite-role">{t("Role")}</Label>
 					<Select
 						items={{ member: "Member", admin: "Admin" }}
 						value={inviteRole}
@@ -108,18 +110,18 @@ function TeamSettingsPage() {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="member">Member</SelectItem>
-							<SelectItem value="admin">Admin</SelectItem>
+							<SelectItem value="member">{t("Member")}</SelectItem>
+							<SelectItem value="admin">{t("Admin")}</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 				<Button type="submit" disabled={inviting}>
-					{inviting ? "Inviting..." : "Invite"}
+					{inviting ? t("Inviting...") : t("Invite")}
 				</Button>
 			</form>
 
 			<div className="space-y-3">
-				<h2 className="text-lg font-semibold">Members</h2>
+				<h2 className="text-lg font-semibold">{t("Members")}</h2>
 				<div className="divide-y rounded-md border">
 					{members.map((m) => (
 						<div key={m.id} className="flex items-center justify-between gap-3 p-3">
@@ -131,7 +133,7 @@ function TeamSettingsPage() {
 								<Badge variant="secondary">{m.role}</Badge>
 								{m.userId !== currentUserId && (
 									<Button type="button" variant="outline" size="sm" onClick={() => handleRemove(m.id)}>
-										Remove
+										{t("Remove")}
 									</Button>
 								)}
 							</div>
@@ -142,20 +144,21 @@ function TeamSettingsPage() {
 
 			{invitations.length > 0 && (
 				<div className="space-y-3">
-					<h2 className="text-lg font-semibold">Pending invitations</h2>
+					<h2 className="text-lg font-semibold">{t("Pending invitations")}</h2>
 					<div className="divide-y rounded-md border">
 						{invitations.map((inv) => (
 							<div key={inv.id} className="flex items-center justify-between gap-3 p-3">
 								<div className="min-w-0">
 									<p className="truncate font-medium">{inv.email}</p>
 									<p className="text-sm text-muted-foreground">
-										Expires {new Date(inv.expiresAt).toLocaleDateString()}
+										{t("Expires ")}
+										{new Date(inv.expiresAt).toLocaleDateString()}
 									</p>
 								</div>
 								<div className="flex shrink-0 items-center gap-3">
 									<Badge variant="secondary">{inv.role ?? "member"}</Badge>
 									<Button type="button" variant="outline" size="sm" onClick={() => handleCancel(inv.id)}>
-										Cancel
+										{t("Cancel")}
 									</Button>
 								</div>
 							</div>

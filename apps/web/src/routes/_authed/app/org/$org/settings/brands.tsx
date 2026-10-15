@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { buttonVariants } from "@workspace/ui/components/button";
 import { OrganizationRowIcon } from "@/components/organization-row-icon";
 import { useOrganization } from "@/hooks/use-organizations";
+import { useT } from "@/lib/i18n";
 import { organizationTree } from "@/lib/organizations/tree";
 import { pageHead } from "@/lib/route-head";
 
@@ -12,15 +13,16 @@ export const Route = createFileRoute("/_authed/app/org/$org/settings/brands")({
 });
 
 function OrganizationBrandsPage() {
+	const t = useT();
 	const organization = useOrganization();
 	const { children } = organizationTree(organization);
 
 	return (
 		<div className="max-w-2xl space-y-6">
-			<h1 className="text-3xl font-bold">Brands</h1>
+			<h1 className="text-3xl font-bold">{t("Brands")}</h1>
 
 			<div className="flex flex-col gap-2">
-				{organization.brands.length === 0 && <p className="text-sm text-muted-foreground">No brands yet.</p>}
+				{organization.brands.length === 0 && <p className="text-sm text-muted-foreground">{t("No brands yet.")}</p>}
 
 				{children.map((row) => (
 					<Link

@@ -20,6 +20,7 @@ import { MdSelectAll } from "react-icons/md";
 import { formatLookbackLabel, LookbackPicker } from "@/components/lookback-picker";
 import { useBrand } from "@/hooks/use-brands";
 import { getDefaultLookbackPeriod } from "@/lib/chart-utils";
+import { useLocale, useT } from "@/lib/i18n";
 import { type LookbackPeriod, parseCustomLookback } from "@/lib/lookback";
 
 export { ALL_MODELS_VALUE } from "@workspace/config/model-filter";
@@ -92,6 +93,7 @@ export function FilterTriggerButton({
 // ------------------------------------------------------------------
 
 function ModelDropdown({ trackedTargets }: { trackedTargets: TrackedTarget[] }) {
+	const t = useT();
 	const availableModels = getAvailableModels(trackedTargets);
 	const defaultModel = availableModels.includes(ALL_MODELS_VALUE)
 		? ALL_MODELS_VALUE
@@ -119,7 +121,7 @@ function ModelDropdown({ trackedTargets }: { trackedTargets: TrackedTarget[] }) 
 				render={
 					<FilterTriggerButton
 						icon={iconForModel(selected)}
-						label={labelForModelFilter(selected)}
+						label={t(labelForModelFilter(selected))}
 						active={isFiltered}
 					/>
 				}
@@ -128,11 +130,13 @@ function ModelDropdown({ trackedTargets }: { trackedTargets: TrackedTarget[] }) 
 				<DropdownMenuRadioGroup value={selected} onValueChange={handleChange}>
 					<DropdownMenuRadioItem value={ALL_MODELS_VALUE} className="cursor-pointer gap-2">
 						{iconForModel(ALL_MODELS_VALUE)}
-						{labelForModelFilter(ALL_MODELS_VALUE)}
+						{t(labelForModelFilter(ALL_MODELS_VALUE))}
 					</DropdownMenuRadioItem>
 					{groups.map((group) => (
 						<DropdownMenuGroup key={group.tier}>
-							<DropdownMenuLabel className="text-muted-foreground text-xs font-medium">{group.label}</DropdownMenuLabel>
+							<DropdownMenuLabel className="text-muted-foreground text-xs font-medium">
+								{t(group.label)}
+							</DropdownMenuLabel>
 							{group.values.map((value) => (
 								<DropdownMenuRadioItem key={value} value={value} className="cursor-pointer gap-2">
 									{iconForModel(value)}
@@ -152,6 +156,7 @@ function ModelDropdown({ trackedTargets }: { trackedTargets: TrackedTarget[] }) 
 // ------------------------------------------------------------------
 
 function LookbackDropdown() {
+	const { locale } = useLocale();
 	const { data: brand } = useBrand();
 	const defaultLookback = useMemo(() => getDefaultLookbackPeriod(brand?.earliestDataDate), [brand?.earliestDataDate]);
 	const urlLookback = useSearch({ strict: false, select: (s) => s.lookback });
@@ -170,7 +175,7 @@ function LookbackDropdown() {
 			trigger={
 				<FilterTriggerButton
 					icon={<Clock className="size-3.5" />}
-					label={formatLookbackLabel(selected)}
+					label={formatLookbackLabel(selected, locale)}
 					active={parseCustomLookback(selected) !== null}
 				/>
 			}
@@ -185,6 +190,7 @@ function LookbackDropdown() {
 // ------------------------------------------------------------------
 
 function TagsDropdown({ availableTags }: { availableTags: readonly string[] }) {
+	const t = useT();
 	const urlTags = useSearch({ strict: false, select: (s) => s.tags });
 	const setFilters = useFilterNavigate();
 	const selected = useMemo(() => splitTags(urlTags), [urlTags]);
@@ -204,7 +210,7 @@ function TagsDropdown({ availableTags }: { availableTags: readonly string[] }) {
 				render={
 					<FilterTriggerButton
 						icon={<TagIcon className="size-3.5" />}
-						label="Tags"
+						label={t("Tags")}
 						active={selected.length > 0}
 						badgeCount={selected.length > 0 ? selected.length : undefined}
 					/>
@@ -212,19 +218,19 @@ function TagsDropdown({ availableTags }: { availableTags: readonly string[] }) {
 			/>
 			<PopoverContent align="start" className="w-64 p-0" initialFocus={false}>
 				<div className="flex items-center justify-between px-3 h-10 border-b">
-					<span className="font-medium text-sm">Tags</span>
+					<span className="font-medium text-sm">{t("Tags")}</span>
 					{selected.length > 0 && (
 						<button
 							type="button"
 							onClick={() => commit([])}
 							className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
 						>
-							Clear
+							{t("Clear")}
 						</button>
 					)}
 				</div>
 				{availableTags.length === 0 ? (
-					<p className="text-sm text-muted-foreground py-6 text-center">No tags available</p>
+					<p className="text-sm text-muted-foreground py-6 text-center">{t("No tags available")}</p>
 				) : (
 					<div className="py-1 max-h-64 overflow-y-auto">
 						{availableTags.map((tag) => {
@@ -268,6 +274,7 @@ function SearchInput({
 	placeholder?: string;
 	searching?: boolean;
 }) {
+	const t = useT();
 	const urlValue = useSearch({ strict: false, select: (s) => s.q });
 	const setFilters = useFilterNavigate();
 	const value = urlValue ?? "";
@@ -321,11 +328,11 @@ function SearchInput({
 				className="h-8 text-sm"
 			/>
 			<InputGroupAddon className="pl-2.5">
-				{searching ? <Spinner className="size-3.5" aria-label="Searching" /> : <Search className="size-3.5" />}
+				{searching ? <Spinner className="size-3.5" aria-label={t("Searching")} /> : <Search className="size-3.5" />}
 			</InputGroupAddon>
 			{local && (
 				<InputGroupAddon align="inline-end" className="pr-1.5">
-					<InputGroupButton size="icon-xs" onClick={clear} className="cursor-pointer" aria-label="Clear search">
+					<InputGroupButton size="icon-xs" onClick={clear} className="cursor-pointer" aria-label={t("Clear search")}>
 						<X className="size-3.5" />
 					</InputGroupButton>
 				</InputGroupAddon>
@@ -341,6 +348,7 @@ function SearchInput({
 // ------------------------------------------------------------------
 
 function ResultCount({ count, total }: { count: number | undefined; total?: number }) {
+	const t = useT();
 	const tags = useSearch({ strict: false, select: (s) => s.tags });
 	const q = useSearch({ strict: false, select: (s) => s.q });
 	const active = Boolean(tags) || Boolean(q);
@@ -349,7 +357,7 @@ function ResultCount({ count, total }: { count: number | undefined; total?: numb
 	return (
 		<span className="text-xs text-muted-foreground tabular-nums ml-1">
 			{count.toLocaleString()}
-			{showTotal && ` of ${total.toLocaleString()}`} {count === 1 && !showTotal ? "result" : "results"}
+			{showTotal && ` of ${total.toLocaleString()}`} {count === 1 && !showTotal ? t("result") : t("results")}
 		</span>
 	);
 }

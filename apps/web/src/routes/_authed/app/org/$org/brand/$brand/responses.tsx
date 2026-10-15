@@ -15,6 +15,7 @@ import { joinTags, splitTags, useListFilters } from "@/hooks/use-list-filters";
 import { usePromptsSummary } from "@/hooks/use-prompts-summary";
 import { useResponseSearch } from "@/hooks/use-responses";
 import { useSiteIcons } from "@/hooks/use-site-icons";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 
 export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/responses")({
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/respons
 });
 
 function ResponsesPage() {
+	const t = useT();
 	const brandId = useBrandId();
 	const { model, lookback, tags, search: query } = useListFilters();
 
@@ -71,8 +73,9 @@ function ResponsesPage() {
 
 	const infoContent = (
 		<p>
-			Every answer the AI engines gave to your prompts. Search finds responses containing the exact text you type,
-			ignoring case.
+			{t(
+				"Every answer the AI engines gave to your prompts. Search finds responses containing the exact text you type, ignoring case.",
+			)}
 		</p>
 	);
 
@@ -124,7 +127,7 @@ function ResponsesPage() {
 	}
 
 	return (
-		<PageHeader title="Responses" subtitle="Every AI answer to your prompts." infoContent={infoContent}>
+		<PageHeader title={t("Responses")} subtitle={t("Every AI answer to your prompts.")} infoContent={infoContent}>
 			<FilterSection>
 				<FilterBar
 					availableTags={availableTags}

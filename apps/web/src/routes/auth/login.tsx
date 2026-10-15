@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /auth/login - Login page
  *
@@ -95,6 +96,7 @@ function LoginPage() {
 }
 
 export function SSOLogin({ destination = "/app" }: { destination?: string }) {
+	const t = useT();
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -121,23 +123,24 @@ export function SSOLogin({ destination = "/app" }: { destination?: string }) {
 
 	if (error) {
 		return (
-			<FullPageCard title="Sign in">
+			<FullPageCard title={t("Sign in")}>
 				<div className="w-full space-y-4">
 					<Alert variant="destructive">
-						<AlertDescription>{error}</AlertDescription>
+						<AlertDescription>{t(error)}</AlertDescription>
 					</Alert>
 					<Button className="w-full" onClick={() => window.location.reload()}>
-						Try Again
+						{t("Try Again")}
 					</Button>
 				</div>
 			</FullPageCard>
 		);
 	}
 
-	return <FullPageCard title="Signing in..." subtitle="Redirecting to your identity provider" />;
+	return <FullPageCard title={t("Signing in...")} subtitle={t("Redirecting to your identity provider")} />;
 }
 
 export function DemoLogin({ destination = "/app" }: { destination?: string }) {
+	const t = useT();
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 
@@ -161,16 +164,16 @@ export function DemoLogin({ destination = "/app" }: { destination?: string }) {
 	}
 
 	return (
-		<FullPageCard title="Sign in">
+		<FullPageCard title={t("Sign in")}>
 			<form onSubmit={handleSubmit} className="space-y-4 w-full">
 				<DemoCredentialsCallout />
 				{error && (
 					<Alert variant="destructive">
-						<AlertDescription>{error}</AlertDescription>
+						<AlertDescription>{t(error)}</AlertDescription>
 					</Alert>
 				)}
 				<Button type="submit" className="w-full" disabled={loading}>
-					{loading ? "Signing in..." : "Sign in"}
+					{loading ? t("Signing in...") : t("Sign in")}
 				</Button>
 			</form>
 		</FullPageCard>
@@ -190,6 +193,7 @@ export function EmailPasswordLogin({
 	isCloud?: boolean;
 	canRegister?: boolean;
 }) {
+	const t = useT();
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -236,8 +240,8 @@ export function EmailPasswordLogin({
 
 	return (
 		<AuthSplitLayout
-			title="Welcome back"
-			subtitle={isCloud ? "Check in on your AI visibility." : "Sign in to your BeatGEO instance."}
+			title={t("Welcome back")}
+			subtitle={isCloud ? t("Check in on your AI visibility.") : t("Sign in to your BeatGEO instance.")}
 			pitch={<SalesPanel variant={isCloud ? "cloud" : "self-hosted"} source={source} />}
 			footer={<SalesFooterLinks source={source} />}
 		>
@@ -250,12 +254,12 @@ export function EmailPasswordLogin({
 						onClick={() => authClient.signIn.social({ provider: "google", callbackURL: destination })}
 					>
 						<IconBrandGoogle className="size-4" />
-						Continue with Google
+						{t("Continue with Google")}
 					</Button>
 					<LegalConsentNotice action="continuing with Google" />
 					<div className="flex items-center gap-3">
 						<Separator className="flex-1" />
-						<span className="text-xs text-muted-foreground">or</span>
+						<span className="text-xs text-muted-foreground">{t("or")}</span>
 						<Separator className="flex-1" />
 					</div>
 				</div>
@@ -263,11 +267,11 @@ export function EmailPasswordLogin({
 			<form onSubmit={handleSubmit} className="space-y-4 w-full">
 				{error && (
 					<Alert variant="destructive">
-						<AlertDescription>{error}</AlertDescription>
+						<AlertDescription>{t(error)}</AlertDescription>
 					</Alert>
 				)}
 				<div className="space-y-2">
-					<Label htmlFor="email">Email</Label>
+					<Label htmlFor="email">{t("Email")}</Label>
 					<Input
 						id="email"
 						type="email"
@@ -281,17 +285,17 @@ export function EmailPasswordLogin({
 				</div>
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<Label htmlFor="password">Password</Label>
+						<Label htmlFor="password">{t("Password")}</Label>
 						{isCloud && (
 							<Link to="/auth/forgot-password" className="text-xs text-primary hover:underline">
-								Forgot password?
+								{t("Forgot password?")}
 							</Link>
 						)}
 					</div>
 					<Input
 						id="password"
 						type="password"
-						placeholder="Password"
+						placeholder={t("Password")}
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						required
@@ -299,18 +303,18 @@ export function EmailPasswordLogin({
 					/>
 				</div>
 				<Button type="submit" className="w-full" disabled={loading}>
-					{loading ? "Signing in..." : "Sign in"}
+					{loading ? t("Signing in...") : t("Sign in")}
 				</Button>
 			</form>
 			{canRegister && (
 				<p className="text-sm text-muted-foreground pt-4">
-					Don't have an account?{" "}
+					{t("Don't have an account?")}{" "}
 					<Link
 						to="/auth/register"
 						search={{ ...(returnTo ? { returnTo } : {}), ...(incomingRef ? { ref: incomingRef } : {}) }}
 						className="text-primary hover:underline font-medium"
 					>
-						Create one
+						{t("Create one")}
 					</Link>
 				</p>
 			)}
@@ -319,19 +323,20 @@ export function EmailPasswordLogin({
 }
 
 function DemoCredentialsCallout() {
+	const t = useT();
 	return (
 		<div className="flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm">
 			<IconInfoCircle className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
 			<div className="space-y-2">
-				<p className="font-medium text-amber-900 dark:text-amber-100">Demo Account</p>
+				<p className="font-medium text-amber-900 dark:text-amber-100">{t("Demo Account")}</p>
 				<dl className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-amber-900/90 dark:text-amber-100/80">
 					<div className="flex items-center gap-1.5">
-						<dt className="opacity-70">Email</dt>
+						<dt className="opacity-70">{t("Email")}</dt>
 						<dd className="rounded bg-amber-500/15 px-1.5 py-0.5 font-mono text-[11px]">demo@example.invalid</dd>
 					</div>
 					<div className="flex items-center gap-1.5">
-						<dt className="opacity-70">Password</dt>
-						<dd className="rounded bg-amber-500/15 px-1.5 py-0.5 font-mono text-[11px]">demo</dd>
+						<dt className="opacity-70">{t("Password")}</dt>
+						<dd className="rounded bg-amber-500/15 px-1.5 py-0.5 font-mono text-[11px]">{t("demo")}</dd>
 					</div>
 				</dl>
 			</div>

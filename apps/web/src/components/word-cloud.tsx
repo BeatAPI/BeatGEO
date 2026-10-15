@@ -5,6 +5,7 @@
  * placement — so it's SSR-stable.
  */
 import { cn } from "@workspace/ui/lib/utils";
+import { useT } from "@/lib/i18n";
 
 export interface WordCloudTerm {
 	term: string;
@@ -34,11 +35,12 @@ export function WordCloud({
 	maxItems?: number;
 	className?: string;
 }) {
+	const t = useT();
 	// Sort here rather than relying on the caller: slicing the top terms and the
 	// center-weighted ordering below both assume descending counts.
 	const items = [...terms].sort((a, b) => b.count - a.count).slice(0, maxItems);
 	if (items.length === 0) {
-		return <div className="text-muted-foreground py-6 text-center text-sm">No terms for this period.</div>;
+		return <div className="text-muted-foreground py-6 text-center text-sm">{t("No terms for this period.")}</div>;
 	}
 
 	const counts = items.map((i) => i.count);
