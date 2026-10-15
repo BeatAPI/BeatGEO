@@ -15,6 +15,12 @@ import { z } from "zod";
 import { getWebsiteExcerpt } from "../website-excerpt";
 import { runStructuredResearchPrompt } from "./llm";
 import {
+	buildQuestionBank,
+	QUESTION_BANK_GUIDANCE,
+	QUESTION_BANK_VERSION,
+	type QuestionProfile,
+} from "./question-bank";
+import {
 	cleanAndValidateDomain,
 	cleanDomain,
 	cleanUrl,
@@ -64,6 +70,14 @@ export const promptSchema = z.object({
 
 function buildSchema(args: { maxCompetitors: number; maxPrompts: number }) {
 	return z.object({
+		questionProfile: z
+			.object({
+				category: z.string().min(1).max(160),
+				audience: z.string().min(1).max(160),
+				useCase: z.string().min(1).max(200),
+				language: z.enum(["en", "zh"]),
+			})
+			.optional(),
 		brandName: z
 			.string()
 			.describe(
@@ -87,7 +101,7 @@ function buildSchema(args: { maxCompetitors: number; maxPrompts: number }) {
 		suggestedPrompts: z
 			.array(promptSchema)
 			.describe(
-				`Up to ${args.maxPrompts} suggested AI tracking prompts. ${promptMixGuidance("Only 3-5")} ${TAG_GUIDANCE}`,
+				`Return an empty array when questionProfile is available; the shared question bank will generate the set. Otherwise, up to ${args.maxPrompts} suggested AI tracking prompts grounded in research evidence. ${promptMixGuidance("Only 3-5")} ${TAG_GUIDANCE}`,
 			),
 	});
 }
@@ -106,6 +120,8 @@ export interface OnboardingPrompt {
 }
 
 export interface OnboardingSuggestion {
+	questionProfile?: QuestionProfile;
+	questionBankVersion?: string;
 	brandName: string;
 	website: string;
 	additionalDomains: string[];
@@ -283,6 +299,7 @@ function buildPrompt(args: {
 ${nameLine}
 ${scopeNote}${excerptBlock}
 Use web search to verify facts. Never invent information — return empty arrays when uncertain.
+${QUESTION_BANK_GUIDANCE}
 
 You MUST return the structured JSON object — even if you can find nothing about this brand. In that case set brandName to the likely name above and return empty arrays for every other field. Refusing to produce JSON, or replying with prose explaining what you don't know, is a failure mode; an object with mostly-empty arrays is the correct answer when information is genuinely unavailable.${skipNotes.length > 0 ? `\n\n${skipNotes.join(" ")}` : ""}`;
 }
@@ -328,7 +345,12 @@ function normalize(args: {
 		additionalDomains: dedupedAdditionalDomains,
 		aliases,
 		competitors: includeCompetitors ? normalizeCompetitors(raw.competitors ?? [], ownedDomains, maxCompetitors) : [],
-		suggestedPrompts: includePrompts ? normalizePrompts(raw.suggestedPrompts ?? [], maxPrompts) : [],
+		...(raw.questionProfile && { questionProfile: raw.questionProfile, questionBankVersion: QUESTION_BANK_VERSION }),
+		suggestedPrompts: includePrompts
+			? raw.questionProfile
+				? buildQuestionBank(raw.questionProfile, brandName, maxPrompts)
+				: normalizePrompts(raw.suggestedPrompts ?? [], maxPrompts)
+			: [],
 	};
 }
 

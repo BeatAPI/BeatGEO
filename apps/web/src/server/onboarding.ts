@@ -12,6 +12,8 @@
  * ./onboarding-core.ts, imported only by API routes (server-only).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { resolveResearchProvider } from "@workspace/lib/onboarding";
+import { refreshCredentialOverlay } from "@workspace/lib/secrets";
 import { z } from "zod";
 import {
 	type AnalyzeBrandStatus,
@@ -19,7 +21,7 @@ import {
 	enqueueAnalyzeBrand,
 	getAnalyzeBrandStatus,
 } from "@/lib/analyze-brand-job";
-import { requireBrandSession } from "@/lib/auth/helpers";
+import { canManageConnections, requireBrandSession } from "@/lib/auth/helpers";
 import { saveWizardOnboarding, wizardOnboardingInputSchema } from "@/server/onboarding-core";
 
 /**
@@ -44,6 +46,8 @@ export const startAnalyzeBrandFn = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireBrandSession(data.brandId);
+		await refreshCredentialOverlay();
+		resolveResearchProvider();
 		await enqueueAnalyzeBrand(data);
 		return { ok: true };
 	});
@@ -80,4 +84,18 @@ export const updateOnboardedBrandFn = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireBrandSession(data.brandId);
 		return saveWizardOnboarding(data);
+	});
+
+export const getQuestionGenerationFn = createServerFn({ method: "GET" })
+	.validator(z.object({ brandId: z.string().min(1) }))
+	.handler(async ({ data }) => {
+		const session = await requireBrandSession(data.brandId);
+		const canConfigure = await canManageConnections(session);
+		await refreshCredentialOverlay();
+		try {
+			resolveResearchProvider();
+			return { available: true, canConfigure };
+		} catch {
+			return { available: false, canConfigure };
+		}
 	});

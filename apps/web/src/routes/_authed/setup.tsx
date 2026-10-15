@@ -153,8 +153,8 @@ function SetupPage() {
 			<section className="space-y-3">
 				<h2 className="text-lg font-semibold">3. Create your first baseline</h2>
 				<p className="text-sm text-muted-foreground">
-					Add your website, review questions, then start monitoring. You can enter questions manually without an API
-					key. Collection failures remain separate from missing brand mentions.
+					Add your website, generate questions, then review and start monitoring. Without an API key, choose an industry
+					to generate starter questions.
 				</p>
 				<Link to="/app" className={buttonVariants({})}>
 					Continue to brands

@@ -259,3 +259,38 @@ describe("analyzeBrand", () => {
 		expect(result.suggestedPrompts).toHaveLength(5);
 	});
 });
+
+describe("website-researched question bank", () => {
+	it("uses researched category, audience and use case to build a balanced starter set", async () => {
+		vi.mocked(runStructuredResearchPrompt).mockResolvedValueOnce({
+			brandName: "Acme",
+			additionalDomains: [],
+			aliases: [],
+			competitors: [],
+			suggestedPrompts: [],
+			questionProfile: {
+				category: "AI image generators",
+				audience: "online sellers",
+				useCase: "create product images",
+				language: "en",
+			},
+		});
+		const result = await analyzeBrand({ website: "acme.example" });
+		expect(result.questionBankVersion).toBe("2026-10-15.v1");
+		expect(result.suggestedPrompts).toHaveLength(12);
+		expect(result.suggestedPrompts.filter((row) => row.prompt.includes("Acme"))).toHaveLength(3);
+		expect(result.suggestedPrompts[2].prompt).toContain("create product images");
+	});
+	it("does not invent a business or questions from an unknown website", async () => {
+		vi.mocked(runStructuredResearchPrompt).mockResolvedValueOnce({
+			brandName: "Unknown",
+			additionalDomains: [],
+			aliases: [],
+			competitors: [],
+			suggestedPrompts: [],
+		});
+		const result = await analyzeBrand({ website: "unknown.example" });
+		expect(result.questionProfile).toBeUndefined();
+		expect(result.suggestedPrompts).toEqual([]);
+	});
+});

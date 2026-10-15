@@ -357,7 +357,7 @@ function ResearchBrandData({ brandId, clientConfig }: { brandId: string; clientC
 			<div className="space-y-2">
 				<h2 className="text-2xl font-bold">Set up brand monitoring</h2>
 				<p className="text-muted-foreground text-balance">
-					Enter your questions manually, or use your research provider to suggest a starting set.
+					Generate questions from your website, review the suggested set, then start monitoring.
 				</p>
 			</div>
 			<PromptWizard
