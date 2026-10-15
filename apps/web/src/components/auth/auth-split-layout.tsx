@@ -37,7 +37,7 @@ const BAND = "flex w-full flex-col lg:min-h-[39rem]";
 
 export function AuthSplitLayout({ title, subtitle, children, pitch, footer }: AuthSplitLayoutProps) {
 	return (
-		<div className="grid min-h-svh grid-cols-1 lg:grid-cols-2">
+		<div className="beat-workspace grid min-h-svh grid-cols-1 lg:grid-cols-2">
 			<div className={COLUMN}>
 				<div className={`${BAND} max-w-sm`}>
 					<Logo />
@@ -53,10 +53,6 @@ export function AuthSplitLayout({ title, subtitle, children, pitch, footer }: Au
 			</div>
 
 			<aside className={`relative border-t bg-muted/40 lg:border-l lg:border-t-0 ${COLUMN}`}>
-				<div
-					aria-hidden="true"
-					className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] [background-size:48px_48px] opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"
-				/>
 				<div className={`relative mx-auto ${BAND} max-w-lg`}>{pitch}</div>
 			</aside>
 		</div>

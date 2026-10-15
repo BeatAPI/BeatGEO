@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="960" viewBox="0 0 1200 960" fill="none">
+<defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" stroke="#8992a7" stroke-opacity=".1"/></pattern><linearGradient id="fade" x2="0" y2="1"><stop stop-color="white"/><stop offset="1" stop-color="black"/></linearGradient><mask id="mask"><rect width="100%" height="100%" fill="url(#fade)"/></mask></defs>
+<g mask="url(#mask)"><rect width="100%" height="100%" fill="url(#grid)"/></g>
+<g transform="translate(760 70) rotate(8)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#8a91a5">
+<text x="0" y="0" xml:space="preserve" fill="#637bce">client = OpenAI(</text>
+<text x="0" y="23" xml:space="preserve">  base_url="https://api.beatapi.io/v1",</text>
+<text x="0" y="46" xml:space="preserve">  api_key=os.environ["BEATAPI_API_KEY"]</text>
+<text x="0" y="69" xml:space="preserve">)</text>
+</g>
+<g transform="translate(400 220) rotate(-7)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#8a91a5">
+<text x="0" y="0" xml:space="preserve" fill="#637bce">{</text>
+<text x="0" y="23" xml:space="preserve">  "brand": "your website",</text>
+<text x="0" y="46" xml:space="preserve">  "questions": [],</text>
+<text x="0" y="69" xml:space="preserve">  "citations": []</text>
+<text x="0" y="92" xml:space="preserve">}</text>
+</g>
+<g transform="translate(890 420) rotate(6)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#8a91a5">
+<text x="0" y="0" xml:space="preserve" fill="#637bce">// original answers, visible sources</text>
+<text x="0" y="23" xml:space="preserve">observe → compare → improve</text>
+<text x="0" y="46" xml:space="preserve">// repeat the same questions</text>
+</g>
+<g transform="translate(-45 660) rotate(-9)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#8a91a5">
+<text x="0" y="0" xml:space="preserve" fill="#637bce">"mcpServers": {</text>
+<text x="0" y="23" xml:space="preserve">  "beatapi": {</text>
+<text x="0" y="46" xml:space="preserve">    "url": "https://beatapi.io/mcp"</text>
+<text x="0" y="69" xml:space="preserve">  }</text>
+<text x="0" y="92" xml:space="preserve">}</text>
+</g>
+<g transform="translate(800 800) rotate(7)" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="11" fill="#8a91a5">
+<text x="0" y="0" xml:space="preserve" fill="#637bce">const browser = createBrowser();</text>
+<text x="0" y="23" xml:space="preserve">await browser.profiles();</text>
+<text x="0" y="46" xml:space="preserve">// evidence from your browser</text>
+</g>
+</svg>

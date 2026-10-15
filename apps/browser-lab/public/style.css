@@ -282,14 +282,14 @@ nav a.active {
 	flex-direction: column;
 }
 #main {
+	position: relative;
+	isolation: isolate;
 	margin-left: var(--sidebar);
 	min-height: 100vh;
 }
 .education {
 	padding: 24px;
-	background-color: #1d1c1b;
-	background-image: radial-gradient(#33312f 1px, transparent 1px);
-	background-size: 10px 10px;
+	background: transparent;
 }
 .education-card {
 	border: 1px solid #3a3835;
@@ -584,6 +584,7 @@ dialog textarea {
 	background: var(--side);
 }
 table {
+	background: var(--bg);
 	width: 100%;
 	border-collapse: collapse;
 	font-size: 13px;
@@ -621,6 +622,7 @@ td {
 	color: var(--muted);
 }
 .metrics {
+	background: var(--bg);
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	border: 1px solid var(--line);
@@ -828,4 +830,18 @@ td {
 		transition: none !important;
 		animation: none !important;
 	}
+}
+
+/* Same static code texture as the product dashboard, on the existing dark palette. */
+#main::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background: url("/assets/code-texture.svg") top right / 1200px 960px no-repeat;
+	opacity: 0.25;
+}
+@media print {
+	#main::before { display: none; }
 }

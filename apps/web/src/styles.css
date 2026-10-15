@@ -180,3 +180,37 @@
 		color-adjust: exact !important;
 	}
 }
+
+/* Brand texture is decorative; opaque data surfaces keep charts and text clear. */
+.beat-workspace {
+	position: relative;
+	isolation: isolate;
+}
+.beat-workspace::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	background: url("/code-texture.svg") top right / 1200px 960px no-repeat;
+	opacity: 0.2;
+}
+.dark .beat-workspace::before {
+	opacity: 0.24;
+}
+.beat-workspace [data-slot="table-container"] {
+	background: var(--background);
+}
+@media (max-width: 640px) {
+	.beat-workspace::before,
+	.dark .beat-workspace::before {
+		background-position: top right -150px;
+		background-size: 900px 720px;
+		opacity: 0.13;
+	}
+}
+@media print {
+	.beat-workspace::before {
+		display: none;
+	}
+}
