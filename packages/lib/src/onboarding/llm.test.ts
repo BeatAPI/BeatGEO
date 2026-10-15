@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { resolveResearchProvider } from "./llm";
 
 const ENV_KEYS = [
+	"BEATAPI_API_KEY",
+	"BEATAPI_RESEARCH_MODEL",
 	"ONBOARDING_LLM_TARGET",
 	"ANTHROPIC_API_KEY",
 	"OPENAI_API_KEY",
@@ -102,4 +104,10 @@ describe("resolveResearchProvider", () => {
 	it("throws when no provider is configured", () => {
 		expect(() => resolveResearchProvider({})).toThrow(/at least one direct LLM API/);
 	});
+});
+
+it("selects BeatAPI research only with a configured model", () => {
+	process.env.BEATAPI_API_KEY = "test";
+	process.env.BEATAPI_RESEARCH_MODEL = "test-model";
+	expect(resolveResearchProvider().id).toBe("beatapi");
 });

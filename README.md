@@ -4,7 +4,7 @@
 
 从真实 AI 回答出发，了解品牌在哪里被提及、哪些页面被引用、哪里需要改进。使用 [BeatBrowser](https://github.com/BeatAPI/beat-browser) 在独立后台工作区采集网页回答，保留证据，明确显示超时与失败。
 
-> **MVP / 开发预览。** 本地浏览器工作台可运行；完整底座保留账户、品牌、问题、竞品、数据库及队列能力。网站诊断、优化行动、浏览器定时监测尚未全部接通。没有托管 SaaS、已发布 SDK 或全部平台已稳定支持的承诺。
+> **MVP / 开发预览。** 本地浏览器工作台、统一数据库/队列、优化任务与同组复测可运行，已完成一次 PostgreSQL→worker→真实 ChatGPT 验收。网站技术诊断、长期无人值守稳定性和多设备调度仍待完成。没有托管 SaaS、已发布 SDK 或全部平台已稳定支持的承诺。
 
 ## Product flow
 
@@ -32,26 +32,61 @@ flowchart TD
 
 ## Quick start
 
-需要 Node.js 24，以及已连接 Chrome 的 [BeatBrowser 1.3.1 源码预览版](https://github.com/BeatAPI/beat-browser)。先登录 ChatGPT / Gemini，运行 `beat-browser doctor --json` 检查连接。
+需要 **Git、Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGeo.git
 cd BeatGeo
-node apps/browser-lab/server.mjs
+node scripts/local-doctor.mjs
+pnpm local:setup
+pnpm local:start
 ```
 
-打开 **http://127.0.0.1:4318** → 添加采集 → 选择平台和 Chrome 配置 → 输入自己的品牌与客户问题 → 查看原答案、可见来源、状态及导出。
+### Fork 和团队试用
 
-此入口不需要 monorepo 依赖或模型 API key；网站账号自己的订阅和限制仍然适用。任务在独立 TaskSpace 中执行，无法创建时明确报错，不自动改用日常标签页。
+Fork 本仓库会保留 BeatBrowser 的固定版本依赖，**不会自动创建一个 BeatBrowser 仓库的 fork**。`pnpm local:setup` 从 GitHub 下载锁定的 BeatBrowser 源码，并把扩展准备到 `.beat-geo/extension`。使用者只需克隆 BeatGeo；首次安装需要联网，Chrome 扩展和网站登录需手动完成。
 
-源码版 BeatBrowser 可设置 `BEAT_BROWSER_COMMAND=node`，`BEAT_BROWSER_ARGS_JSON` 为包含其 `src/cli.js` 绝对路径的 JSON 数组。`BEAT_BROWSER_PROFILE_ID` 可固定 Chrome 配置。
+```mermaid
+flowchart LR
+    A[Fork 或克隆 BeatGeo] --> B[local:setup]
+    B --> C[安装锁定的 BeatBrowser]
+    B --> D[创建本机独立 PostgreSQL]
+    C --> E[Chrome 加载扩展并登录目标网站]
+    D --> F[local:start]
+    E --> G[创建品牌与首次采集]
+    F --> G
+```
+
+团队成员各自在本机安装时，账号、数据库、API Key 和 Chrome 登录态相互独立，不会共享维护者的数据。已有 BeatBrowser 的成员可复用连接，不要同时启用两份扩展；如需本次的任务清理功能，请使用本仓库依赖的扩展版本。修改 BeatBrowser 源码的开发者才需要另外 fork 它，再显式更新 BeatGeo 的依赖和锁文件；依赖不会自动追踪主分支。
+
+打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
+
+1. **连接 BeatAPI**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。网站自动研究需要研究提供方；Key 加密保存后持续复用。没有 Key 也能选择行业生成备用模板题单。
+2. **连接 Chrome**：已有 BeatBrowser 直接复用；没有时，在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension` 文件夹。选择已连接配置，并在同一配置登录 ChatGPT。浏览器要求用户确认安装，连接成功不代表网站已经登录。
+3. **创建品牌**：填写网站 → 研究业务并生成问题 → 确认题单 → 首次采集 → 查看回答与引用 → 记录优化 → 同组复测。
+4. **保持运行**：可关闭网页，电脑需唤醒、联网，Docker、Chrome 和 `local:start` 需持续运行。再次启动保留数据库及已保存 Key；本地版不是托管的全天监控。
+
+[完整用户流程：安装、账号、Key、浏览器、费用和持续运行](docs/beat-geo/getting-started.md)。
+
+`local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGeo 退出。
+
+Chrome 连接成功不等于每个网站已登录。任务在独立 TaskSpace 中执行，无法创建时明确报错，不回退到日常标签页。首次采集也会显示超时、需要登录和连接失败，失败不计作零曝光。网站账号自身限制仍然适用。
+
+高级配置与已有 PostgreSQL 安装见 [自托管指南](docs/self-hosting.md)。**SQLite 尚未实现**：当前查询和 pg-boss 依赖 PostgreSQL。始终保持一套产品账户、数据库与队列，本地 JSON 只是采集证据缓存。
+
+单独体验浏览器工作台（没有数据库/账户功能）：
 
 ```sh
-node apps/browser-lab/cli.mjs --engine chatgpt --brand Example --prompt 'Which tools would you recommend for this use case?'
-node --test apps/browser-lab/*.test.mjs
+pnpm install --frozen-lockfile
+pnpm browser:lab
+# http://127.0.0.1:4318
 ```
 
-完整产品底座需要 Node.js 24、pnpm 12.4.1 和 PostgreSQL，见 [自托管指南](docs/self-hosting.md)。**SQLite 尚未实现**：当前查询和 pg-boss 依赖 PostgreSQL，不是改一个连接串即可替换。首版保持一套产品账户、数据库与队列；本地 JSON 是采集证据缓存。
+## Questions without a blank page
+
+默认由网站研究识别品类、受众和主要用途，再套用 12 类通用意图生成具体问题。通常包含 9 个不带品牌名的发现问题、3 个品牌认知/替代品问题；分别标记用途，避免把点名提问当成自然发现。支持中英文，行业不限于 AI 产品。
+
+没有研究 API key 时，可从 8 个行业预设中选择，也可补充业务品类、受众和用途，生成行业初始题库。页面会明确区分“网站研究”与“行业模板”；两者都不是平台真实用户搜索量。问题可以修改或关闭，确认后存入现有品牌问题库，按固定问题长期复测，不在每轮监测时重新生成。
 
 ## MVP status
 
@@ -59,14 +94,17 @@ node --test apps/browser-lab/*.test.mjs
 |---|---|
 | 自己的品牌与问题 | 可用；按品牌筛选，多个品牌不混算提及率 |
 | 独立后台工作区 | BeatBrowser TaskSpace，复用网站登录，无 Ego 依赖 |
-| ChatGPT 网页采集 | 适配器、模拟测试与既有真实采集记录；页面变化仍需持续验收 |
+| ChatGPT 网页采集 | 完整 worker 链路真实验收通过，答案/引用入库并安排下一周期；页面变化仍需持续验收 |
 | Gemini 网页采集 | 适配器存在，后台长回答稳定性待验证；失败明确呈现 |
 | 原回答、来源、导出 | 可用；只读取可见链接，尚未完整展开来源侧栏 |
 | 超时与失败 | 单独显示原因、耗时、尝试次数，不当成零曝光 |
 | 样本提及率 | 可用；有效分母、版本标识和观察 ID 去重 |
 | 竞品声量 | 底座及纯函数可复用，浏览器工作台展示待接通 |
-| 账户、品牌、问题、调度 | 保留完整底座，本轮未完成 PostgreSQL→worker→浏览器端到端部署验收 |
-| 网站审计、推荐识别、行动与复测 | 后续完整闭环；不以空菜单冒充已实现 |
+| 账户、品牌、问题、调度 | 一套 PostgreSQL + pg-boss；每次尝试独立记录，成功数据原子提交 |
+| 优化行动与复测 | 保存机会和基线 → 记录实施 → 同队列复测 → 匹配比较及缺失数 |
+| 首次使用与连接 | 网页配置 key / 模型，检测及选择 Chrome；自动安装携带固定版本扩展 |
+| BeatAPI 研究 | Web Search / Read + 模型分析代码已接入；真实 key 的付费调用待验收 |
+| 网站技术审计、推荐识别、SEO 数据 | 待开发/接入；关键词量、外链、排名不冒充已有数据 |
 
 模拟测试不等于真实平台验收。[验收记录](docs/beat-geo/validation.md)
 
@@ -74,7 +112,7 @@ node --test apps/browser-lab/*.test.mjs
 
 提及率 = **提及品牌的有效回答 / 可评分的有效回答**。超时、未登录、失败和等待不进入分母；相同 observation ID 去重。普通提及不等于推荐，当前账户的样本不等于全市场真实曝光。
 
-例如计划 100 次，80 次有效，其中 24 次提及：提及率 **30%（24/80）**，计划覆盖率另报 **80%（80/100）**。当前工作台统计的是已保存观察的完成覆盖；调度接通后才能计算计划覆盖。[指标定义](docs/metrics.md)
+例如计划 100 次，80 次有效，其中 24 次提及：提及率 **30%（24/80）**，计划覆盖率另报 **80%（80/100）**。当前工作台统计的是已保存观察的完成覆盖；完整计划覆盖率仍需独立实现。[指标定义](docs/metrics.md)
 
 ## One product system
 
@@ -87,6 +125,12 @@ BeatGeo UI / API / MCP
 ```
 
 当前 bridge 需同机 loopback 和共享 runner token。跨设备租约、离线补跑仍待接通；电脑离线不能声称持续采集。BeatAPI 能力账户与余额由现有网关负责，此仓库不另建钱包。
+
+## BeatAPI integration
+
+研究提供方可选择 BeatAPI：用 Web Search 发现业务与竞品资料，读取页面后生成建议，用文本模型分析已采集的证据。在 **Connections** 填写 key 和可用研究模型，也兼容服务器端 `BEATAPI_API_KEY` / `BEATAPI_RESEARCH_MODEL`。已保存的 key 不回传前端。浏览器采集与基础统计不要求购买模型 API。SEO 专用数据接口尚未接入。
+
+[产品闭环、API 接入位置与商业化设计](docs/beat-geo/beatapi-product-loop.md)。当前为实例管理员统一凭据，不是每租户独立 BYOK 或完整成本账单。
 
 ## Privacy and independence
 

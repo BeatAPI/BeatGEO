@@ -64,6 +64,8 @@ declare global {
 			readonly OXYLABS_PASSWORD?: string;
 			readonly CLORO_API_KEY?: string;
 			readonly JINA_API_KEY?: string;
+			readonly BEATAPI_API_KEY?: string;
+			readonly BEATAPI_RESEARCH_MODEL?: string;
 			readonly ONBOARDING_LLM_TARGET?: string;
 			readonly BEAT_GEO_ENCRYPTION_KEY?: string;
 			readonly ELMO_ENCRYPTION_KEY?: string;

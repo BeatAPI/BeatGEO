@@ -48,14 +48,14 @@ export function ResponseCard({
 						{prompt}
 					</div>
 				)}
-				<div className="grid grid-cols-3 gap-x-4 text-sm">
+				<div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
 					<div>
 						<span className="text-muted-foreground block text-xs mb-0.5">Model</span>
 						<span>{getModelDisplayName(run.model)}</span>
 					</div>
 					<div>
 						<span className="text-muted-foreground block text-xs mb-0.5">Version</span>
-						<span>{run.version}</span>
+						<span>{run.version === "beat-browser" ? "Account default (not pinned)" : run.version}</span>
 					</div>
 					<div>
 						<span className="text-muted-foreground block text-xs mb-0.5">Evaluated</span>
@@ -79,7 +79,7 @@ export function ResponseCard({
 				)}
 
 				<div>
-					<span className="text-xs text-muted-foreground block mb-1.5">Brands Mentioned</span>
+					<span className="text-xs text-muted-foreground block mb-1.5">Tracked brands mentioned</span>
 					<div className="flex flex-wrap gap-1.5">
 						{run.brandMentioned && brandName && (
 							<Badge className="text-xs font-normal">
@@ -94,20 +94,22 @@ export function ResponseCard({
 							</Badge>
 						))}
 						{!run.brandMentioned && (!run.competitorsMentioned || run.competitorsMentioned.length === 0) && (
-							<span className="text-xs text-muted-foreground">None</span>
+							<span className="text-xs text-muted-foreground">None of your tracked brands</span>
 						)}
 					</div>
 				</div>
 
 				<div>
-					<span className="text-xs text-muted-foreground block mb-1.5">LLM Response</span>
+					<span className="text-xs text-muted-foreground block mb-1.5">Answer</span>
 					<div className="rounded-md border bg-muted/30 p-4 max-h-64 overflow-auto">
 						<ResponseMarkdown highlight={highlight}>{text}</ResponseMarkdown>
 					</div>
 				</div>
 
-				<div>
-					<span className="text-xs text-muted-foreground block mb-1.5">Raw Output</span>
+				<details>
+					<summary className="cursor-pointer text-xs font-medium text-muted-foreground mb-2">
+						Raw collection data
+					</summary>
 					<div className="rounded-md border bg-muted/20 p-4 max-h-64 overflow-auto">
 						<pre className="text-xs font-mono leading-relaxed whitespace-pre-wrap">
 							<Highlighted
@@ -117,7 +119,7 @@ export function ResponseCard({
 							/>
 						</pre>
 					</div>
-				</div>
+				</details>
 			</CardContent>
 		</Card>
 	);

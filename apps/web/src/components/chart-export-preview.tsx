@@ -47,7 +47,7 @@ export function ChartExportPreview({
 	const isWhitelabel = branding.isWhitelabel && branding.name !== DEFAULT_APP_NAME;
 	const domain = isWhitelabel
 		? branding.parentUrl?.replace(/^https?:\/\//, "").replace(/\/$/, "") || ""
-		: "example.invalid";
+		: "github.com/BeatAPI/BeatGeo";
 	const hasCustomIcon = branding.icon && branding.icon !== DEFAULT_APP_ICON;
 
 	return (
@@ -96,9 +96,9 @@ export function ChartExportPreview({
 			{/* Branding footer — fills remaining space, content vertically centered */}
 			<div className="flex-1 flex items-center justify-between px-10 min-h-0">
 				<div className="flex items-center gap-3">
-					{isWhitelabel && hasCustomIcon && (
+					{(!isWhitelabel || hasCustomIcon) && (
 						<img
-							src={branding.icon}
+							src={isWhitelabel ? branding.icon : "/icons/beatgeo-mark.png"}
 							alt={`${name} logo`}
 							style={{ width: 28, height: 28 }}
 							className="object-contain"
@@ -110,8 +110,8 @@ export function ChartExportPreview({
 							{name}
 						</span>
 					) : (
-						<span className="font-titan-one font-normal lowercase text-blue-600" style={{ fontSize: 24 }}>
-							beatgeo
+						<span className="font-semibold tracking-tight text-gray-900" style={{ fontSize: 24 }}>
+							{name}
 						</span>
 					)}
 				</div>

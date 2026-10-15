@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/componen
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { type ReactNode, useEffect } from "react";
+import { FirstCollectionStatus } from "@/components/first-collection-status";
 import PromptWizard from "@/components/prompt-wizard";
 import { TrendChart, type TrendPoint } from "@/components/trend-chart";
 import { useBrandId } from "@/hooks/use-brand-id";
@@ -314,7 +315,7 @@ function AwaitingFirstEvaluation({ totalPrompts, hasPrompts }: { totalPrompts: n
 	const params = useBrandParams();
 	const hasEnabledPrompts = totalPrompts > 0;
 	const message = hasEnabledPrompts
-		? "You are ready to track your AI visibility. We're currently running the first evaluation against AI models. This usually takes a few minutes."
+		? "Your questions are saved. Collection status appears below; the local worker and browser must stay connected."
 		: hasPrompts
 			? "You have prompts configured but none are currently enabled. Add or enable some prompts to start tracking your AI visibility."
 			: "Set up prompts to start tracking your AI visibility. Once configured, we'll evaluate them against AI models automatically.";
@@ -324,7 +325,7 @@ function AwaitingFirstEvaluation({ totalPrompts, hasPrompts }: { totalPrompts: n
 			<div className="rounded-full bg-muted p-4 mb-6">
 				<IconClock className="h-10 w-10 text-muted-foreground" />
 			</div>
-			<h2 className="text-2xl font-bold mb-3">{hasEnabledPrompts ? "Waiting for First Evaluation" : "No Data Yet"}</h2>
+			<h2 className="text-2xl font-bold mb-3">{hasEnabledPrompts ? "First collection" : "No Data Yet"}</h2>
 			<p className="text-muted-foreground mb-6 text-balance">{message}</p>
 			<div className="flex flex-col gap-3 w-full">
 				{hasEnabledPrompts && (
@@ -345,11 +346,7 @@ function AwaitingFirstEvaluation({ totalPrompts, hasPrompts }: { totalPrompts: n
 					<IconArrowRight className="h-4 w-4 ml-1" />
 				</Link>
 			</div>
-			{hasEnabledPrompts && (
-				<p className="text-xs text-muted-foreground mt-6">
-					Refresh this page in a few minutes to see your AI visibility data.
-				</p>
-			)}
+			{hasEnabledPrompts && <FirstCollectionStatus />}
 		</div>
 	);
 }
@@ -358,10 +355,9 @@ function ResearchBrandData({ brandId, clientConfig }: { brandId: string; clientC
 	return (
 		<div className="space-y-6 max-w-2xl p-4">
 			<div className="space-y-2">
-				<h2 className="text-2xl font-bold">Research Brand Data</h2>
+				<h2 className="text-2xl font-bold">Set up brand monitoring</h2>
 				<p className="text-muted-foreground text-balance">
-					We will analyze your website and find the best generative AI prompts to track. This process may take a couple
-					of minutes.
+					Generate questions from your website, review the suggested set, then start monitoring.
 				</p>
 			</div>
 			<PromptWizard

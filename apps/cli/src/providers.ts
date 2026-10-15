@@ -15,7 +15,7 @@ const OLOSTEP_AFFILIATE = "https://olostep.com/?ref=beatgeo";
 const DATAFORSEO_AFFILIATE = "https://try.dataforseo.com/beatgeo";
 
 export type RecommendedScraper = "cloro" | "brightdata" | "oxylabs" | "searchapi" | "olostep" | "dataforseo";
-export type DirectApiProvider = "openrouter" | "anthropic" | "openai" | "mistral";
+export type DirectApiProvider = "beatapi" | "openrouter" | "anthropic" | "openai" | "mistral";
 
 // Surfaces each scraper can track — the first two are the "recommended starter" set.
 const BRIGHTDATA_MODELS = [
@@ -111,6 +111,23 @@ function scraperPicker(label: string, provider: string, models: readonly string[
 // requires one before it will move on to scrapers, and the order within them
 // matches the auto-pick preference in onboarding/llm.ts.
 export const PROVIDER_PROMPTS: ProviderSpec[] = [
+	{
+		id: "beatapi",
+		kind: "direct",
+		label: "BeatAPI",
+		costHint: "research and analysis with one key",
+		confirmDefault: false,
+		credentials: [
+			{ envKey: "BEATAPI_API_KEY", message: "BeatAPI API key", secret: true, validate: required },
+			{
+				envKey: "BEATAPI_RESEARCH_MODEL",
+				message: "BeatAPI research model ID (from your model list)",
+				secret: false,
+				validate: required,
+			},
+		],
+		signup: { url: "https://beatapi.io", message: "Get a BeatAPI key" },
+	},
 	{
 		id: "openrouter",
 		kind: "direct",
@@ -304,7 +321,13 @@ export async function collectProvider(spec: ProviderSpec, env: EnvMap, targets: 
 }
 
 export function hasDirectApiConfigured(env: EnvMap): boolean {
-	return Boolean(env.ANTHROPIC_API_KEY || env.OPENAI_API_KEY || env.MISTRAL_API_KEY || env.OPENROUTER_API_KEY);
+	return Boolean(
+		(env.BEATAPI_API_KEY && env.BEATAPI_RESEARCH_MODEL) ||
+			env.ANTHROPIC_API_KEY ||
+			env.OPENAI_API_KEY ||
+			env.MISTRAL_API_KEY ||
+			env.OPENROUTER_API_KEY,
+	);
 }
 
 export async function finalizeScrapeTargets(

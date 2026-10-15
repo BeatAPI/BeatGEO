@@ -25,6 +25,13 @@ export function isAdmin(session: SessionLike): boolean {
 	return session.user.role === "admin";
 }
 
+export async function canManageConnections(session: SessionLike): Promise<boolean> {
+	if (getDeployment().mode !== "local") return false;
+	if (isAdmin(session)) return true;
+	const organizations = await listUserOrganizations(session.user.id);
+	return organizations.some((org) => org.id === "default" && (org.role === "admin" || org.role === "owner"));
+}
+
 export function hasReportAccess(session: SessionLike): boolean {
 	// Report generation is disabled entirely in deployments that don't support
 	// it (cloud), so the per-user flag is ignored there.

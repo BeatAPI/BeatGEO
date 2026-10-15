@@ -5,8 +5,9 @@
  * saving.
  */
 
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useRouter } from "@tanstack/react-router";
+import { buildQuestionBank, type QuestionProfile } from "@workspace/lib/question-bank";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Separator } from "@workspace/ui/components/separator";
@@ -16,6 +17,7 @@ import { AlertCircle, Play, Rocket } from "lucide-react";
 import { memo, useCallback, useMemo, useState } from "react";
 import { type CompetitorEntry, CompetitorsEditor, newCompetitorEntry } from "@/components/competitors-editor";
 import { type EditablePrompt, newPromptEntry, PromptsListEditor } from "@/components/prompts-list-editor";
+import { QuestionBankPicker } from "@/components/question-bank-picker";
 import { brandKeys, useBrand } from "@/hooks/use-brands";
 import { citationKeys } from "@/hooks/use-citations";
 import { dashboardKeys } from "@/hooks/use-dashboard-summary";
@@ -26,6 +28,7 @@ import { useWriteErrorMessage } from "@/lib/write-errors";
 import {
 	cancelAnalyzeBrandFn,
 	getAnalyzeBrandStatusFn,
+	getQuestionGenerationFn,
 	startAnalyzeBrandFn,
 	updateOnboardedBrandFn,
 } from "@/server/onboarding";
@@ -93,6 +96,27 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 	});
 
 	const brandId = brand?.id;
+	const [questionSource, setQuestionSource] = useState("");
+	const generation = useQuery({
+		queryKey: ["question-generation", brandId],
+		queryFn: () => getQuestionGenerationFn({ data: { brandId: brandId! } }),
+		enabled: !!brandId,
+	});
+	const useStarterBank = (profile: QuestionProfile) => {
+		setData({
+			brandName: brand?.name || "",
+			website: brand?.website || "",
+			additionalDomains: [],
+			aliases: [],
+			competitors: [],
+			prompts: buildQuestionBank(profile, brand?.name || "").map((p) =>
+				newPromptEntry({ value: p.prompt, tags: [...p.tags, "industry-template", "bank-v1"], enabled: true }),
+			),
+		});
+		setQuestionSource("Industry starter set · review the fit before monitoring. Not measured search volume.");
+		setReviewing(true);
+		setError(null);
+	};
 
 	const analysis = usePolledBrandJob({
 		queryKey: ["analyze-brand", brandId],
@@ -103,6 +127,17 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 		poll: () => getAnalyzeBrandStatusFn({ data: { brandId: brandId! } }),
 		cancel: () => cancelAnalyzeBrandFn({ data: { brandId: brandId! } }),
 		onDone: ({ suggestion }) => {
+			if (!suggestion.suggestedPrompts.length) {
+				setError(
+					"We could not identify enough website information. Try again, or choose an industry below to generate starter questions.",
+				);
+				return;
+			}
+			setQuestionSource(
+				suggestion.questionProfile
+					? `Website-based questions · ${suggestion.questionProfile.category} · ${suggestion.questionProfile.audience}. Suggested coverage, not measured search volume.`
+					: "Website research suggestions · review before monitoring. Not measured search volume.",
+			);
 			setData({
 				brandName: suggestion.brandName || brand?.name || "",
 				website: brand?.website || suggestion.website || "",
@@ -117,7 +152,11 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 					}),
 				),
 				prompts: suggestion.suggestedPrompts.map((p) =>
-					newPromptEntry({ value: p.prompt, tags: p.tags, enabled: true }),
+					newPromptEntry({
+						value: p.prompt,
+						tags: suggestion.questionBankVersion ? [...p.tags, "website-research", "bank-v1"] : p.tags,
+						enabled: true,
+					}),
 				),
 			});
 			setReviewing(true);
@@ -210,8 +249,8 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 		return (
 			<div className="max-w-2xl mx-auto space-y-3">
 				<p className="text-sm text-muted-foreground">
-					We'll analyze <strong>{brand?.website}</strong> using web search to suggest competitors, additional
-					domains/aliases, and a starter set of AI prompts to track.
+					We'll research <strong>{brand?.website}</strong> and generate a starter question set using our shared question
+					bank. Most questions test discovery without mentioning your brand. Research uses your configured API balance.
 				</p>
 				{error && (
 					<div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
@@ -219,19 +258,29 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 						<span>{error}</span>
 					</div>
 				)}
-				<div className="flex items-center gap-2">
+				{generation.isPending && <p role="status">Checking research connection…</p>}
+				{generation.error && (
+					<p role="alert">Could not check the research connection. You can still use the starter bank.</p>
+				)}
+				{generation.data?.available === false && (
+					<p className="text-sm">
+						Connect a research provider for website-based generation, or choose an industry below.{" "}
+						<ResearchSetupLink canConfigure={generation.data.canConfigure} />
+					</p>
+				)}
+				<div className="flex flex-wrap items-center gap-2">
 					<Button
 						onClick={handleAnalyze}
-						disabled={analysis.running}
+						disabled={analysis.running || !generation.data?.available}
 						className="flex items-center gap-2 cursor-pointer"
 					>
 						{analysis.running ? (
 							<>
-								<Spinner /> Analyzing brand…
+								<Spinner /> Generating questions…
 							</>
 						) : (
 							<>
-								<Play className="h-4 w-4" /> Analyze brand
+								<Play className="h-4 w-4" /> Generate questions from website
 							</>
 						)}
 					</Button>
@@ -241,6 +290,13 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 						</Button>
 					)}
 				</div>
+				{!analysis.running && (
+					<QuestionBankPicker
+						brandName={brand?.name || ""}
+						researchUnavailable={!generation.data?.available}
+						onUse={useStarterBank}
+					/>
+				)}
 			</div>
 		);
 	}
@@ -248,7 +304,15 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 	return (
 		<div className="max-w-2xl mx-auto space-y-6">
 			<div className="space-y-2">
-				<h2 className="text-2xl font-bold">Brand details</h2>
+				<div className="flex flex-wrap items-center justify-between gap-2">
+					<h2 className="text-2xl font-bold">Review your monitoring questions</h2>
+					<Button variant="ghost" disabled={isSaving} onClick={() => setReviewing(false)}>
+						Change question set
+					</Button>
+				</div>
+				<p role="status" className="text-sm text-muted-foreground">
+					{questionSource}
+				</p>
 				<p className="text-muted-foreground">
 					Confirm the brand identity, additional domains, and aliases used for tracking.
 				</p>
@@ -317,6 +381,10 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 				</div>
 			)}
 
+			<p className="text-sm text-muted-foreground">
+				Browser tasks run one at a time. Keep Chrome and the local app running; the first batch may take a while. Each
+				answer or failure appears as it finishes.
+			</p>
 			<Button
 				onClick={handleSubmit}
 				disabled={isSaving || previewCounts.totalNew === 0}
@@ -333,5 +401,15 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 				)}
 			</Button>
 		</div>
+	);
+}
+
+function ResearchSetupLink({ canConfigure }: { canConfigure: boolean }) {
+	return canConfigure ? (
+		<Link to="/setup" className="underline">
+			Connections
+		</Link>
+	) : (
+		<span>Ask your administrator to connect a research provider.</span>
 	);
 }

@@ -508,7 +508,7 @@ function citationsForPrompts(
 /** Regenerate at most this often; stored generations newer than this are served
  * from cache. Surfaced as "Refreshed weekly" on the page — kept a touch under 7 days. */
 const REFRESH_AFTER_DAYS = 6;
-const MAX_GENERATION_ATTEMPTS = 3;
+const MAX_GENERATION_ATTEMPTS = 1;
 
 /** Resolve the LLM output's prompt strings to tracked IDs (for deep-linking) and
  * attach each opportunity's cited pages split into the brand's vs competitors'. */
@@ -528,7 +528,7 @@ function enrichReport(raw: RawReport, digest: Digest): OpportunitiesReport {
 	});
 }
 
-/** Generate the report, retrying until the model's output satisfies the schema.
+/** Generate the report with one paid attempt; validate before caching.
  * Returns the validated report plus the model id that produced it. */
 async function generateValidReport(prompt: string): Promise<{ report: RawReport; model: string | null } | null> {
 	for (let attempt = 1; attempt <= MAX_GENERATION_ATTEMPTS; attempt++) {

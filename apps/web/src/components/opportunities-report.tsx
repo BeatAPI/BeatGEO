@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 /**
  * Renders the AI-generated Opportunities dashboard from getOpportunitiesFn.
  * Opportunities are grouped into Creation / Existing content / Outreach / Social;
@@ -6,6 +7,8 @@
  */
 import { useState } from "react";
 import { BrandPromptLink } from "@/components/brand-prompt-link";
+import { useBrandId } from "@/hooks/use-brand-id";
+import { createOptimizationActionFn } from "@/server/monitoring-fn";
 import type { CitedPage, OpportunitiesReport as OpportunitiesReportData, ReportPrompt } from "@/server/opportunities";
 
 const CATEGORY_META = [
@@ -75,6 +78,22 @@ function Panel({ children }: { children: React.ReactNode }) {
 }
 
 function OpportunityCard({ o }: { o: Opportunity }) {
+	const brandId = useBrandId();
+	const client = useQueryClient();
+	const save = useMutation({
+		mutationFn: () =>
+			createOptimizationActionFn({
+				data: {
+					brandId,
+					title: o.title,
+					description: o.why,
+					promptIds: [...new Set(o.relatedPrompts.flatMap((p) => (p.promptId ? [p.promptId] : [])))].slice(0, 20),
+				},
+			}),
+		onSuccess: () => {
+			void client.invalidateQueries({ queryKey: ["monitoring", brandId] });
+		},
+	});
 	const [open, setOpen] = useState<Tab | null>(null);
 	const tabs: { key: Tab; label: string; count: number }[] = [
 		{ key: "prompts", label: "Prompts", count: o.relatedPrompts.length },
@@ -84,6 +103,19 @@ function OpportunityCard({ o }: { o: Opportunity }) {
 	return (
 		<div className="rounded-xl border border-border p-4">
 			<h3 className="text-pretty text-base font-semibold">{o.title}</h3>
+			<button
+				type="button"
+				disabled={save.isPending || save.isSuccess || !o.relatedPrompts.some((p) => p.promptId)}
+				className="mt-2 rounded-md border px-3 py-1 text-xs hover:bg-muted disabled:opacity-50"
+				onClick={() => save.mutate()}
+			>
+				{save.isSuccess ? "Saved to actions" : "Save action & baseline"}
+			</button>
+			{save.error && (
+				<p role="alert" className="text-sm">
+					{save.error.message}
+				</p>
+			)}
 			<p className="mt-1 text-pretty text-sm text-muted-foreground">{o.why}</p>
 
 			<div className="mt-3 border-t border-border/60 pt-3">

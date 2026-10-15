@@ -1,8 +1,5 @@
 /// <reference types="vite/client" />
 
-// Preloaded so the wordmark font downloads in parallel with the CSS rather than
-// after it. Must resolve to the same emitted asset as the @font-face src.
-import titanOneFont from "@fontsource/titan-one/files/titan-one-latin-400-normal.woff2?url";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts, useLocation } from "@tanstack/react-router";
@@ -14,7 +11,6 @@ import { CookieConsentBanner } from "@workspace/ui/consent/cookie-consent-banner
 import { initAdTags, trackAdPageView } from "@workspace/ui/lib/ad-tags";
 import { isConsentRequired } from "@workspace/ui/lib/cookie-consent";
 import { useEffect, useState } from "react";
-import { usesWordmarkFont } from "@/components/logo";
 import MissingEnvPage from "@/components/missing-env-page";
 import { NotFoundPage } from "@/components/not-found-page";
 import queryDevtools from "@/integrations/tanstack-query/devtools";
@@ -105,21 +101,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				{ name: "twitter:image", content: ogImage },
 			],
 			links: [
-				// Whitelabel deployments render an icon + system-font name instead,
-				// so the wordmark font is never used there.
-				...(usesWordmarkFont(branding)
-					? [
-							{
-								rel: "preload",
-								as: "font",
-								type: "font/woff2",
-								href: titanOneFont,
-								// Inside a conditional spread the literal widens to `string`,
-								// which doesn't satisfy React's `CrossOrigin` union.
-								crossOrigin: "anonymous" as const,
-							},
-						]
-					: []),
 				{ rel: "stylesheet", href: appCss },
 				{ rel: "manifest", href: "/api/manifest" },
 				// Whitelabel uses its own icon URL for both favicon and iOS touch;

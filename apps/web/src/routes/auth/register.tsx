@@ -7,7 +7,7 @@
  */
 
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { createFileRoute, Link, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { CLOUD_ENTRY_PRICE_USD } from "@workspace/config/plans";
 import type { ClientConfig } from "@workspace/config/types";
 import { authClient } from "@workspace/lib/auth/client";
@@ -26,6 +26,10 @@ import { safeReturnTo } from "@/lib/return-to";
 import { buildTitle, getAppName } from "@/lib/route-head";
 
 export const Route = createFileRoute("/auth/register")({
+	beforeLoad: ({ context, search }) => {
+		if (!context.clientConfig?.canRegister)
+			throw redirect({ to: "/auth/login", search: { returnTo: search.returnTo } });
+	},
 	validateSearch: z.object({
 		returnTo: z.string().optional(),
 		/**
@@ -47,12 +51,6 @@ export const Route = createFileRoute("/auth/register")({
 function RegisterPage() {
 	const { returnTo, ref: incomingRef } = Route.useSearch();
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
-	const canRegister = context.clientConfig?.canRegister ?? false;
-
-	if (!canRegister) {
-		window.location.href = "/auth/login";
-		return null;
-	}
 
 	return (
 		<RegisterForm

@@ -33,7 +33,7 @@ function withSentry<T, R>(queueName: string, handler: (jobs: Job<T>[]) => Promis
 export async function registerHandlers(boss: PgBoss): Promise<void> {
 	await boss.work<ProcessPromptData>(
 		"process-prompt",
-		{ localConcurrency: 10 },
+		{ localConcurrency: process.env.SCRAPE_TARGETS?.includes(":beat-browser") ? 1 : 10 },
 		withSentry("process-prompt", processPromptJob),
 	);
 	console.log("Registered handler: process-prompt");

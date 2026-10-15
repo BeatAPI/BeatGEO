@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import FullPageCard from "@/components/full-page-card";
 import { OrganizationDirectory } from "@/components/organization-directory";
@@ -35,6 +35,7 @@ export const Route = createFileRoute("/_authed/app/")({
 
 function OrganizationPickerPage() {
 	const organizations = Route.useLoaderData();
+	const context = Route.useRouteContext();
 
 	if (organizations.length === 0) {
 		return (
@@ -46,6 +47,13 @@ function OrganizationPickerPage() {
 
 	return (
 		<FullPageCard title="Organizations and Brands" subtitle="Modify organizations or navigate to brands.">
+			{context.canManageConnections && context.clientConfig?.mode === "local" && (
+				<p className="mb-4 text-sm">
+					<Link to="/setup" className="underline">
+						Connect BeatAPI and your browser
+					</Link>
+				</p>
+			)}
 			<OrganizationDirectory organizations={organizations} />
 		</FullPageCard>
 	);

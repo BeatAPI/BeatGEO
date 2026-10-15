@@ -39,8 +39,10 @@ export function parseRows(text) {
 }
 
 export function createBrowser(env = process.env) {
-	const command = env.BEAT_BROWSER_COMMAND || "beat-browser";
-	const prefix = JSON.parse(env.BEAT_BROWSER_ARGS_JSON || "[]");
+	const bundled = fileURLToPath(new URL("../../node_modules/@beatapi/beat-browser/src/cli.js", import.meta.url));
+	const useBundle = !env.BEAT_BROWSER_COMMAND && existsSync(bundled);
+	const command = env.BEAT_BROWSER_COMMAND || (useBundle ? process.execPath : "beat-browser");
+	const prefix = useBundle ? [bundled] : JSON.parse(env.BEAT_BROWSER_ARGS_JSON || "[]");
 	if (!Array.isArray(prefix) || !prefix.every((value) => typeof value === "string")) {
 		throw new Error("BEAT_BROWSER_ARGS_JSON must be a JSON array of command arguments.");
 	}
@@ -133,8 +135,15 @@ async function queryRows(browser, tabId, selector, extract) {
 
 async function waitForInput(browser, tabId, selector, delay) {
 	for (let attempt = 0; attempt < 12; attempt++) {
-		const rows = await queryRows(browser, tabId, selector, { label: ".@aria-label" });
-		if (rows.length) return;
+		try {
+			const rows = await queryRows(browser, tabId, selector, { label: ".@aria-label" });
+			if (rows.length) return;
+		} catch (error) {
+			// A newly created background page can still be attaching its content script.
+			// Only re-read readiness; never reload, refocus, resume or repeat a submission.
+			if (!String(error.message).includes("[PAGE_BUSY]")) throw error;
+			if (attempt === 11) throw error;
+		}
 		await delay(2500);
 	}
 	throw new Error("No composer found. Open the tab and check login or a changed page layout. No prompt was sent.");
@@ -272,10 +281,19 @@ export async function collect(input, options = {}) {
 		delete run.partialAnswer;
 	} catch (error) {
 		run.status = String(error.message).startsWith("Timed out") ? "timeout" : "needs_attention";
+		run.errorCode = failureCode(error);
 		run.error = String(error.message).slice(0, 500);
 	}
 	await releaseRunPage(run, transport);
 	return { ...run, finishedAt: new Date().toISOString(), elapsedMs: Date.now() - Date.parse(run.startedAt) };
+}
+
+function failureCode(error) {
+	const message = String(error.message);
+	if (message.startsWith("Timed out")) return "timeout";
+	if (message.includes("[PAGE_BUSY]")) return "page_busy";
+	if (/verification needs operator|captcha/i.test(message)) return "blocked";
+	return "needs_attention";
 }
 
 export async function captureExisting(input, tabId, options = {}) {

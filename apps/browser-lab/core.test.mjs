@@ -208,3 +208,45 @@ test("duplicate observation IDs and failed attempts do not inflate a brand perce
 	assert.equal(result.statusCounts.timeout, 1);
 	assert.equal(result.metricVersion, "beatgeo-v1");
 });
+
+for (const readiness of ["transient", "persistent", "human-pause"]) {
+	test(`composer readiness ${readiness} never refreshes, refocuses or replays a submission`, async () => {
+		const calls = [];
+		let reads = 0;
+		let submitted = false;
+		const composer = () => {
+			reads++;
+			if (readiness === "human-pause") throw new Error("[TASKSPACE_PAUSED] Human owns the page");
+			if (readiness === "persistent" || reads < 3) throw new Error("[PAGE_BUSY] Loading");
+			return '[{"label":"Ask"}]';
+		};
+		const run = await collect(
+			{ engine: "chatgpt", prompt: "Which tools?", brand: "Example" },
+			{
+				delay: async () => {},
+				browser: async (tool, params) => {
+					calls.push({ tool, params });
+					if (tool === "spaces") return JSON.stringify({ spaceId: "readiness-space", tabId: 9, state: "running" });
+					if (tool === "snapshot") return "# ChatGPT";
+					if (tool === "type") {
+						submitted = true;
+						return "Typed";
+					}
+					if (params.selector.includes("contenteditable")) return composer();
+					if (params.selector.includes("aria-busy") || params.selector.includes("a[href]")) return "[]";
+					return submitted ? '[{"text":"Example is an option."}]' : "[]";
+				},
+			},
+		);
+		assert.equal(run.status, readiness === "transient" ? "completed" : "needs_attention");
+		assert.equal(reads, readiness === "transient" ? 3 : readiness === "persistent" ? 12 : 1);
+		assert.equal(calls.filter((c) => c.tool === "type").length, readiness === "transient" ? 1 : 0);
+		assert(calls.every((c) => ["spaces", "snapshot", "query", "type"].includes(c.tool)));
+		assert.deepEqual(
+			calls.filter((c) => c.tool === "spaces").map((c) => c.params.action),
+			["open", "finish"],
+		);
+		if (readiness === "persistent") assert.equal(run.errorCode, "page_busy");
+		if (readiness === "human-pause") assert.equal(run.errorCode, "needs_attention");
+	});
+}

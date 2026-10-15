@@ -60,7 +60,12 @@ function NewBrandPage() {
 			trackEvent("brand_created", { has_website: Boolean(website) });
 
 			await organizationsChanged(() =>
-				navigate({ to: "/app/org/$org/brand/$brand", params: { ...organizationParams, brand: brandSlug } }),
+				// A new brand needs fresh parent route context as well as fresh query data.
+				navigate({
+					to: "/app/org/$org/brand/$brand",
+					params: { ...organizationParams, brand: brandSlug },
+					reloadDocument: true,
+				}),
 			);
 		} catch (err) {
 			setError(writeError(err, "Could not create the brand."));

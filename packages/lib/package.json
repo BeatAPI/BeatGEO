@@ -41,7 +41,9 @@
 		"./usage": "./src/usage/cost.ts",
 		"./citations/domain-categories": "./src/citations/domain-categories.ts",
 		"./citations/domain-lists": "./src/citations/domain-lists.ts",
-		"./citations/rollup": "./src/citations/rollup.ts"
+		"./citations/rollup": "./src/citations/rollup.ts",
+		"./monitoring": "./src/monitoring.ts",
+		"./question-bank": "./src/onboarding/question-bank.ts"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "^4.0.71",

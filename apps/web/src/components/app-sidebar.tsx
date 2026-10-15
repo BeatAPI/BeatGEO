@@ -133,7 +133,8 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	const { setOpenMobile } = useSidebar();
 	const { isAdmin, hasReportAccess } = useViewer();
 	const features = useDeploymentFeatures();
-	const mode = useLooseRouteContext().clientConfig?.mode;
+	const context = useLooseRouteContext();
+	const mode = context.clientConfig?.mode;
 	// Reports are disabled entirely in cloud; hide the nav entry there.
 	const reportsEnabled = features?.reportGeneration ?? true;
 
@@ -142,13 +143,21 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	const adminItems = section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
 
 	const groups: NavGroup[] = [
+		...(context.canManageConnections && mode === "local"
+			? [
+					{
+						label: "Setup",
+						items: [{ title: "Connections", link: { to: "/setup" as const }, icon: IconPlugConnected }],
+					},
+				]
+			: []),
 		...(section === "brand" && organization && brand ? brandGroups(organization, brand) : []),
 		...(section === "organization" && organization ? organizationGroups(organization, features, mode) : []),
 		...(section === "admin" && adminItems.length > 0 ? [{ label: "Admin", items: adminItems }] : []),
 	];
 	const brandmark = (
 		<>
-			<Logo iconClassName="!size-5" />
+			<Logo />
 			<div className="ml-auto group-data-[collapsible=icon]:hidden">
 				<DemoModePill />
 			</div>

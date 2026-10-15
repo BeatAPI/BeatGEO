@@ -13,6 +13,7 @@ import {
 	uniqueIndex,
 	uuid,
 } from "drizzle-orm/pg-core";
+import type { Observation } from "../monitoring";
 // `organization` is referenced by the brands FK below; the re-export makes it
 // (and the rest of the auth schema) visible to `import * as schema` consumers.
 import { organization } from "./schema-auth";
@@ -319,3 +320,47 @@ export const secrets = pgTable("secrets", {
 		.$onUpdate(() => new Date())
 		.notNull(),
 }).enableRLS();
+
+// Attempts are separate from observations: a failed collection is not a zero mention.
+export const collectionAttempts = pgTable(
+	"collection_attempts",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		attemptKey: text("attempt_key").notNull(),
+		brandId: text("brand_id")
+			.notNull()
+			.references(() => brands.id, { onDelete: "cascade" }),
+		promptId: uuid("prompt_id")
+			.notNull()
+			.references(() => prompts.id, { onDelete: "cascade" }),
+		promptValue: text("prompt_value").notNull(),
+		provider: text("provider").notNull(),
+		model: text("model").notNull(),
+		status: text("status").notNull().default("running"),
+		observation: jsonb("observation").$type<Observation>(),
+		startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+		finishedAt: timestamp("finished_at", { withTimezone: true }),
+	},
+	(t) => ({
+		attemptKeyIdx: uniqueIndex("collection_attempt_key_idx").on(t.attemptKey),
+		brandStartedIdx: index("collection_brand_started_idx").on(t.brandId, t.startedAt),
+	}),
+).enableRLS();
+
+export const optimizationActions = pgTable(
+	"optimization_actions",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		brandId: text("brand_id")
+			.notNull()
+			.references(() => brands.id, { onDelete: "cascade" }),
+		title: text("title").notNull(),
+		description: text("description").notNull(),
+		baseline: jsonb("baseline").$type<Observation[]>().notNull(),
+		status: text("status").notNull().default("planned"),
+		implementationNote: text("implementation_note"),
+		createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+		appliedAt: timestamp("applied_at", { withTimezone: true }),
+	},
+	(t) => ({ brandCreatedIdx: index("optimization_brand_created_idx").on(t.brandId, t.createdAt) }),
+).enableRLS();
