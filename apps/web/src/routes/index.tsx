@@ -3,6 +3,7 @@ import { buttonVariants } from "@workspace/ui/components/button";
 import FullPageCard from "@/components/full-page-card";
 import { getSession } from "@/lib/auth/session";
 import { entryRouteForVisitor } from "@/lib/entry-route";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
 	validateSearch: (search: Record<string, unknown>) => ({
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+	const t = useT();
 	const { redirect: redirectParam } = Route.useSearch();
 
 	const loginUrl = "/auth/login";
@@ -41,7 +43,7 @@ function HomePage() {
 	return (
 		<FullPageCard className="">
 			<a href={signInUrl} className={buttonVariants({})}>
-				Sign In
+				{t("Sign In")}
 			</a>
 		</FullPageCard>
 	);

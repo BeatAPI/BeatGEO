@@ -2,6 +2,8 @@ import { Calendar } from "@workspace/ui/components/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover";
 import { ArrowRight, Check, X } from "lucide-react";
 import { type ComponentProps, type ReactElement, useState } from "react";
+import { useT } from "@/lib/i18n";
+import { type Locale, translate } from "@/lib/i18n/messages";
 import {
 	type DateRange,
 	formatCustomLookback,
@@ -29,13 +31,19 @@ const rangeFormatter = new Intl.DateTimeFormat(undefined, {
 	timeZone: "UTC",
 });
 
-export function formatLookbackLabel(lookback: LookbackPeriod): string {
+export function formatLookbackLabel(lookback: LookbackPeriod, locale: Locale = "en"): string {
+	const rangeFormatter = new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+		timeZone: "UTC",
+	});
 	const custom = parseCustomLookback(lookback);
-	if (!custom) return PRESET_LABELS[lookback as LookbackPreset];
+	if (!custom) return translate(locale, PRESET_LABELS[lookback as LookbackPreset]);
 	const asDate = (date: string) => new Date(`${date}T00:00:00Z`);
 	if (custom.from && custom.to) return rangeFormatter.formatRange(asDate(custom.from), asDate(custom.to));
-	if (custom.from) return `Since ${rangeFormatter.format(asDate(custom.from))}`;
-	return `Until ${rangeFormatter.format(asDate(custom.to as string))}`;
+	if (custom.from) return translate(locale, "Since {date}", { date: rangeFormatter.format(asDate(custom.from)) });
+	return translate(locale, "Until {date}", { date: rangeFormatter.format(asDate(custom.to as string)) });
 }
 
 // react-day-picker works in local Dates; the range is plain YYYY-MM-DD.
@@ -68,6 +76,7 @@ export function CustomRangeFields({
 	value: DateRange | null;
 	onChange: (range: DateRange | null) => void;
 }) {
+	const t = useT();
 	const today = startOfToday();
 	const from = value?.from ? toLocalDate(value.from) : undefined;
 	const to = value?.to ? toLocalDate(value.to) : undefined;
@@ -83,7 +92,7 @@ export function CustomRangeFields({
 	return (
 		<div className="flex items-center gap-2">
 			<DateField
-				label="Start date"
+				label={t("Start date")}
 				align="start"
 				value={from}
 				onChange={(date) => commit({ from: date, to })}
@@ -93,7 +102,7 @@ export function CustomRangeFields({
 			/>
 			<ArrowRight aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
 			<DateField
-				label="End date"
+				label={t("End date")}
 				align="end"
 				value={to}
 				onChange={(date) => commit({ from, to: date })}
@@ -183,13 +192,14 @@ export function LookbackPicker({
 	trigger: ReactElement;
 	align?: "start" | "center" | "end";
 }) {
+	const t = useT();
 	const [open, setOpen] = useState(false);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger render={trigger} />
 			<PopoverContent align={align} className="w-80 p-0">
-				<div role="listbox" aria-label="Date range" className="py-1">
+				<div role="listbox" aria-label={t("Date range")} className="py-1">
 					{LOOKBACK_PERIODS.map((period) => (
 						<button
 							key={period}
@@ -202,7 +212,7 @@ export function LookbackPicker({
 							}}
 							className="flex w-full cursor-pointer items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-muted"
 						>
-							{PRESET_LABELS[period]}
+							{t(PRESET_LABELS[period])}
 							{value === period && <Check className="ml-auto size-3.5" />}
 						</button>
 					))}

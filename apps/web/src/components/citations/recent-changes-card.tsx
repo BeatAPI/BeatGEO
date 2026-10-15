@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { formatPeriodLabel, formatUrlForDisplay, UnderlineTabs } from "@/components/citations/shared";
 import type { CitationData } from "@/components/citations/types";
+import { useT } from "@/lib/i18n";
 
 type WhatsChanged = NonNullable<CitationData["whatsChanged"]>;
 
@@ -106,6 +107,7 @@ function ChangeRow({ icon, label, url, description }: { icon: ReactNode } & Retu
 }
 
 export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsChanged; days: number }) {
+	const t = useT();
 	const [changeTypeFilter, setChangeTypeFilter] = useState<ChangeType>("new_pages");
 
 	const visibleChanges = useMemo((): Change[] => {
@@ -125,16 +127,22 @@ export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsC
 		<Card className="h-full flex flex-col">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-1.5">
-					Recent Changes
+					{t("Recent Changes")}
 					<Tooltip>
 						<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
 						<TooltipContent className="max-w-xs text-sm font-normal">
-							Compares this {formatPeriodLabel(days)} with the {formatPeriodLabel(days)} before it. Shows new and
-							dropped pages, title changes, and new and dropped domains.
+							{t("Compares this ")}
+							{formatPeriodLabel(days)}
+							{t(" with the ")}
+							{formatPeriodLabel(days)}
+							{t(" before it. Shows new and dropped pages, title changes, and new and dropped domains.")}
 						</TooltipContent>
 					</Tooltip>
 				</CardTitle>
-				<CardDescription>How AI citations have shifted over the past {formatPeriodLabel(days)}</CardDescription>
+				<CardDescription>
+					{t("How AI citations have shifted over the past ")}
+					{formatPeriodLabel(days)}
+				</CardDescription>
 			</CardHeader>
 			<Separator />
 			<CardContent className="flex-1">
@@ -150,7 +158,9 @@ export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsC
 					})}
 					{visibleChanges.length === 0 && (
 						<p className="text-sm text-muted-foreground text-center py-4">
-							No {activeTabLabel ?? changeTypeFilter} changes in this period.
+							{t("No ")}
+							{activeTabLabel ?? changeTypeFilter}
+							{t(" changes in this period.")}
 						</p>
 					)}
 				</div>

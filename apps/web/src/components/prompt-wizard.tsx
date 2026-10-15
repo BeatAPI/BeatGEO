@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * Single-step onboarding wizard.
  *
@@ -78,6 +79,7 @@ const EditableTagsInput = memo(
 EditableTagsInput.displayName = "EditableTagsInput";
 
 export default function PromptWizard({ onComplete }: PromptWizardProps) {
+	const t = useT();
 	const { data: brand } = useBrand();
 	const queryClient = useQueryClient();
 	const router = useRouter();
@@ -249,22 +251,25 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 		return (
 			<div className="max-w-2xl mx-auto space-y-3">
 				<p className="text-sm text-muted-foreground">
-					We'll research <strong>{brand?.website}</strong> and generate a starter question set using our shared question
-					bank. Most questions test discovery without mentioning your brand. Research uses your configured API balance.
+					{t("We'll research ")}
+					<strong>{brand?.website}</strong>
+					{t(
+						" and generate a starter question set using our shared question bank. Most questions test discovery without mentioning your brand. Research uses your configured API balance.",
+					)}
 				</p>
 				{error && (
 					<div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
 						<AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-						<span>{error}</span>
+						<span>{t(error)}</span>
 					</div>
 				)}
-				{generation.isPending && <p role="status">Checking research connection…</p>}
+				{generation.isPending && <p role="status">{t("Checking research connection…")}</p>}
 				{generation.error && (
-					<p role="alert">Could not check the research connection. You can still use the starter bank.</p>
+					<p role="alert">{t("Could not check the research connection. You can still use the starter bank.")}</p>
 				)}
 				{generation.data?.available === false && (
 					<p className="text-sm">
-						Connect a research provider for website-based generation, or choose an industry below.{" "}
+						{t("Connect a research provider for website-based generation, or choose an industry below.")}{" "}
 						<ResearchSetupLink canConfigure={generation.data.canConfigure} />
 					</p>
 				)}
@@ -276,17 +281,19 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 					>
 						{analysis.running ? (
 							<>
-								<Spinner /> Generating questions…
+								<Spinner />
+								{t(" Generating questions…")}
 							</>
 						) : (
 							<>
-								<Play className="h-4 w-4" /> Generate questions from website
+								<Play className="h-4 w-4" />
+								{t(" Generate questions from website")}
 							</>
 						)}
 					</Button>
 					{analysis.running && (
 						<Button variant="outline" onClick={analysis.cancel} className="cursor-pointer">
-							Cancel
+							{t("Cancel")}
 						</Button>
 					)}
 				</div>
@@ -305,24 +312,28 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 		<div className="max-w-2xl mx-auto space-y-6">
 			<div className="space-y-2">
 				<div className="flex flex-wrap items-center justify-between gap-2">
-					<h2 className="text-2xl font-bold">Review your monitoring questions</h2>
+					<h2 className="text-2xl font-bold">{t("Review your monitoring questions")}</h2>
 					<Button variant="ghost" disabled={isSaving} onClick={() => setReviewing(false)}>
-						Change question set
+						{t("Change question set")}
 					</Button>
 				</div>
 				<p role="status" className="text-sm text-muted-foreground">
 					{questionSource}
 				</p>
 				<p className="text-muted-foreground">
-					Confirm the brand identity, additional domains, and aliases used for tracking.
+					{t("Confirm the brand identity, additional domains, and aliases used for tracking.")}
 				</p>
 				<div className="space-y-3">
 					<div>
-						<p className="text-xs text-muted-foreground">Brand name</p>
-						<Input value={data.brandName} onChange={(e) => updateBrandName(e.target.value)} placeholder="Brand name" />
+						<p className="text-xs text-muted-foreground">{t("Brand name")}</p>
+						<Input
+							value={data.brandName}
+							onChange={(e) => updateBrandName(e.target.value)}
+							placeholder={t("Brand name")}
+						/>
 					</div>
 					<div>
-						<p className="text-xs text-muted-foreground">Website URL</p>
+						<p className="text-xs text-muted-foreground">{t("Website URL")}</p>
 						<Input
 							type="url"
 							value={data.website}
@@ -331,20 +342,20 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 						/>
 					</div>
 					<div>
-						<p className="text-xs text-muted-foreground">Additional domains</p>
+						<p className="text-xs text-muted-foreground">{t("Additional domains")}</p>
 						<EditableTagsInput
 							items={data.additionalDomains}
 							onValueChange={updateAdditionalDomains}
-							placeholder="Add domain..."
+							placeholder={t("Add domain...")}
 							maxItems={10}
 						/>
 					</div>
 					<div>
-						<p className="text-xs text-muted-foreground">Aliases</p>
+						<p className="text-xs text-muted-foreground">{t("Aliases")}</p>
 						<EditableTagsInput
 							items={data.aliases}
 							onValueChange={updateAliases}
-							placeholder="Add alias..."
+							placeholder={t("Add alias...")}
 							maxItems={10}
 						/>
 					</div>
@@ -355,8 +366,8 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 
 			<div className="space-y-3">
 				<div>
-					<h2 className="text-2xl font-bold">Competitors</h2>
-					<p className="text-muted-foreground">Companies you want tracked alongside your brand.</p>
+					<h2 className="text-2xl font-bold">{t("Competitors")}</h2>
+					<p className="text-muted-foreground">{t("Companies you want tracked alongside your brand.")}</p>
 				</div>
 				<CompetitorsEditor competitors={data.competitors} onChange={updateCompetitors} disabled={isSaving} />
 			</div>
@@ -365,10 +376,11 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 
 			<div className="space-y-3">
 				<div>
-					<h2 className="text-2xl font-bold">Prompts</h2>
+					<h2 className="text-2xl font-bold">{t("Prompts")}</h2>
 					<p className="text-muted-foreground">
-						Pick which AI tracking prompts to start with. Untick any you don't want, edit tags, or add your own at the
-						bottom.
+						{t(
+							"Pick which AI tracking prompts to start with. Untick any you don't want, edit tags, or add your own at the bottom.",
+						)}
 					</p>
 				</div>
 				<PromptsListEditor prompts={data.prompts} onChange={updatePrompts} showSystemTags={false} />
@@ -382,8 +394,9 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 			)}
 
 			<p className="text-sm text-muted-foreground">
-				Browser tasks run one at a time. Keep Chrome and the local app running; the first batch may take a while. Each
-				answer or failure appears as it finishes.
+				{t(
+					"Browser tasks run one at a time. Keep Chrome and the local app running; the first batch may take a while. Each answer or failure appears as it finishes.",
+				)}
 			</p>
 			<Button
 				onClick={handleSubmit}
@@ -392,11 +405,15 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 			>
 				{isSaving ? (
 					<>
-						<Spinner /> Saving…
+						<Spinner />
+						{t(" Saving…")}
 					</>
 				) : (
 					<>
-						<Rocket className="h-4 w-4" /> Start tracking ({previewCounts.totalNew} new prompts)
+						<Rocket className="h-4 w-4" />
+						{t(" Start tracking (")}
+						{previewCounts.totalNew}
+						{t(" new prompts)")}
 					</>
 				)}
 			</Button>
@@ -405,11 +422,12 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 }
 
 function ResearchSetupLink({ canConfigure }: { canConfigure: boolean }) {
+	const t = useT();
 	return canConfigure ? (
 		<Link to="/setup" className="underline">
-			Connections
+			{t("Connections")}
 		</Link>
 	) : (
-		<span>Ask your administrator to connect a research provider.</span>
+		<span>{t("Ask your administrator to connect a research provider.")}</span>
 	);
 }

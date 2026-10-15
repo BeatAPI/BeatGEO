@@ -14,6 +14,7 @@
  */
 
 import type { ReactNode } from "react";
+import { LanguageSwitch } from "@/components/language-switch";
 import { Logo } from "@/components/logo";
 
 interface AuthSplitLayoutProps {
@@ -40,7 +41,10 @@ export function AuthSplitLayout({ title, subtitle, children, pitch, footer }: Au
 		<div className="beat-workspace grid min-h-svh grid-cols-1 lg:grid-cols-2">
 			<div className={COLUMN}>
 				<div className={`${BAND} max-w-sm`}>
-					<Logo />
+					<div className="flex items-center justify-between gap-3">
+						<Logo />
+						<LanguageSwitch />
+					</div>
 					<div className="flex flex-1 items-center py-10">
 						<div className="w-full">
 							<h1 className="text-2xl font-semibold tracking-tight">{title}</h1>

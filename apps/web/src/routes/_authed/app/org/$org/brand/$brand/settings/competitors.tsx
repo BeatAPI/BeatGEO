@@ -10,6 +10,7 @@ import { useBrandId } from "@/hooks/use-brand-id";
 import { useBrand, useCompetitors } from "@/hooks/use-brands";
 import { citationKeys } from "@/hooks/use-citations";
 import { dashboardKeys } from "@/hooks/use-dashboard-summary";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { updateCompetitors } from "@/server/brands";
@@ -31,6 +32,7 @@ function saveable(competitors: CompetitorEntry[]) {
 }
 
 function CompetitorsSettingsPage() {
+	const t = useT();
 	const brandId = useBrandId();
 	const { data: brand, isLoading } = useBrand(brandId);
 	const {
@@ -74,8 +76,8 @@ function CompetitorsSettingsPage() {
 	if (isLoading || competitorsLoading) {
 		return (
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold">Competitors</h1>
-				<p className="text-muted-foreground">Loading...</p>
+				<h1 className="text-3xl font-bold">{t("Competitors")}</h1>
+				<p className="text-muted-foreground">{t("Loading...")}</p>
 			</div>
 		);
 	}
@@ -83,8 +85,8 @@ function CompetitorsSettingsPage() {
 	if (!brand) {
 		return (
 			<div className="space-y-6">
-				<h1 className="text-3xl font-bold">Competitors</h1>
-				<p className="text-destructive">Brand not found</p>
+				<h1 className="text-3xl font-bold">{t("Competitors")}</h1>
+				<p className="text-destructive">{t("Brand not found")}</p>
 			</div>
 		);
 	}
@@ -108,16 +110,17 @@ function CompetitorsSettingsPage() {
 	return (
 		<div className="max-w-2xl space-y-6">
 			<div>
-				<h1 className="text-3xl font-bold">Competitors</h1>
-				<p className="text-muted-foreground">Manage your competitive landscape for reputation tracking.</p>
+				<h1 className="text-3xl font-bold">{t("Competitors")}</h1>
+				<p className="text-muted-foreground">{t("Manage your competitive landscape for reputation tracking.")}</p>
 			</div>
 
 			<Alert variant="default" className="border-yellow-200 bg-yellow-50 text-yellow-800">
 				<AlertTriangle className="h-4 w-4 text-yellow-600" />
-				<AlertTitle>Warning</AlertTitle>
+				<AlertTitle>{t("Warning")}</AlertTitle>
 				<AlertDescription className="text-yellow-700">
-					Updating competitors will only apply to future prompt evaluations. Citation categorization updates
-					retroactively.
+					{t(
+						"Updating competitors will only apply to future prompt evaluations. Citation categorization updates retroactively.",
+					)}
 				</AlertDescription>
 			</Alert>
 

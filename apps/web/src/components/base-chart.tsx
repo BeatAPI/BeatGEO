@@ -14,6 +14,7 @@ import {
 	selectCompetitorsToDisplay,
 	visibilityBadgeProps,
 } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 
 /** The brand's own line is the one people are looking for, so it carries more
@@ -49,10 +50,11 @@ function SeriesLegend({
 	onHover: (key: string | null) => void;
 	onPin: (key: string | null) => void;
 }) {
+	const t = useT();
 	return (
 		<div
 			role="toolbar"
-			aria-label="Chart series"
+			aria-label={t("Chart series")}
 			className="flex shrink-0 flex-wrap items-center justify-center gap-x-4 gap-y-1 pt-2"
 			onMouseLeave={() => onHover(null)}
 		>

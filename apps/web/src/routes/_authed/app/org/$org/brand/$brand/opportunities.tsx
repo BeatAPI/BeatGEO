@@ -1,4 +1,5 @@
 import { MonitoringLoop } from "@/components/monitoring-loop";
+import { useT } from "@/lib/i18n";
 /**
  * The page renders a structured opportunities report. We assemble a deterministic
  * digest of the brand's tracked citation data (per-query standing vs the leading
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/opportu
 });
 
 function OpportunitiesPage() {
+	const t = useT();
 	const brandId = useBrandId();
 	const { data, isLoading, error } = useOpportunities(brandId);
 
@@ -34,12 +36,13 @@ function OpportunitiesPage() {
 	if (isLoading) {
 		content = <LoadingState />;
 	} else if (error) {
-		content = <EmptyCard>Couldn't generate recommendations right now. Reload the page to try again.</EmptyCard>;
+		content = <EmptyCard>{t("Couldn't generate recommendations right now. Reload the page to try again.")}</EmptyCard>;
 	} else if (!data || data.reason === "insufficient-data" || !data.report) {
 		content = (
 			<EmptyCard>
-				We need a bit more tracking data before we can recommend opportunities — check back once your prompts have run
-				for a few days.
+				{t(
+					"We need a bit more tracking data before we can recommend opportunities — check back once your prompts have run for a few days.",
+				)}
 			</EmptyCard>
 		);
 	} else {
@@ -48,8 +51,10 @@ function OpportunitiesPage() {
 
 	return (
 		<PageHeader
-			title="Opportunities"
-			subtitle="What to create, pitch, and seed to earn more AI citations — generated from your tracked answer data."
+			title={t("Opportunities")}
+			subtitle={t(
+				"What to create, pitch, and seed to earn more AI citations — generated from your tracked answer data.",
+			)}
 			infoContent={infoContent}
 		>
 			<div className="space-y-6">
@@ -62,10 +67,11 @@ function OpportunitiesPage() {
 }
 
 function LastEvaluatedAt({ date }: { date: string }) {
+	const t = useT();
 	return (
 		<p className="flex items-center gap-1.5 text-sm text-muted-foreground">
 			<IconClock className="size-4" aria-hidden />
-			Last evaluated{" "}
+			{t("Last evaluated")}{" "}
 			<time dateTime={date}>
 				{new Date(date).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
 			</time>
@@ -82,11 +88,12 @@ function EmptyCard({ children }: { children: React.ReactNode }) {
 }
 
 function LoadingState() {
+	const t = useT();
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-2 text-sm text-muted-foreground">
 				<Spinner />
-				Analyzing your citation landscape and drafting your opportunities…
+				{t("Analyzing your citation landscape and drafting your opportunities…")}
 			</div>
 			<div className="space-y-2">
 				<Skeleton className="h-6 w-2/3" />

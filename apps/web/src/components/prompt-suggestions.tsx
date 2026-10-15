@@ -6,6 +6,7 @@ import { AlertCircle, ArrowUp, RefreshCw, Sparkles, X } from "lucide-react";
 import { type Ref, type RefObject, useEffect, useRef, useState } from "react";
 import { type EditablePrompt, newPromptEntry } from "@/components/prompts-list-editor";
 import { usePolledBrandJob } from "@/hooks/use-polled-brand-job";
+import { useT } from "@/lib/i18n";
 import { trackEvent } from "@/lib/posthog";
 import {
 	cancelPromptSuggestionsFn,
@@ -96,11 +97,13 @@ function runsLeftLabel(remaining: number | null) {
 }
 
 function StatusMessage({ suggestions }: { suggestions: Suggestions }) {
+	const t = useT();
 	const { running, error, nothingNew, suggestedCount } = suggestions;
 	if (running) {
 		return (
 			<span className="flex items-center gap-2 text-muted-foreground">
-				<Spinner /> Suggesting prompts. This usually takes about a minute.
+				<Spinner />
+				{t(" Suggesting prompts. This usually takes about a minute.")}
 			</span>
 		);
 	}
@@ -115,7 +118,7 @@ function StatusMessage({ suggestions }: { suggestions: Suggestions }) {
 	if (nothingNew && suggestedCount === 0) {
 		return (
 			<span className="text-muted-foreground">
-				Nothing new this time. Everything suggested is already in your list.
+				{t("Nothing new this time. Everything suggested is already in your list.")}
 			</span>
 		);
 	}
@@ -123,15 +126,16 @@ function StatusMessage({ suggestions }: { suggestions: Suggestions }) {
 		<span className="flex items-center gap-2 text-muted-foreground">
 			<Sparkles className="size-4 shrink-0 text-primary" />
 			<span>
-				<strong className="text-foreground">{suggestedCount}</strong> suggested{" "}
-				{suggestedCount === 1 ? "prompt" : "prompts"} below. Remove any you don't want, then save to start tracking the
-				rest.
+				<strong className="text-foreground">{suggestedCount}</strong>
+				{t(" suggested")} {suggestedCount === 1 ? t("prompt") : t("prompts")}
+				{t(" below. Remove any you don't want, then save to start tracking the rest.")}
 			</span>
 		</span>
 	);
 }
 
 function StatusActions({ suggestions }: { suggestions: Suggestions }) {
+	const t = useT();
 	const { running, error, suggestedCount, remaining } = suggestions;
 	const close = (
 		<Button
@@ -139,7 +143,7 @@ function StatusActions({ suggestions }: { suggestions: Suggestions }) {
 			size="icon"
 			variant="ghost"
 			onClick={suggestions.clearNotice}
-			aria-label="Close"
+			aria-label={t("Close")}
 			className="size-8"
 		>
 			<X className="size-4" />
@@ -149,7 +153,7 @@ function StatusActions({ suggestions }: { suggestions: Suggestions }) {
 	if (running) {
 		return (
 			<Button type="button" size="sm" variant="ghost" onClick={suggestions.cancel}>
-				Cancel
+				{t("Cancel")}
 			</Button>
 		);
 	}
@@ -167,11 +171,12 @@ function StatusActions({ suggestions }: { suggestions: Suggestions }) {
 				disabled={remaining !== null && remaining <= 0}
 				className="flex items-center gap-2"
 			>
-				<RefreshCw className="size-4" /> Suggest More
+				<RefreshCw className="size-4" />
+				{t(" Suggest More")}
 			</Button>
 			{suggestedCount > 0 ? (
 				<Button type="button" size="sm" variant="ghost" onClick={suggestions.dismissAll}>
-					Dismiss All
+					{t("Dismiss All")}
 				</Button>
 			) : (
 				close
@@ -204,6 +209,7 @@ export function SuggestionsReadyPill({
 	arrived: { run: number; count: number };
 	target: RefObject<HTMLElement | null>;
 }) {
+	const t = useT();
 	const [visible, setVisible] = useState(false);
 
 	useEffect(() => {
@@ -230,7 +236,8 @@ export function SuggestionsReadyPill({
 			className="fixed top-20 left-1/2 z-20 flex -translate-x-1/2 cursor-pointer items-center gap-1.5 rounded-full border bg-background px-3 py-1.5 text-sm font-medium shadow-lg animate-in fade-in slide-in-from-top-2 hover:bg-accent"
 		>
 			<ArrowUp className="size-4" />
-			{arrived.count} {arrived.count === 1 ? "suggestion" : "suggestions"} added
+			{arrived.count} {arrived.count === 1 ? t("suggestion") : t("suggestions")}
+			{t(" added")}
 		</button>
 	);
 }

@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * Which platforms a brand is tracked against, grouped by what each group tells
  * you: a scraped engine shows what a visitor sees, an ungrounded API call shows
@@ -46,15 +47,17 @@ export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/setting
 });
 
 function LlmsSettingsPage() {
+	const t = useT();
 	const { picker, premium } = Route.useLoaderData();
 
 	return (
 		<div className="max-w-6xl space-y-8">
 			<div>
-				<h1 className="text-3xl font-bold">LLMs</h1>
+				<h1 className="text-3xl font-bold">{t("LLMs")}</h1>
 				<p className="text-muted-foreground">
-					Your prompts are evaluated against these AI models to track how your brand appears across different types of
-					AI search.
+					{t(
+						"Your prompts are evaluated against these AI models to track how your brand appears across different types of AI search.",
+					)}
 				</p>
 			</div>
 
@@ -67,13 +70,14 @@ function LlmsSettingsPage() {
 }
 
 function NoPlatformsCard() {
+	const t = useT();
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Tracked platforms</CardTitle>
+				<CardTitle>{t("Tracked platforms")}</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<p className="text-sm text-muted-foreground">This brand is not tracked on any platform yet.</p>
+				<p className="text-sm text-muted-foreground">{t("This brand is not tracked on any platform yet.")}</p>
 			</CardContent>
 		</Card>
 	);
@@ -119,6 +123,7 @@ function PlatformTierCard({
 }
 
 function PlatformGroups({ picker }: { picker: ModelPickerState }) {
+	const t = useT();
 	const brandId = useBrandId();
 	const router = useRouter();
 	const writeError = useWriteErrorMessage();
@@ -160,8 +165,13 @@ function PlatformGroups({ picker }: { picker: ModelPickerState }) {
 			{spend && costBasis && (
 				<div className="flex flex-wrap items-center justify-between gap-3 rounded-md border bg-muted/30 px-4 py-3">
 					<p className="text-sm text-muted-foreground">
-						Estimated provider spend for this brand: {costBasis.enabledPrompts} tracked prompt
-						{costBasis.enabledPrompts === 1 ? "" : "s"} sampled {costBasis.runsPerDay}×/day across the platforms below.
+						{t("Estimated provider spend for this brand: ")}
+						{costBasis.enabledPrompts}
+						{t(" tracked prompt")}
+						{costBasis.enabledPrompts === 1 ? "" : t("s")}
+						{t(" sampled ")}
+						{costBasis.runsPerDay}
+						{t("×/day across the platforms below.")}
 					</p>
 					<Badge variant="secondary" className="font-mono tabular-nums">
 						≈{formatUsd(spend.saved)}/mo
@@ -172,11 +182,15 @@ function PlatformGroups({ picker }: { picker: ModelPickerState }) {
 			{limit !== null && (
 				<div className="flex items-center justify-between gap-3 rounded-md border bg-muted/30 px-4 py-3">
 					<p className="text-sm text-muted-foreground">
-						Your plan tracks up to {limit} platform{limit === 1 ? "" : "s"} for this brand, in any combination below.
-						Changes apply from the next sampling cycle.
+						{t("Your plan tracks up to ")}
+						{limit}
+						{t(" platform")}
+						{limit === 1 ? "" : t("s")}
+						{t(" for this brand, in any combination below. Changes apply from the next sampling cycle.")}
 					</p>
 					<Badge variant={overLimit ? "destructive" : "secondary"}>
-						{selected.size} / {limit} picks
+						{selected.size} / {limit}
+						{t(" picks")}
 					</Badge>
 				</div>
 			)}
@@ -198,13 +212,15 @@ function PlatformGroups({ picker }: { picker: ModelPickerState }) {
 
 			{selected.size === 0 && (
 				<Alert variant="destructive">
-					<AlertDescription>Pick at least one platform — a brand with none is not tracked.</AlertDescription>
+					<AlertDescription>{t("Pick at least one platform — a brand with none is not tracked.")}</AlertDescription>
 				</Alert>
 			)}
 			{overLimit && (
 				<Alert variant="destructive">
 					<AlertDescription>
-						That is {selected.size - (limit ?? 0)} more than your plan allows. Clear some, or upgrade.
+						{t("That is ")}
+						{selected.size - (limit ?? 0)}
+						{t(" more than your plan allows. Clear some, or upgrade.")}
 					</AlertDescription>
 				</Alert>
 			)}
@@ -238,10 +254,11 @@ function summarizeSelection(count: number, spend: { saved: number; next: number 
  * than a couple, so each name is its own chip and each tier its own row.
  */
 function UpgradePanel({ options }: { options: ModelPickerState["upgradeOptions"] }) {
+	const t = useT();
 	const organizationParams = useOrganizationParams();
 	return (
 		<div className="space-y-3 rounded-md border border-dashed p-4">
-			<p className="text-sm font-medium">Upgrade to track more platforms</p>
+			<p className="text-sm font-medium">{t("Upgrade to track more platforms")}</p>
 			<div className="space-y-2.5">
 				{groupPlatformOptions(options).map((group) => (
 					<div key={group.id} className="space-y-1.5">
@@ -265,7 +282,7 @@ function UpgradePanel({ options }: { options: ModelPickerState["upgradeOptions"]
 				params={organizationParams}
 				className={buttonVariants({ variant: "outline", size: "sm" })}
 			>
-				Compare plans
+				{t("Compare plans")}
 				<IconArrowUpRight className="h-4 w-4" />
 			</Link>
 		</div>
@@ -279,6 +296,7 @@ function UpgradePanel({ options }: { options: ModelPickerState["upgradeOptions"]
  * spend them.
  */
 function PremiumApiPool({ premium }: { premium: PremiumPool }) {
+	const t = useT();
 	const brandParams = useBrandParams();
 	const organizationParams = useOrganizationParams();
 	const copy = platformGroupCopy("premium");
@@ -290,7 +308,8 @@ function PremiumApiPool({ premium }: { premium: PremiumPool }) {
 				<CardTitle className="flex items-center justify-between gap-3">
 					<span>{copy.title}</span>
 					<Badge variant={remaining === 0 ? "destructive" : "secondary"}>
-						{premium.assigned} / {premium.total} pairings
+						{premium.assigned} / {premium.total}
+						{t(" pairings")}
 					</Badge>
 				</CardTitle>
 				<CardDescription>{copy.description}</CardDescription>
@@ -302,7 +321,8 @@ function PremiumApiPool({ premium }: { premium: PremiumPool }) {
 							<ModelIcon iconId={getModelMeta(model).iconId} className="size-5" />
 							<span className="flex-1 text-sm font-medium">{premiumModelLabel(model)}</span>
 							<span className="font-mono text-[10px] text-muted-foreground tabular-nums">
-								{PREMIUM_RUNS_PER_DAY}×/day
+								{PREMIUM_RUNS_PER_DAY}
+								{t("×/day")}
 							</span>
 						</div>
 					))}
@@ -320,14 +340,14 @@ function PremiumApiPool({ premium }: { premium: PremiumPool }) {
 						params={brandParams}
 						className={buttonVariants({ variant: "outline", size: "sm" })}
 					>
-						Choose prompts
+						{t("Choose prompts")}
 					</Link>
 					<Link
 						to="/app/org/$org/settings/billing"
 						params={organizationParams}
 						className={buttonVariants({ variant: "ghost", size: "sm" })}
 					>
-						Change how many
+						{t("Change how many")}
 						<IconArrowUpRight className="h-4 w-4" />
 					</Link>
 				</div>
@@ -353,19 +373,22 @@ const PROVIDER_COLUMNS = [
 const PROVIDER_GRID = "grid grid-cols-[minmax(7rem,1fr)_1.5fr_1fr] gap-x-4";
 
 function AddPlatformsCard({ platforms }: { platforms: ModelPickerState["unconfiguredPlatforms"] }) {
+	const t = useT();
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Track more platforms</CardTitle>
+				<CardTitle>{t("Track more platforms")}</CardTitle>
 				<CardDescription>
-					Add these to <code className="font-mono text-xs">SCRAPE_TARGETS</code> to start tracking them. One account is
-					enough, but which kind you pick changes the data: a scraper reads the product a visitor uses, an API asks the
-					model directly.
+					{t("Add these to ")}
+					<code className="font-mono text-xs">SCRAPE_TARGETS</code>
+					{t(
+						" to start tracking them. One account is enough, but which kind you pick changes the data: a scraper reads the product a visitor uses, an API asks the model directly.",
+					)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-3">
 				<div className={`${PROVIDER_GRID} gap-y-2 border-b pb-2 text-xs font-medium text-muted-foreground`}>
-					<span>Platform</span>
+					<span>{t("Platform")}</span>
 					{PROVIDER_COLUMNS.map((column) => (
 						<span key={column.access}>{column.header}</span>
 					))}
@@ -392,7 +415,7 @@ function AddPlatformsCard({ platforms }: { platforms: ModelPickerState["unconfig
 					rel="noopener noreferrer"
 					className={buttonVariants({ variant: "outline", size: "sm" })}
 				>
-					Provider setup guide
+					{t("Provider setup guide")}
 					<IconExternalLink className="h-4 w-4" />
 				</a>
 			</CardContent>

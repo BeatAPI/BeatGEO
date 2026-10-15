@@ -17,6 +17,7 @@ import queryDevtools from "@/integrations/tanstack-query/devtools";
 import { initClarity } from "@/lib/clarity";
 import { rootConfigQuery } from "@/lib/config/queries";
 import { initCrisp } from "@/lib/crisp";
+import { LocaleProvider, useLocale } from "@/lib/i18n";
 import { initAnalytics } from "@/lib/posthog";
 import type { PublicClientConfig } from "@/server/config";
 import appCss from "../styles.css?url";
@@ -127,6 +128,15 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
+	return (
+		<LocaleProvider>
+			<RootContent />
+		</LocaleProvider>
+	);
+}
+
+function RootContent() {
+	const { locale } = useLocale();
 	const { envValidation, clientConfig, consentRegion } = Route.useRouteContext();
 	const clarityProjectId = clientConfig?.analytics?.clarityProjectId;
 	const posthogKey = clientConfig?.analytics?.posthogKey;
@@ -164,7 +174,7 @@ function RootComponent() {
 	// envValidation is absent while a navigation's root beforeLoad is in flight.
 	if (envValidation && !envValidation.isValid) {
 		return (
-			<html lang="en">
+			<html lang={locale === "zh" ? "zh-CN" : "en"}>
 				<head>
 					<HeadContent />
 				</head>
@@ -177,7 +187,7 @@ function RootComponent() {
 	}
 
 	return (
-		<html lang="en">
+		<html lang={locale === "zh" ? "zh-CN" : "en"}>
 			<head>
 				<HeadContent />
 			</head>

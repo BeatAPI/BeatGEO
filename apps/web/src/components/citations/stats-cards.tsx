@@ -1,6 +1,7 @@
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
+import { useT } from "@/lib/i18n";
 
 function StatCard({ title, tooltip, value }: { title: string; tooltip: React.ReactNode; value: React.ReactNode }) {
 	return (
@@ -30,15 +31,16 @@ export function CitationStatsCards({
 	uniqueDomains: number;
 	totalCitations: number;
 }) {
+	const t = useT();
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 			<StatCard
-				title="Brand Citation Share"
+				title={t("Brand Citation Share")}
 				tooltip="The percentage of all citations that link to your brand's domain. A higher share means AI models are more likely to reference your content."
 				value={`${brandShare}%`}
 			/>
 			<StatCard
-				title="Unique Domains"
+				title={t("Unique Domains")}
 				tooltip="The number of distinct domains cited across all prompt evaluations in this period."
 				value={uniqueDomains.toLocaleString()}
 			/>
@@ -48,7 +50,7 @@ export function CitationStatsCards({
 			    results, not an external domain w.r.t. the model), so they're
 			    excluded from this count and broken out in the Google Shopping card. */}
 			<StatCard
-				title="Total Citations"
+				title={t("Total Citations")}
 				tooltip="The total external websites cited by AI models across prompt evaluations."
 				value={totalCitations.toLocaleString()}
 			/>

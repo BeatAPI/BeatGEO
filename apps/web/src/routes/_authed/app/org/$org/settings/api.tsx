@@ -12,6 +12,7 @@ import { CopyButton } from "@/components/copy-button";
 import { DemoModeAlert } from "@/components/demo-mode-alert";
 import { useAppOrigin } from "@/hooks/use-app-origin";
 import { useBranding } from "@/hooks/use-deployment-features";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 
 const OPENAPI_PATH = "/api/v1/openapi.json";
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/settings/api")({
 });
 
 function ApiSettingsPage() {
+	const t = useT();
 	const appName = useBranding()?.name || DEFAULT_APP_NAME;
 	const origin = useAppOrigin();
 	const baseUrl = `${origin}/api/v1`;
@@ -32,14 +34,17 @@ function ApiSettingsPage() {
 	return (
 		<div className="space-y-6">
 			<header className="space-y-1">
-				<h1 className="text-3xl font-bold">API Docs</h1>
-				<p className="max-w-2xl text-muted-foreground">Programmatic interface for {appName}.</p>
+				<h1 className="text-3xl font-bold">{t("API Docs")}</h1>
+				<p className="max-w-2xl text-muted-foreground">
+					{t("Programmatic interface for ")}
+					{appName}.
+				</p>
 			</header>
 
-			<DemoModeAlert>API access is disabled in demo mode.</DemoModeAlert>
+			<DemoModeAlert>{t("API access is disabled in demo mode.")}</DemoModeAlert>
 
 			<div className="flex flex-wrap items-center gap-2">
-				<span className="text-sm text-muted-foreground">Base URL</span>
+				<span className="text-sm text-muted-foreground">{t("Base URL")}</span>
 				<code className="rounded-md border bg-muted/40 px-2 py-1 font-mono text-sm">{baseUrl}</code>
 				<CopyButton value={baseUrl} />
 			</div>
@@ -54,13 +59,14 @@ function ApiSettingsPage() {
 }
 
 function HttpExample({ baseUrl }: { baseUrl: string }) {
+	const t = useT();
 	const code = `curl '${baseUrl}/brands' -H 'Authorization: Bearer YOUR_API_KEY'`;
 	return (
 		<section className="space-y-3">
-			<h2 className="text-lg font-semibold">HTTP API</h2>
+			<h2 className="text-lg font-semibold">{t("HTTP API")}</h2>
 			<CodeBlock code={code} />
 			<p className="text-sm text-muted-foreground">
-				Use this instance's API reference below. A BeatGEO SDK is not published yet.
+				{t("Use this instance's API reference below. A BeatGEO SDK is not published yet.")}
 			</p>
 		</section>
 	);

@@ -21,6 +21,7 @@ import { useListFilters } from "@/hooks/use-list-filters";
 import { usePromptsSummary } from "@/hooks/use-prompts-summary";
 import { useShareOfVoice } from "@/hooks/use-share-of-voice";
 import { useSiteIcons } from "@/hooks/use-site-icons";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { shareOfVoiceColorMap } from "@/lib/share-of-voice-palette";
 
@@ -48,6 +49,7 @@ const TIPS = {
 };
 
 function ShareOfVoicePage() {
+	const t = useT();
 	const brandId = useBrandId();
 	const { model, lookback, tags } = useListFilters();
 
@@ -64,10 +66,11 @@ function ShareOfVoicePage() {
 	const infoContent = (
 		<>
 			<p className="mb-2">
-				Share of voice is how often each brand is mentioned in the AI answers to your prompts. Mentions are counted per
-				run, so the brand and competitor figures use the same unit and are directly comparable.
+				{t(
+					"Share of voice is how often each brand is mentioned in the AI answers to your prompts. Mentions are counted per run, so the brand and competitor figures use the same unit and are directly comparable.",
+				)}
 			</p>
-			<p>Competitors are the ones you track in settings. Switch the model filter to compare engines.</p>
+			<p>{t("Competitors are the ones you track in settings. Switch the model filter to compare engines.")}</p>
 		</>
 	);
 
@@ -93,7 +96,7 @@ function ShareOfVoicePage() {
 			<Card>
 				<CardContent className="pt-6">
 					<div className="text-muted-foreground text-center py-8">
-						No mention data yet for the selected filters. Mentions appear once your prompts have been run.
+						{t("No mention data yet for the selected filters. Mentions appear once your prompts have been run.")}
 					</div>
 				</CardContent>
 			</Card>
@@ -106,7 +109,7 @@ function ShareOfVoicePage() {
 				<div className="grid gap-6 lg:grid-cols-2">
 					<Card>
 						<CardHeader>
-							<CardTitle>Share of Voice</CardTitle>
+							<CardTitle>{t("Share of Voice")}</CardTitle>
 						</CardHeader>
 						<CardContent className="flex items-center justify-between gap-4">
 							<div>
@@ -114,7 +117,10 @@ function ShareOfVoicePage() {
 									{currentShare !== null ? `${currentShare}%` : "—"}
 								</div>
 								<p className="text-sm text-muted-foreground mt-1 max-w-[18rem]">
-									{data.brandName} across {data.totalRuns.toLocaleString()} runs
+									{data.brandName}
+									{t(" across ")}
+									{data.totalRuns.toLocaleString()}
+									{t(" runs")}
 									{data.entries.length > 1 ? ` and ${data.entries.length - 1} competitors` : ""}.
 								</p>
 							</div>
@@ -124,12 +130,12 @@ function ShareOfVoicePage() {
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Share of Voice Trends</CardTitle>
+							<CardTitle>{t("Share of Voice Trends")}</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<TrendChart
 								data={data.shareTimeSeries.map((p) => ({ date: p.date, value: p.share }))}
-								label="Share of Voice"
+								label={t("Share of Voice")}
 								color="#2563eb"
 								className="aspect-auto h-[180px] w-full"
 							/>
@@ -139,22 +145,22 @@ function ShareOfVoicePage() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle>Share of Voice Leaderboard</CardTitle>
+						<CardTitle>{t("Share of Voice Leaderboard")}</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Table>
 							<TableHeader>
 								<TableRow>
 									<TableHead className="w-10">#</TableHead>
-									<TableHead>Brand</TableHead>
+									<TableHead>{t("Brand")}</TableHead>
 									<TableHead className="text-right">
-										<ColHead label="Mentions" tip={TIPS.mentions} right />
+										<ColHead label={t("Mentions")} tip={TIPS.mentions} right />
 									</TableHead>
 									<TableHead className="w-[34%]">
-										<ColHead label="Share" tip={TIPS.share} />
+										<ColHead label={t("Share")} tip={TIPS.share} />
 									</TableHead>
 									<TableHead className="text-right">
-										<ColHead label="Prompts" tip={TIPS.prompts} right />
+										<ColHead label={t("Prompts")} tip={TIPS.prompts} right />
 									</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -168,7 +174,7 @@ function ShareOfVoicePage() {
 												{e.name}
 												{e.isBrand && (
 													<Badge variant="secondary" className="text-xs">
-														You
+														{t("You")}
 													</Badge>
 												)}
 											</span>
@@ -203,8 +209,8 @@ function ShareOfVoicePage() {
 
 	return (
 		<PageHeader
-			title="Share of Voice"
-			subtitle="How often AI engines mention you versus your competitors."
+			title={t("Share of Voice")}
+			subtitle={t("How often AI engines mention you versus your competitors.")}
 			infoContent={infoContent}
 		>
 			<FilterSection>

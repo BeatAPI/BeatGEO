@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /admin/tools — Admin utility for running the onboarding analysis against an
  * arbitrary website without going through the wizard.
@@ -26,6 +27,7 @@ import { useWriteErrorMessage } from "@/lib/write-errors";
 import { adminAnalyzeBrandFn } from "@/server/admin";
 
 function AnalyzeBrandDialog() {
+	const t = useT();
 	const [open, setOpen] = useState(false);
 	const [website, setWebsite] = useState("");
 	const [brandName, setBrandName] = useState("");
@@ -84,18 +86,18 @@ function AnalyzeBrandDialog() {
 		<Dialog open={open} onOpenChange={(o) => (o ? setOpen(true) : handleClose())}>
 			<DialogTrigger render={<Button variant="outline" className="cursor-pointer w-full" />}>
 				<Sparkles className="h-4 w-4 mr-2" />
-				Analyze brand
+				{t("Analyze brand")}
 			</DialogTrigger>
 			<DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle>Analyze brand</DialogTitle>
-					<DialogDescription>Run the onboarding analysis for any website.</DialogDescription>
+					<DialogTitle>{t("Analyze brand")}</DialogTitle>
+					<DialogDescription>{t("Run the onboarding analysis for any website.")}</DialogDescription>
 				</DialogHeader>
 
 				<div className="space-y-4 py-4">
 					<div className="grid grid-cols-2 gap-4">
 						<div className="space-y-2">
-							<Label htmlFor="analyze-website">Website URL</Label>
+							<Label htmlFor="analyze-website">{t("Website URL")}</Label>
 							<Input
 								id="analyze-website"
 								placeholder="https://example.com"
@@ -105,10 +107,10 @@ function AnalyzeBrandDialog() {
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="analyze-brand">Brand name (optional)</Label>
+							<Label htmlFor="analyze-brand">{t("Brand name (optional)")}</Label>
 							<Input
 								id="analyze-brand"
-								placeholder="Auto-detected from URL"
+								placeholder={t("Auto-detected from URL")}
 								value={brandName}
 								onChange={(e) => setBrandName(e.target.value)}
 								disabled={isLoading}
@@ -120,10 +122,10 @@ function AnalyzeBrandDialog() {
 						{isLoading ? (
 							<>
 								<Spinner className="mr-2" />
-								Analyzing… (this may take a minute)
+								{t("Analyzing… (this may take a minute)")}
 							</>
 						) : (
-							"Analyze"
+							t("Analyze")
 						)}
 					</Button>
 
@@ -137,33 +139,36 @@ function AnalyzeBrandDialog() {
 									<Button variant="ghost" size="sm" onClick={handleCopyPrompts} className="cursor-pointer">
 										{copied ? (
 											<>
-												<Check className="h-4 w-4 mr-1" /> Copied
+												<Check className="h-4 w-4 mr-1" />
+												{t(" Copied")}
 											</>
 										) : (
 											<>
-												<Copy className="h-4 w-4 mr-1" /> Copy prompts
+												<Copy className="h-4 w-4 mr-1" />
+												{t(" Copy prompts")}
 											</>
 										)}
 									</Button>
 									<Button variant="ghost" size="sm" onClick={handleCopy} className="cursor-pointer">
-										<Copy className="h-4 w-4 mr-1" /> Copy JSON
+										<Copy className="h-4 w-4 mr-1" />
+										{t(" Copy JSON")}
 									</Button>
 								</div>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4 text-sm">
-								<Stat label="Competitors" value={result.competitors.length} />
-								<Stat label="Prompts" value={result.suggestedPrompts.length} />
+								<Stat label={t("Competitors")} value={result.competitors.length} />
+								<Stat label={t("Prompts")} value={result.suggestedPrompts.length} />
 							</div>
 
 							{result.additionalDomains.length > 0 && (
-								<TagSection title="Additional domains" items={result.additionalDomains} />
+								<TagSection title={t("Additional domains")} items={result.additionalDomains} />
 							)}
-							{result.aliases.length > 0 && <TagSection title="Aliases" items={result.aliases} />}
+							{result.aliases.length > 0 && <TagSection title={t("Aliases")} items={result.aliases} />}
 
 							{result.competitors.length > 0 && (
 								<div className="space-y-2">
-									<Label className="text-muted-foreground">Competitors</Label>
+									<Label className="text-muted-foreground">{t("Competitors")}</Label>
 									<div className="space-y-1 text-sm">
 										{result.competitors.map((c) => (
 											<div key={c.name} className="flex items-center gap-2">
@@ -177,7 +182,7 @@ function AnalyzeBrandDialog() {
 
 							{result.suggestedPrompts.length > 0 && (
 								<div className="space-y-2">
-									<Label className="text-muted-foreground">Prompts</Label>
+									<Label className="text-muted-foreground">{t("Prompts")}</Label>
 									<div className="max-h-60 overflow-y-auto border rounded-md p-2 space-y-1 text-sm">
 										{result.suggestedPrompts.map((p, i) => (
 											<div key={p.prompt} className="flex items-start gap-2 py-1 border-b last:border-0">
@@ -234,12 +239,13 @@ export const Route = createFileRoute("/_authed/admin/tools")({
 });
 
 function ToolsPage() {
+	const t = useT();
 	return (
 		<div className="space-y-8">
 			<div className="space-y-2">
-				<h1 className="text-3xl font-bold tracking-tight">Tools</h1>
+				<h1 className="text-3xl font-bold tracking-tight">{t("Tools")}</h1>
 				<p className="text-muted-foreground">
-					Run the onboarding analysis for any brand without creating it. Same pipeline as the wizard and
+					{t("Run the onboarding analysis for any brand without creating it. Same pipeline as the wizard and")}
 					<code className="mx-1 rounded bg-muted px-1">POST /api/v1/tools/analyze</code>.
 				</p>
 			</div>
@@ -249,11 +255,12 @@ function ToolsPage() {
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
 							<Sparkles className="h-5 w-5" />
-							Brand analysis
+							{t("Brand analysis")}
 						</CardTitle>
 						<CardDescription>
-							Analyze a website to discover its competitors, additional brand domains, aliases, and suggested AI
-							tracking prompts. Works with any configured LLM provider.
+							{t(
+								"Analyze a website to discover its competitors, additional brand domains, aliases, and suggested AI tracking prompts. Works with any configured LLM provider.",
+							)}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>

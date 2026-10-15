@@ -3,8 +3,10 @@ import { buttonVariants } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Separator } from "@workspace/ui/components/separator";
 import type { ReactNode } from "react";
+import { LanguageSwitch } from "@/components/language-switch";
 import { Logo } from "@/components/logo";
 import { useAuth } from "@/hooks/use-auth";
+import { useT } from "@/lib/i18n";
 
 interface FullPageCardProps {
 	logoHref?: string;
@@ -73,15 +75,19 @@ export default function FullPageCard({
 	customBackButton,
 	className = "w-md",
 }: FullPageCardProps) {
+	const t = useT();
 	const { isAuthenticated } = useAuth();
 	const markHref = logoHref ?? (isAuthenticated ? "/app" : null);
 
 	return (
-		<div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
+		<div className="relative min-h-screen bg-muted/30 flex items-center justify-center p-4">
+			<div className="absolute right-4 top-4">
+				<LanguageSwitch />
+			</div>
 			<div className={`mx-auto ${className}`}>
 				<div className="flex items-center justify-center space-x-3">
 					{markHref ? (
-						<Link to={markHref} aria-label="Go to your organizations">
+						<Link to={markHref} aria-label={t("Go to your organizations")}>
 							<Logo />
 						</Link>
 					) : (
@@ -95,7 +101,7 @@ export default function FullPageCard({
 					customBackButton={customBackButton}
 					showBackButton={showBackButton}
 					backButtonHref={backButtonHref}
-					backButtonText={backButtonText}
+					backButtonText={t(backButtonText)}
 				/>
 			</div>
 		</div>

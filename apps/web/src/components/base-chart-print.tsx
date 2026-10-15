@@ -4,6 +4,7 @@ import type { Competitor } from "@workspace/lib/db/schema";
 import { Badge } from "@workspace/ui/components/badge";
 import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { type ChartDataPoint, type ChartSubject, latestObservedPoint, visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
 
 interface BaseChartPrintProps {
 	data: ChartDataPoint[];
@@ -61,6 +62,7 @@ export function BaseChartPrint({
 	brand,
 	competitors,
 }: BaseChartPrintProps) {
+	const t = useT();
 	const routeContext = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const latestDataPoint = latestObservedPoint(data, [brand.id, ...competitors.map((c) => c.id)]);
 
@@ -73,7 +75,7 @@ export function BaseChartPrint({
 					</div>
 				)}
 				<div className="h-[200px] print:h-[150px] flex items-center justify-center text-muted-foreground text-sm print:text-xs">
-					No data available
+					{t("No data available")}
 				</div>
 			</div>
 		);

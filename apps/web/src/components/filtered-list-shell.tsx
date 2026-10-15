@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { FilterBar } from "@/components/filter-bar";
 import { FilterSection } from "@/components/page-header";
 import type { ListFilterState } from "@/hooks/use-list-filters";
+import { useT } from "@/lib/i18n";
 import type { TrackedTarget } from "@/lib/model-filter";
 
 interface FilteredListShellProps {
@@ -65,6 +66,7 @@ export function FilteredListShell({
 	noMatchesDescription,
 	children,
 }: FilteredListShellProps) {
+	const t = useT();
 	const effectiveFilteredCount = filteredCount ?? totalCount;
 
 	let body: ReactNode;
@@ -82,7 +84,7 @@ export function FilteredListShell({
 					<p className="mb-2">{noMatchesTitle ?? "No results match your filters."}</p>
 					<p className="text-sm mb-4">{noMatchesDescription ?? "Try adjusting your search or filters."}</p>
 					<Button variant="outline" size="sm" onClick={filters.clearFilters} className="cursor-pointer">
-						Clear filters
+						{t("Clear filters")}
 					</Button>
 				</div>
 			</div>

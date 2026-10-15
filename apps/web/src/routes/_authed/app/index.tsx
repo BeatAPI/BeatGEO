@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import FullPageCard from "@/components/full-page-card";
 import { OrganizationDirectory } from "@/components/organization-directory";
+import { useT } from "@/lib/i18n";
 import { invalidateOrganizations, organizationsQuery } from "@/lib/organizations/queries";
 import type { OrganizationSummary } from "@/lib/organizations/types";
 import { pageHead } from "@/lib/route-head";
@@ -34,23 +35,24 @@ export const Route = createFileRoute("/_authed/app/")({
 });
 
 function OrganizationPickerPage() {
+	const t = useT();
 	const organizations = Route.useLoaderData();
 	const context = Route.useRouteContext();
 
 	if (organizations.length === 0) {
 		return (
-			<FullPageCard title="No organizations" subtitle="Your account isn't a member of an organization yet.">
-				<p className="text-center text-muted-foreground">Ask an admin to invite you, then reload this page.</p>
+			<FullPageCard title={t("No organizations")} subtitle={t("Your account isn't a member of an organization yet.")}>
+				<p className="text-center text-muted-foreground">{t("Ask an admin to invite you, then reload this page.")}</p>
 			</FullPageCard>
 		);
 	}
 
 	return (
-		<FullPageCard title="Organizations and Brands" subtitle="Modify organizations or navigate to brands.">
+		<FullPageCard title={t("Organizations and Brands")} subtitle={t("Modify organizations or navigate to brands.")}>
 			{context.canManageConnections && context.clientConfig?.mode === "local" && (
 				<p className="mb-4 text-sm">
 					<Link to="/setup" className="underline">
-						Connect BeatAPI and your browser
+						{t("Connect BeatAPI and your browser")}
 					</Link>
 				</p>
 			)}

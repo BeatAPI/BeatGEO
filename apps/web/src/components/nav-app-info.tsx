@@ -11,8 +11,10 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { openCookiePreferences } from "@workspace/ui/lib/cookie-consent";
+import { useT } from "@/lib/i18n";
 
 export function NavAppInfo() {
+	const t = useT();
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const mode = context.clientConfig?.mode;
 
@@ -30,7 +32,8 @@ export function NavAppInfo() {
 				rel="noreferrer"
 				className="flex-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
 			>
-				v{__APP_VERSION__}
+				{t("v")}
+				{__APP_VERSION__}
 			</a>
 			<div className="flex items-center gap-1">
 				<Tooltip>
@@ -45,7 +48,7 @@ export function NavAppInfo() {
 				</Tooltip>
 				{showsLegalLinks(mode) && (
 					<DropdownMenu>
-						<DropdownMenuTrigger className={linkClass} aria-label="Legal" title="Legal">
+						<DropdownMenuTrigger className={linkClass} aria-label={t("Legal")} title={t("Legal")}>
 							<IconScale className="size-4" />
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="start" side="top" className="w-48">
@@ -61,7 +64,7 @@ export function NavAppInfo() {
 							{isBeatGeoHosted(mode) && (
 								<>
 									<DropdownMenuSeparator />
-									<DropdownMenuItem onClick={openCookiePreferences}>Cookie preferences</DropdownMenuItem>
+									<DropdownMenuItem onClick={openCookiePreferences}>{t("Cookie preferences")}</DropdownMenuItem>
 								</>
 							)}
 						</DropdownMenuContent>
@@ -75,7 +78,7 @@ export function NavAppInfo() {
 					>
 						<IconBrandGithub className="size-4" />
 					</TooltipTrigger>
-					<TooltipContent>View on GitHub</TooltipContent>
+					<TooltipContent>{t("View on GitHub")}</TooltipContent>
 				</Tooltip>
 			</div>
 		</div>

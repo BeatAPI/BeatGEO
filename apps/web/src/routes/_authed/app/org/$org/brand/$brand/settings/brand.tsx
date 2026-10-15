@@ -15,6 +15,7 @@ import { citationKeys } from "@/hooks/use-citations";
 import { dashboardKeys } from "@/hooks/use-dashboard-summary";
 import { useOrganization, useOrganizationsChanged } from "@/hooks/use-organizations";
 import { useBrandParams } from "@/hooks/use-route-params";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { updateBrandFn } from "@/server/brands";
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/setting
 });
 
 function BrandSettingsPage() {
+	const t = useT();
 	const { data: brand, isLoading, refetch: refetchBrand } = useBrand();
 	const queryClient = useQueryClient();
 	const organization = useOrganization();
@@ -61,8 +63,8 @@ function BrandSettingsPage() {
 		return (
 			<div className="space-y-6">
 				<div>
-					<h1 className="text-3xl font-bold">Brand</h1>
-					<p className="text-muted-foreground">Loading...</p>
+					<h1 className="text-3xl font-bold">{t("Brand")}</h1>
+					<p className="text-muted-foreground">{t("Loading...")}</p>
 				</div>
 			</div>
 		);
@@ -72,8 +74,8 @@ function BrandSettingsPage() {
 		return (
 			<div className="space-y-6">
 				<div>
-					<h1 className="text-3xl font-bold">Brand</h1>
-					<p className="text-destructive">Brand not found</p>
+					<h1 className="text-3xl font-bold">{t("Brand")}</h1>
+					<p className="text-destructive">{t("Brand not found")}</p>
 				</div>
 			</div>
 		);
@@ -129,29 +131,29 @@ function BrandSettingsPage() {
 	return (
 		<div className="space-y-6 max-w-2xl">
 			<div>
-				<h1 className="text-3xl font-bold">Brand</h1>
-				<p className="text-muted-foreground">Manage your brand name and website</p>
+				<h1 className="text-3xl font-bold">{t("Brand")}</h1>
+				<p className="text-muted-foreground">{t("Manage your brand name and website")}</p>
 			</div>
 
 			<form action={handleSubmit} className="space-y-6">
 				<div className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="name">Brand Name</Label>
+						<Label htmlFor="name">{t("Brand Name")}</Label>
 						<Input
 							id="name"
 							name="name"
 							type="text"
-							placeholder="Brand Name"
+							placeholder={t("Brand Name")}
 							defaultValue={brand.name}
 							required
 							disabled={isSubmitting}
 						/>
-						<p className="text-xs text-muted-foreground">Enter your brand&apos;s name</p>
+						<p className="text-xs text-muted-foreground">{t("Enter your brand's name")}</p>
 					</div>
 
 					<SlugField
 						id="brand-slug"
-						label="Brand Slug"
+						label={t("Brand Slug")}
 						prefix={brandSlugPrefix(organization)}
 						value={slug}
 						onChange={setSlug}
@@ -159,35 +161,37 @@ function BrandSettingsPage() {
 					/>
 
 					<div className="space-y-2">
-						<Label htmlFor="website">Website</Label>
+						<Label htmlFor="website">{t("Website")}</Label>
 						<Input
 							id="website"
 							name="website"
 							type="text"
-							placeholder="example.com"
+							placeholder={t("example.com")}
 							defaultValue={brand.website}
 							required
 							disabled={isSubmitting}
 						/>
-						<p className="text-xs text-muted-foreground">Your brand&apos;s primary website</p>
+						<p className="text-xs text-muted-foreground">{t("Your brand's primary website")}</p>
 					</div>
 
 					<div className="space-y-2">
 						<Label className="flex items-center gap-1.5">
-							Additional Domains
+							{t("Additional Domains")}
 							<Tooltip>
 								<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
 								<TooltipContent className="max-w-xs text-xs font-normal">
-									Other domains your brand owns (e.g. blog.example.com, shop.example.com). Citations from these domains
-									will be counted as your brand&apos;s citations. <strong>Updates retroactively</strong> &mdash;
-									existing citations will be reclassified immediately.
+									{t(
+										"Other domains your brand owns (e.g. blog.example.com, shop.example.com). Citations from these domains will be counted as your brand's citations. ",
+									)}
+									<strong>{t("Updates retroactively")}</strong>
+									{t(" — existing citations will be reclassified immediately.")}
 								</TooltipContent>
 							</Tooltip>
 						</Label>
 						<TagsInput
 							value={additionalDomains}
 							onValueChange={setAdditionalDomains}
-							placeholder="Add domain..."
+							placeholder={t("Add domain...")}
 							searchPlaceholder="Add domain..."
 							maxItems={10}
 							normalizeValue={(raw) => cleanAndValidateDomain(raw) ?? raw.trim()}
@@ -197,20 +201,22 @@ function BrandSettingsPage() {
 
 					<div className="space-y-2">
 						<Label className="flex items-center gap-1.5">
-							Brand Aliases
+							{t("Brand Aliases")}
 							<Tooltip>
 								<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
 								<TooltipContent className="max-w-xs text-xs font-normal">
-									Alternative names for your brand (sub-brands, product lines, abbreviations). Used for mention
-									detection in <strong>future</strong> prompt runs only &mdash; does not apply retroactively to past
-									results.
+									{t(
+										"Alternative names for your brand (sub-brands, product lines, abbreviations). Used for mention detection in ",
+									)}
+									<strong>{t("future")}</strong>
+									{t(" prompt runs only — does not apply retroactively to past results.")}
 								</TooltipContent>
 							</Tooltip>
 						</Label>
 						<TagsInput
 							value={aliases}
 							onValueChange={handleAliasesChange}
-							placeholder="Add alias..."
+							placeholder={t("Add alias...")}
 							searchPlaceholder="Add alias..."
 							maxItems={10}
 						/>
@@ -222,7 +228,7 @@ function BrandSettingsPage() {
 
 				<div className="flex gap-2">
 					<Button type="submit" disabled={isSubmitting} className="cursor-pointer">
-						{isSubmitting ? "Saving..." : "Save Changes"}
+						{isSubmitting ? t("Saving...") : t("Save Changes")}
 					</Button>
 				</div>
 			</form>

@@ -1,3 +1,4 @@
+import { useT } from "@/lib/i18n";
 /**
  * /auth/reset-password - Choose a new password from a reset link (cloud only)
  *
@@ -58,6 +59,7 @@ export function ResetPasswordForm({
 	linkError?: string;
 	isCloud?: boolean;
 }) {
+	const t = useT();
 	const navigate = useNavigate();
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -94,34 +96,34 @@ export function ResetPasswordForm({
 	if (linkError || !token) {
 		return (
 			<AuthSplitLayout
-				title="Reset link invalid or expired"
-				subtitle="Reset links are single-use and time-limited."
+				title={t("Reset link invalid or expired")}
+				subtitle={t("Reset links are single-use and time-limited.")}
 				pitch={panel}
 				footer={footer}
 			>
 				{/* The only thing to do from here, so it carries the weight the other
 				    pages give their submit button. */}
 				<Link to="/auth/forgot-password" className={buttonVariants({ className: "w-full" })}>
-					Request a new reset link
+					{t("Request a new reset link")}
 				</Link>
 			</AuthSplitLayout>
 		);
 	}
 
 	return (
-		<AuthSplitLayout title="Choose a new password" pitch={panel} footer={footer}>
+		<AuthSplitLayout title={t("Choose a new password")} pitch={panel} footer={footer}>
 			<form onSubmit={handleSubmit} className="space-y-4 w-full">
 				{error && (
 					<Alert variant="destructive">
-						<AlertDescription>{error}</AlertDescription>
+						<AlertDescription>{t(error)}</AlertDescription>
 					</Alert>
 				)}
 				<div className="space-y-2">
-					<Label htmlFor="new-password">New password</Label>
+					<Label htmlFor="new-password">{t("New password")}</Label>
 					<Input
 						id="new-password"
 						type="password"
-						placeholder="New password"
+						placeholder={t("New password")}
 						value={newPassword}
 						onChange={(e) => setNewPassword(e.target.value)}
 						required
@@ -131,11 +133,11 @@ export function ResetPasswordForm({
 					/>
 				</div>
 				<div className="space-y-2">
-					<Label htmlFor="confirm-password">Confirm password</Label>
+					<Label htmlFor="confirm-password">{t("Confirm password")}</Label>
 					<Input
 						id="confirm-password"
 						type="password"
-						placeholder="Confirm password"
+						placeholder={t("Confirm password")}
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						required
@@ -144,7 +146,7 @@ export function ResetPasswordForm({
 					/>
 				</div>
 				<Button type="submit" className="w-full" disabled={loading}>
-					{loading ? "Resetting..." : "Reset password"}
+					{loading ? t("Resetting...") : t("Reset password")}
 				</Button>
 			</form>
 		</AuthSplitLayout>

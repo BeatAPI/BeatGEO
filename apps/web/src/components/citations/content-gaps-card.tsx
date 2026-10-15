@@ -4,6 +4,7 @@ import { Separator } from "@workspace/ui/components/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { BrandPromptLink } from "@/components/brand-prompt-link";
 import { ListPagination, usePagedList } from "@/components/list-pagination";
+import { useT } from "@/lib/i18n";
 
 const PAGE_SIZE = 6;
 
@@ -12,22 +13,24 @@ export function ContentGapsCard({
 }: {
 	prompts: Array<{ id: string; value: string; competitorCitationCount: number; uniqueCompetitors: number }>;
 }) {
+	const t = useT();
 	const { page, setPage, pageItems, totalItems } = usePagedList(prompts, PAGE_SIZE);
 
 	return (
 		<Card className="h-full flex flex-col">
 			<CardHeader>
 				<CardTitle className="flex items-center gap-1.5">
-					Content Gaps
+					{t("Content Gaps")}
 					<Tooltip>
 						<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
 						<TooltipContent className="max-w-xs text-sm font-normal">
-							Prompts where competitors are cited but your brand isn&apos;t — opportunities to improve your citation
-							presence.
+							{t(
+								"Prompts where competitors are cited but your brand isn't — opportunities to improve your citation presence.",
+							)}
 						</TooltipContent>
 					</Tooltip>
 				</CardTitle>
-				<CardDescription>Prompts where competitors are cited but your brand isn&apos;t</CardDescription>
+				<CardDescription>{t("Prompts where competitors are cited but your brand isn't")}</CardDescription>
 			</CardHeader>
 			<Separator />
 			<CardContent className="flex-1 flex flex-col">
@@ -44,9 +47,10 @@ export function ContentGapsCard({
 									</span>
 								</div>
 								<p className="text-xs text-muted-foreground mt-0.5">
-									{prompt.uniqueCompetitors} {prompt.uniqueCompetitors === 1 ? "competitor" : "competitors"} cited{" "}
-									{prompt.competitorCitationCount} {prompt.competitorCitationCount === 1 ? "time" : "times"} &mdash;
-									your brand cited 0 times
+									{prompt.uniqueCompetitors} {prompt.uniqueCompetitors === 1 ? t("competitor") : t("competitors")}
+									{t(" cited")} {prompt.competitorCitationCount}{" "}
+									{prompt.competitorCitationCount === 1 ? t("time") : t("times")}
+									{t(" — your brand cited 0 times")}
 								</p>
 							</div>
 						</BrandPromptLink>

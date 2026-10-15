@@ -30,6 +30,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { cn } from "@workspace/ui/lib/utils";
 import type { ReactNode } from "react";
+import { useT } from "@/lib/i18n";
 
 /** Label column plus one column per plan, shared by the cards and every row. */
 const GRID = "grid min-w-[52rem] grid-cols-[minmax(11rem,1.1fr)_repeat(4,minmax(0,1fr))]";
@@ -91,16 +92,17 @@ export function PlanComparison({
  * that shows its own plan cards and only wants the detail on request.
  */
 export function PlanFeatureTable() {
+	const t = useT();
 	return (
 		<div className="overflow-x-auto pb-2">
 			<div className={GRID}>
-				<SectionHeading>Limits</SectionHeading>
-				<Row label="Brands" cell={(plan) => plan.maxBrands} />
-				<Row label="Tracked prompts" cell={(plan) => plan.maxPrompts} />
-				<Row label="Platforms per brand" cell={(plan) => plan.platformPicks} />
-				<Row label="Sampling" cell={(plan) => `${plan.standardRunsPerDay}×/day`} />
-				<Row label="Seats" cell={() => "Unlimited"} />
-				<Row label="API access" cell={() => true} />
+				<SectionHeading>{t("Limits")}</SectionHeading>
+				<Row label={t("Brands")} cell={(plan) => plan.maxBrands} />
+				<Row label={t("Tracked prompts")} cell={(plan) => plan.maxPrompts} />
+				<Row label={t("Platforms per brand")} cell={(plan) => plan.platformPicks} />
+				<Row label={t("Sampling")} cell={(plan) => `${plan.standardRunsPerDay}×/day`} />
+				<Row label={t("Seats")} cell={() => "Unlimited"} />
+				<Row label={t("API access")} cell={() => true} />
 
 				<PlatformSection tier="scraped" />
 				<PlatformSection tier="api" />
@@ -108,15 +110,16 @@ export function PlanFeatureTable() {
 				<SectionHeading>
 					{PLATFORM_TIER_LABELS.premium}
 					<span className="ml-2 font-mono text-[10px] font-normal text-muted-foreground tabular-nums">
-						{PREMIUM_RUNS_PER_DAY}×/day
+						{PREMIUM_RUNS_PER_DAY}
+						{t("×/day")}
 					</span>
 				</SectionHeading>
 				<Row
-					label="Included"
+					label={t("Included")}
 					cell={(plan) => (plan.premiumIncluded > 0 ? premiumPairings(plan.premiumIncluded) : false)}
 				/>
 				<Row
-					label="Buy more"
+					label={t("Buy more")}
 					cell={(plan) => (plan.premiumAddonAvailable ? `$${PREMIUM_ADDON_MONTHLY_USD}/mo each` : false)}
 				/>
 				{platformTierMembers("premium").map((member) => (
@@ -149,6 +152,7 @@ function PlanHeaderCard({
 	highlighted: boolean;
 	action?: ReactNode;
 }) {
+	const t = useT();
 	return (
 		<Card
 			className={cn(
@@ -160,7 +164,11 @@ function PlanHeaderCard({
 			<CardHeader className="px-4">
 				<CardTitle className="flex flex-wrap items-center justify-center gap-1.5 text-base">
 					{plan.name}
-					{active ? <Badge>Current</Badge> : highlighted ? <Badge variant="secondary">Popular</Badge> : null}
+					{active ? (
+						<Badge>{t("Current")}</Badge>
+					) : highlighted ? (
+						<Badge variant="secondary">{t("Popular")}</Badge>
+					) : null}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="px-4">
@@ -234,6 +242,7 @@ function ModelLabel({ iconId, label }: { iconId: string; label: string }) {
  * feature reads the same whether the row counts something or merely has it.
  */
 function Row({ label, cell }: { label: ReactNode; cell: (plan: PlanDefinition) => ReactNode | boolean }) {
+	const t = useT();
 	return (
 		<>
 			<div className="border-b px-3 py-2 text-sm text-muted-foreground">{label}</div>
@@ -242,9 +251,9 @@ function Row({ label, cell }: { label: ReactNode; cell: (plan: PlanDefinition) =
 				return (
 					<div key={key} className="flex items-center justify-center border-b px-3 py-2 text-center text-sm">
 						{value === true ? (
-							<IconCheck className="size-4 text-emerald-600" aria-label="Included" />
+							<IconCheck className="size-4 text-emerald-600" aria-label={t("Included")} />
 						) : value === false ? (
-							<IconMinus className="size-4 text-muted-foreground/40" aria-label="Not included" />
+							<IconMinus className="size-4 text-muted-foreground/40" aria-label={t("Not included")} />
 						) : (
 							<span className="tabular-nums">{value}</span>
 						)}

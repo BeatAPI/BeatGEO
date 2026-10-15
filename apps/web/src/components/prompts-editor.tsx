@@ -11,6 +11,7 @@ import {
 import { type EditablePrompt, type PremiumAllowance, PromptsListEditor } from "@/components/prompts-list-editor";
 import { UnsavedChangesBar } from "@/components/unsaved-changes-bar";
 import { useInvalidatePromptsSummary } from "@/hooks/use-prompts-summary";
+import { useT } from "@/lib/i18n";
 import { trackEvent } from "@/lib/posthog";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { updatePromptsFn } from "@/server/prompts";
@@ -102,6 +103,7 @@ function diffPrompts(baseline: EditablePrompt[], prompts: EditablePrompt[]) {
 }
 
 export function PromptsEditor({ initialPrompts, brandId, pageTitle, pageDescription, premium }: PromptsEditorProps) {
+	const t = useT();
 	const [baseline, setBaseline] = useState<EditablePrompt[]>(() => toEditablePrompts(initialPrompts));
 	const [prompts, setPrompts] = useState<EditablePrompt[]>(baseline);
 	const [isSaving, setIsSaving] = useState(false);
@@ -190,7 +192,8 @@ export function PromptsEditor({ initialPrompts, brandId, pageTitle, pageDescript
 					disabled={suggestions.running || filledValues.length >= MAX_PROMPTS || suggestions.remaining === 0}
 					className="flex shrink-0 items-center gap-2 cursor-pointer"
 				>
-					<Sparkles className="h-4 w-4" /> Suggest Prompts
+					<Sparkles className="h-4 w-4" />
+					{t(" Suggest Prompts")}
 				</Button>
 			</div>
 

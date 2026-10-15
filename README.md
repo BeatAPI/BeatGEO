@@ -1,38 +1,29 @@
+![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+
 # BeatGEO
 
-**Open-source AI visibility monitoring and optimization, by [BeatAPI](https://beatapi.io).**
+[English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md) · [Deutsch](README.de.md) · [한국어](README.ko.md)
 
-从真实 AI 回答出发，了解品牌在哪里被提及、哪些页面被引用、哪里需要改进。使用 [BeatBrowser](https://github.com/BeatAPI/BeatBrowser) 在独立后台工作区采集网页回答，保留证据，明确显示超时与失败。
+**The open-source Profound alternative for GEO & AEO.**
 
-> **MVP / 开发预览。** 本地浏览器工作台、统一数据库/队列、优化任务与同组复测可运行，已完成一次 PostgreSQL→worker→真实 ChatGPT 验收。网站技术诊断、长期无人值守稳定性和多设备调度仍待完成。没有托管 SaaS、已发布 SDK 或全部平台已稳定支持的承诺。
+An open-source GEO / AEO workspace by [BeatAPI](https://beatapi.io). Track brand mentions and citations in real AI answers, turn gaps into actions, and rerun the same questions to compare results.
 
-## Product flow
+[Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
 
-这是目标产品链路，**不是所有步骤都已实现**。详见 [路线图](docs/roadmap.md) 和 [67 项功能表](docs/product/features.csv)。
+> **Local MVP / source preview.** The ChatGPT collection → database → worker path has passed live smoke tests. Other engines, paid research and unattended operation have separate acceptance boundaries. [Validation log](docs/beat-geo/validation.md)
 
-```mermaid
-flowchart TD
-    A[输入网站与业务目标] --> B[确认品牌、受众与竞品]
-    B --> C[网站初检]
-    B --> D[生成并确认监测问题]
-    D --> E[BeatBrowser 后台网页采集]
-    C --> F[基线：诊断与实测可见度]
-    E --> F
-    F --> G[定位页面、事实与引用差距]
-    G --> H[生成优化任务与草稿]
-    H --> I[人工审核与实施]
-    I --> J[同组问题定时复测]
-    J --> K[比较变化与报告]
-    K --> G
-```
+## From a website to a repeatable question set
 
-[![BeatGEO 产品蓝图：12 个步骤、输入输出和复用模块](docs/product/flow.png)](docs/product/flow.html)
+Start with your website and business. Review suggested monitoring questions, collect answers in your signed-in Chrome, and inspect the evidence before deciding what to change.
 
-下载仓库后，用浏览器打开 [交互蓝图](docs/product/flow.html)，可点击步骤、切换 BeatAPI / AI 图片业务、查看指标和搜索功能。图中数字为合成示例。
+- **Start with questions, not a blank editor.** Website research generates a draft question set; industry templates work without a research API key.
+- **Keep the original evidence.** Inspect answers, visible source links and collection status. A timeout is shown as a timeout, not zero exposure.
+- **Make changes measurable.** Save an optimization action and its baseline, record what you implemented, then retest the same questions.
+- **Use one local workspace.** Brands, questions, evidence, actions and scheduling share PostgreSQL and one queue. BeatBrowser is included as a pinned dependency.
 
 ## Quick start
 
-需要 **Git、Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
+Prepare **Git, Node.js 24, pnpm 12.4.1, Docker with Compose, and Chrome**. Start Docker before setup.
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -42,105 +33,75 @@ pnpm local:setup
 pnpm local:start
 ```
 
-### Fork 和团队试用
+Open **http://localhost:3140/setup** and register your local administrator:
 
-Fork 本仓库会保留 BeatBrowser 的固定版本依赖，**不会自动创建一个 BeatBrowser 仓库的 fork**。`pnpm local:setup` 从 GitHub 下载锁定的 BeatBrowser 源码，并把扩展准备到 `.beat-geo/extension`。使用者只需克隆 BeatGEO；首次安装需要联网，Chrome 扩展和网站登录需手动完成。
+1. **Connect research.** In Connections, enter a BeatAPI key, validate it, select a research model and save. You can skip research and use industry starter questions.
+2. **Connect Chrome.** Load `.beat-geo/extension` via `chrome://extensions` → Developer mode → Load unpacked. Select the connected profile and sign in to ChatGPT in that profile. An extension connection does not establish website login.
+3. **Create a brand.** Enter the website, generate and confirm questions, then start the first collection. Read the answers and citations, save an improvement, and compare a retest.
+
+The installer prepares a dedicated local PostgreSQL database and the included extension. No second repository clone, BeatBrowser account or global CLI installation is needed. Existing BeatBrowser connections can be reused; enable only one extension copy per profile.
+
+**To keep monitoring:** leave the computer awake and online, with Docker/PostgreSQL, Chrome and `pnpm local:start` running. You can close the dashboard tab. Restart with `pnpm local:start`; do not recreate the database. This local edition does not provide monitoring while your computer is offline.
+
+[Detailed onboarding — Chinese](docs/beat-geo/getting-started.md) · [Manual PostgreSQL setup — Chinese](docs/self-hosting.md)
+
+## The product workflow
 
 ```mermaid
 flowchart LR
-    A[Fork 或克隆 BeatGEO] --> B[local:setup]
-    B --> C[安装锁定的 BeatBrowser]
-    B --> D[创建本机独立 PostgreSQL]
-    C --> E[Chrome 加载扩展并登录目标网站]
-    D --> F[local:start]
-    E --> G[创建品牌与首次采集]
-    F --> G
+    A[Website and brand] --> B[Generate and confirm questions]
+    B --> C[Collect AI answers]
+    C --> D[Inspect mentions and citations]
+    D --> E[Save action and baseline]
+    E --> F[Implement changes]
+    F --> G[Retest the same questions]
+    G --> D
 ```
 
-团队成员各自在本机安装时，账号、数据库、API Key 和 Chrome 登录态相互独立，不会共享维护者的数据。已有 BeatBrowser 的成员可复用连接，不要同时启用两份扩展；如需本次的任务清理功能，请使用本仓库依赖的扩展版本。修改 BeatBrowser 源码的开发者才需要另外 fork 它，再显式更新 BeatGEO 的依赖和锁文件；依赖不会自动追踪主分支。
+BeatGEO owns the product records and schedule. **BeatBrowser** handles the signed-in browser task. **BeatAPI** can supply search, page reading and model analysis for research and optimization.
 
-打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
+<details>
+<summary>Explore the wider product blueprint</summary>
 
-1. **连接 BeatAPI**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。网站自动研究需要研究提供方；Key 加密保存后持续复用。没有 Key 也能选择行业生成备用模板题单。
-2. **连接 Chrome**：已有 BeatBrowser 直接复用；没有时，在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension` 文件夹。选择已连接配置，并在同一配置登录 ChatGPT。浏览器要求用户确认安装，连接成功不代表网站已经登录。
-3. **创建品牌**：填写网站 → 研究业务并生成问题 → 确认题单 → 首次采集 → 查看回答与引用 → 记录优化 → 同组复测。
-4. **保持运行**：可关闭网页，电脑需唤醒、联网，Docker、Chrome 和 `local:start` 需持续运行。再次启动保留数据库及已保存 Key；本地版不是托管的全天监控。
+[![BeatGEO product blueprint in Chinese: the planned research, monitoring and optimization journey](docs/product/flow.png)](docs/product/flow.html)
 
-[完整用户流程：安装、账号、Key、浏览器、费用和持续运行](docs/beat-geo/getting-started.md)。
+Open [the interactive blueprint](docs/product/flow.html) locally to explore its steps. This is the **target product**, including unfinished features and synthetic examples. It is not a screenshot of completed functionality. [Feature inventory](docs/product/features.csv)
 
-`local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGEO 退出。
+</details>
 
-Chrome 连接成功不等于每个网站已登录。任务在独立 TaskSpace 中执行，无法创建时明确报错，不回退到日常标签页。首次采集也会显示超时、需要登录和连接失败，失败不计作零曝光。网站账号自身限制仍然适用。
+## Current support
 
-高级配置与已有 PostgreSQL 安装见 [自托管指南](docs/self-hosting.md)。**SQLite 尚未实现**：当前查询和 pg-boss 依赖 PostgreSQL。始终保持一套产品账户、数据库与队列，本地 JSON 只是采集证据缓存。
+| Area | Status |
+| --- | --- |
+| ChatGPT website collection | Live smoke tests passed through the worker, with answers and visible citations saved. Website changes still require maintenance. |
+| Gemini website collection | Adapter present; background completion reliability remains unverified. Failures stay visible. |
+| Other answer engines | Full browser collection parity is not claimed. Check the roadmap before relying on an engine. |
+| Questions and optimization | English/Chinese question generation, industry templates, saved action baselines and comparable retests. |
+| Scheduling and storage | PostgreSQL + pg-boss. The next cycle was queued in live validation; long unattended operation has not been established. SQLite is not supported. |
+| BeatAPI research | Search/read/model integration is implemented; acceptance with a real key and billed calls remains pending. |
+| Technical site audit and SEO datasets | Planned or not connected. No claimed keyword volumes, backlink index or real AI prompt-volume dataset. |
 
-单独体验浏览器工作台（没有数据库/账户功能）：
+README translations: English, Chinese, Japanese, German and Korean. **Switch the dashboard between English and Chinese using EN / 中文. Your preference is saved in this browser.** Questions, brand names and collected answers retain their original language. The translated READMEs do not imply five-language UI support.
 
-```sh
-pnpm install --frozen-lockfile
-pnpm browser:lab
-# http://127.0.0.1:4318
-```
+## What the numbers mean
 
-## Questions without a blank page
+**Mention rate = valid answers mentioning the brand ÷ valid, scorable answers.** Failed, pending, timed-out or signed-out attempts do not enter that denominator. Repeated observation IDs are deduplicated.
 
-默认由网站研究识别品类、受众和主要用途，再套用 12 类通用意图生成具体问题。通常包含 9 个不带品牌名的发现问题、3 个品牌认知/替代品问题；分别标记用途，避免把点名提问当成自然发现。支持中英文，行业不限于 AI 产品。
+For example, 24 mentions in 80 valid answers means **30% (24/80)**, even if 100 attempts were planned. Completion coverage is separate. The workbench currently summarizes saved observations, not a complete planned-attempt coverage ledger. A mention is not necessarily a recommendation; this account's sample is not market-wide exposure. [Metric definitions](docs/metrics.md)
 
-没有研究 API key 时，可从 8 个行业预设中选择，也可补充业务品类、受众和用途，生成行业初始题库。页面会明确区分“网站研究”与“行业模板”；两者都不是平台真实用户搜索量。问题可以修改或关闭，确认后存入现有品牌问题库，按固定问题长期复测，不在每轮监测时重新生成。
+## Where BeatAPI fits
 
-## MVP status
+Configure the research key and model in **Connections**. BeatAPI can search for business and competitor information, read pages, generate questions and analyze collected evidence. Saved keys are encrypted and are not returned to the browser client; credentials currently apply to the local instance rather than individual tenants.
 
-| 能力 | 本版状态 |
-|---|---|
-| 自己的品牌与问题 | 可用；按品牌筛选，多个品牌不混算提及率 |
-| 独立后台工作区 | BeatBrowser TaskSpace，复用网站登录，无 Ego 依赖 |
-| ChatGPT 网页采集 | 完整 worker 链路真实验收通过，答案/引用入库并安排下一周期；页面变化仍需持续验收 |
-| Gemini 网页采集 | 适配器存在，后台长回答稳定性待验证；失败明确呈现 |
-| 原回答、来源、导出 | 可用；只读取可见链接，尚未完整展开来源侧栏 |
-| 超时与失败 | 单独显示原因、耗时、尝试次数，不当成零曝光 |
-| 样本提及率 | 可用；有效分母、版本标识和观察 ID 去重 |
-| 竞品声量 | 底座及纯函数可复用，浏览器工作台展示待接通 |
-| 账户、品牌、问题、调度 | 一套 PostgreSQL + pg-boss；每次尝试独立记录，成功数据原子提交 |
-| 优化行动与复测 | 保存机会和基线 → 记录实施 → 同队列复测 → 匹配比较及缺失数 |
-| 首次使用与连接 | 网页配置 key / 模型，检测及选择 Chrome；自动安装携带固定版本扩展 |
-| BeatAPI 研究 | Web Search / Read + 模型分析代码已接入；真实 key 的付费调用待验收 |
-| 网站技术审计、推荐识别、SEO 数据 | 待开发/接入；关键词量、外链、排名不冒充已有数据 |
+Browser collection, starter templates and basic statistics do not require paid model calls. Research and generation use the configured provider's API balance; website collection uses your website account and its limits. Dedicated SEO data endpoints are not connected yet. [API integration design — Chinese](docs/beat-geo/beatapi-product-loop.md)
 
-模拟测试不等于真实平台验收。[验收记录](docs/beat-geo/validation.md)
+## Forking and team use
 
-## Measurement
+Forking BeatGEO keeps the **pinned BeatBrowser dependency**; it does not create a separate fork of BeatBrowser. Setup downloads that revision and prepares the extension. Developers changing BeatBrowser itself should fork it separately and explicitly update the dependency and lockfile.
 
-提及率 = **提及品牌的有效回答 / 可评分的有效回答**。超时、未登录、失败和等待不进入分母；相同 observation ID 去重。普通提及不等于推荐，当前账户的样本不等于全市场真实曝光。
+Each local installation has its own account, database, keys and Chrome sessions. Do not commit `.env`, `.beat-geo/`, browser evidence or credentials. Local services bind to loopback; do not expose them through a public tunnel. [Privacy](docs/privacy.md)
 
-例如计划 100 次，80 次有效，其中 24 次提及：提及率 **30%（24/80）**，计划覆盖率另报 **80%（80/100）**。当前工作台统计的是已保存观察的完成覆盖；完整计划覆盖率仍需独立实现。[指标定义](docs/metrics.md)
-
-## One product system
-
-```text
-BeatGEO UI / API / MCP
-  └─ 品牌、问题、证据、行动与报告 / PostgreSQL
-      └─ pg-boss 统一业务队列
-          ├─ BeatBrowser：网页观测与引用
-          └─ 研究与模型能力：分析、内容和报告
-```
-
-当前 bridge 需同机 loopback 和共享 runner token。跨设备租约、离线补跑仍待接通；电脑离线不能声称持续采集。BeatAPI 能力账户与余额由现有网关负责，此仓库不另建钱包。
-
-## BeatAPI integration
-
-研究提供方可选择 BeatAPI：用 Web Search 发现业务与竞品资料，读取页面后生成建议，用文本模型分析已采集的证据。在 **Connections** 填写 key 和可用研究模型，也兼容服务器端 `BEATAPI_API_KEY` / `BEATAPI_RESEARCH_MODEL`。已保存的 key 不回传前端。浏览器采集与基础统计不要求购买模型 API。SEO 专用数据接口尚未接入。
-
-[产品闭环、API 接入位置与商业化设计](docs/beat-geo/beatapi-product-loop.md)。当前为实例管理员统一凭据，不是每租户独立 BYOK 或完整成本账单。
-
-## Privacy and independence
-
-- 没有上游默认遥测项目、广告账号或客服项目；分析服务仅由操作者显式配置启用。
-- 产品使用 BeatGEO 品牌，无上游购买入口、客户评价或评分背书。原营销站入口停用，历史商业文案不属于本项目承诺。
-- cookies 不导出。证据默认位于 gitignored `.beat-geo/runs/`；没有新目录时可兼容读取已有 `.open-profound/runs/`，不自动搬迁或删除。
-- 本地服务只绑定 loopback，校验 Host/Origin 和提交令牌；不要通过公网隧道暴露。
-- 密钥兼容旧配置，改名不重置数据库或加密密钥。[隐私与迁移](docs/privacy.md)
-
-## Development
+## Development and references
 
 ```sh
 pnpm install --frozen-lockfile
@@ -149,10 +110,10 @@ pnpm test:browser
 pnpm test
 ```
 
-保留锁文件与供应链保护，不启用归档的上游部署或发布工作流。通过本仓库 PR 维护。
+Keep the lockfile and supply-chain protections. Submit changes through PRs. To inspect only the browser lab, run `pnpm browser:lab` and open `http://127.0.0.1:4318`; that standalone view has no product database/account system.
+
+[Architecture — Chinese](docs/beat-geo/architecture-and-ego.md) · [Metrics](docs/metrics.md) · [Roadmap](docs/roadmap.md) · [Validation](docs/beat-geo/validation.md)
 
 ## License and acknowledgements
 
-MIT。见 [LICENSE.md](LICENSE.md)、[第三方声明](THIRD_PARTY_NOTICES.md)。
-
-基于 Elmo 的开源产品基础修改，保留原作者版权和历史。GeoScore、oneglanse、niubigeo、Ansvisor 等为研究及模块评估参考，不代表本版已经复制其全部代码。BeatGEO 与 Profound 无隶属关系。
+[MIT](LICENSE.md). BeatGEO builds on the MIT-licensed Elmo codebase and preserves its copyright and history. [BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included under MIT; see [third-party notices](THIRD_PARTY_NOTICES.md). Other researched GEO projects are references, not a claim that their full implementations are included. BeatGEO is independent of Profound.

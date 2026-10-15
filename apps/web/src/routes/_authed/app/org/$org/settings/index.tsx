@@ -6,6 +6,7 @@ import { Label } from "@workspace/ui/components/label";
 import { useState } from "react";
 import { SlugField } from "@/components/slug-field";
 import { useOrganization, useOrganizationsChanged } from "@/hooks/use-organizations";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import { updateOrganizationFn } from "@/server/organizations";
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/settings/")({
 });
 
 function OrganizationSettingsPage() {
+	const t = useT();
 	const organization = useOrganization();
 	const organizationsChanged = useOrganizationsChanged();
 	const navigate = useNavigate();
@@ -56,11 +58,11 @@ function OrganizationSettingsPage() {
 
 	return (
 		<div className="max-w-2xl space-y-6">
-			<h1 className="text-3xl font-bold">Organization</h1>
+			<h1 className="text-3xl font-bold">{t("Organization")}</h1>
 
 			<form onSubmit={handleSave} className="space-y-4">
 				<div className="space-y-2">
-					<Label htmlFor="organization-name">Organization Name</Label>
+					<Label htmlFor="organization-name">{t("Organization Name")}</Label>
 					<Input
 						id="organization-name"
 						value={name}
@@ -72,7 +74,7 @@ function OrganizationSettingsPage() {
 
 				<SlugField
 					id="organization-slug"
-					label="Organization Slug"
+					label={t("Organization Slug")}
 					prefix={ORG_URL_PREFIX}
 					value={slug}
 					onChange={setSlug}
@@ -82,7 +84,7 @@ function OrganizationSettingsPage() {
 				{error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">{error}</div>}
 
 				<Button type="submit" disabled={saving || !isDirty || !isComplete}>
-					{saving ? "Saving..." : "Save"}
+					{saving ? t("Saving...") : t("Save")}
 				</Button>
 			</form>
 		</div>

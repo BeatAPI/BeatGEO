@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useT } from "@/lib/i18n";
 import { applyOptimizationActionFn, getMonitoringFn, retestOptimizationActionFn } from "@/server/monitoring-fn";
 
 export const COLLECTION_STATUS: Record<string, string> = {
@@ -16,12 +17,14 @@ export const COLLECTION_STATUS: Record<string, string> = {
 	page_busy: "Page not ready",
 	interrupted: "Interrupted — inspect collector",
 };
+const formatRate = (rate: number | null) => rate?.toFixed(1) ?? "—";
 const button = "rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50";
 
 export function MonitoringLoop({ brandId }: { brandId: string }) {
+	const t = useT();
 	const client = useQueryClient();
 	const [notes, setNotes] = useState<Record<string, string>>({});
-	const [notice, setNotice] = useState("");
+	const [notice, setNotice] = useState<{ message: string; values?: Record<string, number> } | null>(null);
 	const queryKey = ["monitoring", brandId];
 	const { data, isPending, error } = useQuery({
 		queryKey,
@@ -32,10 +35,14 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 		mutationFn: async ({ id, operation }: { id: string; operation: "apply" | "retest" }) => {
 			if (operation === "apply") {
 				await applyOptimizationActionFn({ data: { brandId, id, implementationNote: notes[id] || "" } });
-				return "Change recorded. Compare the same questions after the next collection.";
+				return { message: "Change recorded. Compare the same questions after the next collection." };
 			}
 			const result = await retestOptimizationActionFn({ data: { brandId, id } });
-			return `${result.queued} questions queued; ${result.skipped} changed or disabled. Retesting uses your configured providers and may incur charges.`;
+			return {
+				message:
+					"{queued} questions queued; {skipped} changed or disabled. Retesting uses your configured providers and may incur charges.",
+				values: { queued: result.queued, skipped: result.skipped },
+			};
 		},
 		onSuccess: (message) => {
 			setNotice(message);
@@ -43,37 +50,40 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 		},
 	});
 	return (
-		<section className="space-y-4 rounded-xl border p-5" aria-label="Optimization and retesting">
-			<h2 className="font-semibold">Optimize & retest</h2>
+		<section className="space-y-4 rounded-xl border p-5" aria-label={t("Optimization and retesting")}>
+			<h2 className="font-semibold">{t("Optimize & retest")}</h2>
 			<p className="text-sm text-muted-foreground">
-				Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate
-				do not prove causation.
+				{t(
+					"Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate do not prove causation.",
+				)}
 			</p>
-			{isPending && <p>Loading monitoring history…</p>}
-			{error && <p role="alert">Monitoring history unavailable. Check the database migration and connection.</p>}
-			{mutation.error && <p role="alert">{mutation.error.message}</p>}
+			{isPending && <p>{t("Loading monitoring history…")}</p>}
+			{error && <p role="alert">{t("Monitoring history unavailable. Check the database migration and connection.")}</p>}
+			{mutation.error && <p role="alert">{t(mutation.error.message)}</p>}
 			{notice && (
 				<p role="status" className="text-sm">
-					{notice}
+					{t(notice.message, notice.values)}
 				</p>
 			)}
 			{data?.actions.length === 0 && (
 				<p className="text-sm text-muted-foreground">
-					No actions yet. Save an opportunity below after collecting a baseline.
+					{t("No actions yet. Save an opportunity below after collecting a baseline.")}
 				</p>
 			)}
 			{data?.actions.map((action) => (
 				<article key={action.id} className="space-y-3 rounded-lg border p-4">
 					<div className="flex items-center justify-between gap-4">
 						<h3 className="font-medium">{action.title}</h3>
-						<span className="text-xs text-muted-foreground">{action.status === "planned" ? "Planned" : "Applied"}</span>
+						<span className="text-xs text-muted-foreground">
+							{action.status === "planned" ? t("Planned") : t("Applied")}
+						</span>
 					</div>
 					<p className="text-sm text-muted-foreground">{action.description}</p>
 					{action.status === "planned" ? (
 						<div className="flex flex-wrap gap-2">
 							<input
-								aria-label={`Implementation note for ${action.title}`}
-								placeholder="What changed? Add a page URL or a short note."
+								aria-label={t("Implementation note for {title}", { title: action.title })}
+								placeholder={t("What changed? Add a page URL or a short note.")}
 								className="min-w-64 flex-1 rounded-md border bg-background px-3 py-2 text-sm"
 								maxLength={2000}
 								value={notes[action.id] || ""}
@@ -85,7 +95,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 								disabled={mutation.isPending || !notes[action.id]?.trim()}
 								onClick={() => mutation.mutate({ id: action.id, operation: "apply" })}
 							>
-								Mark implemented
+								{t("Mark implemented")}
 							</button>
 						</div>
 					) : (
@@ -93,11 +103,16 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 							<p className="text-sm">{action.implementationNote}</p>
 							{action.comparison && (
 								<p className="text-sm">
-									Matched retests: {action.comparison.matched}/{action.comparison.expected} ·{" "}
-									{action.comparison.missing} missing.{" "}
+									{t("Matched retests: ")}
+									{action.comparison.matched}/{action.comparison.expected} · {action.comparison.missing}
+									{t(" missing.")}{" "}
 									{action.comparison.deltaPoints === null
-										? "Awaiting comparable results."
-										: `Mention rate: ${action.comparison.beforeRate?.toFixed(1)}% → ${action.comparison.afterRate?.toFixed(1)}% (${action.comparison.deltaPoints > 0 ? "+" : ""}${action.comparison.deltaPoints.toFixed(1)} percentage points).`}
+										? t("Awaiting comparable results.")
+										: t("Mention rate: {before}% → {after}% ({delta} percentage points).", {
+												before: formatRate(action.comparison.beforeRate),
+												after: formatRate(action.comparison.afterRate),
+												delta: `${action.comparison.deltaPoints > 0 ? "+" : ""}${action.comparison.deltaPoints.toFixed(1)}`,
+											})}
 								</p>
 							)}
 							<button
@@ -106,7 +121,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 								disabled={mutation.isPending}
 								onClick={() => mutation.mutate({ id: action.id, operation: "retest" })}
 							>
-								Retest · uses configured providers
+								{t("Retest · uses configured providers")}
 							</button>
 						</>
 					)}
@@ -114,11 +129,13 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 			))}
 			<details>
 				<summary className="cursor-pointer text-sm font-medium">
-					Recent collection attempts ({data?.attempts.length ?? 0})
+					{t("Recent collection attempts (")}
+					{data?.attempts.length ?? 0})
 				</summary>
 				<p className="my-2 text-xs text-muted-foreground">
-					Latest 50 attempts. Failures are excluded from visibility. Comparisons use up to 2,000 recent completed
-					observations.
+					{t(
+						"Latest 50 attempts. Failures are excluded from visibility. Comparisons use up to 2,000 recent completed observations.",
+					)}
 				</p>
 				<div className="divide-y">
 					{data?.attempts.map((attempt) => (
@@ -127,7 +144,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 								<span>
 									{attempt.model} · {attempt.provider}
 								</span>
-								<strong>{COLLECTION_STATUS[attempt.status] || "Failed"}</strong>
+								<strong>{t(COLLECTION_STATUS[attempt.status] || "Failed")}</strong>
 							</div>
 							<p className="truncate text-muted-foreground">{attempt.promptValue}</p>
 							<p className="text-xs text-muted-foreground">{new Date(attempt.startedAt).toLocaleString()}</p>

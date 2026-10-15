@@ -8,6 +8,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@workspace/ui/components/sidebar";
+import { useT } from "@/lib/i18n";
 import { activeNavHref } from "@/lib/nav-active";
 
 export interface NavItem {
@@ -23,6 +24,7 @@ export interface NavGroup {
 }
 
 export function NavMain({ groups }: { groups: NavGroup[] }) {
+	const t = useT();
 	const router = useRouter();
 	const { setOpenMobile } = useSidebar();
 	const { pathname } = useLocation();
@@ -41,17 +43,17 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
 		<>
 			{resolved.map((group) => (
 				<SidebarGroup key={group.label}>
-					<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+					<SidebarGroupLabel>{t(group.label)}</SidebarGroupLabel>
 					<SidebarMenu>
 						{group.items.map(({ item, href }) => (
 							<SidebarMenuItem key={href}>
 								<SidebarMenuButton
 									render={<Link {...item.link} onClick={() => setOpenMobile(false)} />}
-									tooltip={item.title}
+									tooltip={t(item.title)}
 									isActive={href === activeHref}
 								>
 									{item.icon && <item.icon />}
-									<span>{item.title}</span>
+									<span>{t(item.title)}</span>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						))}

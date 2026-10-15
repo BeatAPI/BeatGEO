@@ -30,6 +30,7 @@ import { useBrandId } from "@/hooks/use-brand-id";
 import { useBranding, useDeploymentFeatures } from "@/hooks/use-deployment-features";
 import { useOrganizations } from "@/hooks/use-organizations";
 import { resetCrispSession } from "@/lib/crisp";
+import { useT } from "@/lib/i18n";
 import { organizationTree } from "@/lib/organizations/tree";
 import type { OrganizationSummary } from "@/lib/organizations/types";
 import { resetPostHog } from "@/lib/posthog";
@@ -43,6 +44,7 @@ export function NavUser({
 	showOrganizations?: boolean;
 	adminItems?: NavItem[];
 } = {}) {
+	const t = useT();
 	const { user } = useAuth();
 	const { isMobile, setOpenMobile } = useSidebar();
 	const branding = useBranding();
@@ -66,7 +68,7 @@ export function NavUser({
 						render={
 							<SidebarMenuButton
 								size="lg"
-								aria-label={showOrganizations ? "Account and organizations" : "Account"}
+								aria-label={showOrganizations ? t("Account and organizations") : t("Account")}
 								className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground cursor-pointer"
 							/>
 						}
@@ -79,7 +81,7 @@ export function NavUser({
 						</Avatar>
 						<div className="grid flex-1 text-left text-sm leading-tight">
 							<span className="truncate font-medium">{user.name}</span>
-							<span className="truncate text-xs">{isNameEmailSame ? "Your Account" : user.email}</span>
+							<span className="truncate text-xs">{isNameEmailSame ? t("Your Account") : user.email}</span>
 						</div>
 						<IconSelector className="ml-auto size-4" />
 					</DropdownMenuTrigger>
@@ -101,7 +103,7 @@ export function NavUser({
 									</Avatar>
 									<div className="grid flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-medium">{user.name}</span>
-										<span className="truncate text-xs">{isNameEmailSame ? "Your Account" : user.email}</span>
+										<span className="truncate text-xs">{isNameEmailSame ? t("Your Account") : user.email}</span>
 									</div>
 								</div>
 							</DropdownMenuLabel>
@@ -115,7 +117,7 @@ export function NavUser({
 									<>
 										<DropdownMenuItem render={<Link to="/app/new" onClick={close} />} className="cursor-pointer">
 											<IconPlus />
-											New organization
+											{t("New organization")}
 										</DropdownMenuItem>
 										<DropdownMenuSeparator />
 									</>
@@ -126,15 +128,15 @@ export function NavUser({
 						{adminItems.length > 0 && (
 							<>
 								<DropdownMenuGroup>
-									<DropdownMenuLabel className="text-muted-foreground text-xs">Admin</DropdownMenuLabel>
+									<DropdownMenuLabel className="text-muted-foreground text-xs">{t("Admin")}</DropdownMenuLabel>
 									{adminItems.map((item) => (
 										<DropdownMenuItem
-											key={item.title}
+											key={t(item.title)}
 											render={<Link {...item.link} onClick={close} />}
 											className="cursor-pointer"
 										>
 											{item.icon && <item.icon />}
-											{item.title}
+											{t(item.title)}
 										</DropdownMenuItem>
 									))}
 								</DropdownMenuGroup>
@@ -150,7 +152,8 @@ export function NavUser({
 										className="cursor-pointer"
 									>
 										<IconExternalLink />
-										{parentDashboard.name} Dashboard
+										{parentDashboard.name}
+										{t(" Dashboard")}
 									</DropdownMenuItem>
 								</DropdownMenuGroup>
 								<DropdownMenuSeparator />
@@ -171,7 +174,7 @@ export function NavUser({
 							}}
 						>
 							<IconLogout />
-							Log out
+							{t("Log out")}
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
@@ -181,6 +184,7 @@ export function NavUser({
 }
 
 function OrganizationSwitcher({ onNavigate }: { onNavigate: () => void }) {
+	const t = useT();
 	const { data: organizations, isLoading, isFetching, error, refetch } = useOrganizations();
 	const currentBrandId = useBrandId({ shouldThrow: false });
 
@@ -189,7 +193,7 @@ function OrganizationSwitcher({ onNavigate }: { onNavigate: () => void }) {
 			<>
 				<DropdownMenuItem render={<Link to="/app" onClick={onNavigate} />} className="cursor-pointer">
 					<IconStatusChange />
-					Switch Brand
+					{t("Switch Brand")}
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 			</>
@@ -209,7 +213,7 @@ function OrganizationSwitcher({ onNavigate }: { onNavigate: () => void }) {
 
 			{isLoading && (
 				<DropdownMenuItem disabled>
-					<span className="text-muted-foreground">Loading organizations…</span>
+					<span className="text-muted-foreground">{t("Loading organizations…")}</span>
 				</DropdownMenuItem>
 			)}
 			{error && (
@@ -221,7 +225,7 @@ function OrganizationSwitcher({ onNavigate }: { onNavigate: () => void }) {
 					}}
 				>
 					<IconRefresh className={isFetching ? "animate-spin" : undefined} />
-					{isFetching ? "Retrying…" : "Couldn't load your organizations — retry"}
+					{isFetching ? t("Retrying…") : t("Couldn't load your organizations — retry")}
 				</DropdownMenuItem>
 			)}
 		</>

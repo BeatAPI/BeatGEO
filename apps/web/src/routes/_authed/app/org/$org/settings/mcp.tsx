@@ -15,6 +15,7 @@ import { CopyButton } from "@/components/copy-button";
 import { DemoModeAlert } from "@/components/demo-mode-alert";
 import { useAppOrigin } from "@/hooks/use-app-origin";
 import { useBranding } from "@/hooks/use-deployment-features";
+import { useT } from "@/lib/i18n";
 import { pageHead } from "@/lib/route-head";
 import { listMcpToolsFn, type McpPageData } from "@/server/mcp";
 
@@ -149,6 +150,7 @@ function Snippet({ heading, snippet }: { heading: string; snippet: ClientSnippet
 }
 
 function McpSettingsPage() {
+	const t = useT();
 	const { tools, readOnlyDeployment } = Route.useLoaderData();
 	const branding = useBranding();
 	const origin = useAppOrigin();
@@ -162,13 +164,16 @@ function McpSettingsPage() {
 		<div className="max-w-4xl space-y-8">
 			<header className="space-y-1">
 				<h1 className="text-3xl font-bold">MCP</h1>
-				<p className="max-w-2xl text-muted-foreground">Connect any chat bot to {appName}.</p>
+				<p className="max-w-2xl text-muted-foreground">
+					{t("Connect any chat bot to ")}
+					{appName}.
+				</p>
 			</header>
 
-			<DemoModeAlert>MCP access is disabled in demo mode.</DemoModeAlert>
+			<DemoModeAlert>{t("MCP access is disabled in demo mode.")}</DemoModeAlert>
 
 			<section className="space-y-3">
-				<h2 className="text-lg font-semibold">Endpoint</h2>
+				<h2 className="text-lg font-semibold">{t("Endpoint")}</h2>
 				<div className="flex min-w-0 items-stretch gap-2">
 					<code className="min-w-0 truncate rounded-md border bg-muted/40 px-3 py-1.5 font-mono text-sm">
 						{endpoint}
@@ -179,7 +184,7 @@ function McpSettingsPage() {
 			</section>
 
 			<section className="space-y-3">
-				<h2 className="text-lg font-semibold">Connect</h2>
+				<h2 className="text-lg font-semibold">{t("Connect")}</h2>
 				<Tabs defaultValue={clients[0].value}>
 					<TabsList>
 						{clients.map((client) => (
@@ -199,10 +204,10 @@ function McpSettingsPage() {
 
 			<section className="space-y-3">
 				<div className="space-y-1">
-					<h2 className="text-lg font-semibold">Tools</h2>
+					<h2 className="text-lg font-semibold">{t("Tools")}</h2>
 					{readOnlyDeployment && (
 						<p className="text-sm text-muted-foreground">
-							This deployment is read-only, so the tools that write are withheld from every key.
+							{t("This deployment is read-only, so the tools that write are withheld from every key.")}
 						</p>
 					)}
 				</div>
@@ -210,9 +215,9 @@ function McpSettingsPage() {
 					<Table className="[&_td]:px-4 [&_th]:px-4">
 						<TableHeader>
 							<TableRow className="hover:bg-transparent">
-								<TableHead className="w-[22%]">Tool</TableHead>
-								<TableHead>What it does</TableHead>
-								<TableHead className="w-[24%]">Scope</TableHead>
+								<TableHead className="w-[22%]">{t("Tool")}</TableHead>
+								<TableHead>{t("What it does")}</TableHead>
+								<TableHead className="w-[24%]">{t("Scope")}</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>

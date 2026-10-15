@@ -11,20 +11,23 @@ import { Separator } from "@workspace/ui/components/separator";
 import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 import { cn } from "@workspace/ui/lib/utils";
 import { Fragment } from "react";
+import { LanguageSwitch } from "@/components/language-switch";
 import { SupportChatButton } from "@/components/support-chat-button";
 import { type Crumb, useBreadcrumbs } from "@/lib/breadcrumbs";
+import { useT } from "@/lib/i18n";
 
 // `transition-none` overrides the link's own `transition-colors`: the rail and
 // the menu take their hover at once, and a crumb easing into one reads as lag.
 const CRUMB = "block rounded-md px-2 py-1 leading-tight transition-none";
 
 function CrumbLabel({ crumb }: { crumb: Crumb }) {
-	if (!crumb.kind) return <>{crumb.label}</>;
+	const t = useT();
+	if (!crumb.kind) return <>{t(crumb.label)}</>;
 
 	return (
 		<>
 			<span className="mb-0.5 block text-[10px] font-medium uppercase leading-none tracking-wider text-muted-foreground/70">
-				{crumb.kind}
+				{t(crumb.kind)}
 			</span>
 			{crumb.label}
 		</>
@@ -32,12 +35,13 @@ function CrumbLabel({ crumb }: { crumb: Crumb }) {
 }
 
 export function SiteHeader() {
+	const t = useT();
 	const crumbs = useBreadcrumbs();
 
 	return (
 		<header className="bg-background sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
 			<div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-				<SidebarTrigger className="-ml-1 cursor-pointer" />
+				<SidebarTrigger aria-label={t("Toggle sidebar")} className="-ml-1 cursor-pointer" />
 				<Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
 				<Breadcrumb className="-ml-2">
 					<BreadcrumbList className="gap-0.5 sm:gap-1">
@@ -65,7 +69,8 @@ export function SiteHeader() {
 						})}
 					</BreadcrumbList>
 				</Breadcrumb>
-				<div className="ml-auto flex items-center">
+				<div className="ml-auto flex items-center gap-2">
+					<LanguageSwitch />
 					<SupportChatButton />
 				</div>
 			</div>

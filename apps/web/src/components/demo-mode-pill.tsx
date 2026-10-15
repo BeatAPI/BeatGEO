@@ -2,8 +2,10 @@ import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouteContext } from "@tanstack/react-router";
 import type { ClientConfig } from "@workspace/config/types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
+import { useT } from "@/lib/i18n";
 
 export function DemoModePill() {
+	const t = useT();
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const isReadOnly = context.clientConfig?.features.readOnly ?? false;
 
@@ -17,9 +19,9 @@ export function DemoModePill() {
 				}
 			>
 				<IconInfoCircle className="size-3" />
-				Demo
+				{t("Demo")}
 			</TooltipTrigger>
-			<TooltipContent>This is a read-only demo. Any edits will fail.</TooltipContent>
+			<TooltipContent>{t("This is a read-only demo. Any edits will fail.")}</TooltipContent>
 		</Tooltip>
 	);
 }
