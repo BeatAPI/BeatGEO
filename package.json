@@ -47,6 +47,6 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@beatapi/beat-browser": "github:BeatAPI/beat-browser#8a295920d06cb83cd69e79e43eafa8e7b62b9efe"
+    "@beatapi/beat-browser": "github:BeatAPI/BeatBrowser#d116e0a3613b39455557eec1ec8a89f4e2b198bf"
   }
 }

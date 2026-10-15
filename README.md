@@ -2,7 +2,7 @@
 
 **Open-source AI visibility monitoring and optimization, by [BeatAPI](https://beatapi.io).**
 
-从真实 AI 回答出发，了解品牌在哪里被提及、哪些页面被引用、哪里需要改进。使用 [BeatBrowser](https://github.com/BeatAPI/beat-browser) 在独立后台工作区采集网页回答，保留证据，明确显示超时与失败。
+从真实 AI 回答出发，了解品牌在哪里被提及、哪些页面被引用、哪里需要改进。使用 [BeatBrowser](https://github.com/BeatAPI/BeatBrowser) 在独立后台工作区采集网页回答，保留证据，明确显示超时与失败。
 
 > **MVP / 开发预览。** 本地浏览器工作台、统一数据库/队列、优化任务与同组复测可运行，已完成一次 PostgreSQL→worker→真实 ChatGPT 验收。网站技术诊断、长期无人值守稳定性和多设备调度仍待完成。没有托管 SaaS、已发布 SDK 或全部平台已稳定支持的承诺。
 
