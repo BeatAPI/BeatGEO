@@ -1,4 +1,4 @@
-![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.svg)
+![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.png)
 
 # BeatGEO
 
