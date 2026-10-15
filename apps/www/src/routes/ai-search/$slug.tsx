@@ -16,7 +16,7 @@ function engineFaqs(e: AiSearchEngine): FaqItem[] {
 			answer: `${e.short} In short: ${e.steps[0].text} ${e.steps[1].text}`,
 		},
 		{
-			question: `Does BeatGeo track ${e.name}?`,
+			question: `Does BeatGEO track ${e.name}?`,
 			answer: e.tracking,
 		},
 	];
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/ai-search/$slug")({
 	head: ({ loaderData }) => {
 		if (!loaderData) return {};
 		const e = loaderData.engine;
-		const title = `How to Appear in ${e.name} · BeatGeo`;
+		const title = `How to Appear in ${e.name} · BeatGEO`;
 		const description = e.short;
 		const path = `/ai-search/${e.slug}`;
 		return {
@@ -112,7 +112,7 @@ function EnginePage() {
 									{...SELF_HOST_LINK}
 									className="inline-flex h-9 items-center rounded-md bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
 								>
-									Start tracking with BeatGeo
+									Start tracking with BeatGEO
 								</Link>
 							</div>
 						</div>

@@ -29,7 +29,7 @@ export interface BlogPostLoaderData {
 	updated?: string;
 	author: string;
 	tags: string[];
-	/** SEO <title> override; falls back to `${title} · BeatGeo` (see source.config.ts). */
+	/** SEO <title> override; falls back to `${title} · BeatGEO` (see source.config.ts). */
 	metaTitle?: string;
 	/** Rendered at the foot of the post and emitted as FAQPage JSON-LD. */
 	faq?: BlogPostFaqItem[];

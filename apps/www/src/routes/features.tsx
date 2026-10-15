@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { breadcrumbJsonLd, canonicalUrl, ogMeta } from "@/lib/seo";
 
-const title = "Features — AI Visibility & Citation Tracking · BeatGeo";
+const title = "Features — AI Visibility & Citation Tracking · BeatGEO";
 const description = "Track AI visibility, analyze citations, and monitor competitors — all in one tool.";
 
 export const Route = createFileRoute("/features")({

@@ -78,7 +78,7 @@ function AuthorizePage() {
 
 	if (!client) {
 		return (
-			<FullPageCard title="Connect to BeatGeo" subtitle="This client isn't registered with this instance.">
+			<FullPageCard title="Connect to BeatGEO" subtitle="This client isn't registered with this instance.">
 				<Alert variant="destructive">
 					<AlertDescription>
 						Continuing will not work — start the connection from your MCP client again.
@@ -89,7 +89,7 @@ function AuthorizePage() {
 	}
 
 	return (
-		<FullPageCard title="Connect to BeatGeo" subtitle={`${label} is asking to read and manage your BeatGeo data.`}>
+		<FullPageCard title="Connect to BeatGEO" subtitle={`${label} is asking to read and manage your BeatGEO data.`}>
 			<div className="w-full space-y-4">
 				{error && (
 					<Alert variant="destructive">
@@ -119,7 +119,7 @@ function AuthorizePage() {
 				{client.loopbackOnly && (
 					<Alert>
 						<AlertDescription>
-							This client runs on your computer, so BeatGeo can't tell which program is asking. Continue only if you
+							This client runs on your computer, so BeatGEO can't tell which program is asking. Continue only if you
 							just started this from a client you trust.
 						</AlertDescription>
 					</Alert>

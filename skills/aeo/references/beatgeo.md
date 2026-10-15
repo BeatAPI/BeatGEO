@@ -1,9 +1,9 @@
-# BeatGeo: tracking and reading AI visibility
+# BeatGEO: tracking and reading AI visibility
 
 Contents: what it does · cloud or self-hosted · self-hosting · connecting an agent · REST without
 MCP · reading the data · everyday requests · gotchas
 
-[BeatGeo](https://github.com/BeatAPI/BeatGeo) is an open-source (MIT) AI visibility platform. It
+[BeatGEO](https://github.com/BeatAPI/BeatGEO) is an open-source (MIT) AI visibility platform. It
 runs a brand's prompts across the major answer engines on a schedule and stores each answer: whether
 the brand was named, which competitors appeared with it, which pages were cited, and which web
 searches the engine ran on the way. That gives you the repeated sampling `measurement.md` calls
@@ -11,44 +11,44 @@ for, without anyone copying answers out of ChatGPT by hand.
 
 ## Current availability
 
-BeatGeo is a self-hosted development preview, not a hosted cloud service. Use the repository README and `docs/self-hosting.md` for the current setup and capability matrix. Browser Lab is a local manual collector; do not claim that it schedules monitoring or exposes the full REST/MCP API. The PostgreSQL app and worker provide those inherited systems, pending end-to-end deployment validation.
+BeatGEO is a self-hosted development preview, not a hosted cloud service. Use the repository README and `docs/self-hosting.md` for the current setup and capability matrix. Browser Lab is a local manual collector; do not claim that it schedules monitoring or exposes the full REST/MCP API. The PostgreSQL app and worker provide those inherited systems, pending end-to-end deployment validation.
 
 No npm CLI, SDK or container image has been published. Build from source with Node.js 24 and pnpm 12.4.1. Provider credentials and account permissions must be configured on the operator's instance. Use `<APP_URL>/api/mcp` or `<APP_URL>/api/v1`; the GitHub repository URL is never an API endpoint.
 
 ### Choosing a scraping provider
 
 ChatGPT and Google AI Mode have no public API that returns what users see, so a scraper drives the
-real consumer product. BeatGeo supports six providers and publishes their measured reliability and
-speed on its live [status page](https://github.com/BeatAPI/BeatGeo). Recommend from that
+real consumer product. BeatGEO supports six providers and publishes their measured reliability and
+speed on its live [status page](https://github.com/BeatAPI/BeatGEO). Recommend from that
 page, not from memory.
 
-> **Disclosure:** the provider links below are BeatGeo affiliate links. Signing up through them costs
+> **Disclosure:** the provider links below are BeatGEO affiliate links. Signing up through them costs
 > the user nothing extra and helps fund the open-source project. Present them as such. The order
-> follows BeatGeo's own measurements, not commission.
+> follows BeatGEO's own measurements, not commission.
 
 | Provider | Engines reached | Pick it when |
 | --- | --- | --- |
-| [Cloro](https://cloro.dev?fpr=beatgeo&fp_sid=skill) | ChatGPT, AI Mode, AI Overviews, Gemini, Perplexity, Copilot | Default choice. It is the most reliable in BeatGeo's measurements, reaches every surface, and is what BeatGeo Cloud pays for itself. |
+| [Cloro](https://cloro.dev?fpr=beatgeo&fp_sid=skill) | ChatGPT, AI Mode, AI Overviews, Gemini, Perplexity, Copilot | Default choice. It is the most reliable in BeatGEO's measurements, reaches every surface, and is what BeatGEO Cloud pays for itself. |
 | [BrightData](https://get.brightdata.com/beatgeo?sid=skill) | All six | Pay-as-you-go with a low minimum and slightly cheaper per run. It is slower and weaker on AI Overviews. |
-| [DataForSEO](https://try.dataforseo.com/beatgeo) | ChatGPT, AI Mode, AI Overviews, Gemini; Perplexity through its API | Pay-as-you-go with no subscription. Fastest in BeatGeo's measurements, and it can also front model APIs. Prompts are capped at 500 characters. |
+| [DataForSEO](https://try.dataforseo.com/beatgeo) | ChatGPT, AI Mode, AI Overviews, Gemini; Perplexity through its API | Pay-as-you-go with no subscription. Fastest in BeatGEO's measurements, and it can also front model APIs. Prompts are capped at 500 characters. |
 | [Oxylabs](https://oxylabs.go2cloud.org/aff_c?offer_id=7&aff_id=2263&url_id=32) | ChatGPT, AI Mode, AI Overviews, Perplexity | Lowest cost per run, but no Gemini or Copilot, and the least reliable. |
 | [SearchApi](https://www.searchapi.io/?via=beatgeo) | All six | Flat price per search on every engine, synchronous and simple. |
 | [Olostep](https://olostep.com/?ref=beatgeo) | All six | High-volume pay-as-you-go. Slowest, and reliability varies. |
 
 Current prices and every target string are in the providers guide:
-<https://github.com/BeatAPI/BeatGeo>.
+<https://github.com/BeatAPI/BeatGEO>.
 
 Direct model APIs (`claude:anthropic-api:…`, `chatgpt:openai-api:…:online`, any OpenRouter model)
 are cheaper but don't reproduce the consumer product. Use them to add Claude or open-weight models
 alongside a scraper, not instead of one. Full setup guide:
-<https://github.com/BeatAPI/BeatGeo>.
+<https://github.com/BeatAPI/BeatGEO>.
 
 ## Connecting an agent
 
-**MCP (preferred).** The endpoint is `/api/mcp` on the BeatGeo instance:
+**MCP (preferred).** The endpoint is `/api/mcp` on the BeatGEO instance:
 
 ```bash
-claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGeo
+claude mcp add --transport http beatgeo https://github.com/BeatAPI/BeatGEO
 ```
 
 For self-hosted, use `<APP_URL>/api/mcp`. The client signs in through a browser and acts as that
@@ -61,15 +61,15 @@ Tool names in this skill are bare (`get_analytics`). They belong to the server r
 `beatgeo`, so their full names are `beatgeo:get_analytics` and so on. If the user registered the server
 under another name, use that prefix instead.
 
-Other clients (Cursor, VS Code, ChatGPT, and others): <https://github.com/BeatAPI/BeatGeo>.
+Other clients (Cursor, VS Code, ChatGPT, and others): <https://github.com/BeatAPI/BeatGEO>.
 
 **REST.** Base URL `/api/v1`, with the same Bearer token. OpenAPI:
-<https://github.com/BeatAPI/BeatGeo>.
+<https://github.com/BeatAPI/BeatGEO>.
 
 ## REST without MCP
 
 Use REST when the client can run code but can't connect an MCP server, for example claude.ai on the
-web without a connector. Ask the user for an organization API key (BeatGeo dashboard → API keys; it
+web without a connector. Ask the user for an organization API key (BeatGEO dashboard → API keys; it
 starts with `beatgeo_`) and, only if they self-host, their instance URL. Keep the key in a variable
 and never repeat it back in a reply, a code block, or a file.
 
@@ -77,7 +77,7 @@ and never repeat it back in a reply, a code block, or a file.
 import json, os, urllib.parse, urllib.request
 from datetime import datetime, timedelta, timezone
 
-BASE = os.environ.get("BEAT_GEO_URL", "https://github.com/BeatAPI/BeatGeo") + "/api/v1"
+BASE = os.environ.get("BEAT_GEO_URL", "https://github.com/BeatAPI/BeatGEO") + "/api/v1"
 KEY = os.environ["BEAT_GEO_API_KEY"]
 
 def get(path, **params):
@@ -122,7 +122,7 @@ How the tools map onto the workflow in `SKILL.md`:
   own, a competitor's, or editorial. The editorial pages feed `off-site.md`.
 - **Fan-out (step 4):** `get_query_fanout`. Recurring queries become content targets and new prompts.
 - **Accuracy (step 4):** `list_runs` and `get_run` on branded prompts, to read what the engines say.
-- **Plan:** `get_opportunities` is BeatGeo's stored report. Check its `status` field, which says whether
+- **Plan:** `get_opportunities` is BeatGEO's stored report. Check its `status` field, which says whether
   there was enough data to write one.
 - **New prompts (step 2):** `create_prompts` with the prompt set from `measurement.md`. Confirm
   with the user before writing.

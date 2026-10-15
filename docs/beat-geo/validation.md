@@ -15,16 +15,16 @@ Raw answers, account context and tab identifiers stay local and are excluded fro
 ## Code verification
 
 - Browser collector behavior tests: completed evidence, failed-run denominator, source URL filtering, no duplicate submission after ambiguous transport failure, local storage, no-brand scoring and verification handoff.
-- BeatGeo provider, configuration and text-extraction tests: 101 passed before final documentation-only updates.
+- BeatGEO provider, configuration and text-extraction tests: 101 passed before final documentation-only updates.
 - Environment registry tests: 6 passed.
 - Shared library TypeScript check passed.
 - Whole workspace Biome check passed (818 source files at the first check).
 
-Final collector suite: 9 passed. Final whole-workspace lint passed after the last implementation fixes. Local HTTP checks returned 200 for health/history and 403 for disallowed Host, foreign Origin and unauthenticated writes. CI only runs the dependency-free browser collector test suite; the BeatGeo checks above were local.
+Final collector suite: 9 passed. Final whole-workspace lint passed after the last implementation fixes. Local HTTP checks returned 200 for health/history and 403 for disallowed Host, foreign Origin and unauthenticated writes. CI only runs the dependency-free browser collector test suite; the BeatGEO checks above were local.
 
 ## Not verified
 
-Full BeatGeo dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
+Full BeatGEO dashboard + database + worker + browser collector end-to-end; unattended scheduling; all engines and regions; model pinning; BeatAPI analysis/billing integration. No database migrations or production deployment were performed.
 
 ## TaskSpace default and desktop workbench follow-up
 
@@ -37,7 +37,7 @@ Full BeatGeo dashboard + database + worker + browser collector end-to-end; unatt
 
 Full product/worker/database integration, all Profound modules, native macOS focus guarantees, and a new live ChatGPT/Gemini collection with the default TaskSpace path remain unverified. No migration, npm release or production deployment was performed.
 
-## BeatGeo MVP identity and monitoring verification
+## BeatGEO MVP identity and monitoring verification
 
 Verified locally with Node.js 24.19.0 and pnpm 12.4.1:
 
@@ -91,18 +91,18 @@ Still unverified: a real BeatAPI key/model/charge, new Gemini live collection, o
 
 ## Branded MVP acceptance — 2026-10-15
 
-- Unified the app, sign-in, setup, report and chart-export identity around the BeatAPI mark and BeatGeo name. Setup has four navigation anchors and consistent cards. Raw response data is collapsed by default; mention labels explicitly refer to tracked brands, and browser model versions are shown as unpinned account defaults.
+- Unified the app, sign-in, setup, report and chart-export identity around the BeatAPI mark and BeatGEO name. Setup has four navigation anchors and consistent cards. Raw response data is collapsed by default; mention labels explicitly refer to tracked brands, and browser model versions are shown as unpinned account defaults.
 - In the isolated `beatgeo_bank_test` database, the actual UI created BeatAPI, generated an English API-industry starter set, retained one question and started tracking. pg-boss → worker → BeatBrowser → signed-in ChatGPT completed in 219 seconds, storing 5,511 answer characters and 14 visible citation links. BeatAPI was not mentioned. The answer and citations were read back in the product; the next job was queued approximately 24 hours later. This is one live smoke test, not a visibility benchmark or an observed overnight cycle.
 - Ten authenticated routes were inspected at 1440px and 390px: setup, overview, responses, citations, visibility, share of voice, opportunities, prompts, competitors and models. The brand asset loaded; no horizontal overflow or Playwright page errors were observed. Raw-data disclosure and the actual answer presentation were checked separately after collection completed. Vite reported ResizeObserver notifications during some viewport changes; this is not a claim of a completely silent development console.
 - A separate empty `beatgeo_release_ui_test` database verified first-admin registration and access to Setup. An already initialized instance exposed an SSR error at `/auth/register`; the route now returns a 307 to sign-in while preserving `returnTo`. A fresh browser followed the redirect, signed in and arrived at Setup successfully.
 - Workspace unit suites passed 1,445 tests; PostgreSQL integration passed 41, browser collector tests 20, script tests 16. Workspace type checks, Biome and the web production build passed. The web checks were repeated after the final UI/auth changes. Integration and research-provider replies remain synthetic; the one live browser answer above is separate evidence.
 - The two test launchers were stopped after confirming no active collection; their databases were retained. The user's local app on 3140 and its database, shared BeatBrowser bridge, Chrome and main BeatAPI project were left running/unmodified. UI source changes are available in the existing local dev server after refresh.
 
-Still unverified: a real BeatAPI key and billed website research / opportunity generation, a future unattended cycle, new Gemini live collection, a clean-machine installation on another computer, and full Profound feature parity. Current BeatGeo configuration contained no research key during this acceptance. The earlier installation acceptance remains the installation evidence; this pass exercised fresh registration on a new database, not a complete reinstall.
+Still unverified: a real BeatAPI key and billed website research / opportunity generation, a future unattended cycle, new Gemini live collection, a clean-machine installation on another computer, and full Profound feature parity. Current BeatGEO configuration contained no research key during this acceptance. The earlier installation acceptance remains the installation evidence; this pass exercised fresh registration on a new database, not a complete reinstall.
 
 ## Team source release — 2026-10-15
 
 - Pinned BeatBrowser to `8a295920d06cb83cd69e79e43eafa8e7b62b9efe`, which includes task cleanup, clearer linked-page labels and the unframed logo. Frozen installation downloaded the GitHub dependency successfully without changing supply-chain policies.
 - Prepared the downloaded extension in a disposable directory and verified the manifest, task backend, popup and stylesheet match the dependency. The resulting popup includes cleanup controls. The user's loaded extension, browser sessions and database were not reconfigured.
 - Repeated Biome (841 files), workspace types, 1,445 unit tests, 20 browser collector tests and 16 script tests successfully. Prior real signed-in ChatGPT evidence remains documented above; this dependency update does not add claims about paid research, overnight execution or other model websites. PostgreSQL integration also runs in the PR's isolated CI database.
-- README now explains that a BeatGeo fork retains a pinned dependency, not a second repository fork. Each team member installs their own local instance and explicitly loads the Chrome extension.
+- README now explains that a BeatGEO fork retains a pinned dependency, not a second repository fork. Each team member installs their own local instance and explicitly loads the Chrome extension.

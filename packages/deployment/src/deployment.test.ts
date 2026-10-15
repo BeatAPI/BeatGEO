@@ -10,7 +10,7 @@ const WHITELABEL_ENV = {
 };
 
 describe("branding", () => {
-	it("falls back to the BeatGeo defaults when nothing is configured", () => {
+	it("falls back to the BeatGEO defaults when nothing is configured", () => {
 		expect(buildDeployment("local", {}).branding).toEqual({
 			name: DEFAULT_APP_NAME,
 			icon: DEFAULT_APP_ICON,
@@ -51,7 +51,7 @@ describe("branding", () => {
 		});
 	});
 
-	it("ignores VITE_APP_* overrides in cloud, which ships the BeatGeo defaults", () => {
+	it("ignores VITE_APP_* overrides in cloud, which ships the BeatGEO defaults", () => {
 		const { branding } = buildDeployment("cloud", {
 			VITE_APP_NAME: "Should Be Ignored",
 			VITE_APP_ICON: "https://cdn.example.com/ignored.png",

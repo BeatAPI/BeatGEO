@@ -14,10 +14,10 @@ declare global {
 
 const CRISP_SCRIPT_URL = "https://client.crisp.chat/l.js";
 
-const PROJECT_URL = "https://github.com/BeatAPI/BeatGeo";
-const DEMO_GREETING = "BeatGeo development preview. Samples are not live monitoring results.";
+const PROJECT_URL = "https://github.com/BeatAPI/BeatGEO";
+const DEMO_GREETING = "BeatGEO development preview. Samples are not live monitoring results.";
 const DEMO_NEXT_STEPS = [
-	"Continue with BeatGeo:",
+	"Continue with BeatGEO:",
 	`• [Product flow](${PROJECT_URL}#product-flow)`,
 	`• [Self-hosting](${PROJECT_URL}/blob/main/docs/self-hosting.md)`,
 	`• [Report an issue](${PROJECT_URL}/issues)`,

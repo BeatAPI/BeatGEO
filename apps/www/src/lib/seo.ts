@@ -1,7 +1,7 @@
 import { getMarketingOgImage } from "./og";
 
-export const SITE_URL = "https://github.com/BeatAPI/BeatGeo";
-export const SITE_NAME = "BeatGeo";
+export const SITE_URL = "https://github.com/BeatAPI/BeatGEO";
+export const SITE_NAME = "BeatGEO";
 // Fallback description for pages without their own, and the description on the
 // WebSite/Organization/SoftwareApplication entities. Spells out "answer engine
 // optimization" because answer engines expand the acronym when they search, and
@@ -75,26 +75,26 @@ export function organizationJsonLd() {
 	return jsonLd({
 		"@type": "Organization",
 		name: SITE_NAME,
-		// "BeatGeo" collides with several unrelated products and a Sesame Street
+		// "BeatGEO" collides with several unrelated products and a Sesame Street
 		// character, so spell out the alternate names and what we actually do —
 		// the signals search engines use to tell entities apart.
-		alternateName: ["BeatGeoHQ", "BeatGeo AEO"],
+		alternateName: ["BeatGeoHQ", "BeatGEO AEO"],
 		description: SITE_DESCRIPTION,
 		url: SITE_URL,
 		logo: SITE_LOGO_URL,
 		sameAs: [
-			"https://github.com/BeatAPI/BeatGeo",
-			"https://github.com/BeatAPI/BeatGeo",
+			"https://github.com/BeatAPI/BeatGEO",
+			"https://github.com/BeatAPI/BeatGEO",
 			"https://www.npmjs.com/package/@beatapi/geo-cli",
 			"https://stackshare.io/beatgeo-mp4ocwtq",
 			"https://x.com/trybeatgeo",
-			"https://github.com/BeatAPI/BeatGeo",
-			"https://github.com/BeatAPI/BeatGeo",
+			"https://github.com/BeatAPI/BeatGEO",
+			"https://github.com/BeatAPI/BeatGEO",
 			"https://www.producthunt.com/products/beatgeo",
 			"https://www.crunchbase.com/organization/beatgeo-14db",
 			"https://www.g2.com/products/blue-whale-software-llc-beatgeo/reviews",
 			"https://alternativeto.net/software/beatgeo/",
-			"https://github.com/BeatAPI/BeatGeo",
+			"https://github.com/BeatAPI/BeatGEO",
 			"https://peerpush.com/p/beatgeo",
 			"https://devhunt.org/tool/beatgeo",
 		],
@@ -237,7 +237,7 @@ export function itemListJsonLd(items: { name: string; path?: string; url?: strin
 	});
 }
 
-/** BeatGeo's entry for a comparison ItemList (always the open-source option). */
+/** BeatGEO's entry for a comparison ItemList (always the open-source option). */
 export const BEAT_GEO_LISTING = { name: SITE_NAME, url: SITE_URL };
 
 /**
@@ -245,7 +245,7 @@ export const BEAT_GEO_LISTING = { name: SITE_NAME, url: SITE_URL };
  * SoftwareApplication. Honest structured data for "X vs Y" and "X vs Y vs Z"
  * pages: it names the tools compared so answer engines can parse the matchup,
  * without asserting prices or ratings we don't have for other vendors. Pair it
- * with softwareApplicationJsonLd() so BeatGeo's free offer is stated explicitly.
+ * with softwareApplicationJsonLd() so BeatGEO's free offer is stated explicitly.
  */
 export function comparisonJsonLd(tools: { name: string; url?: string }[]) {
 	return jsonLd({

@@ -1,24 +1,24 @@
 ---
 title: SDKs
-description: Call the BeatGeo API from TypeScript or Python.
+description: Call the BeatGEO API from TypeScript or Python.
 ---
 
-BeatGeo publishes typed clients for the [REST API](/docs/api), generated from the same OpenAPI spec the
+BeatGEO publishes typed clients for the [REST API](/docs/api), generated from the same OpenAPI spec the
 API serves, so a new endpoint reaches them without anyone writing it by hand.
 
 | Language | Package | Source |
 | --- | --- | --- |
-| TypeScript | [`@beatapi/geo-sdk`](https://www.npmjs.com/package/@beatapi/geo-sdk) | [beatapi/beat-geo-sdk-typescript](https://github.com/BeatAPI/BeatGeo-sdk-typescript) |
-| Python | [`beatgeo-sdk`](https://pypi.org/project/beatgeo-sdk/) | [beatapi/beat-geo-sdk-python](https://github.com/BeatAPI/BeatGeo-sdk-python) |
+| TypeScript | [`@beatapi/geo-sdk`](https://www.npmjs.com/package/@beatapi/geo-sdk) | [beatapi/beat-geo-sdk-typescript](https://github.com/BeatAPI/BeatGEO-sdk-typescript) |
+| Python | [`beatgeo-sdk`](https://pypi.org/project/beatgeo-sdk/) | [beatapi/beat-geo-sdk-python](https://github.com/BeatAPI/BeatGEO-sdk-python) |
 
 Both read an [API key](/docs/api#authentication) from `BEAT_GEO_API_KEY` and the address to call from
 `BEAT_GEO_BASE_URL`. The base URL has no default you can rely on — every instance serves the API on its own
-address — so always set it. On cloud that is `https://github.com/BeatAPI/BeatGeo`; a self-hosted instance
+address — so always set it. On cloud that is `https://github.com/BeatAPI/BeatGEO`; a self-hosted instance
 uses its own `APP_URL` followed by `/api/v1`.
 
 ```bash
 export BEAT_GEO_API_KEY=beatgeo_...
-export BEAT_GEO_BASE_URL=https://github.com/BeatAPI/BeatGeo
+export BEAT_GEO_BASE_URL=https://github.com/BeatAPI/BeatGEO
 ```
 
 Every deployment also shows both snippets at **Settings → API**, with its own base URL filled in.
@@ -30,9 +30,9 @@ npm install @beatapi/geo-sdk
 ```
 
 ```ts
-import { BeatGeo } from "@beatapi/geo-sdk";
+import { BeatGEO } from "@beatapi/geo-sdk";
 
-const beatgeo = new BeatGeo();
+const beatgeo = new BeatGEO();
 
 for await (const brand of beatgeo.brands.list()) {
   console.log(brand.name);
@@ -49,9 +49,9 @@ pip install beatgeo-sdk
 ```
 
 ```python
-from beatgeo_sdk import BeatGeo
+from beatgeo_sdk import BeatGEO
 
-beatgeo = BeatGeo()
+beatgeo = BeatGEO()
 
 for brand in beatgeo.brands.list():
     print(brand.name)
@@ -62,6 +62,6 @@ setting the environment variables. Python 3.10 or later is required.
 
 ## Versions
 
-Each SDK is versioned on its own, by what changed in the API rather than by BeatGeo's release number: a
+Each SDK is versioned on its own, by what changed in the API rather than by BeatGEO's release number: a
 removed or changed endpoint is a major version, a new one a minor version. Each repository's README
 covers pagination, errors, retries, and timeouts in full.

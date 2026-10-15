@@ -39,7 +39,7 @@ import {
 	unavailableReason,
 } from "@/lib/status-helpers";
 
-const title = "Provider Status · BeatGeo";
+const title = "Provider Status · BeatGEO";
 const description = "Real-time status and performance monitoring for AI search provider integrations.";
 
 export const Route = createFileRoute("/status")({
@@ -96,7 +96,7 @@ const TIER_SOLID: Record<RateTier, string> = {
 };
 
 // Diagonal hatch marking "not available" cells — a combination that can't exist,
-// distinct from the flat dot used for combinations BeatGeo just doesn't track yet.
+// distinct from the flat dot used for combinations BeatGEO just doesn't track yet.
 const HATCH_BG =
 	"repeating-linear-gradient(-45deg, rgb(228 228 231) 0, rgb(228 228 231) 1px, transparent 1px, transparent 6px)";
 
@@ -794,14 +794,14 @@ function UnavailableTip({ model, provider }: { model: string; provider: string }
 function UntrackedTip({ model, provider }: { model: string; provider: string }) {
 	const modelLabel = formatModel(model);
 	const providerLabel = PROVIDER_FILTER_LABELS[provider];
-	const href = `https://github.com/BeatAPI/BeatGeo/issues/new?title=${encodeURIComponent(
+	const href = `https://github.com/BeatAPI/BeatGEO/issues/new?title=${encodeURIComponent(
 		`Track ${modelLabel} via ${providerLabel}`,
 	)}`;
 	return (
 		<>
 			<TipHeader title="Not supported yet" subtitle={`${modelLabel} · ${providerLabel}`} />
 			<div className="text-zinc-600">
-				BeatGeo could reach {modelLabel} through {providerPhrase(provider)}, but doesn't track it today.
+				BeatGEO could reach {modelLabel} through {providerPhrase(provider)}, but doesn't track it today.
 			</div>
 			<a
 				href={href}
@@ -1054,19 +1054,19 @@ function StatusPage() {
 					<p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">/ STATUS</p>
 					<h1 className="font-heading text-3xl text-zinc-950 md:text-4xl">Provider Status</h1>
 					<p className="mt-2 text-zinc-600">
-						Status of the third-party AI providers and scraping services BeatGeo uses to track your brand's visibility
+						Status of the third-party AI providers and scraping services BeatGEO uses to track your brand's visibility
 						and citations. Tests run automatically 4 times per day. Latencies shown are for individual prompt
 						evaluations; batches can vary significantly.
 					</p>
 				</div>
 
-				{/* BeatGeo Cloud status pointer */}
+				{/* BeatGEO Cloud status pointer */}
 				<div className="mb-8 flex flex-wrap items-center gap-x-1.5 gap-y-1 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
-					<span>Looking for BeatGeo Cloud's status?</span>
+					<span>Looking for BeatGEO Cloud's status?</span>
 					<a
-						href="https://github.com/BeatAPI/BeatGeo"
+						href="https://github.com/BeatAPI/BeatGEO"
 						target="_blank"
-						rel={externalRel("https://github.com/BeatAPI/BeatGeo")}
+						rel={externalRel("https://github.com/BeatAPI/BeatGEO")}
 						className="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700"
 					>
 						status.example.invalid

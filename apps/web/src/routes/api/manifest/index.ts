@@ -3,7 +3,7 @@
  *
  * Generates a manifest.json tailored to the current deployment mode:
  *   - Whitelabel: single 128×128 icon from the configured icon URL
- *   - Local/Demo (BeatGeo): static SVG icons committed to public/icons/
+ *   - Local/Demo (BeatGEO): static SVG icons committed to public/icons/
  *
  * Branding values (name, theme color, etc.) are read from server config
  * so they stay in sync with the rest of the app.
@@ -35,7 +35,7 @@ function buildManifest(): object {
 			},
 		];
 	} else {
-		// BeatGeo-only assets — never reference these from the whitelabel branch.
+		// BeatGEO-only assets — never reference these from the whitelabel branch.
 		icons = [
 			{
 				src: "/icons/beatgeo-icon.svg",

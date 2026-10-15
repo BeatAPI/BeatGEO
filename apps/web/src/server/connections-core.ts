@@ -99,7 +99,7 @@ export async function browserRequest(path: "/api/browser" | "/api/browser/profil
 			selectedProfileId: "",
 			extensionPath: "",
 			version: "",
-			error: "Browser service unavailable. Start BeatGeo locally, then check again.",
+			error: "Browser service unavailable. Start BeatGEO locally, then check again.",
 		};
 	}
 }

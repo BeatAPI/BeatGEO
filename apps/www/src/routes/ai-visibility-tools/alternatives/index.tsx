@@ -5,9 +5,9 @@ import { Navbar } from "@/components/navbar";
 import { CATEGORY_LABELS, indexableCategories, indexedCompetitors, toolsInCategory } from "@/lib/competitors";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "AI Visibility Tool Alternatives · BeatGeo";
+const title = "AI Visibility Tool Alternatives · BeatGEO";
 const description =
-	"Find open-source and self-hosted alternatives to the AI visibility tools you're evaluating. Each guide compares the closest options, with BeatGeo as the free, auditable pick.";
+	"Find open-source and self-hosted alternatives to the AI visibility tools you're evaluating. Each guide compares the closest options, with BeatGEO as the free, auditable pick.";
 
 const items = indexedCompetitors.map((c) => ({
 	name: `${c.name} alternatives`,

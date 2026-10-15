@@ -191,7 +191,7 @@ async function openRunPage(config, run, transport, useSpaces) {
 			await transport("spaces", {
 				action: "open",
 				url: ENGINES[config.engine].url,
-				label: `BeatGeo · ${ENGINES[config.engine].name}`,
+				label: `BeatGEO · ${ENGINES[config.engine].name}`,
 				profileId: config.profileId || process.env.BEAT_BROWSER_PROFILE_ID || undefined,
 			}),
 		);
@@ -205,7 +205,7 @@ async function openRunPage(config, run, transport, useSpaces) {
 		const opened = await transport("tabs", {
 			action: "new",
 			url: ENGINES[config.engine].url,
-			label: `BeatGeo · ${ENGINES[config.engine].name}`,
+			label: `BeatGEO · ${ENGINES[config.engine].name}`,
 		});
 		const match = opened.match(/(?:tab\s*)?\[(\d+)\]/i);
 		if (!match) throw new Error("Browser did not return a tab ID.");

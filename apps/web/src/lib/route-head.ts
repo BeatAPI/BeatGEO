@@ -9,7 +9,7 @@ interface RouteMatchContext {
 }
 
 export function getAppName(match: RouteMatchContext): string {
-	return match.context?.clientConfig?.branding?.name || "BeatGeo";
+	return match.context?.clientConfig?.branding?.name || "BeatGEO";
 }
 
 export function buildTitle(pageName: string, opts: { appName: string; subject?: string }): string {

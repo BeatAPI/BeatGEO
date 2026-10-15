@@ -5,7 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { CATEGORY_HEADINGS, CATEGORY_SLUGS, indexableCategories, toolsInCategory } from "@/lib/competitors";
 import { breadcrumbJsonLd, canonicalUrl, itemListJsonLd, ogMeta } from "@/lib/seo";
 
-const title = "AI Visibility Tools by Category · BeatGeo";
+const title = "AI Visibility Tools by Category · BeatGEO";
 const description =
 	"Browse AI visibility tools by category: dedicated trackers, content platforms, developer APIs, SEO suites, e-commerce, and open source.";
 

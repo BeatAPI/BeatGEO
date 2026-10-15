@@ -5,8 +5,8 @@ import { useOrganization } from "@/hooks/use-organizations";
 import { pageHead } from "@/lib/route-head";
 
 const INSTALL_COMMAND = "npx skills add BeatAPI/beat-geo";
-const SKILL_URL = "https://github.com/BeatAPI/BeatGeo/tree/main/skills/aeo";
-const LAUNCH_POST_URL = "https://github.com/BeatAPI/BeatGeo";
+const SKILL_URL = "https://github.com/BeatAPI/BeatGEO/tree/main/skills/aeo";
+const LAUNCH_POST_URL = "https://github.com/BeatAPI/BeatGEO";
 
 const EXAMPLE_ASKS = [
 	"How's our brand doing in AI search this week?",

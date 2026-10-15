@@ -34,8 +34,8 @@ export const Route = createFileRoute("/ai-visibility-tools/category/$slug")({
 	head: ({ params, loaderData }) => {
 		if (!loaderData) return {};
 		const { heading, faqs } = loaderData;
-		const title = `${heading.charAt(0).toUpperCase()}${heading.slice(1)} · BeatGeo`;
-		const description = `A comparison of ${heading} for tracking your brand in AI search, including BeatGeo — the open-source, self-hosted option.`;
+		const title = `${heading.charAt(0).toUpperCase()}${heading.slice(1)} · BeatGEO`;
+		const description = `A comparison of ${heading} for tracking your brand in AI search, including BeatGEO — the open-source, self-hosted option.`;
 		const path = `/ai-visibility-tools/category/${params.slug}`;
 		return {
 			meta: [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })],

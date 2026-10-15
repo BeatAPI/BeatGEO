@@ -20,7 +20,7 @@ import {
 import { listLegalPages } from "@/lib/legal";
 import { source } from "@/lib/source";
 
-const SITE_URL = "https://github.com/BeatAPI/BeatGeo";
+const SITE_URL = "https://github.com/BeatAPI/BeatGEO";
 
 interface SitemapEntry {
 	path: string;

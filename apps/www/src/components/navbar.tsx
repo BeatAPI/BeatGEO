@@ -92,7 +92,7 @@ export function Navbar() {
 				</div>
 				<div className="flex items-center gap-2">
 					<a
-						href="https://github.com/BeatAPI/BeatGeo"
+						href="https://github.com/BeatAPI/BeatGEO"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="group/star hidden h-8 items-center gap-1.5 rounded-md bg-white px-3 text-sm font-medium leading-none text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 hover:ring-zinc-300 sm:inline-flex"

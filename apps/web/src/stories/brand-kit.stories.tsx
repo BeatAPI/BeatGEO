@@ -1,8 +1,8 @@
 /**
- * Brand Kit story — previews all BeatGeo brand assets in one place.
+ * Brand Kit story — previews all BeatGEO brand assets in one place.
  *
  * Sections:
- *  1. Logo — BeatAPI mark and BeatGeo name and whitelabel variant
+ *  1. Logo — BeatAPI mark and BeatGEO name and whitelabel variant
  *  2. Icon — the "e" icon at various sizes (16, 32, 64, 128, 256)
  *  3. Maskable Icon — for adaptive/PWA contexts
  *  4. Color Palette — brand color, theme colors, and chart palette
@@ -23,7 +23,7 @@ const beatgeoConfig: ClientConfig = {
 		canCreateBrands: true,
 	},
 	branding: {
-		name: "BeatGeo",
+		name: "BeatGEO",
 		chartColors: DEFAULT_CHART_COLORS.map((c) => c),
 	},
 	analytics: {},
@@ -77,7 +77,7 @@ function ColorSwatch({ color, label }: { color: string; label: string }) {
 // Stories
 // ---------------------------------------------------------------------------
 
-/** Full BeatGeo brand kit — logo, icons, colors, typography */
+/** Full BeatGEO brand kit — logo, icons, colors, typography */
 export const BeatGeoBrandKit = () => {
 	setMockClientConfig(beatgeoConfig);
 	setMockRouteContext({ clientConfig: beatgeoConfig });
@@ -86,7 +86,7 @@ export const BeatGeoBrandKit = () => {
 
 	return (
 		<div className="p-8 max-w-4xl mx-auto space-y-2">
-			<h1 className="text-2xl font-bold text-foreground mb-8">BeatGeo Brand Kit</h1>
+			<h1 className="text-2xl font-bold text-foreground mb-8">BeatGEO Brand Kit</h1>
 
 			{/* Logo */}
 			<Section title="Logo">
@@ -120,7 +120,7 @@ export const BeatGeoBrandKit = () => {
 									>
 										<img
 											src="/icons/beatgeo-icon.svg"
-											alt={`BeatGeo icon ${size}px`}
+											alt={`BeatGEO icon ${size}px`}
 											width={size}
 											height={size}
 											style={{ width: size, height: size }}
@@ -144,7 +144,7 @@ export const BeatGeoBrandKit = () => {
 									>
 										<img
 											src="/icons/beatgeo-icon.svg"
-											alt={`BeatGeo icon ${size}px on dark`}
+											alt={`BeatGEO icon ${size}px on dark`}
 											width={size}
 											height={size}
 											style={{ width: size, height: size }}
@@ -168,7 +168,7 @@ export const BeatGeoBrandKit = () => {
 							<div className="border rounded-lg overflow-hidden flex items-center justify-center">
 								<img
 									src="/icons/beatgeo-icon-maskable.svg"
-									alt={`BeatGeo maskable icon ${size}px`}
+									alt={`BeatGEO maskable icon ${size}px`}
 									width={size}
 									height={size}
 									style={{ width: size, height: size }}
@@ -186,7 +186,7 @@ export const BeatGeoBrandKit = () => {
 						>
 							<img
 								src="/icons/beatgeo-icon-maskable.svg"
-								alt="BeatGeo maskable icon circular crop"
+								alt="BeatGEO maskable icon circular crop"
 								width={128}
 								height={128}
 								style={{ width: 128, height: 128 }}

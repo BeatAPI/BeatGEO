@@ -1,4 +1,4 @@
-# BeatGeo 从安装到持续监测
+# BeatGEO 从安装到持续监测
 
 这是当前本地源码版的使用路径。完整网站研究推荐连接 BeatAPI；行业模板题库和网页采集可独立使用。尚无桌面一键安装包或托管 SaaS。
 
@@ -7,7 +7,7 @@ flowchart TD
     A[准备 Git、Node 24、pnpm、Docker、Chrome] --> B[环境检查 local:doctor]
     B --> C[local:setup 自动建独立数据库并准备扩展]
     C --> D[local:start 启动网页、采集器和调度进程]
-    D --> E[注册本地 BeatGeo 管理员]
+    D --> E[注册本地 BeatGEO 管理员]
     E --> F[保存 BeatAPI Key 和研究模型]
     F --> G[加载内置 BeatBrowser、选择 Chrome 配置]
     G --> H[在该配置登录 ChatGPT]
@@ -34,14 +34,14 @@ flowchart TD
 Docker 是标准自动安装路线的要求，**不是 PostgreSQL 的唯一安装方式**。已有专用 PostgreSQL 的开发者可以按[手动自托管指南](../self-hosting.md)配置，无须 Docker。当前仍不支持 SQLite。
 
 ```sh
-git clone https://github.com/BeatAPI/BeatGeo.git
-cd BeatGeo
+git clone https://github.com/BeatAPI/BeatGEO.git
+cd BeatGEO
 node scripts/local-doctor.mjs
 pnpm local:setup
 pnpm local:start
 ```
 
-环境检查只读取版本和 Docker 状态。安装脚本会安装锁定依赖、创建专用 PostgreSQL 容器/数据卷、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。打开 http://localhost:3140/setup；首次注册的是本地 BeatGeo 管理员，不会注册或绑定一个新的 BeatAPI 账号。
+环境检查只读取版本和 Docker 状态。安装脚本会安装锁定依赖、创建专用 PostgreSQL 容器/数据卷、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。打开 http://localhost:3140/setup；首次注册的是本地 BeatGEO 管理员，不会注册或绑定一个新的 BeatAPI 账号。
 
 ## 页面引导
 
@@ -65,13 +65,13 @@ pnpm local:start
 
 ## 持续运行的条件
 
-可关闭 BeatGeo 网页，但电脑要保持唤醒、联网，Docker/PostgreSQL、Chrome、`pnpm local:start` 里的调度与采集进程要运行。关闭电脑就没有实时采集，也不能承诺完整补回离线时段。Key 需要持续有效且有可用额度；AI 网站会话失效时需要重新登录。
+可关闭 BeatGEO 网页，但电脑要保持唤醒、联网，Docker/PostgreSQL、Chrome、`pnpm local:start` 里的调度与采集进程要运行。关闭电脑就没有实时采集，也不能承诺完整补回离线时段。Key 需要持续有效且有可用额度；AI 网站会话失效时需要重新登录。
 
 再次使用运行 `pnpm local:start` 即可，不必重建数据库或重新填写 Key。默认自动安装使用独立 Docker 数据卷，退出进程不会删除记录。备份需包含 PostgreSQL 数据及私密配置/加密密钥；只拷贝数据库而丢失加密密钥，无法恢复已保存 Key。不要用删除数据卷作为“重启”方法。
 
 ```mermaid
 flowchart LR
-    U[用户浏览器中的 BeatGeo 页面] --> S[本地 BeatGeo 服务]
+    U[用户浏览器中的 BeatGEO 页面] --> S[本地 BeatGEO 服务]
     S --> P[(本实例 PostgreSQL：账号、题单、结果、队列)]
     S --> A[BeatAPI：搜索、阅读、模型分析]
     P --> W[本地 Worker]
@@ -81,7 +81,7 @@ flowchart LR
     W --> P
 ```
 
-这里没有向 BeatAPI 主站数据库“POST 数据库”的操作：网页请求本地 BeatGeo 服务，由本地服务读写自己的 PostgreSQL。BeatAPI 网关只处理其能力调用和计费。
+这里没有向 BeatAPI 主站数据库“POST 数据库”的操作：网页请求本地 BeatGEO 服务，由本地服务读写自己的 PostgreSQL。BeatAPI 网关只处理其能力调用和计费。
 
 ## 当前还需要完善的产品体验
 

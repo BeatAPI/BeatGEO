@@ -122,7 +122,7 @@ async function restartAfterUpgrade(configDir: string, wasRunning: boolean): Prom
 }
 export async function runUpgrade(options: UpgradeOptions, cliVersion: string): Promise<void> {
 	printBanner();
-	p.intro(pc.bold("Upgrading BeatGeo"));
+	p.intro(pc.bold("Upgrading BeatGEO"));
 
 	await confirmStaleCli(cliVersion, options.yes);
 

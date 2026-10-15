@@ -1,4 +1,4 @@
-# BeatGeo Metrics v1
+# BeatGEO Metrics v1
 
 The MVP implements literal mention rate, scored/completed coverage and explicit status counts. The same pure module drives runner summaries and workbench coverage. A completed answer with no configured brand is unscored. Observation IDs are deduplicated; attempts are not extra observations.
 
@@ -14,7 +14,7 @@ Stored-observation coverage is not future scheduled-plan coverage. No planned co
 
 Timeout details include question, platform, elapsed time, answer-wait timeout, attempt count, partial text and error. Elapsed time includes opening and cleanup and can exceed answer-wait timeout. Older records may lack timing metadata.
 
-Visible links do not prove complete citation extraction. Recommendation identification, full citation coverage and confidence intervals remain roadmap items. The inherited statistics include Jaccard/Bray–Curtis source changes and last-value-carried-forward views; carried values are not fresh observations. Those views need explicit freshness before becoming BeatGeo's default factual trend.
+Visible links do not prove complete citation extraction. Recommendation identification, full citation coverage and confidence intervals remain roadmap items. The inherited statistics include Jaccard/Bray–Curtis source changes and last-value-carried-forward views; carried values are not fresh observations. Those views need explicit freshness before becoming BeatGEO's default factual trend.
 
 No composite score is presented as a validated predictor of traffic or revenue.
 

@@ -9,7 +9,7 @@
  * NOTE: Whitelabel mode does NOT use these defaults - all values must be
  * provided via environment variables.
  */
-export const DEFAULT_APP_NAME = "BeatGeo";
+export const DEFAULT_APP_NAME = "BeatGEO";
 export const DEFAULT_APP_ICON = "/icons/beatgeo-icon.svg";
 export const DEFAULT_APP_URL = "http://localhost:3000/";
 
@@ -19,17 +19,17 @@ export const DEFAULT_APP_URL = "http://localhost:3000/";
  * rather than the docs index.
  */
 export const PROVIDERS_DOCS_URL =
-	"https://github.com/BeatAPI/BeatGeo/blob/main/packages/docs/content/docs/user-guide/providers.mdx";
+	"https://github.com/BeatAPI/BeatGEO/blob/main/packages/docs/content/docs/user-guide/providers.mdx";
 
 /** The public docs, for the hosted product. In the app itself the API and MCP
  * pages document the deployment the viewer is signed in to. */
-export const API_DOCS_URL = "https://github.com/BeatAPI/BeatGeo/tree/main/packages/docs/content/docs/api";
+export const API_DOCS_URL = "https://github.com/BeatAPI/BeatGEO/tree/main/packages/docs/content/docs/api";
 
 /** Public identifier for the support chat, shared by the app and the marketing site. */
 export const CRISP_WEBSITE_ID = "";
 
 /**
- * BeatGeo brand constants — used for icon generation, manifest, and the brand kit.
+ * BeatGEO brand constants — used for icon generation, manifest, and the brand kit.
  */
 export const BEAT_GEO_BRAND_COLOR = "#2563eb"; // blue-600
 export const BEAT_GEO_BRAND_FONT = "Geist Sans";
@@ -37,7 +37,7 @@ export const BEAT_GEO_THEME_COLOR = "#2563eb";
 export const BEAT_GEO_BACKGROUND_COLOR = "#ffffff";
 
 /**
- * Default chart colors for the BeatGeo product.
+ * Default chart colors for the BeatGEO product.
  *
  * 11 base hues (Observable + Tableau, anchored to brand blue) expanded
  * into 55 colors across five lightness tiers: base → dark → light →

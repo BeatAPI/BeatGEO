@@ -35,7 +35,7 @@ interface RouterContext {
 	consentRegion?: boolean | null;
 }
 
-// Inside BeatGeo Cloud only the signup funnel counts as a page view for ads: the
+// Inside BeatGEO Cloud only the signup funnel counts as a page view for ads: the
 // rest of the app's URLs name customers' organizations and brands.
 const CLOUD_AD_PAGE_VIEW_PATHS = new Set(["/auth/register", "/choose-plan"]);
 
@@ -56,14 +56,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		}
 
 		const hasCustomIcon = Boolean(branding?.icon && branding.icon !== DEFAULT_APP_ICON);
-		const appName = branding?.name || "BeatGeo";
+		const appName = branding?.name || "BeatGEO";
 		const themeColor = hasCustomIcon ? "#000000" : BEAT_GEO_THEME_COLOR;
 		const appUrl = branding?.url ? branding.url.replace(/\/$/, "") : undefined;
 
 		const title = `${appName} - AI Search Optimization`;
 		const description = "Track and optimize your brand's visibility across AI models.";
 		// Don't pass `title` to /api/og — the renderer already shows the brand
-		// (BeatGeo logo or whitelabel icon + name), so a "Brand - AI Search Optimization"
+		// (BeatGEO logo or whitelabel icon + name), so a "Brand - AI Search Optimization"
 		// title would render redundantly. Pages that override og:image can supply
 		// a page-specific title via the query param.
 		const ogImageParams = new URLSearchParams({ description });
@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				{ rel: "stylesheet", href: appCss },
 				{ rel: "manifest", href: "/api/manifest" },
 				// Whitelabel uses its own icon URL for both favicon and iOS touch;
-				// BeatGeo default uses the committed SVG + opaque 180×180 PNG.
+				// BeatGEO default uses the committed SVG + opaque 180×180 PNG.
 				...(hasCustomIcon && branding?.icon
 					? [
 							{ rel: "icon", type: "image/png", href: branding.icon },
@@ -113,7 +113,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 					: [
 							// Icons live under /icons/ (not the root) so browsers' default
 							// probes for /favicon.ico and /apple-touch-icon.png 404 on
-							// whitelabel deployments instead of picking up BeatGeo assets.
+							// whitelabel deployments instead of picking up BeatGEO assets.
 							{ rel: "icon", type: "image/svg+xml", href: "/icons/beatgeo-icon.svg" },
 							{ rel: "icon", type: "image/png", sizes: "96x96", href: "/icons/beatgeo-icon-96.png" },
 							{ rel: "icon", type: "image/x-icon", href: "/icons/favicon.ico" },

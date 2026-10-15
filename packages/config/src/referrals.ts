@@ -7,8 +7,8 @@
  * things and convert at very different rates.
  */
 
-export const MARKETING_SITE_URL = "https://github.com/BeatAPI/BeatGeo";
-export const CLOUD_APP_URL = "https://github.com/BeatAPI/BeatGeo";
+export const MARKETING_SITE_URL = "https://github.com/BeatAPI/BeatGEO";
+export const CLOUD_APP_URL = "https://github.com/BeatAPI/BeatGEO";
 /** The read-only instance anyone can poke at without an account. */
 
 /**
@@ -47,7 +47,7 @@ export type ReferralSource =
 	| "marketing-pricing-business";
 
 function projectLink(ref: ReferralSource, anchor = "readme"): string {
-	const url = new URL("https://github.com/BeatAPI/BeatGeo");
+	const url = new URL("https://github.com/BeatAPI/BeatGEO");
 	url.searchParams.set("ref", ref);
 	url.hash = anchor;
 	return url.toString();

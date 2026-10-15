@@ -38,9 +38,9 @@ export function DirectoryHero({ eyebrow, title, lead }: { eyebrow: string; title
 }
 
 /**
- * The "BeatGeo: the open-source alternative" banner, surfaced high on a page right
+ * The "BeatGEO: the open-source alternative" banner, surfaced high on a page right
  * under the hero. `pitch` is the page-specific paragraph; `comparison` points the
- * secondary button at the matching BeatGeo-vs comparison page.
+ * secondary button at the matching BeatGEO-vs comparison page.
  */
 export function DirectoryBeatGeoBanner({
 	pitch,
@@ -53,18 +53,18 @@ export function DirectoryBeatGeoBanner({
 		<section className="border-b border-zinc-200 bg-zinc-50 py-10">
 			<div className="mx-auto max-w-6xl px-4 md:px-6">
 				<div className="rounded-md border border-blue-200 bg-blue-50/40 p-6">
-					<h2 className="font-heading text-xl text-zinc-950">BeatGeo: the open-source alternative</h2>
+					<h2 className="font-heading text-xl text-zinc-950">BeatGEO: the open-source alternative</h2>
 					<p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-600">{pitch}</p>
 					<div className="mt-4 flex flex-wrap gap-3">
 						<Link {...SELF_HOST_LINK} className={buttonVariants({ size: "sm" })}>
-							Deploy BeatGeo
+							Deploy BeatGEO
 						</Link>
 						<Link
 							to="/ai-visibility-tools/$slug"
 							params={{ slug: comparison.slug }}
 							className={buttonVariants({ variant: "outline", size: "sm" })}
 						>
-							BeatGeo vs {comparison.name}
+							BeatGEO vs {comparison.name}
 							<ArrowRight className="h-3.5 w-3.5" />
 						</Link>
 					</div>
@@ -80,15 +80,15 @@ export function BeatGeoCta() {
 			<div className="mx-auto max-w-3xl px-4 text-center md:px-6">
 				<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">Ready to track your AI visibility?</h2>
 				<p className="mx-auto mt-4 max-w-xl text-lg text-balance text-zinc-600">
-					Deploy BeatGeo in minutes and start monitoring how ChatGPT, Claude, and Google AI Overviews talk about your
+					Deploy BeatGEO in minutes and start monitoring how ChatGPT, Claude, and Google AI Overviews talk about your
 					brand. Open source, self-hosted, free.
 				</p>
 				<div className="mt-8 flex flex-wrap justify-center gap-3">
 					<Link {...SELF_HOST_LINK} className={buttonVariants({ size: "sm" })}>
-						Deploy BeatGeo
+						Deploy BeatGEO
 					</Link>
 					<a
-						href="https://github.com/BeatAPI/BeatGeo"
+						href="https://github.com/BeatAPI/BeatGEO"
 						target="_blank"
 						rel="noopener noreferrer"
 						className={buttonVariants({ variant: "outline", size: "sm" })}

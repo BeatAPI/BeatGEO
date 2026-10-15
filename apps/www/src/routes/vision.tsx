@@ -10,9 +10,9 @@ import { breadcrumbJsonLd, canonicalUrl, ogMeta } from "@/lib/seo";
 
 const CLOUD_URL = cloudAppUrl("marketing-vision");
 
-const title = "Our Vision · BeatGeo";
+const title = "Our Vision · BeatGEO";
 const description =
-	"AI visibility should be affordable, transparent, and built to last. Here's why we're building BeatGeo differently.";
+	"AI visibility should be affordable, transparent, and built to last. Here's why we're building BeatGEO differently.";
 
 export const Route = createFileRoute("/vision")({
 	head: () => ({
@@ -102,7 +102,7 @@ function VisionPage() {
 							<h2 className="font-heading mt-3 text-3xl text-zinc-950 md:text-4xl">Bootstrapped and built to last</h2>
 							<div className="mt-8 space-y-6 text-[1.0625rem] leading-relaxed text-zinc-600">
 								<p>
-									BeatGeo is bootstrapped. We don't have investors demanding hyper-growth or a board pushing us toward
+									BeatGEO is bootstrapped. We don't have investors demanding hyper-growth or a board pushing us toward
 									enterprise-only pricing. That means we can succeed on modest revenue — and stay around for years.
 								</p>
 								<p>
@@ -111,7 +111,7 @@ function VisionPage() {
 									that, rather than the fundraising ambitions of the company doing the collecting.
 								</p>
 								<div className="-mx-4 rounded-md border border-zinc-200 bg-white px-4 py-6 md:-mx-8 md:px-8">
-									<h3 className="mb-4 text-lg font-semibold text-zinc-950">How we fund BeatGeo</h3>
+									<h3 className="mb-4 text-lg font-semibold text-zinc-950">How we fund BeatGEO</h3>
 									<div className="grid gap-4 sm:grid-cols-3">
 										<div className="space-y-1">
 											<p className="text-sm font-bold text-zinc-950">Open Source</p>
@@ -151,7 +151,7 @@ function VisionPage() {
 									explaining how they're calculated, then charge you to improve numbers you can't independently verify.
 								</p>
 								<p>
-									We do the opposite. BeatGeo is open source, so you can read every line of code that generates your
+									We do the opposite. BeatGEO is open source, so you can read every line of code that generates your
 									data, and our methodology is documented. When we don't know something, or a metric has limitations, we
 									say so.
 								</p>
@@ -213,7 +213,7 @@ function VisionPage() {
 					<div className="mx-auto max-w-6xl px-4 text-center md:px-6">
 						<h2 className="font-heading text-3xl text-zinc-950 md:text-4xl">Sustainable AEO</h2>
 						<p className="mx-auto mt-4 max-w-xl text-lg text-balance text-zinc-600">
-							BeatGeo is open source, cost-effective, and built for the long haul. If that sounds like your kind of
+							BeatGEO is open source, cost-effective, and built for the long haul. If that sounds like your kind of
 							tool, come build with us.
 						</p>
 						<div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -225,7 +225,7 @@ function VisionPage() {
 								Self-host free
 							</Link>
 							<a
-								href="https://github.com/BeatAPI/BeatGeo"
+								href="https://github.com/BeatAPI/BeatGEO"
 								target="_blank"
 								rel="noopener noreferrer"
 								className={buttonVariants({ variant: "outline", size: "sm" })}

@@ -25,7 +25,7 @@ export function NavAppInfo() {
 	return (
 		<div className="mx-2 mt-1 flex items-center gap-2 border-t border-sidebar-border/60 px-1 pt-2">
 			<a
-				href={`https://github.com/BeatAPI/BeatGeo/releases`}
+				href={`https://github.com/BeatAPI/BeatGEO/releases`}
 				target="_blank"
 				rel="noreferrer"
 				className="flex-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -36,12 +36,12 @@ export function NavAppInfo() {
 				<Tooltip>
 					<TooltipTrigger
 						render={
-							<a href="https://github.com/BeatAPI/BeatGeo" target="_blank" className={linkClass} rel="noopener" />
+							<a href="https://github.com/BeatAPI/BeatGEO" target="_blank" className={linkClass} rel="noopener" />
 						}
 					>
 						<IconWorld className="size-4" />
 					</TooltipTrigger>
-					<TooltipContent>BeatGeo</TooltipContent>
+					<TooltipContent>BeatGEO</TooltipContent>
 				</Tooltip>
 				{showsLegalLinks(mode) && (
 					<DropdownMenu>
@@ -57,7 +57,7 @@ export function NavAppInfo() {
 									{document.title}
 								</DropdownMenuItem>
 							))}
-							{/* Only BeatGeo-hosted deployments gate anything on consent, so only they have a choice to revisit. */}
+							{/* Only BeatGEO-hosted deployments gate anything on consent, so only they have a choice to revisit. */}
 							{isBeatGeoHosted(mode) && (
 								<>
 									<DropdownMenuSeparator />
@@ -70,7 +70,7 @@ export function NavAppInfo() {
 				<Tooltip>
 					<TooltipTrigger
 						render={
-							<a href="https://github.com/BeatAPI/BeatGeo" target="_blank" rel="noreferrer" className={linkClass} />
+							<a href="https://github.com/BeatAPI/BeatGEO" target="_blank" rel="noreferrer" className={linkClass} />
 						}
 					>
 						<IconBrandGithub className="size-4" />

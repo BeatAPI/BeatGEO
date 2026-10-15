@@ -2,11 +2,11 @@
 
 For the complete first-use journey, see [Getting started](beat-geo/getting-started.md). Run `node scripts/local-doctor.mjs` to check prerequisites without changing data.
 
-For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/setup. This source installer requires Git, Node.js 24, pnpm 12.4.1, Docker and Chrome; it prepares its own PostgreSQL and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGeo npm CLI, SDK or container images are published in this MVP.
+For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/setup. This source installer requires Git, Node.js 24, pnpm 12.4.1, Docker and Chrome; it prepares its own PostgreSQL and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGEO npm CLI, SDK or container images are published in this MVP.
 
 ## Configure one local instance
 
-Run `pnpm install --frozen-lockfile`. Create a **dedicated BeatGeo PostgreSQL database**; do not reuse a production website database. Put configuration in both root `.env` and `apps/web/.env` (the worker reads the latter). Generate independent secrets with `openssl rand -base64 32`, and keep the files out of Git.
+Run `pnpm install --frozen-lockfile`. Create a **dedicated BeatGEO PostgreSQL database**; do not reuse a production website database. Put configuration in both root `.env` and `apps/web/.env` (the worker reads the latter). Generate independent secrets with `openssl rand -base64 32`, and keep the files out of Git.
 
 ```dotenv
 DATABASE_URL=postgres://YOUR_USER:YOUR_PASSWORD@127.0.0.1:5432/beatgeo
@@ -68,4 +68,4 @@ pnpm --filter @workspace/web test:integration
 pnpm --filter @workspace/web build
 ```
 
-Inherited package versions do not represent BeatGeo release history. The source CLI is development tooling pending separate release validation. Hosted billing modes and inherited marketing content are not supported BeatGeo offerings. Refer to the dated [acceptance evidence](beat-geo/validation.md) for what was actually exercised.
+Inherited package versions do not represent BeatGEO release history. The source CLI is development tooling pending separate release validation. Hosted billing modes and inherited marketing content are not supported BeatGEO offerings. Refer to the dated [acceptance evidence](beat-geo/validation.md) for what was actually exercised.

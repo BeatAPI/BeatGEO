@@ -194,7 +194,7 @@ export function OgHeader({ appName, iconDataUri, label }: OgHeaderOptions) {
 	return (
 		<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 60 }}>
 			{isBeatGeo ? (
-				<div style={{ fontFamily: WORDMARK, fontSize: 60, lineHeight: 1, color: BEAT_GEO_BRAND_COLOR }}>BeatGeo</div>
+				<div style={{ fontFamily: WORDMARK, fontSize: 60, lineHeight: 1, color: BEAT_GEO_BRAND_COLOR }}>BeatGEO</div>
 			) : (
 				<div style={{ display: "flex", alignItems: "center" }}>
 					{iconDataUri ? (

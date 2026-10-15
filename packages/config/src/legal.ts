@@ -7,7 +7,7 @@
  */
 import type { DeploymentMode } from "./types";
 
-const LEGAL_SITE_URL = "https://github.com/BeatAPI/BeatGeo";
+const LEGAL_SITE_URL = "https://github.com/BeatAPI/BeatGEO";
 
 interface LegalDocument {
 	slug: string;
@@ -27,7 +27,7 @@ export function legalUrl(slug: string): string {
 }
 
 /**
- * Whether this deployment should link to BeatGeo's policies. Whitelabel is
+ * Whether this deployment should link to BeatGEO's policies. Whitelabel is
  * excluded: those deployments are operated under someone else's agreements, and
  * pointing their users at ours would be wrong.
  */

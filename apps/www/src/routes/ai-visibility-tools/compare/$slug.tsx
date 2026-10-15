@@ -27,10 +27,10 @@ export const Route = createFileRoute("/ai-visibility-tools/compare/$slug")({
 		const { tools, faqs } = loaderData;
 		const names = tools.map((t) => t.name).join(" vs ");
 		const isPair = tools.length === 2;
-		const title = isPair ? `${names} | AI Visibility Tool Comparison · BeatGeo` : `${names} · BeatGeo`;
+		const title = isPair ? `${names} | AI Visibility Tool Comparison · BeatGEO` : `${names} · BeatGEO`;
 		const description = isPair
-			? `Compare ${names} for AI visibility tracking — feature by feature, with BeatGeo as the open-source alternative.`
-			: `Compare ${names} for AI visibility and answer engine monitoring, feature by feature, with BeatGeo as the free, open-source alternative.`;
+			? `Compare ${names} for AI visibility tracking — feature by feature, with BeatGEO as the open-source alternative.`
+			: `Compare ${names} for AI visibility and answer engine monitoring, feature by feature, with BeatGEO as the free, open-source alternative.`;
 		const path = `/ai-visibility-tools/compare/${params.slug}`;
 		return {
 			meta: [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })],

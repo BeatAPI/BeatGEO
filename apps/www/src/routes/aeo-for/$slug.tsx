@@ -31,7 +31,7 @@ export const Route = createFileRoute("/aeo-for/$slug")({
 	head: ({ loaderData }) => {
 		if (!loaderData) return {};
 		const { vertical: v, others } = loaderData;
-		const title = v.metaTitle ?? `${aeoHeadline(v)}: Track AI Visibility · BeatGeo`;
+		const title = v.metaTitle ?? `${aeoHeadline(v)}: Track AI Visibility · BeatGEO`;
 		const description = v.metaDescription ?? v.short;
 		const path = `/aeo-for/${v.slug}`;
 		return {
@@ -114,7 +114,7 @@ function AudienceBadge({ audience }: { audience: string }) {
 	return (
 		<span className="inline-flex h-7 items-center gap-2 rounded-full bg-white/80 px-3 text-xs font-medium text-zinc-600 shadow-sm ring-1 ring-zinc-200">
 			<span className="size-1.5 rounded-full bg-blue-600" />
-			BeatGeo for {audience}
+			BeatGEO for {audience}
 		</span>
 	);
 }
@@ -179,7 +179,7 @@ function Playbook({ vertical }: { vertical: AeoVertical }) {
 			<div className="mx-auto max-w-6xl px-4 py-20 md:px-6 lg:py-28">
 				<SectionHeading
 					title={`The AEO playbook for ${vertical.audience}.`}
-					lede="What gets a brand named in AI answers in your category, and where BeatGeo shows you the gaps."
+					lede="What gets a brand named in AI answers in your category, and where BeatGEO shows you the gaps."
 				/>
 				<ol className="mt-12 grid gap-4 md:grid-cols-2">
 					{vertical.plays.map((play, i) => (
@@ -197,7 +197,7 @@ function Playbook({ vertical }: { vertical: AeoVertical }) {
 
 				<div className="mt-5 flex flex-col gap-6 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white md:flex-row md:items-center md:justify-between md:p-8">
 					<div className="max-w-[60ch]">
-						<p className="text-lg font-semibold tracking-[-0.015em]">Where BeatGeo fits</p>
+						<p className="text-lg font-semibold tracking-[-0.015em]">Where BeatGEO fits</p>
 						<p className="mt-2 text-pretty text-[15px]/7 text-blue-50">{vertical.beatgeoFit}</p>
 					</div>
 					<div className="flex shrink-0 flex-col gap-2.5 sm:flex-row md:flex-col lg:flex-row">
@@ -225,7 +225,7 @@ function OtherIndustries({ others }: { others: AeoVertical[] }) {
 	return (
 		<section className="border-t border-zinc-200/80 bg-white">
 			<div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
-				<p className="text-sm font-medium text-zinc-500">BeatGeo for other industries</p>
+				<p className="text-sm font-medium text-zinc-500">BeatGEO for other industries</p>
 				<ul className="mt-4 flex flex-wrap gap-2">
 					{others.map((o) => (
 						<li key={o.slug}>

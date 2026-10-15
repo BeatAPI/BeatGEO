@@ -177,6 +177,6 @@ http
 		handle(request, response).catch((error) => json(response, 400, { error: error.message }));
 	})
 	.listen(port, "127.0.0.1", () => {
-		console.log(`BeatGeo Browser Lab: http://127.0.0.1:${port}`);
+		console.log(`BeatGEO Browser Lab: http://127.0.0.1:${port}`);
 		console.log("Uses your signed-in Chrome. Runs and answers stay in the gitignored .beat-geo directory.");
 	});

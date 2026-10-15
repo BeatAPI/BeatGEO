@@ -1,6 +1,6 @@
-# BeatGeo deployment CLI — source preview
+# BeatGEO deployment CLI — source preview
 
-This is internal deployment tooling for [BeatGeo](https://github.com/BeatAPI/BeatGeo). The npm package and container images are **not published**. Start with the root [quick start](../../README.md#quick-start) or [self-hosting guide](../../docs/self-hosting.md).
+This is internal deployment tooling for [BeatGEO](https://github.com/BeatAPI/BeatGEO). The npm package and container images are **not published**. Start with the root [quick start](../../README.md#quick-start) or [self-hosting guide](../../docs/self-hosting.md).
 
 After installing the workspace dependencies with pnpm, inspect the CLI from the repository root:
 

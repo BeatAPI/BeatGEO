@@ -58,7 +58,7 @@ function ToolSummary({
 export function PairComparison({ a, b }: { a: Competitor; b: Competitor }) {
 	return (
 		<>
-			{/* Quick summary: A, B, BeatGeo */}
+			{/* Quick summary: A, B, BeatGEO */}
 			<section className="border-b border-zinc-200 bg-zinc-50 py-8">
 				<div className="mx-auto grid max-w-6xl gap-8 px-4 md:grid-cols-3 md:px-6">
 					<ToolSummary
@@ -78,7 +78,7 @@ export function PairComparison({ a, b }: { a: Competitor; b: Competitor }) {
 						domain={b.domain}
 					/>
 					<div>
-						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGeo</h3>
+						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGEO</h3>
 						<div className="mt-2 flex flex-wrap gap-2">
 							<Badge variant="secondary">Open Source</Badge>
 							<Badge variant="secondary">Self-Hosted</Badge>
@@ -96,7 +96,7 @@ export function PairComparison({ a, b }: { a: Competitor; b: Competitor }) {
 			<section className="border-b border-zinc-200 bg-white py-12">
 				<div className="mx-auto max-w-6xl px-4 md:px-6">
 					<h2 className="font-heading mb-8 text-2xl text-zinc-950">
-						{a.name} vs {b.name} vs BeatGeo
+						{a.name} vs {b.name} vs BeatGEO
 					</h2>
 					<div className="overflow-x-auto">
 						<table className="w-full text-sm">
@@ -105,7 +105,7 @@ export function PairComparison({ a, b }: { a: Competitor; b: Competitor }) {
 									<th className="py-3 pr-4 text-left font-semibold text-zinc-950">Feature</th>
 									<th className="w-28 px-4 py-3 text-center font-semibold text-zinc-950">{a.name}</th>
 									<th className="w-28 px-4 py-3 text-center font-semibold text-zinc-950">{b.name}</th>
-									<th className="w-28 px-4 py-3 text-center font-semibold text-zinc-950">BeatGeo</th>
+									<th className="w-28 px-4 py-3 text-center font-semibold text-zinc-950">BeatGEO</th>
 								</tr>
 							</thead>
 							<tbody>

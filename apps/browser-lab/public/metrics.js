@@ -1,4 +1,4 @@
-/** BeatGeo metrics v1. Each completed answer is one observation, never one retry. */
+/** BeatGEO metrics v1. Each completed answer is one observation, never one retry. */
 export function deduplicateObservations(runs) {
 	const unique = new Map();
 	for (const [index, run] of runs.entries()) unique.set(run.id || `unidentified-${index}`, run);

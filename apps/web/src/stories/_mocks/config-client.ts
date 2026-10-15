@@ -59,7 +59,7 @@ let _config: ClientConfig = {
 		canCreateBrands: false,
 	},
 	branding: {
-		name: "BeatGeo",
+		name: "BeatGEO",
 		chartColors: DEFAULT_CHART_COLORS,
 	},
 	analytics: {},

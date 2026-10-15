@@ -42,19 +42,19 @@ function ToolSummary({ tool }: { tool: Competitor }) {
 }
 
 export function MultiComparison({ tools }: { tools: Competitor[] }) {
-	const heading = `${tools.map((t) => t.name).join(" vs ")} vs BeatGeo`;
-	const columnCount = tools.length + 2; // feature label + tools + BeatGeo
+	const heading = `${tools.map((t) => t.name).join(" vs ")} vs BeatGEO`;
+	const columnCount = tools.length + 2; // feature label + tools + BeatGEO
 
 	return (
 		<>
-			{/* Tool summaries, plus BeatGeo */}
+			{/* Tool summaries, plus BeatGEO */}
 			<section className="border-b border-zinc-200 bg-zinc-50 py-8">
 				<div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-3 md:px-6">
 					{tools.map((tool) => (
 						<ToolSummary key={tool.slug} tool={tool} />
 					))}
 					<div>
-						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGeo</h3>
+						<h3 className="mb-1 text-lg font-semibold text-zinc-950">BeatGEO</h3>
 						<div className="mt-2 flex flex-wrap gap-2">
 							<Badge variant="secondary">Open Source</Badge>
 							<Badge variant="secondary">Self-Hosted</Badge>
@@ -82,7 +82,7 @@ export function MultiComparison({ tools }: { tools: Competitor[] }) {
 											{tool.name}
 										</th>
 									))}
-									<th className="w-28 px-3 py-3 text-center font-semibold text-zinc-950">BeatGeo</th>
+									<th className="w-28 px-3 py-3 text-center font-semibold text-zinc-950">BeatGEO</th>
 								</tr>
 							</thead>
 							<tbody>

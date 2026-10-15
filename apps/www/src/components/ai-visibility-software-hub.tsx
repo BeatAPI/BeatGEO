@@ -122,21 +122,21 @@ export function AiVisibilitySoftwareHub() {
 				</div>
 			</section>
 
-			{/* BeatGeo's approach */}
+			{/* BeatGEO's approach */}
 			<section className="border-b border-zinc-200 bg-zinc-50 py-12 lg:py-20">
 				<div className="mx-auto max-w-6xl px-4 md:px-6">
 					<div className="max-w-3xl">
 						<Eyebrow num="04" label="BEAT_GEO'S APPROACH" />
-						<h2 className="font-heading mt-3 text-3xl text-zinc-950 md:text-4xl">BeatGeo's approach</h2>
+						<h2 className="font-heading mt-3 text-3xl text-zinc-950 md:text-4xl">BeatGEO's approach</h2>
 						<div className="mt-8 space-y-6 text-[1.0625rem] leading-relaxed text-zinc-600">
 							<p>
-								BeatGeo is open-source AI visibility software you can self-host. It tracks mentions, citations, and
+								BeatGEO is open-source AI visibility software you can self-host. It tracks mentions, citations, and
 								competitor share across ChatGPT, Claude, Gemini, Grok, Perplexity, Copilot, and Google AI Mode and AI
 								Overviews — and because it's released under the MIT license, you can read exactly how every metric is
 								collected and computed.
 							</p>
 							<p>
-								That matters in a market full of opaque scoring and inflated pricing. With BeatGeo you own your data and
+								That matters in a market full of opaque scoring and inflated pricing. With BeatGEO you own your data and
 								avoid vendor lock-in: the self-hosted core is free, and managed cloud hosting is there if you would
 								rather not run it. To see how it compares with the rest of the field, read our roundup of the{" "}
 								<a className={LINK} href="/blog/best-ai-visibility-tools">
@@ -155,7 +155,7 @@ export function AiVisibilitySoftwareHub() {
 								<ArrowRight className="size-3.5" />
 							</Link>
 							<a
-								href="https://github.com/BeatAPI/BeatGeo"
+								href="https://github.com/BeatAPI/BeatGEO"
 								target="_blank"
 								rel="noopener noreferrer"
 								className={buttonVariants({ variant: "outline", size: "sm" })}

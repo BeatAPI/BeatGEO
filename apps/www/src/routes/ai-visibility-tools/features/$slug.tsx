@@ -35,11 +35,11 @@ export const Route = createFileRoute("/ai-visibility-tools/features/$slug")({
 		if (!loaderData) return {};
 		const { tools, label, term, faqs } = loaderData;
 		const title = !term
-			? `AI Visibility Tools with ${label} · BeatGeo`
+			? `AI Visibility Tools with ${label} · BeatGEO`
 			: tools.length <= 25
-				? `${tools.length} Best ${term} (2026) · BeatGeo`
-				: `${term} Compared: ${tools.length} Tools (2026) · BeatGeo`;
-		const description = `${tools.length} AI visibility tools with ${label.toLowerCase()}, compared on engine coverage, pricing, and export — including BeatGeo, the open-source option.`;
+				? `${tools.length} Best ${term} (2026) · BeatGEO`
+				: `${term} Compared: ${tools.length} Tools (2026) · BeatGEO`;
+		const description = `${tools.length} AI visibility tools with ${label.toLowerCase()}, compared on engine coverage, pricing, and export — including BeatGEO, the open-source option.`;
 		const path = `/ai-visibility-tools/features/${params.slug}`;
 		return {
 			meta: [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })],

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CLOUD_APP_URL } from "@workspace/config/referrals";
 import { canonicalUrl } from "@/lib/seo";
 
-const STATUS_URL = "https://github.com/BeatAPI/BeatGeo";
+const STATUS_URL = "https://github.com/BeatAPI/BeatGEO";
 
 const catalog = {
 	linkset: [
@@ -12,22 +12,22 @@ const catalog = {
 				{
 					href: canonicalUrl("/api/openapi.json"),
 					type: "application/vnd.oai.openapi+json;version=3.1",
-					title: "BeatGeo API — OpenAPI description",
+					title: "BeatGEO API — OpenAPI description",
 				},
 			],
 			"service-doc": [
 				{
 					href: canonicalUrl("/docs/api"),
 					type: "text/html",
-					title: "BeatGeo API reference",
+					title: "BeatGEO API reference",
 				},
 				{
 					href: canonicalUrl("/docs/api.md"),
 					type: "text/markdown",
-					title: "BeatGeo API reference (markdown)",
+					title: "BeatGEO API reference (markdown)",
 				},
 			],
-			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGeo status" }],
+			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGEO status" }],
 		},
 		{
 			anchor: `${CLOUD_APP_URL}/api/mcp`,
@@ -35,15 +35,15 @@ const catalog = {
 				{
 					href: canonicalUrl("/docs/api/mcp"),
 					type: "text/html",
-					title: "BeatGeo MCP server",
+					title: "BeatGEO MCP server",
 				},
 				{
 					href: canonicalUrl("/docs/api/mcp.md"),
 					type: "text/markdown",
-					title: "BeatGeo MCP server (markdown)",
+					title: "BeatGEO MCP server (markdown)",
 				},
 			],
-			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGeo status" }],
+			status: [{ href: STATUS_URL, type: "text/html", title: "BeatGEO status" }],
 		},
 	],
 };

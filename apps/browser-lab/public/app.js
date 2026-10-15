@@ -115,7 +115,7 @@ function nav() {
 }
 const page = () => location.hash.slice(1) || "visibility";
 function banner(title, description) {
-	return `<section class="education" ${sessionStorage.getItem("hide-education") ? "hidden" : ""}><div class="education-card"><button class="hide-banner" data-action="hide-banner">隐藏</button><div class="demo-art"><div class="demo-graph"><div class="demo-chain"><div class="demo-node">${icon("answer-engine-insights")}</div><div class="demo-node">${icon("agents")}</div></div><div class="demo-branches"><div class="demo-node">${icon("code-block")}</div><div class="demo-node">${icon("assistant")}</div></div></div><a class="demo-play" href="https://github.com/BeatAPI/BeatGeo#product-flow" target="_blank" rel="noopener noreferrer" aria-label="查看 BeatGeo 产品流程">${icon("play--filled")}</a></div><div class="education-copy"><h2>${title}</h2><p>${description}</p><div class="actions"><button class="primary" data-page="help">${icon("play-circle--filled")}使用指南</button><a class="secondary" style="padding:6px 10px;border-radius:8px" href="https://github.com/BeatAPI/BeatGeo#product-flow" target="_blank" rel="noopener noreferrer">${icon("book-open")} 产品流程</a></div></div></div></section>`;
+	return `<section class="education" ${sessionStorage.getItem("hide-education") ? "hidden" : ""}><div class="education-card"><button class="hide-banner" data-action="hide-banner">隐藏</button><div class="demo-art"><div class="demo-graph"><div class="demo-chain"><div class="demo-node">${icon("answer-engine-insights")}</div><div class="demo-node">${icon("agents")}</div></div><div class="demo-branches"><div class="demo-node">${icon("code-block")}</div><div class="demo-node">${icon("assistant")}</div></div></div><a class="demo-play" href="https://github.com/BeatAPI/BeatGEO#product-flow" target="_blank" rel="noopener noreferrer" aria-label="查看 BeatGEO 产品流程">${icon("play--filled")}</a></div><div class="education-copy"><h2>${title}</h2><p>${description}</p><div class="actions"><button class="primary" data-page="help">${icon("play-circle--filled")}使用指南</button><a class="secondary" style="padding:6px 10px;border-radius:8px" href="https://github.com/BeatAPI/BeatGEO#product-flow" target="_blank" rel="noopener noreferrer">${icon("book-open")} 产品流程</a></div></div></div></section>`;
 }
 function tabs(items, current, attribute = "agent-tab") {
 	return `<div class="tabs">${items.map((t) => `<button data-${attribute}="${t}" class="${current === t ? "active" : ""}">${t}</button>`).join("")}</div>`;
@@ -128,13 +128,13 @@ function cards() {
 				? templates
 				: templates.filter((t) => t.category === category);
 	return list.length
-		? `<div class="cards">${list.map((t) => `<button class="template-card" data-template="${templates.indexOf(t)}">${icon(t.icon)}<h3>${t.name}</h3><p>${t.desc}</p><small>BeatGeo · 工作流草稿</small></button>`).join("")}</div>`
+		? `<div class="cards">${list.map((t) => `<button class="template-card" data-template="${templates.indexOf(t)}">${icon(t.icon)}<h3>${t.name}</h3><p>${t.desc}</p><small>BeatGEO · 工作流草稿</small></button>`).join("")}</div>`
 		: '<div class="empty">此分类尚无模板。</div>';
 }
 function agents() {
 	$("main").innerHTML =
 		banner(
-			"BeatGeo 智能体助力营销团队将创意转化为实际行动",
+			"BeatGEO 智能体助力营销团队将创意转化为实际行动",
 			"使用智能体发现机会、研究引用来源、优化内容与生成报告",
 		) +
 		`<section class="page"><div class="page-heading"><h1>智能体</h1></div><div class="tabs-row">${tabs(["概览", "全部智能体", "模板", "已计划"], agentTab)}<div class="actions"><button class="secondary" data-action="new-folder">${icon("new-folder")}新建文件夹</button><button class="primary" data-action="new-agent">${icon("plus")}新建智能体</button></div></div>${agentTab === "概览" ? `<section class="composer-area"><h2>您想创建什么？</h2><div class="composer"><textarea id="agent-prompt" placeholder="描述您想创建的智能体…" aria-label="描述智能体"></textarea><div class="composer-tools"><button class="chip round" data-action="add-context" aria-label="添加上下文">${icon("plus")}</button><button class="chip" data-action="model">自动 <span class="muted">Medium</span>${icon("chevron-down")}</button><button class="icon-button" data-action="usage" aria-label="用量">${icon("speedometer--filled")}</button><button class="icon-button push" disabled aria-label="语音输入尚未接入">${icon("microphone")}</button><button class="round send" data-action="compose" aria-label="保存智能体草稿">${icon("arrow-up")}</button></div></div><div class="brainstorm"><span>不知道该做什么？</span><button class="secondary" data-action="brainstorm">开始头脑风暴${icon("arrow-up-right")}</button></div></section>` : ""}${["概览", "模板"].includes(agentTab) ? `<section><div class="section-header"><span>从模板开始</span><button data-agent-tab="模板">查看全部 ${icon("chevron-right")}</button></div><div class="categories">${["全部", "精选", "内容创作", "内容优化", "研究", "报告", "外联"].map((c) => `<button data-category="${c}" class="${category === c ? "selected" : ""}">${c}</button>`).join("")}</div>${cards()}</section>` : ""}${agentTab === "已计划" ? '<div class="empty"><h2>尚无已计划的智能体</h2><p>定时运行尚未接入。当前可从“答案引擎洞察”发起一次真实网页采集。</p><button class="secondary" data-page="visibility">查看监测</button></div>' : `<section class="recent"><h3>${agentTab === "全部智能体" ? "全部智能体" : "最近编辑"}</h3><div class="toolbar"><select id="draft-status" aria-label="状态"><option value="all">所有状态</option><option value="draft">草稿</option></select><span class="tag">本地草稿 · 尚未执行</span><input id="draft-search" placeholder="搜索智能体" aria-label="搜索智能体"></div><div id="draft-list"></div></section>`}</section>`;
@@ -279,10 +279,10 @@ function render() {
 			`<section class="page"><div class="page-heading"><h1>${title}</h1><span class="tag">待接入</span></div><div class="tabs-row"></div><div class="empty">${icon(i)}<h2>${title}</h2><p>${desc}</p><p>此模块的界面入口已建立，业务功能尚未接入。</p><button class="secondary" data-page="visibility">查看已接入的网页监测</button></div></section>`;
 	} else {
 		$("main").innerHTML =
-			`<section class="page"><div class="page-heading"><h1>${page() === "start" ? "快速入门" : "BeatGeo"}</h1></div><div class="notice">当前可用：真实网页采集、回答与引用查看、结果筛选和导出，以及智能体本地草稿。</div><div class="empty"><h2>从真实回答开始</h2><p>添加品牌问题，收集原始回答和引用，再围绕这些证据改进内容。网站诊断、行动闭环和多平台定时监控见 GitHub 路线图。</p><button class="primary" data-page="visibility">开始监测</button><button class="secondary" data-page="agents">查看智能体</button></div></section>`;
+			`<section class="page"><div class="page-heading"><h1>${page() === "start" ? "快速入门" : "BeatGEO"}</h1></div><div class="notice">当前可用：真实网页采集、回答与引用查看、结果筛选和导出，以及智能体本地草稿。</div><div class="empty"><h2>从真实回答开始</h2><p>添加品牌问题，收集原始回答和引用，再围绕这些证据改进内容。网站诊断、行动闭环和多平台定时监控见 GitHub 路线图。</p><button class="primary" data-page="visibility">开始监测</button><button class="secondary" data-page="agents">查看智能体</button></div></section>`;
 	}
 	paintIcons();
-	document.title = `BeatGeo · ${page() === "agents" ? "智能体" : page() === "visibility" ? "答案引擎洞察" : features[page()]?.[0] || "工作区"}`;
+	document.title = `BeatGEO · ${page() === "agents" ? "智能体" : page() === "visibility" ? "答案引擎洞察" : features[page()]?.[0] || "工作区"}`;
 }
 async function refresh() {
 	try {

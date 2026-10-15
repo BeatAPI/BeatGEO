@@ -31,8 +31,8 @@ const ONE_PIXEL_PNG =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
 
 describe("Open Graph card", () => {
-	it("renders the default BeatGeo card without a title or description", async () => {
-		await expect(renderCard({ appName: DEFAULT_APP_NAME, url: "https://github.com/BeatAPI/BeatGeo" })).resolves.toEqual(
+	it("renders the default BeatGEO card without a title or description", async () => {
+		await expect(renderCard({ appName: DEFAULT_APP_NAME, url: "https://github.com/BeatAPI/BeatGEO" })).resolves.toEqual(
 			{
 				width: OG_WIDTH,
 				height: OG_HEIGHT,
@@ -50,7 +50,7 @@ describe("Open Graph card", () => {
 				title,
 				description,
 				label: "Blog",
-				url: "https://github.com/BeatAPI/BeatGeo",
+				url: "https://github.com/BeatAPI/BeatGEO",
 			}),
 		).resolves.toEqual({ width: OG_WIDTH, height: OG_HEIGHT });
 	});

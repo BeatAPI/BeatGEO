@@ -25,7 +25,7 @@ async function main() {
 
 	program
 		.command("init")
-		.description("set up local BeatGeo instance")
+		.description("set up local BeatGEO instance")
 		.option("--dev", "Use local build context (repo only)")
 		.option("--docker-dir <path>", "Path to Docker build context (dev mode)")
 		.action(async (_opts: object, cmd: Command) => {
@@ -34,7 +34,7 @@ async function main() {
 
 	program
 		.command("compose")
-		.description("run Docker Compose commands using your BeatGeo config")
+		.description("run Docker Compose commands using your BeatGEO config")
 		.allowUnknownOption(true)
 		.argument("[args...]", "Arguments passed to Docker Compose")
 		.action(async (args: string[], _opts: object, cmd: Command) => {
@@ -51,7 +51,7 @@ async function main() {
 
 	program
 		.command("upgrade")
-		.description("upgrade your BeatGeo deployment to this CLI's version")
+		.description("upgrade your BeatGEO deployment to this CLI's version")
 		.option("--yes", "skip confirmation prompts")
 		.action(async (_opts: object, cmd: Command) => {
 			await runUpgrade(cmd.optsWithGlobals<UpgradeOptions>(), version);

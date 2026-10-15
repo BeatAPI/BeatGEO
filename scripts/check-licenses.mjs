@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * License compliance checker for the BeatGeo monorepo.
+ * License compliance checker for the BeatGEO monorepo.
  *
  * Ensures every dependency uses a license compatible with distributing
- * BeatGeo itself under MIT. Runs `pnpm licenses list --json` and validates
+ * BeatGEO itself under MIT. Runs `pnpm licenses list --json` and validates
  * the output against an allow-list of SPDX identifiers plus a set of
  * per-package exceptions for known-safe outliers. The allow-list is
  * limited to permissive licenses so that nothing we ship pulls in
@@ -20,9 +20,9 @@ import { execSync } from "node:child_process";
 // ── Allowed SPDX license identifiers ────────────────────────────────
 // Permissive licenses compatible with MIT redistribution, plus MPL-2.0.
 // MPL-2.0 is file-level copyleft: used as an unmodified dependency it places no
-// obligations on BeatGeo's own MIT-licensed code (e.g. lightningcss for CSS).
+// obligations on BeatGEO's own MIT-licensed code (e.g. lightningcss for CSS).
 // Strong copyleft (GPL/LGPL/AGPL) is intentionally NOT added — its terms would
-// conflict with shipping BeatGeo under MIT.
+// conflict with shipping BeatGEO under MIT.
 const ALLOWED_LICENSES = new Set([
   "MIT",
   "MIT-0",
@@ -58,7 +58,7 @@ const ALLOWED_LICENSES = new Set([
 // Packages whose licenses are NOT in the allow-list above but are
 // acceptable for documented reasons. Keep this list small and justified.
 const PACKAGE_EXCEPTIONS = new Map([
-  // Sentry CLI – build-time tooling only, never distributed with BeatGeo.
+  // Sentry CLI – build-time tooling only, never distributed with BeatGEO.
   // FSL-1.1-MIT converts to MIT after two years.
   ["@sentry/cli", "FSL-1.1-MIT"],
   ["@sentry/cli-darwin", "FSL-1.1-MIT"],

@@ -1,6 +1,6 @@
-# BeatGeo fork notes
+# BeatGEO fork notes
 
-This is BeatAPI's independent BeatGeo product based on the MIT-licensed Elmo codebase. Product naming is BeatGeo; GitHub is BeatAPI/BeatGeo. Preserve upstream copyright and attribution. `apps/browser-lab` is the local real-browser experiment; `.beat-geo`, legacy `.open-profound`, and all credentials/raw account evidence must remain untracked. Do not activate upstream publishing, content automation or deployment workflows. Distinguish real UI observations from API simulations and unfinished runs from missing mentions.
+This is BeatAPI's independent BeatGEO product based on the MIT-licensed Elmo codebase. Product naming is BeatGEO; GitHub is BeatAPI/BeatGEO. Preserve upstream copyright and attribution. `apps/browser-lab` is the local real-browser experiment; `.beat-geo`, legacy `.open-profound`, and all credentials/raw account evidence must remain untracked. Do not activate upstream publishing, content automation or deployment workflows. Distinguish real UI observations from API simulations and unfinished runs from missing mentions.
 
 The upstream contributor instructions below continue to apply to the inherited workspace.
 
@@ -8,7 +8,7 @@ The upstream contributor instructions below continue to apply to the inherited w
 
 ## What this is
 
-BeatGeo is an open-source AI visibility platform (Answer Engine Optimization): it tracks how AI answer engines like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention, cite, and describe brands. It is a **pnpm + Turborepo monorepo** on **Node.js 24** (enforced via `engines`), **TypeScript**, and **PostgreSQL**.
+BeatGEO is an open-source AI visibility platform (Answer Engine Optimization): it tracks how AI answer engines like ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention, cite, and describe brands. It is a **pnpm + Turborepo monorepo** on **Node.js 24** (enforced via `engines`), **TypeScript**, and **PostgreSQL**.
 
 - `apps/web` — product dashboard (TanStack Start + Vite, port 3000)
 - `apps/worker` — pg-boss background jobs (AI evaluations, citation tracking, reports)

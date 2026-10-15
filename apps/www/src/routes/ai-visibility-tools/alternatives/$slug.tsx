@@ -31,8 +31,8 @@ export const Route = createFileRoute("/ai-visibility-tools/alternatives/$slug")(
 	head: ({ params, loaderData }) => {
 		if (!loaderData) return {};
 		const { competitor: c, faqs } = loaderData;
-		const title = `${c.name} Alternatives | Open-Source AI Visibility · BeatGeo`;
-		const description = `The best ${c.name} alternatives for AI visibility tracking, including BeatGeo — the open-source, self-hosted option you can run for free.`;
+		const title = `${c.name} Alternatives | Open-Source AI Visibility · BeatGEO`;
+		const description = `The best ${c.name} alternatives for AI visibility tracking, including BeatGEO — the open-source, self-hosted option you can run for free.`;
 		const path = `/ai-visibility-tools/alternatives/${params.slug}`;
 		return {
 			meta: [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })],
@@ -67,7 +67,7 @@ function AlternativesPage() {
 				/>
 
 				<DirectoryBeatGeoBanner
-					pitch="BeatGeo tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand. It is open source, so you self-host it for free, keep your data in-house, and verify exactly how each metric is calculated. No per-seat pricing, no black-box scores, no lock-in."
+					pitch="BeatGEO tracks how ChatGPT, Claude, Perplexity, Gemini, and Google AI Overviews mention and cite your brand. It is open source, so you self-host it for free, keep your data in-house, and verify exactly how each metric is calculated. No per-seat pricing, no black-box scores, no lock-in."
 					comparison={{
 						slug: getComparisonSlug(competitor),
 						name: competitor.name,
@@ -77,7 +77,7 @@ function AlternativesPage() {
 				{competitor.switching ? (
 					<DirectorySection title={`Why teams leave ${competitor.name}`}>
 						<p className="mb-8 max-w-3xl leading-relaxed text-zinc-600">
-							What people tell us when they move to BeatGeo, and what we do differently. {competitor.name} is a capable
+							What people tell us when they move to BeatGEO, and what we do differently. {competitor.name} is a capable
 							product with real customers, so take this as the case for a different set of tradeoffs rather than a
 							verdict on the tool.
 						</p>

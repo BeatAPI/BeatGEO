@@ -186,7 +186,7 @@ export function ProductDemo() {
 						<Shot
 							key={s.src}
 							src={s.src}
-							alt={`BeatGeo ${s.label} page: ${s.caption}`}
+							alt={`BeatGEO ${s.label} page: ${s.caption}`}
 							active={i === index}
 							eager={i < 2}
 						/>

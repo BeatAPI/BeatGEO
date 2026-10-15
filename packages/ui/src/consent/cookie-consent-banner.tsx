@@ -72,7 +72,7 @@ export function CookieConsentBanner({ consentRequired, policyHref }: { consentRe
 		>
 			<div className="rounded-lg border bg-popover p-4 text-popover-foreground shadow-lg">
 				<p className="text-[13px] leading-relaxed">
-					We'd like to set analytics and advertising cookies to see how people find BeatGeo. Essential cookies are
+					We'd like to set analytics and advertising cookies to see how people find BeatGEO. Essential cookies are
 					always on.{" "}
 					<a href={policyHref} className="underline underline-offset-2 hover:text-primary">
 						Cookie Policy

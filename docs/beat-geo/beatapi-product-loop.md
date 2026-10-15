@@ -1,4 +1,4 @@
-# BeatGeo MVP：产品边界与 BeatAPI 商业闭环
+# BeatGEO MVP：产品边界与 BeatAPI 商业闭环
 
 核对日期：2026-10-15。当前版本定位为源码自托管 MVP；托管 SaaS、完整 Profound 功能对齐、全部平台稳定采集均不是本版承诺。
 
@@ -22,7 +22,7 @@ flowchart LR
     X --> G
 ```
 
-BeatGeo 负责本产品的账号权限、品牌、问题、证据、优化任务和调度。BeatBrowser 负责同机已登录 Chrome 的执行。BeatAPI 网关负责能力调用、API key、余额和计费，BeatGeo 不建设第二套钱包。Browser Lab 是执行器与证据缓存，不是第二个客户数据库或任务调度器。
+BeatGEO 负责本产品的账号权限、品牌、问题、证据、优化任务和调度。BeatBrowser 负责同机已登录 Chrome 的执行。BeatAPI 网关负责能力调用、API key、余额和计费，BeatGEO 不建设第二套钱包。Browser Lab 是执行器与证据缓存，不是第二个客户数据库或任务调度器。
 
 ## 本轮实现的边界
 
@@ -66,7 +66,7 @@ API 密钥仅发送至固定 `https://api.beatapi.io`，拒绝重定向，不放
 
 本轮参考用户本地的《BeatAPI SEO Data API 供应商覆盖与接入清单》（2026-09-28），其中 DataForSEO、哥飞、UnifAPI、GoAnyAPI 是采购与能力评估候选；未把当时价格、文档覆盖或转售许可当作今天已经验证的事实。
 
-| 数据 | 对 BeatGeo 的具体用途 | 必须保留的区别 |
+| 数据 | 对 BeatGEO 的具体用途 | 必须保留的区别 |
 |---|---|---|
 | 关键词量、相关词 | 发现问题主题，给内容选题排优先级 | 搜索需求信号不等于 AI 问题量 |
 | SERP、排名词、竞品 Top Pages | 发现对手与承接页，补充监控问题 | 搜索排名不等于 AI 提及率 |
@@ -108,5 +108,5 @@ SEO/AEO/GEO 共用的是“发现需求 → 建立事实和内容 → 分发/可
 ## 核验来源
 
 - [BeatAPI Web Search 文档](https://docs.beatapi.io/web-search)：Search / Read / Map / Research 契约。文档存在不等于本轮持真实 key 实调成功。
-- [BeatGeo 许可证](../../LICENSE.md)、[MIT 原文](https://opensource.org/license/mit)。
+- [BeatGEO 许可证](../../LICENSE.md)、[MIT 原文](https://opensource.org/license/mit)。
 - 2026-10-15 公开 capability search 可发现 `data:web.search`；SEO 目录检索未找到对应专用入口，用户进一步确认 SEO 尚未接入。精确模型权限与费用以具体 key 的实际结果为准。

@@ -22,8 +22,8 @@ export const Route = createFileRoute("/ai-visibility-tools/$slug")({
 	head: ({ params, loaderData }) => {
 		if (!loaderData) return {};
 		const { competitor, faqs, noindex } = loaderData;
-		const title = `BeatGeo vs ${competitor.name} | AI Visibility Tool Comparison · BeatGeo`;
-		const description = `Compare BeatGeo and ${competitor.name} for AI visibility tracking. Feature-by-feature breakdown, pricing, and key differences.`;
+		const title = `BeatGEO vs ${competitor.name} | AI Visibility Tool Comparison · BeatGEO`;
+		const description = `Compare BeatGEO and ${competitor.name} for AI visibility tracking. Feature-by-feature breakdown, pricing, and key differences.`;
 		const path = `/ai-visibility-tools/${params.slug}`;
 		const meta = [{ title }, { name: "description", content: description }, ...ogMeta({ title, description, path })];
 		if (noindex) {
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/ai-visibility-tools/$slug")({
 				breadcrumbJsonLd([
 					{ name: "Home", path: "/" },
 					{ name: "AI Visibility Tool Directory", path: "/ai-visibility-tools" },
-					{ name: `BeatGeo vs ${competitor.name}`, path },
+					{ name: `BeatGEO vs ${competitor.name}`, path },
 				]),
 				faqJsonLd(faqs),
 				comparisonJsonLd([BEAT_GEO_LISTING, { name: competitor.name, url: competitor.url }]),

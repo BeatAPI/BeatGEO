@@ -1,10 +1,10 @@
 {
   "name": "beatgeo",
   "owner": {
-    "name": "BeatGeo"
+    "name": "BeatGEO"
   },
   "metadata": {
-    "description": "Official BeatGeo plugins for Cursor"
+    "description": "Official BeatGEO plugins for Cursor"
   },
   "plugins": [
     {

@@ -24,7 +24,7 @@ const defaultClientConfig: ClientConfig = {
 		canCreateBrands: true,
 	},
 	branding: {
-		name: "BeatGeo",
+		name: "BeatGEO",
 		parentName: "",
 		optimizationUrlTemplate: "",
 		chartColors: DEFAULT_CHART_COLORS,

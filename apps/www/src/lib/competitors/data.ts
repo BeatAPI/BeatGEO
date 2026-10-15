@@ -287,28 +287,28 @@ export const competitors: Competitor[] = [
 					detail:
 						"Profound has expanded well past visibility tracking, and people switching to us describe the result as heavy: a lot of surface area to move through to reach the handful of numbers they check each week.",
 					beatgeo:
-						"BeatGeo does one job. Visibility, share of voice, citations, query fan-out, and the opportunities that follow from them. There is no content generation, no shopping tracker, and no crawler suite to navigate around.",
+						"BeatGEO does one job. Visibility, share of voice, citations, query fan-out, and the opportunities that follow from them. There is no content generation, no shopping tracker, and no crawler suite to navigate around.",
 				},
 				{
 					headline: "The day-to-day use gets tiring",
 					detail:
 						"The most common thing we hear is not about a missing feature. It is that the tool stopped being pleasant to open, and checking a weekly number turned into a chore.",
 					beatgeo:
-						"BeatGeo is built to answer a question in a few seconds: are we showing up, who is beating us, and what changed. Every view is a direct answer, and the whole thing is fast enough that checking it daily is not a decision.",
+						"BeatGEO is built to answer a question in a few seconds: are we showing up, who is beating us, and what changed. Every view is a direct answer, and the whole thing is fast enough that checking it daily is not a decision.",
 				},
 				{
 					headline: "Enterprise pricing for a weekly number",
 					detail:
 						"Profound sells to enterprises and prices accordingly, with no public entry tier. That is a real mismatch for teams who want to watch a few dozen prompts and are not running a procurement cycle to do it.",
 					beatgeo:
-						"Self-host BeatGeo for free with unlimited prompts and pay only for your own infrastructure and model API keys. Managed cloud starts at $29/mo if you would rather not run it. Same data either way.",
+						"Self-host BeatGEO for free with unlimited prompts and pay only for your own infrastructure and model API keys. Managed cloud starts at $29/mo if you would rather not run it. Same data either way.",
 				},
 				{
 					headline: "You cannot check the numbers",
 					detail:
 						"Profound is closed and hosted, so the scoring is a black box. When a visibility number moves, you cannot see what moved it, and when it lands in a board deck, you are vouching for a figure you cannot audit.",
 					beatgeo:
-						"Every BeatGeo metric is computed by code you can read, under the MIT license. Your prompts and history stay on your infrastructure, and you can export all of it at any time.",
+						"Every BeatGEO metric is computed by code you can read, under the MIT license. Your prompts and history stay on your infrastructure, and you can export all of it at any time.",
 				},
 			],
 		},
@@ -1347,9 +1347,9 @@ export const competitors: Competitor[] = [
 		name: "GetCito",
 		domain: "getcito.com",
 		url: "https://getcito.com/",
-		tagline: "A fork of BeatGeo — if you are considering GetCito, use BeatGeo instead",
+		tagline: "A fork of BeatGEO — if you are considering GetCito, use BeatGEO instead",
 		description:
-			"If you are considering GetCito, use BeatGeo instead: GetCito is a fork of BeatGeo. It launched in November 2025 as its own Next.js and Firebase application, then on July 10, 2026 replaced that codebase with BeatGeo's — 847 files, +131,716/-50,931 lines — in a single pull request. Its feature set was BeatGeo's as of the fork date, and it has shipped less since — 17 commits to BeatGeo's 98 in the following month — so it is falling further behind rather than diverging into something competitive.",
+			"If you are considering GetCito, use BeatGEO instead: GetCito is a fork of BeatGEO. It launched in November 2025 as its own Next.js and Firebase application, then on July 10, 2026 replaced that codebase with BeatGEO's — 847 files, +131,716/-50,931 lines — in a single pull request. Its feature set was BeatGEO's as of the fork date, and it has shipped less since — 17 commits to BeatGEO's 98 in the following month — so it is falling further behind rather than diverging into something competitive.",
 		category: "open-source",
 		ahrefsDR: 34,
 		ahrefsTraffic: 34,
@@ -1366,11 +1366,11 @@ export const competitors: Competitor[] = [
 		},
 		pricing: { hasFree: true, hasEnterprise: true },
 		highlights: [
-			"If you are considering GetCito, use BeatGeo instead — GetCito is a fork of it",
-			"Codebase replaced with BeatGeo's on July 10, 2026",
-			"Ships less than the project it forked — 17 commits to BeatGeo's 98 in the first month after",
+			"If you are considering GetCito, use BeatGEO instead — GetCito is a fork of it",
+			"Codebase replaced with BeatGEO's on July 10, 2026",
+			"Ships less than the project it forked — 17 commits to BeatGEO's 98 in the first month after",
 		],
-		notes: "Fork of BeatGeo's codebase since July 2026.",
+		notes: "Fork of BeatGEO's codebase since July 2026.",
 	},
 	{
 		slug: "meridian",
@@ -6243,7 +6243,7 @@ const aeoPopularityRanking: string[] = [
 	"llmwatcher", // Polish-language tracker with full response history; DR 2.4
 	"lorelight", // Shutting down — public postmortem
 	"jarts", // Acquired and shut down May 2026 — persona-based tracking, entity in liquidation
-	"getcito", // Fork of BeatGeo's codebase since Jul 2026
+	"getcito", // Fork of BeatGEO's codebase since Jul 2026
 	"geo-aeo-tracker", // Open-source self-hosted AEO dashboard, 80 GitHub stars
 	"canonry", // Open-source self-hosted AEO platform, server-log ingestion + MCP, 52 stars
 	"gego", // GPL-3.0 self-hosted GEO tracker, Docker + CLI + REST API, Ollama support

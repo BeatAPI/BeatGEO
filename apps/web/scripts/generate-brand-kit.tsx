@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * Generates the BeatGeo brand kit as a zip of PNGs using Takumi (JSX → PNG).
+ * Generates the BeatGEO brand kit as a zip of PNGs using Takumi (JSX → PNG).
  *
  * Output: apps/web/beatgeo-brand-kit.zip
  *
@@ -10,7 +10,7 @@
  *     beatgeo-icon-dark-{size}.png         Dark background
  *     beatgeo-icon-maskable-{size}.png     Maskable/PWA (white bg, safe-zone padding)
  *
- *   Logos ("BeatGeo" wordmark, sm/md/lg × 3 backgrounds):
+ *   Logos ("BeatGEO" wordmark, sm/md/lg × 3 backgrounds):
  *     beatgeo-logo[-white|-dark]-{sm|md|lg}.png
  *
  *   OG images (1200×630):
@@ -36,7 +36,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
 const BRAND_COLOR = "#2563eb";
-const SITE_URL = "https://github.com/BeatAPI/BeatGeo";
+const SITE_URL = "https://github.com/BeatAPI/BeatGEO";
 const OUTPUT_ZIP = resolve(__dirname, "../beatgeo-brand-kit.zip");
 
 // ---------------------------------------------------------------------------
@@ -115,7 +115,7 @@ function MaskableIcon({ size }: { size: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Logo — "BeatGeo" wordmark with equal padding on all sides
+// Logo — "BeatGEO" wordmark with equal padding on all sides
 // ---------------------------------------------------------------------------
 
 function Logo({ bg, fontSize }: { bg?: string; fontSize: number }) {
@@ -129,14 +129,14 @@ function Logo({ bg, fontSize }: { bg?: string; fontSize: number }) {
 					lineHeight: 1,
 				}}
 			>
-				BeatGeo
+				BeatGEO
 			</div>
 		</div>
 	);
 }
 
 // ---------------------------------------------------------------------------
-// PatternBanner — repeating "BeatGeo" wordmark at an angle, wrapping-paper style.
+// PatternBanner — repeating "BeatGEO" wordmark at an angle, wrapping-paper style.
 // ---------------------------------------------------------------------------
 
 function PatternBanner({
@@ -185,7 +185,7 @@ function PatternBanner({
 						marginRight: gap,
 					}}
 				>
-					BeatGeo
+					BeatGEO
 				</div>,
 			);
 		}

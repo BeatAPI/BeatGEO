@@ -22,7 +22,7 @@ export async function beatApiPost(path: "/chat/completions" | "/web/search" | "/
 		headers: {
 			Authorization: `Bearer ${key}`,
 			"Content-Type": "application/json",
-			"User-Agent": "BeatGeo/1.0",
+			"User-Agent": "BeatGEO/1.0",
 			...(path.startsWith("/web/") ? { "Idempotency-Key": randomUUID() } : {}),
 		},
 		body: JSON.stringify(body),
