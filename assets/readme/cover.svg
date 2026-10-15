@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+<title id="title">BeatGEO</title><desc id="desc">The open-source Profound alternative for GEO &amp; AEO. A BeatAPI project, with the product's code texture.</desc>
+<defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#333746" stroke-opacity=".28"/></pattern><linearGradient id="fade"><stop offset="0" stop-color="#111217" stop-opacity="0"/><stop offset=".7" stop-color="#111217"/></linearGradient></defs>
+<rect width="1200" height="400" rx="20" fill="#111217"/>
+<rect width="1200" height="400" rx="20" fill="url(#grid)"/>
+<g transform="translate(820 80) rotate(8)" fill="#7d95ff" opacity=".17" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="24"><text x="0" y="0" xml:space="preserve">{</text><text x="0" y="36" xml:space="preserve">  &quot;brand&quot;: &quot;your website&quot;,</text><text x="0" y="72" xml:space="preserve">  &quot;questions&quot;: [...],</text><text x="0" y="108" xml:space="preserve">  &quot;citations&quot;: [...],</text><text x="0" y="144" xml:space="preserve">  &quot;next&quot;: &quot;retest&quot;</text><text x="0" y="180" xml:space="preserve">}</text></g>
+<g transform="translate(96 70)" fill="#f3f4f8">
+<rect width="9" height="56" rx="4.5" fill="#7d95ff"/><rect x="15" y="8" width="8" height="23" rx="4"/><rect x="15" y="35" width="8" height="16" rx="4"/>
+<rect x="28" y="4" width="8" height="29" rx="4"/><rect x="28" y="37" width="8" height="18" rx="4"/><rect x="41" y="13" width="8" height="19" rx="4"/><rect x="41" y="36" width="8" height="12" rx="4"/>
+</g>
+<text x="165" y="106" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="18" fill="#a6afc4" letter-spacing="3">BY BEATAPI</text>
+<text x="90" y="240" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="104" font-weight="750" fill="#f3f4f8" letter-spacing="-5">BeatGEO</text>
+<text x="96" y="306" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" fill="#a6afc4">The open-source Profound alternative for GEO &amp; AEO.</text>
+<path d="M96 348H180" stroke="#7d95ff" stroke-width="3" stroke-linecap="round"/>
+</svg>
