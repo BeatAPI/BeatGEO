@@ -546,6 +546,9 @@ export const RESEARCH_PROVIDER_PREFERENCE = [
 	"mistral-api",
 ] as const;
 
-export const CREDENTIAL_ENV_NAMES: ReadonlySet<string> = new Set(
-	ENV_REGISTRY.filter((spec) => spec.requiredBy === "dynamic-scrape-targets" && spec.provider).map((spec) => spec.name),
-);
+export const CREDENTIAL_ENV_NAMES: ReadonlySet<string> = new Set([
+	...ENV_REGISTRY.filter((spec) => spec.requiredBy === "dynamic-scrape-targets" && spec.provider).map(
+		(spec) => spec.name,
+	),
+	"BEATAPI_RESEARCH_MODEL",
+]);

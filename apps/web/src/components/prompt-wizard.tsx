@@ -219,7 +219,24 @@ export default function PromptWizard({ onComplete }: PromptWizardProps) {
 						<span>{error}</span>
 					</div>
 				)}
-				<div className="flex items-center gap-2">
+				<div className="flex flex-wrap items-center gap-2">
+					<Button
+						variant="outline"
+						onClick={() => {
+							setData({
+								brandName: brand?.name || "",
+								website: brand?.website || "",
+								aliases: [],
+								additionalDomains: [],
+								competitors: [],
+								prompts: [newPromptEntry({ value: "", tags: [], enabled: true })],
+							});
+							setReviewing(true);
+						}}
+						disabled={analysis.running || !brand}
+					>
+						Set up manually · no API key
+					</Button>
 					<Button
 						onClick={handleAnalyze}
 						disabled={analysis.running}

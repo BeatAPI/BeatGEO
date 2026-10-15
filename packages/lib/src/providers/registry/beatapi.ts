@@ -76,7 +76,7 @@ export const beatapi: Provider = {
 		schema,
 		webSearch = true,
 	}: StructuredResearchOptions<T>): Promise<StructuredResearchResult<T>> {
-		const model = process.env.BEATAPI_RESEARCH_MODEL?.trim();
+		const model = getCredential("BEATAPI_RESEARCH_MODEL")?.trim();
 		if (!model) throw new Error("Set BEATAPI_RESEARCH_MODEL to a model ID available to your BeatAPI key.");
 		let evidence = "";
 		if (webSearch) {

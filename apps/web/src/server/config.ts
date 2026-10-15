@@ -65,9 +65,11 @@ export const getClientConfig = createServerFn({ method: "GET" }).handler(async (
 export const getEnvValidationStateFn = createServerFn({ method: "GET" }).handler(async () => {
 	await storedCredentialsLoaded();
 	const envState = getEnvValidationState(withStoredCredentials());
+	// Local operators must be able to sign in before adding their research key.
+	const missing = envState.missing.filter((item) => !(envState.mode === "local" && item.id === "RESEARCH_PROVIDER"));
 	return {
 		mode: envState.mode,
-		missing: envState.missing,
-		isValid: envState.isValid,
+		missing,
+		isValid: missing.length === 0,
 	};
 });

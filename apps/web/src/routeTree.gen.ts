@@ -15,6 +15,7 @@ import { Route as AuthedAdminRouteImport } from './routes/_authed/admin'
 import { Route as AuthedAppRouteImport } from './routes/_authed/app'
 import { Route as AuthedChoosePlanRouteImport } from './routes/_authed/choose-plan'
 import { Route as AuthedReportsRouteImport } from './routes/_authed/reports'
+import { Route as AuthedSetupRouteImport } from './routes/_authed/setup'
 import { Route as AuthAuthorizeRouteImport } from './routes/auth/authorize'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -123,6 +124,11 @@ const AuthedChoosePlanRoute = AuthedChoosePlanRouteImport.update({
 const AuthedReportsRoute = AuthedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedSetupRoute = AuthedSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthAuthorizeRoute = AuthAuthorizeRouteImport.update({
@@ -577,6 +583,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthedAppRouteWithChildren
   '/choose-plan': typeof AuthedChoosePlanRoute
   '/reports': typeof AuthedReportsRouteWithChildren
+  '/setup': typeof AuthedSetupRoute
   '/auth/authorize': typeof AuthAuthorizeRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -661,6 +668,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/choose-plan': typeof AuthedChoosePlanRoute
+  '/setup': typeof AuthedSetupRoute
   '/auth/authorize': typeof AuthAuthorizeRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -747,6 +755,7 @@ export interface FileRoutesById {
   '/_authed/app': typeof AuthedAppRouteWithChildren
   '/_authed/choose-plan': typeof AuthedChoosePlanRoute
   '/_authed/reports': typeof AuthedReportsRouteWithChildren
+  '/_authed/setup': typeof AuthedSetupRoute
   '/auth/authorize': typeof AuthAuthorizeRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -836,6 +845,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/choose-plan'
     | '/reports'
+    | '/setup'
     | '/auth/authorize'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -920,6 +930,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/choose-plan'
+    | '/setup'
     | '/auth/authorize'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -1005,6 +1016,7 @@ export interface FileRouteTypes {
     | '/_authed/app'
     | '/_authed/choose-plan'
     | '/_authed/reports'
+    | '/_authed/setup'
     | '/auth/authorize'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -1166,6 +1178,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AuthedReportsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/setup': {
+      id: '/_authed/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof AuthedSetupRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/auth/authorize': {
@@ -1886,6 +1905,7 @@ interface AuthedRouteChildren {
   AuthedAppRoute: typeof AuthedAppRouteWithChildren
   AuthedChoosePlanRoute: typeof AuthedChoosePlanRoute
   AuthedReportsRoute: typeof AuthedReportsRouteWithChildren
+  AuthedSetupRoute: typeof AuthedSetupRoute
   AuthedAcceptInvitationInvitationIdRoute: typeof AuthedAcceptInvitationInvitationIdRoute
 }
 
@@ -1894,6 +1914,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedAppRoute: AuthedAppRouteWithChildren,
   AuthedChoosePlanRoute: AuthedChoosePlanRoute,
   AuthedReportsRoute: AuthedReportsRouteWithChildren,
+  AuthedSetupRoute: AuthedSetupRoute,
   AuthedAcceptInvitationInvitationIdRoute:
     AuthedAcceptInvitationInvitationIdRoute,
 }

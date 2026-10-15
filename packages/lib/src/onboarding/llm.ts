@@ -23,6 +23,7 @@ import { RESEARCH_PROVIDER_PREFERENCE } from "@workspace/config/env-registry";
 import { parseScrapeTargets } from "@workspace/config/scrape-targets";
 import type { z } from "zod";
 import { getProvider, type Provider, type StructuredResearchResult } from "../providers";
+import { withStoredCredentials } from "../secrets";
 
 export { RESEARCH_PROVIDER_PREFERENCE };
 
@@ -44,7 +45,7 @@ const ONBOARDING_LLM_TARGET_HELP =
  * BeatAPI uses BEATAPI_RESEARCH_MODEL; other providers supply their research
  * model internally. The target model segment does not override either choice.
  */
-export function resolveResearchProvider(env: Record<string, string | undefined> = process.env): Provider {
+export function resolveResearchProvider(env: Record<string, string | undefined> = withStoredCredentials()): Provider {
 	const explicit = env.ONBOARDING_LLM_TARGET?.trim();
 	if (explicit) {
 		const [parsed] = parseScrapeTargets(explicit);

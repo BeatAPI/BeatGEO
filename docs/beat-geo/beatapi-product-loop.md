@@ -45,7 +45,7 @@ BeatGeo 负责本产品的账号权限、品牌、问题、证据、优化任务
 
 以下为已实现且通过契约测试的代码路径；本轮未持真实 BeatAPI key 验证付费调用、模型权限或实际费用。
 
-配置服务器端 `BEATAPI_API_KEY` 和 `BEATAPI_RESEARCH_MODEL`，可在初始化向导选择 BeatAPI。API key 使用现有加密凭据机制；管理员也可通过现有凭据设置管理。模型 ID 通过环境变量或初始化向导设置，不假设任何 key 能访问固定模型。
+本地实例管理员进入 **Connections (`/setup`)**，填写 BeatAPI key，验证后读取可用模型并选择研究模型。key 和模型使用现有加密凭据机制保存在同一个数据库，worker 每分钟刷新。也兼容服务器端 `BEATAPI_API_KEY` / `BEATAPI_RESEARCH_MODEL`。验证只检查账户及模型列表，不代表实际付费生成已成功。
 
 | 产品位置 | 调用能力 | 实现情况与价值 |
 |---|---|---|

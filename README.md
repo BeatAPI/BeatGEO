@@ -32,26 +32,34 @@ flowchart TD
 
 ## Quick start
 
-需要 Node.js 24，以及已连接 Chrome 的 [BeatBrowser 1.3.1 源码预览版](https://github.com/BeatAPI/beat-browser)。先登录 ChatGPT / Gemini，运行 `beat-browser doctor --json` 检查连接。
+需要 **Node.js 24、pnpm 12.4.1、Docker 和 Chrome**。BeatBrowser 固定版本已作为依赖带入，无需另外克隆或安装全局 CLI。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGeo.git
 cd BeatGeo
-node apps/browser-lab/server.mjs
+pnpm local:setup
+pnpm local:start
 ```
 
-打开 **http://127.0.0.1:4318** → 添加采集 → 选择平台和 Chrome 配置 → 输入自己的品牌与客户问题 → 查看原答案、可见来源、状态及导出。
+打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
 
-此入口不需要 monorepo 依赖或模型 API key；网站账号自己的订阅和限制仍然适用。任务在独立 TaskSpace 中执行，无法创建时明确报错，不自动改用日常标签页。
+1. **连接 Chrome**：已有 BeatBrowser 会直接复用；没有时，在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension` 文件夹。浏览器会要求你确认安装，网页不能静默安装扩展。选择已连接配置，并在该配置登录需要采集的网站。
+2. **连接 BeatAPI（可选）**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。key 加密存入同一个 PostgreSQL，页面只回显前四位；不填也可以手动设置问题。
+3. **创建品牌**：填写网站 → 手动配置或 AI 研究 → 确认问题 → 开始采集 → 查看原回答与引用 → 记录优化 → 复测比较。
 
-源码版 BeatBrowser 可设置 `BEAT_BROWSER_COMMAND=node`，`BEAT_BROWSER_ARGS_JSON` 为包含其 `src/cli.js` 绝对路径的 JSON 数组。`BEAT_BROWSER_PROFILE_ID` 可固定 Chrome 配置。
+`local:setup` 创建专用 PostgreSQL 容器和卷（loopback 55440）、独立随机密钥及两个忽略提交的环境文件。不会复用网站数据库；已有配置会拒绝覆盖。自动安装中断后可运行 `pnpm local:setup --resume`，它只接受未改动的自动配置。`local:start` 同时运行网页（3140）、采集服务（4319）和 worker；关闭终端即停止调度。已被其他 Agent 使用的 BeatBrowser bridge 不会随 BeatGeo 退出。
+
+Chrome 连接成功不等于每个网站已登录。任务在独立 TaskSpace 中执行，无法创建时明确报错，不回退到日常标签页。首次采集也会显示超时、需要登录和连接失败，失败不计作零曝光。网站账号自身限制仍然适用。
+
+高级配置与已有 PostgreSQL 安装见 [自托管指南](docs/self-hosting.md)。**SQLite 尚未实现**：当前查询和 pg-boss 依赖 PostgreSQL。始终保持一套产品账户、数据库与队列，本地 JSON 只是采集证据缓存。
+
+单独体验浏览器工作台（没有数据库/账户功能）：
 
 ```sh
-node apps/browser-lab/cli.mjs --engine chatgpt --brand Example --prompt 'Which tools would you recommend for this use case?'
-node --test apps/browser-lab/*.test.mjs
+pnpm install --frozen-lockfile
+pnpm browser:lab
+# http://127.0.0.1:4318
 ```
-
-完整产品底座需要 Node.js 24、pnpm 12.4.1 和 PostgreSQL，见 [自托管指南](docs/self-hosting.md)。**SQLite 尚未实现**：当前查询和 pg-boss 依赖 PostgreSQL，不是改一个连接串即可替换。首版保持一套产品账户、数据库与队列；本地 JSON 是采集证据缓存。
 
 ## MVP status
 
@@ -67,6 +75,7 @@ node --test apps/browser-lab/*.test.mjs
 | 竞品声量 | 底座及纯函数可复用，浏览器工作台展示待接通 |
 | 账户、品牌、问题、调度 | 一套 PostgreSQL + pg-boss；每次尝试独立记录，成功数据原子提交 |
 | 优化行动与复测 | 保存机会和基线 → 记录实施 → 同队列复测 → 匹配比较及缺失数 |
+| 首次使用与连接 | 网页配置 key / 模型，检测及选择 Chrome；自动安装携带固定版本扩展 |
 | BeatAPI 研究 | Web Search / Read + 模型分析代码已接入；真实 key 的付费调用待验收 |
 | 网站技术审计、推荐识别、SEO 数据 | 待开发/接入；关键词量、外链、排名不冒充已有数据 |
 
@@ -92,7 +101,7 @@ BeatGeo UI / API / MCP
 
 ## BeatAPI integration
 
-研究提供方可选择 BeatAPI：用 Web Search 发现业务与竞品资料，读取页面后生成建议，用文本模型分析已采集的证据。配置服务器端 `BEATAPI_API_KEY` 与可用的 `BEATAPI_RESEARCH_MODEL`；不把 key 放进前端。浏览器采集与基础统计不要求购买模型 API。SEO 专用数据接口尚未接入。
+研究提供方可选择 BeatAPI：用 Web Search 发现业务与竞品资料，读取页面后生成建议，用文本模型分析已采集的证据。在 **Connections** 填写 key 和可用研究模型，也兼容服务器端 `BEATAPI_API_KEY` / `BEATAPI_RESEARCH_MODEL`。已保存的 key 不回传前端。浏览器采集与基础统计不要求购买模型 API。SEO 专用数据接口尚未接入。
 
 [产品闭环、API 接入位置与商业化设计](docs/beat-geo/beatapi-product-loop.md)。当前为实例管理员统一凭据，不是每租户独立 BYOK 或完整成本账单。
 

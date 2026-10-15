@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { applyOptimizationActionFn, getMonitoringFn, retestOptimizationActionFn } from "@/server/monitoring-fn";
 
-const STATUS: Record<string, string> = {
+export const COLLECTION_STATUS: Record<string, string> = {
 	completed: "Completed",
 	running: "Collecting",
 	timeout: "Timed out",
@@ -127,7 +127,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 								<span>
 									{attempt.model} · {attempt.provider}
 								</span>
-								<strong>{STATUS[attempt.status] || "Failed"}</strong>
+								<strong>{COLLECTION_STATUS[attempt.status] || "Failed"}</strong>
 							</div>
 							<p className="truncate text-muted-foreground">{attempt.promptValue}</p>
 							<p className="text-xs text-muted-foreground">{new Date(attempt.startedAt).toLocaleString()}</p>

@@ -39,8 +39,10 @@ export function parseRows(text) {
 }
 
 export function createBrowser(env = process.env) {
-	const command = env.BEAT_BROWSER_COMMAND || "beat-browser";
-	const prefix = JSON.parse(env.BEAT_BROWSER_ARGS_JSON || "[]");
+	const bundled = fileURLToPath(new URL("../../node_modules/@beatapi/beat-browser/src/cli.js", import.meta.url));
+	const useBundle = !env.BEAT_BROWSER_COMMAND && existsSync(bundled);
+	const command = env.BEAT_BROWSER_COMMAND || (useBundle ? process.execPath : "beat-browser");
+	const prefix = useBundle ? [bundled] : JSON.parse(env.BEAT_BROWSER_ARGS_JSON || "[]");
 	if (!Array.isArray(prefix) || !prefix.every((value) => typeof value === "string")) {
 		throw new Error("BEAT_BROWSER_ARGS_JSON must be a JSON array of command arguments.");
 	}
