@@ -16,7 +16,7 @@ export function AppShell({
 			{/* `overflow-clip`, not `overflow-hidden`: both clip to the rounded corners,
 			    but `hidden` makes this a scroll container, which stops descendants from
 			    sticking to the viewport (the site header included). */}
-			<SidebarInset className="md:border md:border-border/60 md:rounded-xl overflow-clip">
+			<SidebarInset className="beat-workspace md:border md:border-border/60 md:rounded-xl overflow-clip">
 				{header}
 				{children}
 			</SidebarInset>

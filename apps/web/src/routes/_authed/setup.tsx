@@ -51,7 +51,7 @@ function SetupPage() {
 	});
 
 	return (
-		<main className="min-h-svh bg-muted/20">
+		<main className="beat-workspace min-h-svh bg-muted/20">
 			<header className="border-b bg-background">
 				<div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5 md:px-10">
 					<Link to="/app" aria-label="BeatGeo home">
