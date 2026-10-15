@@ -42,6 +42,23 @@ pnpm local:setup
 pnpm local:start
 ```
 
+### Fork 和团队试用
+
+Fork 本仓库会保留 BeatBrowser 的固定版本依赖，**不会自动创建一个 BeatBrowser 仓库的 fork**。`pnpm local:setup` 从 GitHub 下载锁定的 BeatBrowser 源码，并把扩展准备到 `.beat-geo/extension`。使用者只需克隆 BeatGeo；首次安装需要联网，Chrome 扩展和网站登录需手动完成。
+
+```mermaid
+flowchart LR
+    A[Fork 或克隆 BeatGeo] --> B[local:setup]
+    B --> C[安装锁定的 BeatBrowser]
+    B --> D[创建本机独立 PostgreSQL]
+    C --> E[Chrome 加载扩展并登录目标网站]
+    D --> F[local:start]
+    E --> G[创建品牌与首次采集]
+    F --> G
+```
+
+团队成员各自在本机安装时，账号、数据库、API Key 和 Chrome 登录态相互独立，不会共享维护者的数据。已有 BeatBrowser 的成员可复用连接，不要同时启用两份扩展；如需本次的任务清理功能，请使用本仓库依赖的扩展版本。修改 BeatBrowser 源码的开发者才需要另外 fork 它，再显式更新 BeatGeo 的依赖和锁文件；依赖不会自动追踪主分支。
+
 打开 **http://localhost:3140/setup**，注册本地管理员，然后按页面完成：
 
 1. **连接 BeatAPI**：输入 key → 验证并读取模型 → 选择研究模型 → 保存。网站自动研究需要研究提供方；Key 加密保存后持续复用。没有 Key 也能选择行业生成备用模板题单。

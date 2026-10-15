@@ -99,3 +99,10 @@ Still unverified: a real BeatAPI key/model/charge, new Gemini live collection, o
 - The two test launchers were stopped after confirming no active collection; their databases were retained. The user's local app on 3140 and its database, shared BeatBrowser bridge, Chrome and main BeatAPI project were left running/unmodified. UI source changes are available in the existing local dev server after refresh.
 
 Still unverified: a real BeatAPI key and billed website research / opportunity generation, a future unattended cycle, new Gemini live collection, a clean-machine installation on another computer, and full Profound feature parity. Current BeatGeo configuration contained no research key during this acceptance. The earlier installation acceptance remains the installation evidence; this pass exercised fresh registration on a new database, not a complete reinstall.
+
+## Team source release — 2026-10-15
+
+- Pinned BeatBrowser to `8a295920d06cb83cd69e79e43eafa8e7b62b9efe`, which includes task cleanup, clearer linked-page labels and the unframed logo. Frozen installation downloaded the GitHub dependency successfully without changing supply-chain policies.
+- Prepared the downloaded extension in a disposable directory and verified the manifest, task backend, popup and stylesheet match the dependency. The resulting popup includes cleanup controls. The user's loaded extension, browser sessions and database were not reconfigured.
+- Repeated Biome (841 files), workspace types, 1,445 unit tests, 20 browser collector tests and 16 script tests successfully. Prior real signed-in ChatGPT evidence remains documented above; this dependency update does not add claims about paid research, overnight execution or other model websites. PostgreSQL integration also runs in the PR's isolated CI database.
+- README now explains that a BeatGeo fork retains a pinned dependency, not a second repository fork. Each team member installs their own local instance and explicitly loads the Chrome extension.
