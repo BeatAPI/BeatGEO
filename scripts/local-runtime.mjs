@@ -2,11 +2,12 @@ import { randomBytes } from "node:crypto";
 import { cp, mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
-export function localEnvironment({ databasePort = 55440, appPort = 3140, browserPort = 4319 } = {}) {
+export function localEnvironment({ databasePort = 55440, appPort = 3140, browserPort = 4319, databaseMode = "embedded" } = {}) {
 	const password = randomBytes(24).toString("hex");
 	return {
 		DATABASE_URL: `postgres://beatgeo:${password}@127.0.0.1:${databasePort}/beatgeo`,
 		DEPLOYMENT_MODE: "local",
+		BEAT_GEO_DATABASE_MODE: databaseMode,
 		BETTER_AUTH_SECRET: randomBytes(32).toString("hex"),
 		BEAT_GEO_ENCRYPTION_KEY: randomBytes(32).toString("base64"),
 		DISABLE_TELEMETRY: "1",
