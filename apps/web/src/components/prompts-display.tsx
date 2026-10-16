@@ -36,9 +36,10 @@ interface PromptsDisplayProps {
  *  filter state itself — each section reads the URL keys it cares about
  *  so a filter change only re-renders the sections that depend on it. */
 export function PromptsDisplay({ pageTitle, pageDescription, pageInfoContent }: PromptsDisplayProps) {
+	const t = useT();
 	const { data: brand } = useBrand();
 	return (
-		<PageHeader title={pageTitle} subtitle={pageDescription} infoContent={pageInfoContent}>
+		<PageHeader title={t(pageTitle)} subtitle={t(pageDescription)} infoContent={pageInfoContent}>
 			<PromptsContent brandId={brand?.id} />
 		</PageHeader>
 	);

@@ -369,17 +369,19 @@ function OpportunitiesTable({
 
 	if (opportunities.length === 0) {
 		return (
-			<div className="border border-slate-200 rounded-lg p-6 text-center">
-				<p className="text-slate-500 text-sm">{brandName} leads or matches competitors across all tested prompts.</p>
+			<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-6 text-center">
+				<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500 text-sm">
+					{brandName} leads or matches competitors across all tested prompts.
+				</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="border border-slate-200 rounded-lg overflow-hidden">
+		<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden">
 			<table className="w-full">
 				<thead>
-					<tr className="bg-slate-50 border-b border-slate-200">
+					<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 						<TH align="left">Prompt</TH>
 						<TH align="center">Current SoV</TH>
 						<TH align="center">Top Competitor SoV</TH>
@@ -387,18 +389,20 @@ function OpportunitiesTable({
 						<TH align="left">Recommendation</TH>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-slate-100">
+				<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
 					{opportunities.map((o) => (
 						<tr key={o.promptValue}>
-							<td className="py-2.5 px-4 text-xs text-slate-700 max-w-[200px] break-words leading-relaxed">
+							<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 max-w-[200px] break-words leading-relaxed">
 								{o.promptValue}
 							</td>
 							<td className="py-2.5 px-4 text-center">
 								<span className={`text-xs font-semibold ${getSoVColor(o.brandSoV)}`}>{o.brandSoV}%</span>
 							</td>
-							<td className="py-2.5 px-4 text-center text-xs font-semibold text-slate-600">{o.maxCompSoV}%</td>
+							<td className="py-2.5 px-4 text-center text-xs font-semibold text-slate-600 dark:text-muted-foreground print:text-slate-600">
+								{o.maxCompSoV}%
+							</td>
 							<td className="py-2.5 px-4 text-center text-xs font-semibold text-emerald-600">{o.goalSoV}%</td>
-							<td className="py-2.5 px-4 text-xs text-slate-600">
+							<td className="py-2.5 px-4 text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
 								Write {o.articleCount} LLM-friendly articles on &ldquo;{o.promptValue}&rdquo;
 							</td>
 						</tr>
@@ -428,27 +432,30 @@ function CoverPage({
 				<div className="h-[3px] bg-slate-800 -mx-10 print:-mx-0 mb-8" />
 
 				<div className="flex items-center justify-between mb-16">
-					<Logo iconClassName="!size-5" textClassName="text-sm font-semibold text-slate-400" />
-					<span className="text-xs tracking-wide text-slate-400">
+					<Logo
+						iconClassName="!size-5"
+						textClassName="text-sm font-semibold text-slate-400 dark:text-muted-foreground print:text-slate-400"
+					/>
+					<span className="text-xs tracking-wide text-slate-400 dark:text-muted-foreground print:text-slate-400">
 						{new Date(report.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
 					</span>
 				</div>
 
 				<div className="flex-1 flex flex-col justify-center">
-					<div className="text-[10px] font-semibold tracking-[0.25em] uppercase text-slate-400 mb-4">
+					<div className="text-[10px] font-semibold tracking-[0.25em] uppercase text-slate-400 dark:text-muted-foreground print:text-slate-400 mb-4">
 						AI Share of Voice Report
 					</div>
 					<h1 className="text-4xl font-bold tracking-tight mb-2">{report.brandName}</h1>
 					<div className="w-16 h-[2px] bg-slate-800 mb-12" />
 
-					<div className="bg-slate-50 rounded-xl p-8 max-w-md mb-12">
+					<div className="bg-slate-50 dark:bg-card print:bg-slate-50 rounded-xl p-8 max-w-md mb-12">
 						<div className="flex items-baseline gap-4">
 							<span className={`text-6xl font-extrabold tracking-tighter ${sovColor}`}>
 								{overallSoV !== null ? `${overallSoV}%` : "N/A"}
 							</span>
 							<div>
 								<div className="text-sm font-semibold">Share of Voice</div>
-								<div className="text-xs text-slate-500">
+								<div className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500">
 									{sovLevel.label} &mdash; {sovLevel.description}
 								</div>
 							</div>
@@ -506,13 +513,18 @@ function CompetitiveOverviewPage({
 				/>
 				<div className="grid grid-cols-3 gap-3 mb-8">
 					{engineBreakdown.map((eng) => (
-						<div key={eng.engine} className="border border-slate-200 rounded-lg p-4">
-							<div className="text-[11px] font-medium text-slate-500 mb-2">{eng.engine}</div>
+						<div
+							key={eng.engine}
+							className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-4"
+						>
+							<div className="text-[11px] font-medium text-slate-500 dark:text-muted-foreground print:text-slate-500 mb-2">
+								{eng.engine}
+							</div>
 							<div className={`text-3xl font-bold ${getSoVColor(eng.mentionRate)}`}>{eng.mentionRate}%</div>
-							<div className="text-[10px] text-slate-400 mt-1">
+							<div className="text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400 mt-1">
 								{eng.brandMentions} of {eng.totalRuns} runs
 							</div>
-							<div className="mt-2.5 w-full bg-slate-100 rounded-full h-1.5">
+							<div className="mt-2.5 w-full bg-slate-100 dark:bg-muted print:bg-slate-100 rounded-full h-1.5">
 								<div
 									className={`h-1.5 rounded-full ${sovBgColor(eng.mentionRate)}`}
 									style={{ width: `${Math.max(2, eng.mentionRate)}%` }}
@@ -523,10 +535,10 @@ function CompetitiveOverviewPage({
 				</div>
 
 				<Section title="Competitive Landscape" subtitle="Share of voice comparison across all tested prompts" />
-				<div className="border border-slate-200 rounded-lg overflow-hidden mb-8 print:pb-px">
+				<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8 print:pb-px">
 					<table className="w-full">
 						<thead>
-							<tr className="bg-slate-50 border-b border-slate-200">
+							<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 								<TH align="left">Brand</TH>
 								<TH align="right" className="w-16">
 									SoV
@@ -536,7 +548,7 @@ function CompetitiveOverviewPage({
 								</TH>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-slate-100">
+						<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
 							{[
 								{ name: report.brandName, sov: overallSoV ?? 0, isBrand: true },
 								...competitorSoVs
@@ -546,12 +558,19 @@ function CompetitiveOverviewPage({
 							]
 								.sort((a, b) => b.sov - a.sov)
 								.map((row) => (
-									<tr key={`sov-${row.name}`} className={row.isBrand ? "bg-blue-50/30" : ""}>
-										<td className={`py-2.5 px-4 text-sm ${row.isBrand ? "font-semibold" : "text-slate-600"}`}>
+									<tr
+										key={`sov-${row.name}`}
+										className={row.isBrand ? "bg-blue-50/30 dark:bg-blue-950/30 print:bg-blue-50/30" : ""}
+									>
+										<td
+											className={`py-2.5 px-4 text-sm ${row.isBrand ? "font-semibold" : "text-slate-600 dark:text-muted-foreground print:text-slate-600"}`}
+										>
 											{row.name}
 										</td>
 										<td className="py-2.5 px-4 text-right">
-											<span className={`text-sm font-bold ${row.isBrand ? sovColor : "text-slate-500"}`}>
+											<span
+												className={`text-sm font-bold ${row.isBrand ? sovColor : "text-slate-500 dark:text-muted-foreground print:text-slate-500"}`}
+											>
 												{row.sov}%
 											</span>
 										</td>
@@ -570,16 +589,16 @@ function CompetitiveOverviewPage({
 							title="Mention Rate"
 							subtitle="Each prompt is evaluated multiple times across AI engines — mentions show total appearances, unique prompts show how many distinct prompts include the brand"
 						/>
-						<div className="border border-slate-200 rounded-lg overflow-hidden print:pb-px">
+						<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden print:pb-px">
 							<table className="w-full">
 								<thead>
-									<tr className="bg-slate-50 border-b border-slate-200">
+									<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 										<TH align="left">Brand</TH>
 										<TH align="center">Mentions</TH>
 										<TH align="center">Unique Prompts</TH>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-slate-100">
+								<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
 									{[
 										{
 											name: report.brandName,
@@ -594,19 +613,26 @@ function CompetitiveOverviewPage({
 									]
 										.sort((a, b) => b.mentionCount - a.mentionCount)
 										.map((c) => (
-											<tr key={`mention-${c.name}`} className={c.isBrand ? "bg-blue-50/30" : ""}>
+											<tr
+												key={`mention-${c.name}`}
+												className={c.isBrand ? "bg-blue-50/30 dark:bg-blue-950/30 print:bg-blue-50/30" : ""}
+											>
 												<td
-													className={`py-2 px-4 text-xs font-medium ${c.isBrand ? "text-slate-900" : "text-slate-700"}`}
+													className={`py-2 px-4 text-xs font-medium ${c.isBrand ? "text-slate-900 dark:text-foreground print:text-slate-900" : "text-slate-700 dark:text-foreground print:text-slate-700"}`}
 												>
 													{c.name}
 												</td>
-												<td className="py-2 px-4 text-center text-xs text-slate-600">
+												<td className="py-2 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
 													{c.mentionCount}
-													<span className="text-slate-400">/{simpleRuns.length}</span>
+													<span className="text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														/{simpleRuns.length}
+													</span>
 												</td>
-												<td className="py-2 px-4 text-center text-xs text-slate-600">
+												<td className="py-2 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
 													{c.promptCount}
-													<span className="text-slate-400">/{totalPrompts}</span>
+													<span className="text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														/{totalPrompts}
+													</span>
 												</td>
 											</tr>
 										))}
@@ -650,7 +676,9 @@ function PromptChartPages({
 							subtitle="Share of voice for representative prompts — strengths and growth opportunities"
 						/>
 					) : (
-						<div className="text-xs text-slate-400 italic mb-4">Prompt Analysis (continued)</div>
+						<div className="text-xs text-slate-400 dark:text-muted-foreground print:text-slate-400 italic mb-4">
+							Prompt Analysis (continued)
+						</div>
 					)}
 
 					<div className="flex-1 flex flex-col gap-5">
@@ -704,20 +732,20 @@ function OpportunitiesPage({
 				/>
 
 				{contentGaps.length > 0 ? (
-					<div className="border border-slate-200 rounded-lg overflow-hidden mb-8">
+					<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8">
 						<table className="w-full">
 							<thead>
-								<tr className="bg-slate-50 border-b border-slate-200">
+								<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 									<TH align="left">Prompt</TH>
 									<TH align="left" className="w-[50%]">
 										Competitors Found
 									</TH>
 								</tr>
 							</thead>
-							<tbody className="divide-y divide-slate-100">
+							<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
 								{contentGaps.map((gap) => (
 									<tr key={gap.promptId}>
-										<td className="py-2.5 px-4 text-xs text-slate-700 leading-relaxed max-w-[320px]">
+										<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 leading-relaxed max-w-[320px]">
 											{gap.promptValue}
 										</td>
 										<td className="py-2.5 px-4">
@@ -725,13 +753,15 @@ function OpportunitiesPage({
 												{gap.competitorsMentioned.slice(0, 3).map((c) => (
 													<span
 														key={c}
-														className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium"
+														className="inline-block px-2 py-0.5 rounded-md bg-slate-100 dark:bg-muted print:bg-slate-100 text-slate-600 dark:text-muted-foreground print:text-slate-600 text-[10px] font-medium"
 													>
 														{c}
 													</span>
 												))}
 												{gap.competitorsMentioned.length > 3 && (
-													<span className="text-[10px] text-slate-400">+{gap.competitorsMentioned.length - 3}</span>
+													<span className="text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														+{gap.competitorsMentioned.length - 3}
+													</span>
 												)}
 											</div>
 										</td>
@@ -741,8 +771,8 @@ function OpportunitiesPage({
 						</table>
 					</div>
 				) : (
-					<div className="border border-slate-200 rounded-lg p-6 text-center mb-8">
-						<p className="text-slate-500 text-sm">
+					<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-6 text-center mb-8">
+						<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500 text-sm">
 							{report.brandName} appears in all prompts where competitors are mentioned.
 						</p>
 					</div>
@@ -754,10 +784,10 @@ function OpportunitiesPage({
 							title="Top AI Search Queries"
 							subtitle="Common web search queries AI models run when answering prompts in your category"
 						/>
-						<div className="border border-slate-200 rounded-lg overflow-hidden">
+						<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden">
 							<table className="w-full">
 								<thead>
-									<tr className="bg-slate-50 border-b border-slate-200">
+									<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 										<TH align="left">Query</TH>
 										<TH align="center" className="w-28">
 											Competitors Found
@@ -767,11 +797,15 @@ function OpportunitiesPage({
 										</TH>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-slate-100">
+								<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
 									{topSearchQueries.map((q) => (
 										<tr key={q.query}>
-											<td className="py-2.5 px-4 text-xs text-slate-700 max-w-[350px] break-words">{q.query}</td>
-											<td className="py-2.5 px-4 text-center text-xs text-slate-600">{q.competitorCount}</td>
+											<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 max-w-[350px] break-words">
+												{q.query}
+											</td>
+											<td className="py-2.5 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+												{q.competitorCount}
+											</td>
 											<td className="py-2.5 px-4 text-center">
 												{q.brandMentioned ? (
 													<span className="text-emerald-600 font-semibold text-xs">&#10003;</span>
@@ -802,20 +836,23 @@ function sovOpportunity(overallSoV: number | null) {
 	if (sov < 20) {
 		return {
 			label: "High",
-			badgeClass: "bg-rose-50 text-rose-700",
+			badgeClass:
+				"bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 print:bg-rose-50 print:text-rose-700",
 			recommendation: "Prioritize content creation to establish AI presence",
 		};
 	}
 	if (sov < 40) {
 		return {
 			label: "Medium",
-			badgeClass: "bg-amber-50 text-amber-700",
+			badgeClass:
+				"bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 print:bg-amber-50 print:text-amber-700",
 			recommendation: "Expand content to increase brand share of voice",
 		};
 	}
 	return {
 		label: "Low",
-		badgeClass: "bg-emerald-50 text-emerald-700",
+		badgeClass:
+			"bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 print:bg-emerald-50 print:text-emerald-700",
 		recommendation: "Maintain leadership and defend competitive position",
 	};
 }
@@ -842,10 +879,10 @@ function NextStepsPage({
 					subtitle="Overview of your current AI share of voice and growth potential"
 				/>
 
-				<div className="border border-slate-200 rounded-lg overflow-hidden mb-8">
+				<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8">
 					<table className="w-full">
 						<thead>
-							<tr className="bg-slate-50 border-b border-slate-200">
+							<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
 								<TH align="center">Prompts With Mentions</TH>
 								<TH align="center">Total Prompts Tested</TH>
 								<TH align="center">Overall SoV</TH>
@@ -856,7 +893,9 @@ function NextStepsPage({
 						<tbody>
 							<tr>
 								<td className="text-center py-3 px-4 text-sm font-semibold">{promptsWithMentions}</td>
-								<td className="text-center py-3 px-4 text-sm text-slate-600">{totalPrompts}</td>
+								<td className="text-center py-3 px-4 text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600">
+									{totalPrompts}
+								</td>
 								<td className="text-center py-3 px-4">
 									<span className={`text-sm font-bold ${sovColor}`}>{overallSoV ?? 0}%</span>
 								</td>
@@ -867,7 +906,9 @@ function NextStepsPage({
 										{opportunity.label}
 									</span>
 								</td>
-								<td className="py-3 px-4 text-xs text-slate-600">{opportunity.recommendation}</td>
+								<td className="py-3 px-4 text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+									{opportunity.recommendation}
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -893,45 +934,55 @@ function CallToActionPage({ branding }: { branding?: ClientConfig["branding"] })
 		<>
 			{/* ===== CTA ===== */}
 			<div className="print:break-before-page print:h-[9.5in] print:flex print:flex-col print:justify-center p-10 print:p-0">
-				<div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-10 text-center">
-					<h2 className="text-2xl font-bold text-slate-800 mb-2">Ready to Optimize Your AI Visibility?</h2>
-					<p className="text-slate-600 text-base mb-8">
+				<div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-card dark:to-muted print:from-blue-50 print:to-indigo-50 border border-blue-200 dark:border-blue-900 print:border-blue-200 rounded-xl p-10 text-center">
+					<h2 className="text-2xl font-bold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+						Ready to Optimize Your AI Visibility?
+					</h2>
+					<p className="text-slate-600 dark:text-muted-foreground print:text-slate-600 text-base mb-8">
 						Take your brand's AI presence to the next level with {branding?.name || "BeatGEO"}
 					</p>
 
 					<div className="grid grid-cols-3 gap-6 mb-8">
 						<div className="text-center p-4">
 							<div className="flex justify-center mb-3">
-								<Target className="h-8 w-8 text-slate-600" />
+								<Target className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
 							</div>
-							<h3 className="font-semibold text-slate-800 mb-2">Strategic Optimization</h3>
-							<p className="text-sm text-slate-600 leading-relaxed">
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								Strategic Optimization
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
 								Develop content strategies that increase your brand's share of voice in AI responses
 							</p>
 						</div>
 						<div className="text-center p-4">
 							<div className="flex justify-center mb-3">
-								<BarChart3 className="h-8 w-8 text-slate-600" />
+								<BarChart3 className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
 							</div>
-							<h3 className="font-semibold text-slate-800 mb-2">Continuous Monitoring</h3>
-							<p className="text-sm text-slate-600 leading-relaxed">
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								Continuous Monitoring
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
 								Track your AI share of voice across hundreds of relevant prompts and topics
 							</p>
 						</div>
 						<div className="text-center p-4">
 							<div className="flex justify-center mb-3">
-								<Rocket className="h-8 w-8 text-slate-600" />
+								<Rocket className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
 							</div>
-							<h3 className="font-semibold text-slate-800 mb-2">Competitive Advantage</h3>
-							<p className="text-sm text-slate-600 leading-relaxed">
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								Competitive Advantage
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
 								Stay ahead of competitors in the rapidly evolving AI search landscape
 							</p>
 						</div>
 					</div>
 
-					<div className="pt-6 border-t border-blue-200">
-						<p className="text-slate-800 font-medium mb-2">Get started with {branding?.name || "BeatGEO"} today</p>
-						<p className="text-slate-600 text-sm text-balance">
+					<div className="pt-6 border-t border-blue-200 dark:border-blue-900 print:border-blue-200">
+						<p className="text-slate-800 dark:text-foreground print:text-slate-800 font-medium mb-2">
+							Get started with {branding?.name || "BeatGEO"} today
+						</p>
+						<p className="text-slate-600 dark:text-muted-foreground print:text-slate-600 text-sm text-balance">
 							Visit <strong>{branding?.url || "github.com/BeatAPI/BeatGEO"}</strong> to learn more about our AI
 							visibility platform and services.
 						</p>
@@ -950,7 +1001,7 @@ function ReportRenderPage() {
 	if (report.status !== "completed") {
 		return (
 			<div className="max-w-3xl mx-auto p-8 text-center">
-				<p className="text-slate-500">
+				<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500">
 					Report status: <span className="font-medium">{report.status}</span>
 				</p>
 			</div>
@@ -960,7 +1011,7 @@ function ReportRenderPage() {
 	const model = buildReportModel(report);
 
 	return (
-		<div className="max-w-[780px] mx-auto bg-white print:max-w-none text-slate-900">
+		<div className="max-w-[780px] mx-auto bg-white dark:bg-background print:bg-white print:max-w-none text-slate-900 dark:text-foreground print:text-slate-900">
 			<CoverPage report={report} branding={branding} model={model} />
 
 			<CompetitiveOverviewPage report={report} branding={branding} model={model} />
@@ -980,20 +1031,26 @@ function ReportRenderPage() {
 
 function RunningHeader({ brand }: { brand: string }) {
 	return (
-		<div className="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
-			<span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">
+		<div className="flex items-center justify-between mb-6 pb-3 border-b border-slate-100 dark:border-border print:border-slate-100">
+			<span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400 dark:text-muted-foreground print:text-slate-400">
 				AI Share of Voice Report
 			</span>
-			<span className="text-[10px] font-medium text-slate-400">{brand}</span>
+			<span className="text-[10px] font-medium text-slate-400 dark:text-muted-foreground print:text-slate-400">
+				{brand}
+			</span>
 		</div>
 	);
 }
 
 function Section({ title, subtitle }: { title: string; subtitle?: string }) {
 	return (
-		<div className="border-l-[3px] border-slate-800 pl-3 mb-4">
+		<div className="border-l-[3px] border-slate-800 dark:border-border print:border-slate-800 pl-3 mb-4">
 			<h2 className="text-base font-semibold">{title}</h2>
-			{subtitle && <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{subtitle}</p>}
+			{subtitle && (
+				<p className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500 mt-0.5 leading-relaxed">
+					{subtitle}
+				</p>
+			)}
 		</div>
 	);
 }
@@ -1010,7 +1067,7 @@ function TH({
 	const alignCls = align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
 	return (
 		<th
-			className={`py-2.5 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500 ${alignCls} ${className}`}
+			className={`py-2.5 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-muted-foreground print:text-slate-500 ${alignCls} ${className}`}
 		>
 			{children}
 		</th>
@@ -1019,16 +1076,16 @@ function TH({
 
 function CoverStat({ value, label }: { value: string; label: string }) {
 	return (
-		<div className="border-t-2 border-slate-800 pt-3">
+		<div className="border-t-2 border-slate-800 dark:border-border print:border-slate-800 pt-3">
 			<div className="text-2xl font-bold">{value}</div>
-			<div className="text-[10px] text-slate-500 mt-0.5">{label}</div>
+			<div className="text-[10px] text-slate-500 dark:text-muted-foreground print:text-slate-500 mt-0.5">{label}</div>
 		</div>
 	);
 }
 
 function Bar({ value, color }: { value: number | null; color: string }) {
 	return (
-		<div className="w-full bg-slate-100 rounded-full h-2.5">
+		<div className="w-full bg-slate-100 dark:bg-muted print:bg-slate-100 rounded-full h-2.5">
 			<div className={`${color} h-2.5 rounded-full`} style={{ width: `${Math.max(2, value ?? 0)}%` }} />
 		</div>
 	);
@@ -1037,8 +1094,8 @@ function Bar({ value, color }: { value: number | null; color: string }) {
 function Badge({ category }: { category: PromptCategory }) {
 	const cls =
 		category === "strength"
-			? "bg-emerald-50 text-emerald-700 border-emerald-200"
-			: "bg-amber-50 text-amber-700 border-amber-200";
+			? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 print:bg-emerald-50 print:text-emerald-700 border-emerald-200"
+			: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 print:bg-amber-50 print:text-amber-700 border-amber-200";
 	return (
 		<span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${cls}`}>
 			{category === "strength" ? "Strength" : "Opportunity"}
@@ -1049,7 +1106,7 @@ function Badge({ category }: { category: PromptCategory }) {
 function SummaryRow({ label, value }: { label: string; value: string }) {
 	return (
 		<div className="flex justify-between items-center">
-			<span className="text-xs text-slate-500">{label}</span>
+			<span className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500">{label}</span>
 			<span className="text-xs font-semibold">{value}</span>
 		</div>
 	);
@@ -1059,15 +1116,18 @@ function Finding({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="flex gap-3 items-start">
 			<div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-[7px] shrink-0" />
-			<p className="text-sm text-slate-700 leading-relaxed">{children}</p>
+			<p className="text-sm text-slate-700 dark:text-foreground print:text-slate-700 leading-relaxed">{children}</p>
 		</div>
 	);
 }
 
 function PageFooter({ branding }: { branding?: ClientConfig["branding"] }) {
 	return (
-		<div className="pt-4 border-t border-slate-100 flex justify-between items-center text-[10px] text-slate-400">
-			<Logo iconClassName="!size-3" textClassName="text-[10px] font-medium text-slate-400" />
+		<div className="pt-4 border-t border-slate-100 dark:border-border print:border-slate-100 flex justify-between items-center text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400">
+			<Logo
+				iconClassName="!size-3"
+				textClassName="text-[10px] font-medium text-slate-400 dark:text-muted-foreground print:text-slate-400"
+			/>
 			<span>{branding?.url || "github.com/BeatAPI/BeatGEO"}</span>
 		</div>
 	);

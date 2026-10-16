@@ -42,7 +42,7 @@ export function useChartExport(fileName: string) {
 
 				const canvas = await html2canvas(containerRef.current, {
 					scale: 1,
-					backgroundColor: "#ffffff",
+					backgroundColor: getComputedStyle(document.body).backgroundColor,
 					logging: false,
 					useCORS: true,
 				});

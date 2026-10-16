@@ -72,7 +72,7 @@ export function FilterTriggerButton({
 			variant="outline"
 			size="sm"
 			{...props}
-			className={`h-8 gap-1.5 cursor-pointer font-normal ${
+			className={`h-7 gap-1.5 cursor-pointer border-transparent bg-transparent shadow-none text-[13px] font-medium ${
 				active ? "border-foreground/30 bg-accent/50" : ""
 			} ${className ?? ""}`}
 		>
@@ -324,7 +324,7 @@ function SearchInput({
 			<InputGroupInput
 				value={local}
 				onChange={(e) => setLocal(e.target.value)}
-				placeholder={placeholder}
+				placeholder={t(placeholder)}
 				className="h-8 text-sm"
 			/>
 			<InputGroupAddon className="pl-2.5">

@@ -329,7 +329,7 @@ function AwaitingFirstEvaluation({ totalPrompts, hasPrompts }: { totalPrompts: n
 				<IconClock className="h-10 w-10 text-muted-foreground" />
 			</div>
 			<h2 className="text-2xl font-bold mb-3">{hasEnabledPrompts ? t("First collection") : t("No Data Yet")}</h2>
-			<p className="text-muted-foreground mb-6 text-balance">{message}</p>
+			<p className="text-muted-foreground mb-6 text-balance">{t(message)}</p>
 			<div className="flex flex-col gap-3 w-full">
 				{hasEnabledPrompts && (
 					<div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
@@ -454,13 +454,18 @@ function DashboardPage() {
 	return (
 		<div className="flex flex-1 flex-col">
 			<div className="m-auto flex w-full max-w-[1600px] flex-col gap-3 p-4">
+				<p className="text-xs text-muted-foreground">
+					{t(
+						"Trend estimates may carry earlier answers across missing days. They are not fresh daily observations; see Observed answers in Opportunities for actual sample counts and timestamps.",
+					)}
+				</p>
 				<TrendSection
 					icon={IconEye}
 					title={t("AI Visibility")}
 					linkTo="/app/org/$org/brand/$brand/visibility"
-					linkLabel="View Visibility"
-					chartTitle="Visibility Trends (30d)"
-					chartLabel="AI Visibility (7d avg)"
+					linkLabel={t("View Visibility")}
+					chartTitle={t("Visibility Trends (30d)")}
+					chartLabel={t("AI Visibility (7d avg)")}
 					// The tooltips quote live figures, so they stay off until those have loaded.
 					tooltip={loadingVisibility ? undefined : visibilityTooltipText(nonBrandedVisibility)}
 					// "Current" = the latest plotted point, so the hero number always
@@ -475,9 +480,9 @@ function DashboardPage() {
 					icon={IconSpeakerphone}
 					title={t("Share of Voice")}
 					linkTo="/app/org/$org/brand/$brand/share-of-voice"
-					linkLabel="View Share of Voice"
-					chartTitle="Share of Voice Trends (30d)"
-					chartLabel="Share of Voice"
+					linkLabel={t("View Share of Voice")}
+					chartTitle={t("Share of Voice Trends (30d)")}
+					chartLabel={t("Share of Voice")}
 					tooltip={loadingSov ? undefined : SOV_TOOLTIP}
 					value={lastValue(sovTimeSeries, "share")}
 					series={sovTimeSeries.map((p) => ({ date: p.date, value: p.share }))}

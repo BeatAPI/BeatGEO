@@ -22,9 +22,9 @@ interface VirtualizedPromptListProps {
 	searchHighlight?: string;
 }
 
-// All chart cards use a uniform height (empty states match chart height via h-[250px])
+// Estimate populated charts; measureElement also accommodates compact empty rows.
 const CHART_CARD_HEIGHT = 380;
-const CHART_GAP = 24; // px - gap between cards (space-y-6)
+const CHART_GAP = 16;
 
 // Memoized so react-query `isFetching` state changes on the parent
 // (which re-render prompts-display but leave these props untouched) don't
@@ -48,7 +48,7 @@ export const VirtualizedPromptList = memo(function VirtualizedPromptList({
 		}
 	}, []);
 
-	// Uniform height estimate — all cards (loading, empty, full) have matching content areas
+	// The measured row height replaces this estimate after rendering.
 	const estimateSize = useCallback(() => CHART_CARD_HEIGHT + CHART_GAP, []);
 
 	const getItemKey = useCallback((index: number) => orderedPrompts[index].id, [orderedPrompts]);

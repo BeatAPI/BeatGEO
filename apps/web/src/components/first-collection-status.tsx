@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { CollectionCheck } from "@/components/collection-check";
 import { COLLECTION_STATUS } from "@/components/monitoring-loop";
 import { useBrandId } from "@/hooks/use-brand-id";
 import { useT } from "@/lib/i18n";
@@ -17,6 +18,9 @@ export function FirstCollectionStatus() {
 		<section className="mt-6 w-full space-y-3 text-left text-sm" aria-label={t("First collection status")}>
 			{isPending && <p role="status">{t("Checking collection status…")}</p>}
 			{error && <p role="alert">{t("Could not load collection status. Check your local services.")}</p>}
+			{data && brandId && (
+				<CollectionCheck brandId={brandId} ready={data.runtime.worker === "ready"} questions={data.questions} />
+			)}
 			{data?.attempts.length === 0 && (
 				<p role="status">{t("No collection has started yet. Keep the local worker running.")}</p>
 			)}

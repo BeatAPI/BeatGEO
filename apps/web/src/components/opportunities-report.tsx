@@ -46,7 +46,7 @@ function BulletList({ items }: { items: string[] }) {
 	return (
 		<ul className="space-y-2.5">
 			{items.map((item) => (
-				<li key={item} className="flex gap-2.5 text-pretty text-base">
+				<li key={item} className="flex gap-2.5 text-pretty text-sm">
 					<Bullet />
 					<span>{item}</span>
 				</li>
@@ -78,7 +78,7 @@ function Panel({ children }: { children: React.ReactNode }) {
 	return <div className="mt-2 rounded-md bg-muted/30 p-1">{children}</div>;
 }
 
-function OpportunityCard({ o }: { o: Opportunity }) {
+function OpportunityCard({ o, onSaved }: { o: Opportunity; onSaved?: () => void }) {
 	const t = useT();
 	const brandId = useBrandId();
 	const client = useQueryClient();
@@ -94,6 +94,7 @@ function OpportunityCard({ o }: { o: Opportunity }) {
 			}),
 		onSuccess: () => {
 			void client.invalidateQueries({ queryKey: ["monitoring", brandId] });
+			onSaved?.();
 		},
 	});
 	const [open, setOpen] = useState<Tab | null>(null);
@@ -103,8 +104,8 @@ function OpportunityCard({ o }: { o: Opportunity }) {
 		{ key: "comp", label: "Competitor citations", count: o.competitorCitations.length },
 	];
 	return (
-		<div className="rounded-xl border border-border p-4">
-			<h3 className="text-pretty text-base font-semibold">{o.title}</h3>
+		<div className="border-t py-5">
+			<h3 className="text-pretty text-sm font-semibold">{o.title}</h3>
 			<button
 				type="button"
 				disabled={save.isPending || save.isSuccess || !o.relatedPrompts.some((p) => p.promptId)}
@@ -115,22 +116,24 @@ function OpportunityCard({ o }: { o: Opportunity }) {
 			</button>
 			{save.error && (
 				<p role="alert" className="text-sm">
-					{save.error.message}
+					{t(save.error.message)}
 				</p>
 			)}
 			<p className="mt-1 text-pretty text-sm text-muted-foreground">{o.why}</p>
 
 			<div className="mt-3 border-t border-border/60 pt-3">
 				<div className="flex flex-wrap gap-2">
-					{tabs.map((t) => (
+					{tabs.map((item) => (
 						<button
-							key={t.key}
+							key={item.key}
 							type="button"
-							onClick={() => setOpen(open === t.key ? null : t.key)}
-							className={`inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs ${open === t.key ? "bg-muted" : "hover:bg-muted/50"}`}
+							onClick={() => setOpen(open === item.key ? null : item.key)}
+							className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs ${open === item.key ? "bg-muted" : "hover:bg-muted/50"}`}
 						>
-							{t.label} <span className="tabular-nums text-muted-foreground">({t.count})</span>
-							<span className={`text-[0.625rem] text-muted-foreground ${open === t.key ? "rotate-180" : ""}`}>▾</span>
+							{t(item.label)} <span className="tabular-nums text-muted-foreground">({item.count})</span>
+							<span className={`text-[0.625rem] text-muted-foreground ${open === item.key ? "rotate-180" : ""}`}>
+								▾
+							</span>
 						</button>
 					))}
 				</div>
@@ -171,12 +174,12 @@ function OpportunityCard({ o }: { o: Opportunity }) {
 	);
 }
 
-export function OpportunitiesReport({ report }: { report: OpportunitiesReportData }) {
+export function OpportunitiesReport({ report, onSaved }: { report: OpportunitiesReportData; onSaved?: () => void }) {
 	const t = useT();
 	return (
 		<div className="space-y-8">
 			{report.summary.length > 0 && (
-				<section className="rounded-xl border border-border bg-muted/30 p-5">
+				<section className="border-t py-5">
 					<h2 className="text-sm font-semibold text-muted-foreground">{t("Summary")}</h2>
 					<div className="mt-2.5">
 						<BulletList items={report.summary} />
@@ -184,20 +187,34 @@ export function OpportunitiesReport({ report }: { report: OpportunitiesReportDat
 				</section>
 			)}
 
+			{report.opportunities.length > 0 && (
+				<section className="space-y-4" aria-label={t("Start here")}>
+					<h2 className="text-lg font-semibold">{t("Start here")}</h2>
+					<p className="text-sm text-muted-foreground">
+						{t("Save an action to keep its baseline, prepare a draft, and compare after implementation.")}
+					</p>
+					<div className="grid gap-4 xl:grid-cols-3">
+						{report.opportunities.slice(0, 3).map((o) => (
+							<OpportunityCard key={o.title} o={o} onSaved={onSaved} />
+						))}
+					</div>
+				</section>
+			)}
+
 			{CATEGORY_META.map((c) => {
-				const opps = report.opportunities.filter((o) => o.category === c.key);
+				const opps = report.opportunities.slice(3).filter((o) => o.category === c.key);
 				if (opps.length === 0) return null;
 				return (
 					<section key={c.key} className="space-y-3">
 						<div className="space-y-0.5">
 							<h2 className="text-base font-semibold">
-								{c.label} <span className="font-normal text-muted-foreground">({opps.length})</span>
+								{t(c.label)} <span className="font-normal text-muted-foreground">({opps.length})</span>
 							</h2>
-							<p className="text-pretty text-sm text-muted-foreground">{c.desc}</p>
+							<p className="text-pretty text-sm text-muted-foreground">{t(c.desc)}</p>
 						</div>
 						<div className="space-y-3">
 							{opps.map((o) => (
-								<OpportunityCard key={o.title} o={o} />
+								<OpportunityCard key={o.title} o={o} onSaved={onSaved} />
 							))}
 						</div>
 					</section>

@@ -23,7 +23,7 @@
 
 ## 快速开始
 
-准备 **Git、Node.js 24、pnpm 12.4.1、Docker（含 Compose）和 Chrome**，先启动 Docker。
+准备 **Git、Node.js 24、pnpm 12.4.1 和 Chrome**。BeatGEO 自带并管理独立 PostgreSQL，无需安装 Docker 或数据库。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -41,7 +41,7 @@ pnpm local:start
 
 安装脚本会准备独立 PostgreSQL 和内置扩展，不必再克隆 BeatBrowser、注册另一套账号或安装全局 CLI。已有 BeatBrowser 可以复用，同一 Chrome 配置只启用一份扩展。
 
-**持续监测需要持续运行：** 电脑保持唤醒和联网，Docker/PostgreSQL、Chrome、`pnpm local:start` 保持运行。可以关闭工作台网页；下次执行 `pnpm local:start` 即可，不要重建数据库。本地版不会在电脑离线时继续采集。
+**持续监测需要持续运行：** 电脑保持唤醒和联网，Chrome、`pnpm local:start` 保持运行。可以关闭工作台网页；下次执行 `pnpm local:start` 即可，不要重建数据库。本地版不会在电脑离线时继续采集。
 
 [详细使用引导](docs/beat-geo/getting-started.md) · [已有 PostgreSQL 的手动配置](docs/self-hosting.md)
 
@@ -79,7 +79,8 @@ BeatGEO 管理产品数据和调度，**BeatBrowser** 执行已登录浏览器�
 | 题库与优化 | 中英文问题生成、行业模板、优化行动基线与同组复测。 |
 | 调度与存储 | PostgreSQL + pg-boss；实测已排入下一轮任务，长期无人值守仍待验收。不支持 SQLite。 |
 | BeatAPI 研究 | 搜索、阅读、模型分析已接入代码，真实 Key 的付费调用仍待验收。 |
-| 网站技术审计与 SEO 数据 | 待开发或接入，不提供虚构的关键词量、外链库或真实 AI 提问量。 |
+| 网站检查与内容草稿 | 有限 HTML/robots/sitemap 检查、免费大纲、可编辑草稿及版本审核；公网检查与真实付费生成的验收边界见报告。 |
+| SEO 数据 | 尚未接入，不提供虚构的关键词量、外链库或真实 AI 提问量。 |
 
 README 提供英文、中文、日文、德文和韩文。**产品界面通过 EN / 中文切换，选择会保存在当前浏览器。** 问题、品牌名和采集原文保留原语言。文档五语言不代表界面五语言。
 

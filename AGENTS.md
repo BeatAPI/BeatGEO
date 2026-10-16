@@ -49,6 +49,7 @@ Before handing work back or opening a PR, run `pnpm lint` and get it passing; CI
 
 - **Always use pnpm.** Never install or run dependencies with npm, yarn, or `npx` — that sidesteps the workspace's protections.
 - This repo enforces [pnpm supply-chain security](https://pnpm.io/supply-chain-security) via `pnpm-workspace.yaml`: `minimumReleaseAge` (a multi-day cooldown on new releases), `trustPolicy: no-downgrade`, `blockExoticSubdeps`, and an `allowBuilds` allowlist for install scripts.
+- Owner-approved exception (2026-10-16): the exact `@embedded-postgres/*@17.10.0-beta.17` platform builds may restore their package-local native library symlinks for bundled local storage. Version upgrades need a fresh review; all other protections below still apply.
 - **Never weaken or bypass these controls**: don't add `minimumReleaseAgeExclude` entries, don't flip packages to `true` in `allowBuilds`, don't suppress `pnpm audit` advisories, and don't remove `overrides` (many are scoped security patches or dedup anchors). If an install fails because of these controls, that is the system working — report it instead of working around it.
 
 ## Environment

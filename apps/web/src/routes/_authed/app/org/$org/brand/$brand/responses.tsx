@@ -83,13 +83,17 @@ function ResponsesPage() {
 	if (isLoading && !data) {
 		content = <ResponseCardSkeletons count={3} />;
 	} else if (error && !data) {
-		content = <EmptyState message="Couldn't load responses right now. Reload the page to try again." />;
+		content = <EmptyState message={t("Couldn't load responses right now. Reload the page to try again.")} />;
 	} else if (!data || data.totalRuns === 0) {
 		content = (
-			<EmptyState message="No responses for the selected filters yet. Responses appear once your prompts have been run." />
+			<EmptyState
+				message={t("No responses for the selected filters yet. Responses appear once your prompts have been run.")}
+			/>
 		);
 	} else if (data.matches.length === 0) {
-		content = <EmptyState message={`No responses contain "${data.query}" in this period.`} />;
+		content = (
+			<EmptyState message={t('No responses contain "{query}" in this period.', { query: String(data.query) })} />
+		);
 	} else {
 		content = (
 			<div

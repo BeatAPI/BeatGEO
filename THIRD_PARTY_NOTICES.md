@@ -4,7 +4,7 @@ BeatGEO is maintained by BeatAPI and incorporates the MIT-licensed Elmo codebase
 
 Inherited statistics include share-of-voice and citation-stability calculations. The local metrics module reuses the same answer-level share-of-voice ratio.
 
-[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included as a pinned MIT dependency (`e39d1ee488fd5d069afa385b1cbcc326c8850018`); its original license and notices remain in the package. Its Chrome extension is copied locally during setup, with no separate product account or database.
+[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included as a pinned MIT dependency (`9aefd38bbd4e3fc7762751bcff57599fe8405588`); its original license and notices remain in the package. Its Chrome extension is copied locally during setup, with no separate product account or database.
 
 Research references, not bundled complete products:
 
@@ -14,3 +14,5 @@ Research references, not bundled complete products:
 - [Ansvisor](https://github.com/ansvisor/ansvisor): opportunity-to-action workflow.
 
 Geist and Lucide notices remain in `apps/browser-lab/public/assets/`. Dependency notices remain with packages. Historical changelogs and source documentation retain original attribution. Compatibility identifiers for existing ciphertext are not product branding.
+
+The default local installer uses [embedded-postgres](https://github.com/leinelissen/embedded-postgres), pinned to `17.10.0-beta.17` (MIT wrapper; platform packages declare Apache-2.0). PostgreSQL and bundled native libraries retain their own notices in the dependency packages. The fixed-version installation scripts restore native library symlinks inside those packages; BeatGEO does not create operating-system users or install a system-wide database service.

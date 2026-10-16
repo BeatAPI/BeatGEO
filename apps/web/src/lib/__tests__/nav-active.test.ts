@@ -37,3 +37,18 @@ describe("activeNavHref", () => {
 		expect(activeNavHref(rail, "/app/org/acme/settings/brands")).toBe("/app/org/acme/settings/brands");
 	});
 });
+
+describe("grouped analysis navigation", () => {
+	const rail = [
+		{ href: `${BRAND}/visibility`, aliases: [`${BRAND}/citations`, `${BRAND}/responses`] },
+		{ href: `${BRAND}/settings/prompts` },
+	];
+	it("keeps the insights module selected on its citation and answer pages", () => {
+		expect(activeNavHref(rail, `${BRAND}/citations`)).toBe(`${BRAND}/visibility`);
+		expect(activeNavHref(rail, `${BRAND}/responses/detail`)).toBe(`${BRAND}/visibility`);
+	});
+	it("does not claim settings or a similarly prefixed route", () => {
+		expect(activeNavHref(rail, `${BRAND}/settings/prompts`)).toBe(`${BRAND}/settings/prompts`);
+		expect(activeNavHref(rail, `${BRAND}/responses-archive`)).toBe("");
+	});
+});

@@ -14,6 +14,7 @@ vi.mock("@/lib/auth/helpers", () => ({
 	requireAuthSession: mocks.session,
 	canManageConnections: async (session: unknown) => mocks.deployment().mode === "local" && mocks.admin(session),
 }));
+vi.mock("@workspace/lib/runtime-health", () => ({ readRuntimeHealth: vi.fn() }));
 vi.mock("@workspace/deployment", () => ({ getDeployment: mocks.deployment }));
 vi.mock("@workspace/lib/secrets", () => ({ refreshCredentialOverlay: vi.fn(), getCredential: () => "test-only-key" }));
 vi.mock("../connections-core", () => ({

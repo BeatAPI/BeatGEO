@@ -12,6 +12,7 @@
 import { createFileRoute, Outlet, redirect, useRouteContext } from "@tanstack/react-router";
 import type { ClientConfig } from "@workspace/config/types";
 import { useEffect, useRef } from "react";
+import { AnswerInsightNav } from "@/components/answer-insight-nav";
 import { AppShell, PageContent } from "@/components/app-shell";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
@@ -69,7 +70,15 @@ function Shell() {
 	if (!scope) return <Outlet />;
 
 	return (
-		<AppShell sidebar={<AppSidebar {...scope} />} header={<SiteHeader />}>
+		<AppShell
+			sidebar={<AppSidebar {...scope} />}
+			header={
+				<>
+					<SiteHeader />
+					<AnswerInsightNav {...scope} />
+				</>
+			}
+		>
 			{scope.section === "account" ? (
 				<div className="flex flex-1 flex-col">
 					<Outlet />

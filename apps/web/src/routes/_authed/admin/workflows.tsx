@@ -336,7 +336,7 @@ function JobLogsPanel({ logs, loading, error }: { logs: string[]; loading: boole
 	}
 	if (error) {
 		return (
-			<div className="bg-red-50 border border-red-200 rounded p-3 text-sm text-red-800">
+			<div className="bg-red-950/40 border border-red-900 rounded p-3 text-sm text-red-300">
 				{t("Error loading logs: ")}
 				{error}
 			</div>
@@ -457,7 +457,9 @@ function JobDetailsDialog({ job, onRetrySuccess }: { job: RecentJob; onRetrySucc
 					{isFailed && job.failedReason && (
 						<div>
 							<p className="text-muted-foreground mb-1">{t("Error Message")}</p>
-							<div className="bg-red-50 border border-red-200 rounded p-3 text-sm text-red-800">{job.failedReason}</div>
+							<div className="bg-red-950/40 border border-red-900 rounded p-3 text-sm text-red-300">
+								{job.failedReason}
+							</div>
 						</div>
 					)}
 					<div>
@@ -491,7 +493,10 @@ function BrandRow({
 
 	return (
 		<>
-			<TableRow className={`cursor-pointer hover:bg-muted/50 ${hasOverdue ? "bg-amber-50/50" : ""}`} onClick={onToggle}>
+			<TableRow
+				className={`cursor-pointer hover:bg-muted/50 ${hasOverdue ? "bg-amber-950/30" : ""}`}
+				onClick={onToggle}
+			>
 				<TableCell>
 					<div className="flex items-center gap-2">
 						{isExpanded ? (
@@ -536,7 +541,7 @@ function BrandRow({
 							{t(" overdue")}
 						</Badge>
 					) : (
-						<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+						<Badge variant="secondary" className="bg-emerald-950/50 text-emerald-300">
 							{t("All on schedule")}
 						</Badge>
 					)}
@@ -593,21 +598,21 @@ function BrandRow({
 															<Badge variant="outline">{t("Disabled")}</Badge>
 														) : (
 															<div className="flex flex-col items-center gap-1">
-																<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+																<Badge variant="secondary" className="bg-emerald-950/50 text-emerald-300">
 																	{t("Enabled")}
 																</Badge>
 																{prompt.jobStatus === "active" && (
-																	<Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+																	<Badge variant="secondary" className="bg-emerald-950/50 text-emerald-300">
 																		{t("Active")}
 																	</Badge>
 																)}
 																{prompt.jobStatus === "created" && (
-																	<Badge variant="secondary" className="bg-blue-100 text-blue-700">
+																	<Badge variant="secondary" className="bg-blue-950/50 text-blue-300">
 																		{t("Queued")}
 																	</Badge>
 																)}
 																{prompt.jobStatus === "retry" && (
-																	<Badge variant="secondary" className="bg-amber-100 text-amber-700">
+																	<Badge variant="secondary" className="bg-amber-950/50 text-amber-300">
 																		{t("Retry")}
 																	</Badge>
 																)}

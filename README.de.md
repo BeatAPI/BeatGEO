@@ -23,7 +23,7 @@ Gib deine Website und dein Geschäftsfeld an, bestätige die vorgeschlagenen Fra
 
 ## Schnellstart
 
-Benötigt werden **Git, Node.js 24, pnpm 12.4.1, Docker mit Compose und Chrome**. Starte Docker vor der Einrichtung.
+Benötigt werden **Git, Node.js 24, pnpm 12.4.1 und Chrome**. BeatGEO bringt PostgreSQL mit und verwaltet es automatisch. Docker und eine separate Datenbankinstallation sind nicht erforderlich.
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -41,7 +41,7 @@ pnpm local:start
 
 Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ein. Kein zweiter Repository-Klon, kein zusätzliches BeatBrowser-Konto und keine globale CLI-Installation nötig. Eine vorhandene BeatBrowser-Verbindung kann verwendet werden; pro Chrome-Profil nur eine Erweiterungskopie aktivieren.
 
-**Für laufendes Monitoring muss die Umgebung laufen:** Computer wach und online halten; Docker/PostgreSQL, Chrome und `pnpm local:start` müssen aktiv bleiben. Der Dashboard-Tab darf geschlossen werden. Zum Neustart reicht `pnpm local:start`; die Datenbank nicht neu anlegen. Bei ausgeschaltetem oder offline befindlichem Computer findet keine Erfassung statt.
+**Für laufendes Monitoring muss die Umgebung laufen:** Computer wach und online halten; Chrome und `pnpm local:start` müssen aktiv bleiben. Der Dashboard-Tab darf geschlossen werden. Zum Neustart reicht `pnpm local:start`; die Datenbank nicht neu anlegen. Bei ausgeschaltetem oder offline befindlichem Computer findet keine Erfassung statt.
 
 [Ausführliche Einrichtung auf Chinesisch](docs/beat-geo/getting-started.md) · [Vorhandenes PostgreSQL einrichten, Chinesisch](docs/self-hosting.md)
 
@@ -79,7 +79,8 @@ Den [interaktiven Entwurf](docs/product/flow.html) lokal öffnen. Er zeigt das *
 | Fragen und Verbesserungen | Fragen auf Englisch/Chinesisch, Branchenvorlagen, gespeicherte Ausgangswerte und vergleichbare Wiederholungstests. |
 | Planung und Speicherung | PostgreSQL + pg-boss. Der nächste Lauf wurde im Live-Test eingereiht; unbeaufsichtigter Dauerbetrieb bleibt zu prüfen. Kein SQLite. |
 | BeatAPI-Recherche | Suche, Seitenabruf und Modellintegration implementiert; Abnahme mit echtem Key und kostenpflichtigen Aufrufen ausstehend. |
-| Technisches Website-Audit und SEO-Daten | Geplant oder nicht angeschlossen. Keine behaupteten Keyword-Volumina, Backlink-Indizes oder echten KI-Fragevolumina. |
+| Website-Prüfung und Entwürfe | Begrenzte HTML-/robots-/Sitemap-Prüfung, kostenlose Gliederungen, Bearbeitung und Freigabe je Version. Grenzen der Netzwerk- und kostenpflichtigen KI-Tests stehen im Prüfbericht. |
+| SEO-Daten | Nicht angeschlossen. Keine Keyword-Volumina, Backlink-Indizes oder echten KI-Fragevolumina. |
 
 Die README gibt es auf Englisch, Chinesisch, Japanisch, Deutsch und Koreanisch. **Die Produktoberfläche lässt sich über EN / 中文 zwischen Englisch und Chinesisch umschalten. Die Auswahl wird im Browser gespeichert.** Fragen, Markennamen und gesammelte Antworten bleiben in ihrer ursprünglichen Sprache. Die README-Übersetzungen bedeuten keine fünfsprachige Oberfläche.
 

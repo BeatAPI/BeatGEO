@@ -13,7 +13,8 @@ export function Logo({ className, iconClassName, textClassName, ...props }: Logo
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const branding = context.clientConfig?.branding;
 	const name = branding?.name || DEFAULT_APP_NAME;
-	const icon = branding?.icon && branding.icon !== DEFAULT_APP_ICON ? branding.icon : "/icons/beatgeo-mark.png";
+	const customIcon = branding?.icon && branding.icon !== DEFAULT_APP_ICON;
+	const icon = customIcon ? branding.icon : "/icons/beatgeo-mark.png";
 	return (
 		<div {...props} className={cn("flex items-center gap-2.5", className)}>
 			<img
@@ -21,7 +22,7 @@ export function Logo({ className, iconClassName, textClassName, ...props }: Logo
 				alt={`${name} logo`}
 				width={32}
 				height={32}
-				className={cn("size-8 shrink-0 rounded-md bg-white object-contain", iconClassName)}
+				className={cn("size-8 shrink-0 object-contain", !customIcon && "beat-logo-mark", iconClassName)}
 			/>
 			<span className={cn("text-xl font-semibold tracking-tight group-data-[collapsible=icon]:hidden", textClassName)}>
 				{name}

@@ -4,6 +4,7 @@ import { parseScrapeTargets } from "@workspace/config/scrape-targets";
 import { getDeploymentFeatures } from "@workspace/deployment";
 import { PROMPT_JOB_OPTIONS } from "@workspace/lib/monitoring";
 import { getProvider, validateScrapeTargets } from "@workspace/lib/providers";
+import { startWorkerHeartbeat } from "@workspace/lib/runtime-health";
 import { startCredentialRefresh } from "@workspace/lib/secrets";
 import { getBoss } from "./boss";
 import { registerHandlers } from "./handlers";
@@ -16,6 +17,8 @@ if (process.env.SENTRY_DSN) {
 		tracesSampleRate: 1.0,
 	});
 }
+
+let stopHeartbeat: (() => Promise<void>) | undefined;
 
 async function main() {
 	console.log("Starting pg-boss worker...");
@@ -91,6 +94,9 @@ async function main() {
 
 	// Register job handlers
 	await registerHandlers(boss);
+	stopHeartbeat = await startWorkerHeartbeat(() =>
+		console.error("Worker heartbeat failed; check the database connection."),
+	);
 	console.log("All handlers registered, worker is ready");
 }
 
@@ -101,19 +107,23 @@ main().catch(async (error) => {
 	process.exit(1);
 });
 
-// Graceful shutdown
-process.on("SIGTERM", async () => {
-	console.log("Received SIGTERM, shutting down gracefully...");
+let shuttingDown = false;
+async function shutdown() {
+	if (shuttingDown) return;
+	shuttingDown = true;
+	try {
+		await stopHeartbeat?.();
+	} catch {
+		console.error("Could not clear the worker heartbeat; it will expire automatically.");
+	}
 	await getBoss().stop({ graceful: true, timeout: 30000 });
 	await Promise.all([Sentry.flush(2000), shutdownTelemetry()]);
 	console.log("Worker stopped");
 	process.exit(0);
+}
+process.on("SIGTERM", () => {
+	void shutdown();
 });
-
-process.on("SIGINT", async () => {
-	console.log("Received SIGINT, shutting down gracefully...");
-	await getBoss().stop({ graceful: true, timeout: 30000 });
-	await Promise.all([Sentry.flush(2000), shutdownTelemetry()]);
-	console.log("Worker stopped");
-	process.exit(0);
+process.on("SIGINT", () => {
+	void shutdown();
 });
