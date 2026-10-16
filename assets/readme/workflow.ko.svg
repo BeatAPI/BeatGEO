@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="440" viewBox="0 0 1240 440" role="img" aria-labelledby="title desc" xml:lang="ko">
+<!-- [INPUT] README flowchart labels and connections. [OUTPUT] Static, accessible README diagram. [POS] Repository documentation asset. [PROTOCOL] Preserve all flow branches; no scripts or interactive viewer. -->
+<title id="title">제품 워크플로</title>
+<desc id="desc">flowchart LR
+    A[웹사이트와 브랜드] --&gt; B[질문 생성 및 확인]
+    B --&gt; C[AI 답변 수집]
+    C --&gt; D[언급과 인용 확인]
+    D --&gt; E[개선 항목과 기준값 저장]
+    E --&gt; F[변경 사항 적용]
+    F --&gt; G[같은 질문으로 재측정]
+    G --&gt; D
+</desc>
+<metadata id="mermaid-source">flowchart LR
+    A[웹사이트와 브랜드] --&gt; B[질문 생성 및 확인]
+    B --&gt; C[AI 답변 수집]
+    C --&gt; D[언급과 인용 확인]
+    D --&gt; E[개선 항목과 기준값 저장]
+    E --&gt; F[변경 사항 적용]
+    F --&gt; G[같은 질문으로 재측정]
+    G --&gt; D
+</metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0 0 8 4 0 8Z" fill="#7f9ce9"/></marker></defs>
+<rect width="1240" height="440" rx="18" fill="#111827"/>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,Noto Sans CJK SC,Noto Sans CJK JP,Noto Sans CJK KR,Microsoft YaHei,sans-serif">
+<path d="M280 100 H328" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M576 100 H624" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M872 100 H920" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M1044 150 V230" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M920 280 H872" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M624 280 H576" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 280 H300 V390 H1208 V100 H1168" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="32" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="48" y="74" fill="#a9b8d0" font-size="15">01</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="156.0" y="113.0">웹사이트와 브랜드</tspan>
+</text>
+<rect x="328" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="344" y="74" fill="#a9b8d0" font-size="15">02</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="452.0" y="113.0">질문 생성 및 확인</tspan>
+</text>
+<rect x="624" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="640" y="74" fill="#a9b8d0" font-size="15">03</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="748.0" y="113.0">AI 답변 수집</tspan>
+</text>
+<rect x="920" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="936" y="74" fill="#a9b8d0" font-size="15">04</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="1044.0" y="113.0">언급과 인용 확인</tspan>
+</text>
+<rect x="920" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="936" y="254" fill="#a9b8d0" font-size="15">05</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="1044.0" y="279.5">개선 항목과 기준값</tspan>
+<tspan x="1044.0" y="306.5">저장</tspan>
+</text>
+<rect x="624" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="640" y="254" fill="#a9b8d0" font-size="15">06</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="748.0" y="293.0">변경 사항 적용</tspan>
+</text>
+<rect x="328" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="344" y="254" fill="#a9b8d0" font-size="15">07</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="452.0" y="279.5">같은 질문으로</tspan>
+<tspan x="452.0" y="306.5">재측정</tspan>
+</text>
+</g>
+</svg>

@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 [BeatAPI](https://beatapi.io) が開発するオープンソースの GEO / AEO ワークスペースです。実際の AI 回答からブランドへの言及と引用を追跡し、改善事項を記録。同じ質問で再測定して変化を比較します。
 
-[クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
+[公式サイト](https://beatapi.io/geo) · [クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
 
 > **ローカル MVP / ソースプレビュー版。** ChatGPT の収集 → データベース → worker は実環境のスモークテストを通過しています。他のエンジン、有料リサーチ、長期間の無人運用は別途検証が必要です。[検証記録（英語）](docs/beat-geo/validation.md)
 
@@ -47,16 +47,7 @@ pnpm local:start
 
 ## ワークフロー
 
-```mermaid
-flowchart LR
-    A[サイトとブランド] --> B[質問を生成して確認]
-    B --> C[AI 回答を収集]
-    C --> D[言及と引用を確認]
-    D --> E[改善と基準値を保存]
-    E --> F[変更を実施]
-    F --> G[同じ質問で再測定]
-    G --> D
-```
+![プロダクトの流れ](assets/readme/workflow.ja.svg)
 
 BeatGEO が製品データとスケジュールを管理し、**BeatBrowser** がログイン済みブラウザで処理を実行します。**BeatAPI** はリサーチ向けの検索、ページ読み取り、モデル分析を提供できます。
 
