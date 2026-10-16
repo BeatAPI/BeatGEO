@@ -23,7 +23,7 @@ Start with your website and business. Review suggested monitoring questions, col
 
 ## Quick start
 
-Prepare **Git, Node.js 24, pnpm 12.4.1, Docker with Compose, and Chrome**. Start Docker before setup.
+Prepare **Git, Node.js 24, pnpm 12.4.1, and Chrome**. PostgreSQL is bundled and managed by BeatGEO; no Docker or separate database installation is required.
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -41,7 +41,7 @@ Open **http://localhost:3140/setup** and register your local administrator:
 
 The installer prepares a dedicated local PostgreSQL database and the included extension. No second repository clone, BeatBrowser account or global CLI installation is needed. Existing BeatBrowser connections can be reused; enable only one extension copy per profile.
 
-**To keep monitoring:** leave the computer awake and online, with Docker/PostgreSQL, Chrome and `pnpm local:start` running. You can close the dashboard tab. Restart with `pnpm local:start`; do not recreate the database. This local edition does not provide monitoring while your computer is offline.
+**To keep monitoring:** leave the computer awake and online, with Chrome and `pnpm local:start` running. You can close the dashboard tab. Restart with `pnpm local:start`; do not recreate the database. This local edition does not provide monitoring while your computer is offline.
 
 [Detailed onboarding — Chinese](docs/beat-geo/getting-started.md) · [Manual PostgreSQL setup — Chinese](docs/self-hosting.md)
 
@@ -79,7 +79,8 @@ Open [the interactive blueprint](docs/product/flow.html) locally to explore its 
 | Questions and optimization | English/Chinese question generation, industry templates, saved action baselines and comparable retests. |
 | Scheduling and storage | PostgreSQL + pg-boss. The next cycle was queued in live validation; long unattended operation has not been established. SQLite is not supported. |
 | BeatAPI research | Search/read/model integration is implemented; acceptance with a real key and billed calls remains pending. |
-| Technical site audit and SEO datasets | Planned or not connected. No claimed keyword volumes, backlink index or real AI prompt-volume dataset. |
+| Website checks and drafts | Bounded HTML/robots/sitemap checks, free outlines, editable drafts and revision approval. Public-network and paid AI acceptance have stated limits. |
+| SEO datasets | Not connected. No claimed keyword volumes, backlink index or real AI prompt-volume dataset. |
 
 README translations: English, Chinese, Japanese, German and Korean. **Switch the dashboard between English and Chinese using EN / 中文. Your preference is saved in this browser.** Questions, brand names and collected answers retain their original language. The translated READMEs do not imply five-language UI support.
 

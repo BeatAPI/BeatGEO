@@ -8,13 +8,13 @@ The MVP implements literal mention rate, scored/completed coverage and explicit 
 | Completion coverage | Completed observations / stored observations in scope |
 | Timeout | Separate `timeout` status count |
 | Failure / attention | Separate counts; never negative brand observations |
-| Share of voice | Target answer-level mentions / mentions of target plus fixed competitors; function available, workbench integration pending |
+| Share of voice | Target answer-level mentions / mentions of target plus fixed competitors; shown in Opportunities → Observed answers |
 
 Stored-observation coverage is not future scheduled-plan coverage. No planned counts are invented. Brands must be selected separately; account context, platform, mode and question version remain distinguishable. An uncertain submission is not automatically replayed.
 
 Timeout details include question, platform, elapsed time, answer-wait timeout, attempt count, partial text and error. Elapsed time includes opening and cleanup and can exceed answer-wait timeout. Older records may lack timing metadata.
 
-Visible links do not prove complete citation extraction. Recommendation identification, full citation coverage and confidence intervals remain roadmap items. The inherited statistics include Jaccard/Bray–Curtis source changes and last-value-carried-forward views; carried values are not fresh observations. Those views need explicit freshness before becoming BeatGEO's default factual trend.
+Visible links do not prove complete citation extraction. Recommendation identification, full citation coverage and confidence intervals remain roadmap items. The inherited statistics include Jaccard/Bray–Curtis source changes and last-value-carried-forward views; carried values are not fresh observations. Overview labels this carry-forward behavior. Opportunities → Observed answers instead counts only completed answers in the last 30 days, shows each group’s real denominator and last observation time, and caps at 5,000 rows with an explicit truncation notice. Provider, model version, search mode and branded/unbranded question type stay separate. Question tags use current classification; changing competitors invalidates historical share-of-voice comparability.
 
 No composite score is presented as a validated predictor of traffic or revenue.
 

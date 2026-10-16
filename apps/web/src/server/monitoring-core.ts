@@ -6,7 +6,8 @@ import {
 	type Observation,
 	PROMPT_JOB_OPTIONS,
 } from "@workspace/lib/monitoring";
-import { and, desc, eq, gt, inArray } from "drizzle-orm";
+import { readRuntimeHealth } from "@workspace/lib/runtime-health";
+import { and, desc, eq, gt, inArray, isNull, or, sql } from "drizzle-orm";
 import { getBoss } from "@/lib/boss-client";
 
 export async function observationsForBrand(brandId: string, since: Date): Promise<Observation[]> {
@@ -26,7 +27,7 @@ export async function observationsForBrand(brandId: string, since: Date): Promis
 }
 
 export async function readMonitoring(brandId: string) {
-	const [attempts, actions] = await Promise.all([
+	const [attempts, actions, questions, runtime] = await Promise.all([
 		db
 			.select()
 			.from(collectionAttempts)
@@ -39,6 +40,13 @@ export async function readMonitoring(brandId: string) {
 			.where(eq(optimizationActions.brandId, brandId))
 			.orderBy(desc(optimizationActions.createdAt))
 			.limit(50),
+		db
+			.select({ id: prompts.id, value: prompts.value })
+			.from(prompts)
+			.where(and(eq(prompts.brandId, brandId), eq(prompts.enabled, true)))
+			.orderBy(prompts.createdAt)
+			.limit(100),
+		readRuntimeHealth(),
 	]);
 	const since = actions.reduce(
 		(date, action) => (action.appliedAt && action.appliedAt < date ? action.appliedAt : date),
@@ -46,6 +54,8 @@ export async function readMonitoring(brandId: string) {
 	);
 	const observations = actions.some((action) => action.appliedAt) ? await observationsForBrand(brandId, since) : [];
 	return {
+		questions,
+		runtime,
 		attempts: attempts.map(({ attemptKey: _attemptKey, ...attempt }) => ({
 			...attempt,
 			status:
@@ -98,10 +108,14 @@ export async function applyOptimizationAction(brandId: string, id: string, imple
 				eq(optimizationActions.id, id),
 				eq(optimizationActions.brandId, brandId),
 				eq(optimizationActions.status, "planned"),
+				or(
+					isNull(optimizationActions.contentDraft),
+					sql`${optimizationActions.reviewedRevision} = ${optimizationActions.draftRevision}`,
+				),
 			),
 		)
 		.returning();
-	if (!action) throw new Error("Action is unavailable or already applied.");
+	if (!action) throw new Error("Action is unavailable, already applied, or its draft needs review.");
 	return action;
 }
 
@@ -132,4 +146,33 @@ export async function retestOptimizationAction(brandId: string, id: string) {
 		if (job) queued++;
 	}
 	return { queued, skipped: ids.length - sameQuestions.length };
+}
+
+export async function collectOneQuestion(brandId: string, promptId: string) {
+	const [prompt] = await db
+		.select()
+		.from(prompts)
+		.where(and(eq(prompts.brandId, brandId), eq(prompts.id, promptId), eq(prompts.enabled, true)));
+	if (!prompt) throw new Error("Choose an enabled question from this brand.");
+	const [active] = await db
+		.select({ id: collectionAttempts.id })
+		.from(collectionAttempts)
+		.where(
+			and(
+				eq(collectionAttempts.promptId, promptId),
+				eq(collectionAttempts.status, "running"),
+				gt(collectionAttempts.startedAt, new Date(Date.now() - PROMPT_JOB_OPTIONS.expireInSeconds * 1000)),
+			),
+		)
+		.limit(1);
+	if (active) throw new Error("This question is already being collected.");
+	const runtime = await readRuntimeHealth();
+	if (runtime.worker !== "ready") throw new Error("Start the collection worker before retrying.");
+	const boss = await getBoss();
+	const id = await boss.send(
+		"process-prompt",
+		{ promptId, force: true },
+		{ ...PROMPT_JOB_OPTIONS, singletonKey: `manual-${promptId}`, singletonSeconds: 300 },
+	);
+	return { queued: Boolean(id) };
 }

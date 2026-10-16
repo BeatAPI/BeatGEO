@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TD
-    A[准备 Git、Node 24、pnpm、Docker、Chrome] --> B[环境检查 local:doctor]
+    A[准备 Git、Node 24、pnpm、Chrome] --> B[环境检查 local:doctor]
     B --> C[local:setup 自动建独立数据库并准备扩展]
     C --> D[local:start 启动网页、采集器和调度进程]
     D --> E[注册本地 BeatGEO 管理员]
@@ -26,12 +26,12 @@ flowchart TD
 | 要准备的东西 | 用途 | 用户需要操作什么 |
 |---|---|---|
 | Git、Node.js 24、pnpm 12.4.1 | 下载和运行当前源码版 | 安装这些工具 |
-| Docker + Compose | 承载本机独立 PostgreSQL | 安装并启动 Docker；不用手动创建表 |
+| 内置 PostgreSQL | 自动保存品牌、问题、证据和任务 | 无需单独安装或配置 |
 | Chrome | 运行用户已登录的网站 | 安装 Chrome，选择日常使用的配置 |
 | BeatAPI Key、余额、可用研究模型 | 网站研究、生成问题、分析机会 | 在 Connections 验证并保存；模板路线可跳过 |
 | ChatGPT 网站账号 | 默认网页采集目标 | 在选定 Chrome 配置登录；与 BeatAPI Key 无关 |
 
-Docker 是标准自动安装路线的要求，**不是 PostgreSQL 的唯一安装方式**。已有专用 PostgreSQL 的开发者可以按[手动自托管指南](../self-hosting.md)配置，无须 Docker。当前仍不支持 SQLite。
+默认使用随依赖安装的 PostgreSQL，由 BeatGEO 启停。用户不需要 Docker、数据库命令或数据库密码。可选 `pnpm local:setup --docker`，已有专用 PostgreSQL 也可按[手动指南](../self-hosting.md)配置；已有数据不会自动转换或覆盖。当前不支持 SQLite。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -41,7 +41,7 @@ pnpm local:setup
 pnpm local:start
 ```
 
-环境检查只读取版本和 Docker 状态。安装脚本会安装锁定依赖、创建专用 PostgreSQL 容器/数据卷、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。打开 http://localhost:3140/setup；首次注册的是本地 BeatGEO 管理员，不会注册或绑定一个新的 BeatAPI 账号。
+环境检查只读取工具版本。安装脚本会安装锁定依赖、准备本地 PostgreSQL、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。默认打开 http://localhost:3140/setup，若端口被占用会自动选择其他端口，以终端输出为准；首次注册的是本地 BeatGEO 管理员，不会注册或绑定一个新的 BeatAPI 账号。
 
 ## 页面引导
 
@@ -65,9 +65,9 @@ pnpm local:start
 
 ## 持续运行的条件
 
-可关闭 BeatGEO 网页，但电脑要保持唤醒、联网，Docker/PostgreSQL、Chrome、`pnpm local:start` 里的调度与采集进程要运行。关闭电脑就没有实时采集，也不能承诺完整补回离线时段。Key 需要持续有效且有可用额度；AI 网站会话失效时需要重新登录。
+可关闭 BeatGEO 网页，但电脑要保持唤醒、联网，Chrome、`pnpm local:start` 里的调度与采集进程要运行。关闭电脑就没有实时采集，也不能承诺完整补回离线时段。Key 需要持续有效且有可用额度；AI 网站会话失效时需要重新登录。
 
-再次使用运行 `pnpm local:start` 即可，不必重建数据库或重新填写 Key。默认自动安装使用独立 Docker 数据卷，退出进程不会删除记录。备份需包含 PostgreSQL 数据及私密配置/加密密钥；只拷贝数据库而丢失加密密钥，无法恢复已保存 Key。不要用删除数据卷作为“重启”方法。
+再次使用运行 `pnpm local:start` 即可，不必重建数据库或重新填写 Key。默认安装将数据保存在 `.beat-geo/postgres`，退出进程会先停止应用再关闭数据库，重启不会删除记录。停止 BeatGEO 后，一起备份 `.beat-geo/postgres`、`.beat-geo/database.json`、`.env` 与 `apps/web/.env`；不要复制运行中的数据库目录。Docker 用户继续使用原数据卷。备份需包含 PostgreSQL 数据及私密配置/加密密钥；只拷贝数据库而丢失加密密钥，无法恢复已保存 Key。不要用删除数据卷作为“重启”方法。
 
 ```mermaid
 flowchart LR
@@ -85,7 +85,7 @@ flowchart LR
 
 ## 当前还需要完善的产品体验
 
-- 一键桌面安装、自动启动与 worker 在线心跳，让非开发者不必管理终端。
+- 一键桌面安装与自动启动，让非开发者不必管理终端；当前设置页已显示 worker 心跳。
 - 首次研究的小额实测与调用费用呈现；当前 Key 验证不能替代真实付费链路验收。
 - 各平台独立的登录检测和采集能力状态；当前以首次任务结果为准。
 - 长期运行、离线恢复、跨设备调度和备份恢复工具；当前本机常驻模式不能等同托管监控。

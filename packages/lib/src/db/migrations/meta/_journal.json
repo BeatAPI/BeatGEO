@@ -176,6 +176,20 @@
       "when": 1791994877568,
       "tag": "0024_monitoring_loop",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1792149482867,
+      "tag": "0025_runtime_health",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1792149944600,
+      "tag": "0026_site_checks_and_drafts",
+      "breakpoints": true
     }
   ]
 }

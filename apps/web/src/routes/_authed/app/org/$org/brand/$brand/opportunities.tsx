@@ -1,4 +1,6 @@
+import { EvidenceSummary } from "@/components/evidence-summary";
 import { MonitoringLoop } from "@/components/monitoring-loop";
+import { SiteAudit } from "@/components/site-audit";
 import { useT } from "@/lib/i18n";
 /**
  * The page renders a structured opportunities report. We assemble a deterministic
@@ -58,6 +60,8 @@ function OpportunitiesPage() {
 			infoContent={infoContent}
 		>
 			<div className="space-y-6">
+				<EvidenceSummary brandId={brandId} />
+				<SiteAudit brandId={brandId} />
 				<MonitoringLoop brandId={brandId} />
 				{data?.report && data.lastEvaluatedAt && <LastEvaluatedAt date={data.lastEvaluatedAt} />}
 				{content}

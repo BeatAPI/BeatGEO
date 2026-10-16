@@ -64,7 +64,7 @@ all Playwright deployment-mode suites. The inherited E2E orchestration workflow
 is not part of this fork.
 
 For repeatable MVP regression, select Node.js 24, install the pinned pnpm version
-and dependencies, and start Docker:
+and dependencies. Docker is not required:
 
 ```bash
 pnpm test:mvp
@@ -72,7 +72,7 @@ pnpm test:mvp
 
 This creates and migrates a disposable PostgreSQL 17 database, runs browser
 collector contracts, script tests, workspace unit tests and database/queue/retest
-integration, then removes the test container. Provider responses are synthetic;
+integration, then stops the bundled database and removes its temporary directory. Provider responses are synthetic;
 this is not live browser, paid API, UI or overnight acceptance.
 
 UI suites require a separately running **test** app with the E2E fixture data.

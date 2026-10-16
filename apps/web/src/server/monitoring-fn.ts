@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireBrandSession } from "@/lib/auth/helpers";
 import {
 	applyOptimizationAction,
+	collectOneQuestion,
 	createOptimizationAction,
 	readMonitoring,
 	retestOptimizationAction,
@@ -43,4 +44,11 @@ export const retestOptimizationActionFn = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireBrandSession(data.brandId);
 		return retestOptimizationAction(data.brandId, data.id);
+	});
+
+export const collectOneQuestionFn = createServerFn({ method: "POST" })
+	.validator(brandInput.extend({ promptId: z.uuid() }))
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+		return collectOneQuestion(data.brandId, data.promptId);
 	});

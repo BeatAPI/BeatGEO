@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { CollectionCheck } from "@/components/collection-check";
+import { ContentDraft } from "@/components/content-draft";
 import { useT } from "@/lib/i18n";
 import { applyOptimizationActionFn, getMonitoringFn, retestOptimizationActionFn } from "@/server/monitoring-fn";
 
@@ -65,6 +67,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 					{t(notice.message, notice.values)}
 				</p>
 			)}
+			{data && <CollectionCheck brandId={brandId} ready={data.runtime.worker === "ready"} questions={data.questions} />}
 			{data?.actions.length === 0 && (
 				<p className="text-sm text-muted-foreground">
 					{t("No actions yet. Save an opportunity below after collecting a baseline.")}
@@ -79,6 +82,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 						</span>
 					</div>
 					<p className="text-sm text-muted-foreground">{action.description}</p>
+					<ContentDraft brandId={brandId} action={action} />
 					{action.status === "planned" ? (
 						<div className="flex flex-wrap gap-2">
 							<input
@@ -92,7 +96,11 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 							<button
 								className={button}
 								type="button"
-								disabled={mutation.isPending || !notes[action.id]?.trim()}
+								disabled={
+									mutation.isPending ||
+									!notes[action.id]?.trim() ||
+									Boolean(action.contentDraft && action.reviewedRevision !== action.draftRevision)
+								}
 								onClick={() => mutation.mutate({ id: action.id, operation: "apply" })}
 							>
 								{t("Mark implemented")}
