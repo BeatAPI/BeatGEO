@@ -31,6 +31,7 @@
     "test:api:demo": "pnpm --filter e2e test:api:demo",
     "validate:spec": "pnpm --filter e2e validate:spec",
     "test:scripts": "node --test 'scripts/*.test.mjs'",
+    "test:mvp": "node scripts/test-mvp.mjs",
     "license-check": "node scripts/check-licenses.mjs",
     "browser:lab": "node apps/browser-lab/server.mjs",
     "test:browser": "node --test apps/browser-lab/*.test.mjs",

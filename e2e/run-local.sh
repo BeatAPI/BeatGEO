@@ -1,39 +1,20 @@
 #!/usr/bin/env bash
-#
-# Run E2E tests locally using act (https://github.com/nektos/act)
-#
-# The GitHub workflow (.github/workflows/e2e.yml) is the single source
-# of truth. This script just invokes it locally via act.
-#
-# Install act:
-#   brew install act
-#   # or: gh extension install https://github.com/nektos/gh-act
-#
-# Usage:
-#   bash e2e/run-local.sh          # Run the full E2E job
-#   pnpm test:e2e-local             # Same thing via package.json
-#
+# Run UI tests against an explicitly prepared, isolated local test stack.
 set -euo pipefail
-
-if ! command -v act &>/dev/null; then
-  echo "Error: 'act' is not installed."
-  echo ""
-  echo "Install via one of:"
-  echo "  brew install act"
-  echo "  gh extension install https://github.com/nektos/gh-act"
-  echo ""
-  echo "See https://github.com/nektos/act for more options."
-  exit 1
-fi
-
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
-
-mkdir -p "$REPO_ROOT/e2e/artifacts"
-
-exec act -j e2e \
-  -W .github/workflows/e2e.yaml \
-  --artifact-server-path "$REPO_ROOT/e2e/artifacts" \
-  --container-daemon-socket /var/run/docker.sock \
-  --container-architecture linux/amd64 \
-  "$@"
+cd "$(dirname "$0")/.."
+node --input-type=module <<'JS'
+const local = new Set(['localhost', '127.0.0.1', '[::1]']);
+try {
+  const app = new URL(process.env.BASE_URL || '');
+  const database = new URL(process.env.DATABASE_URL || '');
+  if (!local.has(app.hostname) || !['http:', 'https:'].includes(app.protocol) ||
+      !local.has(database.hostname) || !['postgres:', 'postgresql:'].includes(database.protocol) ||
+      !decodeURIComponent(database.pathname).endsWith('_test')) throw new Error();
+  const response = await fetch(app.origin, { signal: AbortSignal.timeout(5000), redirect: 'manual' });
+  if (response.status >= 500) throw new Error();
+} catch {
+  console.error('Set BASE_URL to a running local test app and DATABASE_URL to its disposable local *_test database. Prepare E2E fixtures first. For isolated core regression, use pnpm test:mvp.');
+  process.exit(1);
+}
+JS
+exec pnpm --filter e2e test:e2e "$@"

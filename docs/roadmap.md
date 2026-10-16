@@ -2,6 +2,8 @@
 
 [Interactive blueprint](product/flow.html) · [67-item feature inventory](product/features.csv). These describe the target product, not completed functionality.
 
+[2026-10-16 acceptance review](beat-geo/acceptance-2026-10-16.md) records the current test results, Profound gaps, SEO integration boundary and the seven-day live acceptance plan. Run `pnpm test:mvp` for repeatable isolated core regression.
+
 ## Available MVP
 
 Independent BeatBrowser tasks, manual brand/questions, ChatGPT/Gemini adapters with stated limits, original answers and visible links, brand/engine/status filters, timeout evidence, export and local agent drafts. The full foundation retains organization, brand, prompt, competitor and report implementations. PostgreSQL and pg-boss now persist collection attempts, answers and citations, frozen action baselines, implementation notes and comparable retests. BeatAPI research supports bounded search/read/model calls; real-key acceptance is still pending.
