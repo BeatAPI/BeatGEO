@@ -8,13 +8,9 @@ import {
 	IconCreditCard,
 	IconDashboard,
 	IconKey,
-	IconLink,
 	IconListDetails,
-	IconMessages,
 	IconPlugConnected,
 	IconSchool,
-	IconSitemap,
-	IconSpeakerphone,
 	IconTarget,
 	IconUsers,
 } from "@tabler/icons-react";
@@ -41,6 +37,7 @@ import { NavUser } from "@/components/nav-user";
 import { useDeploymentFeatures } from "@/hooks/use-deployment-features";
 import { useLooseRouteContext, useViewer } from "@/hooks/use-route-context";
 import { adminNavItems } from "@/lib/admin-nav";
+import { INSIGHT_PAGES } from "@/lib/insight-navigation";
 import type { OrganizationSummary } from "@/lib/organizations/types";
 import type { ShellScope } from "@/lib/shell-scope";
 
@@ -91,15 +88,12 @@ function brandGroups(organization: OrganizationSummary, brand: BrandWithPrompts)
 
 	if (brand.onboarded) {
 		dashboard.push(
-			{ title: "Visibility", link: { to: "/app/org/$org/brand/$brand/visibility", params }, icon: IconChartBar },
 			{
-				title: "Share of Voice",
-				link: { to: "/app/org/$org/brand/$brand/share-of-voice", params },
-				icon: IconSpeakerphone,
+				title: "Answer Engine Insights",
+				link: { to: INSIGHT_PAGES[0].to, params },
+				matchLinks: INSIGHT_PAGES.slice(1).map((page) => ({ to: page.to, params })),
+				icon: IconChartBar,
 			},
-			{ title: "Responses", link: { to: "/app/org/$org/brand/$brand/responses", params }, icon: IconMessages },
-			{ title: "Query Fan-Out", link: { to: "/app/org/$org/brand/$brand/query-fan-out", params }, icon: IconSitemap },
-			{ title: "Citations", link: { to: "/app/org/$org/brand/$brand/citations", params }, icon: IconLink },
 			{ title: "Opportunities", link: { to: "/app/org/$org/brand/$brand/opportunities", params }, icon: IconTarget },
 		);
 	}

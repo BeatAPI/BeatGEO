@@ -463,9 +463,9 @@ function DashboardPage() {
 					icon={IconEye}
 					title={t("AI Visibility")}
 					linkTo="/app/org/$org/brand/$brand/visibility"
-					linkLabel="View Visibility"
-					chartTitle="Visibility Trends (30d)"
-					chartLabel="AI Visibility (7d avg)"
+					linkLabel={t("View Visibility")}
+					chartTitle={t("Visibility Trends (30d)")}
+					chartLabel={t("AI Visibility (7d avg)")}
 					// The tooltips quote live figures, so they stay off until those have loaded.
 					tooltip={loadingVisibility ? undefined : visibilityTooltipText(nonBrandedVisibility)}
 					// "Current" = the latest plotted point, so the hero number always
@@ -480,9 +480,9 @@ function DashboardPage() {
 					icon={IconSpeakerphone}
 					title={t("Share of Voice")}
 					linkTo="/app/org/$org/brand/$brand/share-of-voice"
-					linkLabel="View Share of Voice"
-					chartTitle="Share of Voice Trends (30d)"
-					chartLabel="Share of Voice"
+					linkLabel={t("View Share of Voice")}
+					chartTitle={t("Share of Voice Trends (30d)")}
+					chartLabel={t("Share of Voice")}
 					tooltip={loadingSov ? undefined : SOV_TOOLTIP}
 					value={lastValue(sovTimeSeries, "share")}
 					series={sovTimeSeries.map((p) => ({ date: p.date, value: p.share }))}

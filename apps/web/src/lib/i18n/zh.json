@@ -1,4 +1,5 @@
 {
+	"Answer Engine Insights": "答案引擎洞察",
 	" (try showing stop words)": "（可尝试显示停用词）",
 	" Add Competitor": " 添加竞品",
 	" Add Multiple": " 批量添加",
@@ -1005,5 +1006,17 @@
 	"Competitor Visibility ↓": "竞品可见度 ↓",
 	"Competitor Visibility ↑": "竞品可见度 ↑",
 	"Prompt A–Z": "问题 A–Z",
-	"Prompt Z–A": "问题 Z–A"
+	"Prompt Z–A": "问题 Z–A",
+	"Couldn't load responses right now. Reload the page to try again.": "回答加载失败，请刷新重试。",
+	"No responses for the selected filters yet. Responses appear once your prompts have been run.": "当前筛选下暂无回答，完成采集后将显示在这里。",
+	"No responses contain \"{query}\" in this period.": "当前时间范围内没有包含“{query}”的回答。",
+	"View Visibility": "查看可见度",
+	"Visibility Trends (30d)": "可见度趋势（30 天）",
+	"AI Visibility (7d avg)": "AI 可见度（7 天均值）",
+	"View Share of Voice": "查看声量份额",
+	"Share of Voice Trends (30d)": "声量份额趋势（30 天）",
+	"Couldn't load query fan-out right now. Reload the page to try again.": "衍生搜索加载失败，请刷新重试。",
+	"No runs with web search enabled for the selected filters. Fan-out appears once your prompts have been run by an engine with web search.": "暂无联网搜索记录，完成支持网页搜索的采集后将显示在这里。",
+	"No web queries in this period — the engines you track didn't expose any searches for these prompts and filters.": "当前时间范围内，采集平台没有返回可查看的搜索词。",
+	"Search responses...": "搜索回答…"
 }

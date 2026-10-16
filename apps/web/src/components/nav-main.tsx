@@ -16,6 +16,7 @@ export interface NavItem {
 	link: LinkProps;
 	icon?: Icon;
 	exact?: boolean;
+	matchLinks?: LinkProps[];
 }
 
 export interface NavGroup {
@@ -35,7 +36,13 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
 	}));
 
 	const activeHref = activeNavHref(
-		resolved.flatMap((group) => group.items.map(({ item, href }) => ({ href, exact: item.exact }))),
+		resolved.flatMap((group) =>
+			group.items.map(({ item, href }) => ({
+				href,
+				exact: item.exact,
+				aliases: item.matchLinks?.map((link) => router.buildLocation(link).pathname),
+			})),
+		),
 		pathname,
 	);
 
@@ -50,6 +57,7 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
 								<SidebarMenuButton
 									render={<Link {...item.link} onClick={() => setOpenMobile(false)} />}
 									tooltip={t(item.title)}
+									className="text-[13px] font-normal"
 									isActive={href === activeHref}
 								>
 									{item.icon && <item.icon />}

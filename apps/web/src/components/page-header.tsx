@@ -14,8 +14,8 @@ interface PageHeaderProps {
 export function PageHeader({ title, subtitle, infoContent, children }: PageHeaderProps) {
 	return (
 		<div className="space-y-0">
-			<div className="mb-7 space-y-2">
-				<h1 className="text-[22px] leading-8 font-medium flex items-center gap-2">
+			<div className="mb-5 space-y-1.5">
+				<h1 className="text-lg leading-6 font-medium flex items-center gap-2">
 					{title}
 					{infoContent && (
 						<Tooltip>
