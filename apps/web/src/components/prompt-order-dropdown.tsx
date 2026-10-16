@@ -8,6 +8,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { ArrowUpDown } from "lucide-react";
 import { FilterTriggerButton } from "@/components/filter-bar";
+import { useT } from "@/lib/i18n";
 import { coercePromptOrder, DEFAULT_PROMPT_ORDER, PROMPT_ORDER_OPTIONS, type PromptOrder } from "@/lib/prompt-order";
 
 /** Sort control for the prompts list (#60). Reads/writes the `order` URL key
@@ -16,6 +17,7 @@ import { coercePromptOrder, DEFAULT_PROMPT_ORDER, PROMPT_ORDER_OPTIONS, type Pro
  *  scroll reset, dropping the key when set back to the default so default
  *  state keeps a clean URL. */
 export function PromptOrderDropdown() {
+	const t = useT();
 	const navigate = useNavigate();
 	const selected = useSearch({
 		strict: false,
@@ -46,7 +48,7 @@ export function PromptOrderDropdown() {
 				render={
 					<FilterTriggerButton
 						icon={<ArrowUpDown className="size-3.5" />}
-						label={label}
+						label={t(label)}
 						active={selected !== DEFAULT_PROMPT_ORDER}
 					/>
 				}
@@ -55,7 +57,7 @@ export function PromptOrderDropdown() {
 				<DropdownMenuRadioGroup value={selected} onValueChange={(v) => setOrder(v as PromptOrder)}>
 					{PROMPT_ORDER_OPTIONS.map((o) => (
 						<DropdownMenuRadioItem key={o.value} value={o.value} className="cursor-pointer whitespace-nowrap">
-							{o.label}
+							{t(o.label)}
 						</DropdownMenuRadioItem>
 					))}
 				</DropdownMenuRadioGroup>

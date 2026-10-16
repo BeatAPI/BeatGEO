@@ -241,13 +241,14 @@ function OrganizationSection({
 	currentBrandId: string | undefined;
 	onNavigate: () => void;
 }) {
+	const t = useT();
 	const { heading, children } = organizationTree(organization);
 
 	return (
 		<DropdownMenuGroup aria-label={organization.name}>
 			<DropdownMenuItem
 				render={<Link {...heading.link} onClick={onNavigate} />}
-				aria-label={heading.ariaLabel}
+				aria-label={t("{name} organization settings", { name: organization.name })}
 				className="cursor-pointer font-medium"
 			>
 				<IconBriefcase className="size-4 shrink-0 text-muted-foreground" />
@@ -266,7 +267,13 @@ function OrganizationSection({
 							className={row.kind === "brand" ? "cursor-pointer" : "cursor-pointer text-muted-foreground"}
 						>
 							<OrganizationRowIcon row={row} size="xs" />
-							<span className="truncate">{row.label}</span>
+							<span className="truncate">
+								{row.kind === "brand"
+									? row.label
+									: row.kind === "set-up"
+										? t("Set up {name}", { name: organization.name })
+										: t(row.label)}
+							</span>
 							{row.kind === "brand" && row.id === currentBrandId && (
 								<span className="ml-auto flex w-7 shrink-0 justify-center">
 									<IconCheck className="size-3.5" />

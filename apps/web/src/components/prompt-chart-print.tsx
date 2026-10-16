@@ -166,13 +166,13 @@ export function PromptChartPrint({
 	const placeholderProps = { promptName, chartRef, isDownloading, onDownload: handleDownload };
 
 	if (hasNoRuns) {
-		const message = hasEverBeenEvaluated ? "No data in selected time range" : "Evaluating for the first time...";
+		const message = hasEverBeenEvaluated ? "No data in selected time range" : "No completed answers yet";
 
 		return (
 			<PlaceholderCard {...placeholderProps}>
 				<div>
 					<span className="font-semibold text-xl sm:text-2xl md:text-3xl lg:text-4xl text-muted-foreground print:text-lg">
-						{message}
+						{t(message)}
 					</span>
 				</div>
 			</PlaceholderCard>

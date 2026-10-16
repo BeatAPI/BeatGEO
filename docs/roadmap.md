@@ -10,6 +10,12 @@ Independent BeatBrowser tasks, manual brand/questions, ChatGPT/Gemini adapters w
 
 Default source installation now bundles its own PostgreSQL without Docker. Setup exposes storage and worker health; single-question collection, observed-answer metrics and the reviewed draft workflow share the same database and queue.
 
+## Current product boundary
+
+The source edition focuses on AEO: generate and confirm questions, collect real AI answers, inspect mentions and citations, save evidence-backed improvements, and retest. The main workspace, onboarding, authentication and settings share a dark theme. Recommendations, actions/retests, observed evidence and website checks have separate views.
+
+Desktop packaging and a full desktop client are deferred until the source edition demonstrates adoption and repeatable value. Commercial SEO datasets, GSC/GA4, Shopping and general-purpose agent builders are later work, not MVP requirements. A limited website check supports AEO diagnosis; it is not a full SEO suite.
+
 ## Next complete journey
 
 1. Connect website onboarding; confirm business, aliases and competitors.

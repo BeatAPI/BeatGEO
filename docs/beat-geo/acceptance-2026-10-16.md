@@ -138,3 +138,10 @@ GitHub 仓库元数据于本轮读取；README 功能声明不是部署验收。
 - [open-geo](https://github.com/Pupok462/open-geo)
 - [geo-score 候选仓库](https://github.com/qq136692547-cmyk/geo-score)
 - 本项目：`docs/metrics.md`、`docs/beat-geo/validation.md`、`docs/beat-geo/beatapi-product-loop.md` 与本轮测试输出。历史 feature CSV 中的状态早于后续实现，应结合本次实测阅读。
+
+
+## Dark AEO workspace follow-up
+
+The source edition now defaults to dark mode across authentication, setup, settings, the workspace and report previews. Opportunities separates recommendations, actions/retests, observed answers and website checks. Collection failures are visible above saved actions; no-answer chart cards no longer imply that a job is running. Developer tools are opt-in with `VITE_DEVTOOLS=true`.
+
+Local browser checks used the isolated installation and synthetic acceptance data: login/setup/settings, EN/中文, all four opportunity tabs, retained question selection and expanded draft across tab switches, visible empty-answer failures, dark account menu, and a 390px viewport without horizontal page overflow. No paid generation, new real-engine run, populated recommendation report, exported PNG or print-output acceptance is claimed by this UI pass. Production build, web typecheck, workspace lint and 568 web unit tests passed.

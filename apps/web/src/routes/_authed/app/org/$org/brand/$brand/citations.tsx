@@ -94,7 +94,7 @@ function CitationsPage() {
 				errorState={
 					<Card>
 						<CardContent className="pt-6">
-							<div className="text-red-600 text-sm bg-red-50 p-3 rounded-md">
+							<div className="text-red-300 text-sm bg-red-950/40 p-3 rounded-md">
 								{t("Failed to load citation data. Please try again.")}
 							</div>
 						</CardContent>

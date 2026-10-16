@@ -52,7 +52,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 		},
 	});
 	return (
-		<section className="space-y-4 rounded-xl border p-5" aria-label={t("Optimization and retesting")}>
+		<section className="space-y-4 rounded-xl border bg-card p-5" aria-label={t("Optimization and retesting")}>
 			<h2 className="font-semibold">{t("Optimize & retest")}</h2>
 			<p className="text-sm text-muted-foreground">
 				{t(
@@ -68,13 +68,40 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 				</p>
 			)}
 			{data && <CollectionCheck brandId={brandId} ready={data.runtime.worker === "ready"} questions={data.questions} />}
+			{data && data.attempts.length > 0 && (
+				<div className="rounded-lg border bg-background p-4" role="status">
+					<p className="text-sm font-medium">{t("Latest collection")}</p>
+					<div className="mt-2 flex flex-wrap justify-between gap-2 text-sm">
+						<span>
+							{data.attempts[0].model} · {data.attempts[0].provider}
+						</span>
+						<strong
+							className={
+								data.attempts[0].status === "completed"
+									? "text-emerald-400"
+									: data.attempts[0].status === "running"
+										? "text-muted-foreground"
+										: "text-amber-300"
+							}
+						>
+							{t(COLLECTION_STATUS[data.attempts[0].status] || "Failed")}
+						</strong>
+					</div>
+					<p className="mt-2 break-words text-sm text-muted-foreground">{data.attempts[0].promptValue}</p>
+					<p className="mt-1 text-xs text-muted-foreground">
+						<time dateTime={new Date(data.attempts[0].startedAt).toISOString()}>
+							{new Date(data.attempts[0].startedAt).toLocaleString()}
+						</time>
+					</p>
+				</div>
+			)}
 			{data?.actions.length === 0 && (
 				<p className="text-sm text-muted-foreground">
-					{t("No actions yet. Save an opportunity below after collecting a baseline.")}
+					{t("No saved actions yet. Collect a baseline, then save a recommendation.")}
 				</p>
 			)}
 			{data?.actions.map((action) => (
-				<article key={action.id} className="space-y-3 rounded-lg border p-4">
+				<article key={action.id} className="space-y-3 rounded-lg border bg-background p-4">
 					<div className="flex items-center justify-between gap-4">
 						<h3 className="font-medium">{action.title}</h3>
 						<span className="text-xs text-muted-foreground">
@@ -135,10 +162,10 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 					)}
 				</article>
 			))}
+
 			<details>
 				<summary className="cursor-pointer text-sm font-medium">
-					{t("Recent collection attempts (")}
-					{data?.attempts.length ?? 0})
+					{t("Recent collections ({count})", { count: data?.attempts.length ?? 0 })}
 				</summary>
 				<p className="my-2 text-xs text-muted-foreground">
 					{t(

@@ -174,7 +174,7 @@ function RootContent() {
 	// envValidation is absent while a navigation's root beforeLoad is in flight.
 	if (envValidation && !envValidation.isValid) {
 		return (
-			<html lang={locale === "zh" ? "zh-CN" : "en"}>
+			<html lang={locale === "zh" ? "zh-CN" : "en"} className="dark">
 				<head>
 					<HeadContent />
 				</head>
@@ -187,7 +187,7 @@ function RootContent() {
 	}
 
 	return (
-		<html lang={locale === "zh" ? "zh-CN" : "en"}>
+		<html lang={locale === "zh" ? "zh-CN" : "en"} className="dark">
 			<head>
 				<HeadContent />
 			</head>
@@ -196,7 +196,9 @@ function RootContent() {
 				{asksForConsent && consentRequired !== null && (
 					<CookieConsentBanner consentRequired={consentRequired} policyHref={legalUrl("cookies")} />
 				)}
-				<TanStackDevtools plugins={[queryDevtools]} />
+				{import.meta.env.DEV && import.meta.env.VITE_DEVTOOLS === "true" && (
+					<TanStackDevtools plugins={[queryDevtools]} />
+				)}
 				<Scripts />
 			</body>
 		</html>

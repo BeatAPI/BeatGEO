@@ -429,9 +429,6 @@ function RuntimeStatus({ runtime }: { runtime?: Awaited<ReturnType<typeof getCon
 					{t("Collection is not ready. Start pnpm local:start and refresh; queued questions are preserved.")}
 				</p>
 			)}
-			<p className="mt-2 text-muted-foreground">
-				{t("SEO data: not connected. Search volume, backlinks and traffic are unavailable; they are not zero.")}
-			</p>
 		</section>
 	);
 }

@@ -6,6 +6,7 @@ import { Fragment, memo, useCallback, useMemo } from "react";
 import { useOptionalChartDataContext } from "@/contexts/chart-data-context";
 import { useChartExport } from "@/hooks/use-chart-export";
 import { visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 import { BaseChart } from "./base-chart";
 import { ChartActionsFooter } from "./chart-footer";
@@ -107,6 +108,7 @@ export const CachedPromptChart = memo(function CachedPromptChart({
 	searchHighlight = "",
 	hasEverBeenEvaluated = false,
 }: CachedPromptChartProps) {
+	const t = useT();
 	const chartContext = useOptionalChartDataContext();
 
 	const chartData = useMemo(() => {
@@ -160,20 +162,17 @@ export const CachedPromptChart = memo(function CachedPromptChart({
 						<div className="flex flex-col items-center text-center max-w-xs">
 							{isFirstEval ? (
 								<>
-									<div className="flex space-x-1.5 mb-3">
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" />
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse [animation-delay:0.2s]" />
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse [animation-delay:0.4s]" />
-									</div>
-									<p className="text-sm font-medium text-muted-foreground">Evaluating for the first time</p>
-									<p className="text-xs text-muted-foreground/70 mt-1">Results will appear here shortly.</p>
+									<p className="text-sm font-medium text-muted-foreground">{t("No completed answers yet")}</p>
+									<p className="text-xs text-muted-foreground mt-1">
+										{t("Check collection status in Overview or Actions & retests.")}
+									</p>
 								</>
 							) : (
 								<>
 									<PlaceholderBars heights={[20, 35, 15, 45, 25, 40, 30, 50, 20, 35, 45, 28]} />
-									<p className="text-sm font-medium text-muted-foreground">No data in selected time range</p>
+									<p className="text-sm font-medium text-muted-foreground">{t("No data in selected time range")}</p>
 									<p className="text-xs text-muted-foreground/70 mt-1">
-										Try selecting a longer time period to see historical data.
+										{t("Try selecting a longer time period to see historical data.")}
 									</p>
 								</>
 							)}
