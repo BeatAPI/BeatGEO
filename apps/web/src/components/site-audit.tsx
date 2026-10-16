@@ -23,7 +23,7 @@ export function SiteAudit({ brandId }: { brandId: string }) {
 		onSuccess: (data) => client.setQueryData(queryKey, data),
 	});
 	return (
-		<section className="space-y-3 rounded-xl border bg-card p-5" aria-label={t("Website check")}>
+		<section className="space-y-5" aria-label={t("Website check")}>
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<h2 className="font-semibold">{t("Website check")}</h2>
 				<button

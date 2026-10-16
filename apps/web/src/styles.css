@@ -1,6 +1,11 @@
 @import "tailwindcss" source(none);
 
 @import "tw-animate-css";
+@import "@fontsource/geist-sans/latin-400.css";
+@import "@fontsource/geist-sans/latin-500.css";
+@import "@fontsource/geist-sans/latin-600.css";
+@import "@fontsource/geist-sans/latin-700.css";
+@import "@fontsource/geist-mono/latin-400.css";
 
 @plugin "@tailwindcss/typography";
 
@@ -17,8 +22,8 @@
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-	--font-sans: var(--font-geist-sans);
-	--font-mono: var(--font-geist-mono);
+	--font-sans: "Geist Sans", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+	--font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -73,7 +78,7 @@
 	--accent: #302e2c;
 	--accent-foreground: #f5f4f2;
 	--destructive: #ff8b85;
-	--border: #353330;
+	--border: #2d2c2a;
 	--input: #45423e;
 	--ring: #8caaff;
 	--chart-1: #8caaff;
@@ -87,7 +92,7 @@
 	--sidebar-primary-foreground: #121110;
 	--sidebar-accent: #302e2c;
 	--sidebar-accent-foreground: #f5f4f2;
-	--sidebar-border: #353330;
+	--sidebar-border: #2d2c2a;
 	--sidebar-ring: #8caaff;
 }
 
@@ -97,6 +102,9 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		font-synthesis: none;
 	}
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
@@ -165,7 +173,7 @@
 	pointer-events: none;
 	background: url("/code-texture.svg") top right / 1000px 800px no-repeat;
 	mask-image: linear-gradient(#000, transparent);
-	opacity: 0.32;
+	opacity: 0.12;
 }
 .beat-workspace [data-slot="table-container"] {
 	background: var(--card);
@@ -179,7 +187,10 @@
 	border-bottom: 2px solid transparent;
 	background: transparent;
 	box-shadow: none;
-	padding: 0.75rem 1rem;
+	padding: 0.75rem 0;
+	margin-right: 1.75rem;
+	flex: 0 0 auto;
+	font-weight: 500;
 	height: auto;
 }
 .beat-section-tabs [data-slot="tabs-trigger"][data-active] {

@@ -52,9 +52,8 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 		},
 	});
 	return (
-		<section className="space-y-4 rounded-xl border bg-card p-5" aria-label={t("Optimization and retesting")}>
-			<h2 className="font-semibold">{t("Optimize & retest")}</h2>
-			<p className="text-sm text-muted-foreground">
+		<section className="space-y-6" aria-label={t("Optimization and retesting")}>
+			<p className="max-w-3xl text-[13px] text-muted-foreground">
 				{t(
 					"Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate do not prove causation.",
 				)}
@@ -69,7 +68,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 			)}
 			{data && <CollectionCheck brandId={brandId} ready={data.runtime.worker === "ready"} questions={data.questions} />}
 			{data && data.attempts.length > 0 && (
-				<div className="rounded-lg border bg-background p-4" role="status">
+				<div className="border-l-2 border-border pl-4 py-1" role="status">
 					<p className="text-sm font-medium">{t("Latest collection")}</p>
 					<div className="mt-2 flex flex-wrap justify-between gap-2 text-sm">
 						<span>
@@ -101,7 +100,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 				</p>
 			)}
 			{data?.actions.map((action) => (
-				<article key={action.id} className="space-y-3 rounded-lg border bg-background p-4">
+				<article key={action.id} className="space-y-3 border-t pt-6">
 					<div className="flex items-center justify-between gap-4">
 						<h3 className="font-medium">{action.title}</h3>
 						<span className="text-xs text-muted-foreground">
@@ -163,7 +162,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 				</article>
 			))}
 
-			<details>
+			<details className="border-t pt-5">
 				<summary className="cursor-pointer text-sm font-medium">
 					{t("Recent collections ({count})", { count: data?.attempts.length ?? 0 })}
 				</summary>

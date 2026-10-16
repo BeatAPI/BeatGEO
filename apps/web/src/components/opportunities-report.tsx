@@ -46,7 +46,7 @@ function BulletList({ items }: { items: string[] }) {
 	return (
 		<ul className="space-y-2.5">
 			{items.map((item) => (
-				<li key={item} className="flex gap-2.5 text-pretty text-base">
+				<li key={item} className="flex gap-2.5 text-pretty text-sm">
 					<Bullet />
 					<span>{item}</span>
 				</li>
@@ -104,8 +104,8 @@ function OpportunityCard({ o, onSaved }: { o: Opportunity; onSaved?: () => void 
 		{ key: "comp", label: "Competitor citations", count: o.competitorCitations.length },
 	];
 	return (
-		<div className="rounded-xl border border-border bg-card p-5">
-			<h3 className="text-pretty text-base font-semibold">{o.title}</h3>
+		<div className="border-t py-5">
+			<h3 className="text-pretty text-sm font-semibold">{o.title}</h3>
 			<button
 				type="button"
 				disabled={save.isPending || save.isSuccess || !o.relatedPrompts.some((p) => p.promptId)}
@@ -128,7 +128,7 @@ function OpportunityCard({ o, onSaved }: { o: Opportunity; onSaved?: () => void 
 							key={item.key}
 							type="button"
 							onClick={() => setOpen(open === item.key ? null : item.key)}
-							className={`inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs ${open === item.key ? "bg-muted" : "hover:bg-muted/50"}`}
+							className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs ${open === item.key ? "bg-muted" : "hover:bg-muted/50"}`}
 						>
 							{t(item.label)} <span className="tabular-nums text-muted-foreground">({item.count})</span>
 							<span className={`text-[0.625rem] text-muted-foreground ${open === item.key ? "rotate-180" : ""}`}>
@@ -179,7 +179,7 @@ export function OpportunitiesReport({ report, onSaved }: { report: Opportunities
 	return (
 		<div className="space-y-8">
 			{report.summary.length > 0 && (
-				<section className="rounded-xl border border-border bg-card p-5">
+				<section className="border-t py-5">
 					<h2 className="text-sm font-semibold text-muted-foreground">{t("Summary")}</h2>
 					<div className="mt-2.5">
 						<BulletList items={report.summary} />

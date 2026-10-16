@@ -165,7 +165,7 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	);
 
 	return (
-		<Sidebar variant="inset">
+		<Sidebar variant="sidebar">
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>

@@ -145,3 +145,10 @@ GitHub 仓库元数据于本轮读取；README 功能声明不是部署验收。
 The source edition now defaults to dark mode across authentication, setup, settings, the workspace and report previews. Opportunities separates recommendations, actions/retests, observed answers and website checks. Collection failures are visible above saved actions; no-answer chart cards no longer imply that a job is running. Developer tools are opt-in with `VITE_DEVTOOLS=true`.
 
 Local browser checks used the isolated installation and synthetic acceptance data: login/setup/settings, EN/中文, all four opportunity tabs, retained question selection and expanded draft across tab switches, visible empty-answer failures, dark account menu, and a 390px viewport without horizontal page overflow. No paid generation, new real-engine run, populated recommendation report, exported PNG or print-output acceptance is claimed by this UI pass. Production build, web typecheck, workspace lint and 568 web unit tests passed.
+
+
+## Typography and layout refinement
+
+The workbench uses locally bundled Geist Sans and Geist Mono, with explicit Chinese system-font fallbacks. Browser inspection on macOS confirmed PingFang SC Medium for the Chinese page heading. The outer inset frame and repeated AEO section cards are removed; compact left-aligned tabs, separators and a collection status rail establish hierarchy. Draft text uses the reading font; only the editor itself is enclosed.
+
+Verified in the isolated synthetic dataset: EN/中文 actions view, all four AEO tabs, selected question and expanded draft retention across tab switches, visible empty-answer status, and 390px responsive layout without page overflow. The question picker and action stack on small screens. No real AI calls or database schema changes were introduced. Populated recommendation reports and report exports still require separate visual acceptance.

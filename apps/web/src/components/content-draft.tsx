@@ -41,7 +41,7 @@ export function ContentDraft({ brandId, action }: { brandId: string; action: Dra
 	});
 	const readOnly = action.status !== "planned";
 	return (
-		<details className="rounded-lg border p-3">
+		<details className="py-2">
 			<summary className="cursor-pointer text-sm font-medium">
 				{t("Content draft")} · {t(reviewed ? "Reviewed" : "Needs review")}
 			</summary>
@@ -75,7 +75,7 @@ export function ContentDraft({ brandId, action }: { brandId: string; action: Dra
 					<>
 						<textarea
 							aria-label={t("Content draft")}
-							className="min-h-64 w-full rounded-md border bg-background p-3 font-mono text-sm"
+							className="min-h-64 w-full rounded-md border bg-card p-4 text-sm leading-7"
 							maxLength={24_000}
 							value={content}
 							readOnly={readOnly || mutation.isPending}

@@ -13,10 +13,8 @@ export function AppShell({
 	return (
 		<SidebarProvider>
 			{sidebar}
-			{/* `overflow-clip`, not `overflow-hidden`: both clip to the rounded corners,
-			    but `hidden` makes this a scroll container, which stops descendants from
-			    sticking to the viewport (the site header included). */}
-			<SidebarInset className="beat-workspace md:border md:border-border/60 md:rounded-xl overflow-clip">
+			{/* Clip horizontal overflow without changing the sticky header's scroll parent. */}
+			<SidebarInset className="beat-workspace overflow-clip">
 				{header}
 				{children}
 			</SidebarInset>
@@ -28,7 +26,7 @@ export function PageContent({ children }: { children: ReactNode }) {
 	return (
 		<div className="flex flex-1 flex-col">
 			<div className="@container/main flex flex-1 flex-col gap-2">
-				<div className="flex flex-1 flex-col gap-4 p-4 md:gap-6 md:p-6">{children}</div>
+				<div className="flex flex-1 flex-col gap-4 p-5 md:gap-6 md:px-8 md:py-7">{children}</div>
 			</div>
 		</div>
 	);

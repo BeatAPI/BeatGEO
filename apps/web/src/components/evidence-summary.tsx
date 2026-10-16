@@ -9,7 +9,7 @@ export function EvidenceSummary({ brandId }: { brandId: string }) {
 		refetchInterval: 30_000,
 	});
 	return (
-		<section className="space-y-4 rounded-xl border bg-card p-5" aria-label={t("Observed answers")}>
+		<section className="space-y-6" aria-label={t("Observed answers")}>
 			<h2 className="font-semibold">{t("Observed answers · 30 days")}</h2>
 			<p className="text-sm text-muted-foreground">
 				{t("Actual completed answers, grouped by platform and question type.")}

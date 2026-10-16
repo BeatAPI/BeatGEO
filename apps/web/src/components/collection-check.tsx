@@ -20,14 +20,17 @@ export function CollectionCheck({
 		onSuccess: () => client.invalidateQueries({ queryKey: ["monitoring", brandId] }),
 	});
 	return (
-		<div className="space-y-3 rounded-lg border p-4">
-			<p className="text-sm font-medium">{t(ready ? "Worker ready" : "Worker not ready")}</p>
+		<div className="space-y-3 border-b pb-6">
+			<p className="flex items-center gap-2 text-xs text-muted-foreground">
+				<span aria-hidden className={`size-1.5 rounded-full ${ready ? "bg-emerald-400" : "bg-amber-300"}`} />
+				{t(ready ? "Worker ready" : "Worker not ready")}
+			</p>
 			{!ready && (
 				<p className="text-sm text-muted-foreground">
 					{t("Collection is not ready. Start pnpm local:start and refresh; queued questions are preserved.")}
 				</p>
 			)}
-			<div className="flex flex-wrap gap-2">
+			<div className="flex flex-col gap-2 sm:flex-row">
 				<select
 					aria-label={t("Question to collect")}
 					className="min-w-0 flex-1 rounded-md border bg-background p-2 text-sm"
@@ -44,7 +47,7 @@ export function CollectionCheck({
 				</select>
 				<button
 					type="button"
-					className="rounded-md border px-3 py-2 text-sm disabled:opacity-50"
+					className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
 					disabled={!ready || !promptId || mutation.isPending}
 					onClick={() => mutation.mutate()}
 				>

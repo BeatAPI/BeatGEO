@@ -127,7 +127,7 @@ function LastEvaluatedAt({ date }: { date: string }) {
 
 function EmptyCard({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="rounded-xl border border-border bg-card px-6 py-12 text-center text-sm text-muted-foreground">
+		<div className="mx-auto max-w-lg px-4 py-20 text-center text-sm leading-relaxed text-muted-foreground">
 			{children}
 		</div>
 	);
