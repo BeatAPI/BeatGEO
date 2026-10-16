@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 Ein quelloffener GEO-/AEO-Arbeitsbereich von [BeatAPI](https://beatapi.io). Verfolge Markennennungen und Quellen in echten KI-Antworten, leite Verbesserungen ab und wiederhole dieselben Fragen, um Veränderungen zu vergleichen.
 
-[Schnellstart](#schnellstart) · [Ablauf](#ablauf) · [Funktionsstand](#funktionsstand) · [Roadmap](docs/roadmap.md) · [MIT-Lizenz](LICENSE.md)
+[Website](https://beatapi.io/geo) · [Schnellstart](#schnellstart) · [Ablauf](#ablauf) · [Funktionsstand](#funktionsstand) · [Roadmap](docs/roadmap.md) · [MIT-Lizenz](LICENSE.md)
 
 > **Lokales MVP / Quellcode-Vorschau.** Die Kette ChatGPT-Erfassung → Datenbank → Worker wurde in Live-Smoke-Tests geprüft. Andere Engines, kostenpflichtige Recherche und unbeaufsichtigter Dauerbetrieb haben eigene Prüfgrenzen. [Prüfprotokoll auf Englisch](docs/beat-geo/validation.md)
 
@@ -47,16 +47,7 @@ Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ei
 
 ## Ablauf
 
-```mermaid
-flowchart LR
-    A[Website und Marke] --> B[Fragen erzeugen und bestätigen]
-    B --> C[KI-Antworten erfassen]
-    C --> D[Nennungen und Quellen prüfen]
-    D --> E[Maßnahme und Ausgangswerte speichern]
-    E --> F[Änderungen umsetzen]
-    F --> G[Dieselben Fragen wiederholen]
-    G --> D
-```
+![Der Produktablauf](assets/readme/workflow.de.svg)
 
 BeatGEO verwaltet Produktdaten und Zeitplanung. **BeatBrowser** führt Aufgaben im angemeldeten Browser aus. **BeatAPI** kann Suche, Seitenabruf und Modellanalyse für Recherche und Optimierung bereitstellen.
 

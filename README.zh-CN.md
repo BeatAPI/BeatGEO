@@ -1,4 +1,4 @@
-![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.png)
+[![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 [BeatAPI](https://beatapi.io) 出品的开源 GEO / AEO 工作台。从真实 AI 回答中追踪品牌提及与引用，把发现的问题变成优化行动，再用同一组问题复测效果。
 
-[快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
+[项目官网](https://beatapi.io/geo) · [快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
 
 > **本地 MVP / 源码预览版。** ChatGPT 采集 → 数据库 → worker 已通过真实冒烟测试。其他平台、付费研究与长期无人值守分别验收。[验收记录](docs/beat-geo/validation.md)
 
@@ -47,16 +47,7 @@ pnpm local:start
 
 ## 产品闭环
 
-```mermaid
-flowchart LR
-    A[网站与品牌] --> B[生成并确认问题]
-    B --> C[采集 AI 回答]
-    C --> D[查看提及与引用]
-    D --> E[保存行动与基线]
-    E --> F[实施修改]
-    F --> G[同组问题复测]
-    G --> D
-```
+![产品闭环](assets/readme/workflow.zh-CN.svg)
 
 BeatGEO 管理产品数据和调度，**BeatBrowser** 执行已登录浏览器任务，**BeatAPI** 为研究与优化提供搜索、网页阅读和模型分析。
 

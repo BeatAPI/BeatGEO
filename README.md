@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 An open-source GEO / AEO workspace by [BeatAPI](https://beatapi.io). Track brand mentions and citations in real AI answers, turn gaps into actions, and rerun the same questions to compare results.
 
-[Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
+[Website](https://beatapi.io/geo) · [Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
 
 > **Local MVP / source preview.** The ChatGPT collection → database → worker path has passed live smoke tests. Other engines, paid research and unattended operation have separate acceptance boundaries. [Validation log](docs/beat-geo/validation.md)
 
@@ -47,16 +47,7 @@ The installer prepares a dedicated local PostgreSQL database and the included ex
 
 ## The product workflow
 
-```mermaid
-flowchart LR
-    A[Website and brand] --> B[Generate and confirm questions]
-    B --> C[Collect AI answers]
-    C --> D[Inspect mentions and citations]
-    D --> E[Save action and baseline]
-    E --> F[Implement changes]
-    F --> G[Retest the same questions]
-    G --> D
-```
+![The product workflow](assets/readme/workflow.en.svg)
 
 BeatGEO owns the product records and schedule. **BeatBrowser** handles the signed-in browser task. **BeatAPI** can supply search, page reading and model analysis for research and optimization.
 
