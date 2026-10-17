@@ -134,7 +134,7 @@ function PromptHeader({
 			) : (
 				<div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
 					{promptMeta?.enabled ? (
-						<span className="inline-flex items-center gap-1.5 text-green-700">
+						<span className="inline-flex items-center gap-1.5 text-green-400">
 							<span className="relative flex h-2 w-2">
 								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
 								<span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
@@ -275,7 +275,7 @@ function PromptHistoryPage() {
 				</div>
 				<Card>
 					<CardContent className="pt-6">
-						<div className="text-red-600 text-sm bg-red-50 p-3 rounded-md">
+						<div className="text-red-300 text-sm bg-red-950/40 p-3 rounded-md">
 							{t("Failed to load prompt data. Please try again.")}
 						</div>
 					</CardContent>

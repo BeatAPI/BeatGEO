@@ -59,17 +59,35 @@ TEST_DATABASE_URL=postgres://postgres:postgres@localhost:5432/beatgeo_test \
 
 ### End-to-End Tests
 
-`.github/workflows/e2e.yaml` is the source of truth for E2E orchestration — it
-stands up one Dockerized container per deployment mode, seeds them, and runs the
-suites in order. Replay the whole thing locally with
-[act](https://github.com/nektos/act):
+The default CI validates unit tests and PostgreSQL integration. It does not run
+all Playwright deployment-mode suites. The inherited E2E orchestration workflow
+is not part of this fork.
+
+For repeatable MVP regression, select Node.js 24, install the pinned pnpm version
+and dependencies. Docker is not required:
 
 ```bash
-pnpm test:e2e-local
+pnpm test:mvp
 ```
 
-The scripts below each run one mode's suite against a stack that workflow has
-already brought up, which is what you want when iterating on a single spec:
+This creates and migrates a disposable PostgreSQL 17 database, runs browser
+collector contracts, script tests, workspace unit tests and database/queue/retest
+integration, then stops the bundled database and removes its temporary directory. Provider responses are synthetic;
+this is not live browser, paid API, UI or overnight acceptance.
+
+UI suites require a separately running **test** app with the E2E fixture data.
+The app and test process must use the same disposable local database. Do not
+seed an existing instance: the E2E seeder deletes data. The local wrapper checks
+explicit loopback URLs and a database name ending in `_test` before running:
+
+```bash
+BASE_URL=http://localhost:3156 \
+DATABASE_URL=postgres://postgres:postgres@localhost:55446/beatgeo_test \
+  pnpm test:e2e-local
+```
+
+Other mode-specific commands below also assume their respective test stacks and
+fixtures already exist; they do not provision a server:
 
 ```bash
 # Playwright specs

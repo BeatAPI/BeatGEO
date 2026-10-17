@@ -99,17 +99,18 @@ function SetupPage() {
 						</p>
 					</div>
 					<SetupChecklist connections={status.data} />
+					<RuntimeStatus runtime={status.data?.runtime} />
 					<details className="rounded-xl border p-4 text-sm">
 						<summary className="cursor-pointer font-medium">{t("Where does my data live?")}</summary>
 						<p className="mt-2 text-muted-foreground">
 							{t(
-								"BeatGEO stores accounts, brands, questions and results in its own PostgreSQL database. The standard installer creates it in Docker for you. You do not need to create tables or connect to BeatAPI's database. Your local BeatGEO login and your BeatAPI key serve different purposes.",
+								"BeatGEO manages its own local database. No separate database installation or password setup is required. Your BeatGEO login and BeatAPI key serve different purposes.",
 							)}
 						</p>
 						<p className="mt-2 text-muted-foreground">
 							{t("If setup is incomplete, run ")}
 							<code>pnpm local:doctor</code>
-							{t(". It checks Node.js, pnpm, Git and Docker without changing data.")}
+							{t(". It checks your local runtime without changing data.")}
 						</p>
 					</details>
 					{status.isPending && <p role="status">{t("Checking connections…")}</p>}
@@ -229,7 +230,7 @@ function SetupPage() {
 					<section id="monitoring" className="scroll-mt-6 space-y-3 rounded-xl border bg-card p-5 md:p-6">
 						<h2 className="text-lg font-semibold">{t("4. Keep monitoring running")}</h2>
 						<p className="text-sm text-muted-foreground">
-							{t("You can close this page. Keep this computer awake, Docker, Chrome and ")}
+							{t("You can close this page. Keep this computer awake, Chrome and ")}
 							<code>pnpm local:start</code>{" "}
 							{t(
 								"running. Stopping the app or putting the computer to sleep interrupts collection; this is not a hosted service.",
@@ -254,7 +255,7 @@ function SetupPage() {
 								{t("Run ")}
 								<code>pnpm local:start</code>
 								{t(
-									" again from this repository. The PostgreSQL volume retains your brands, questions and results. Back up that database and your private configuration, including the encryption key; do not delete the volume to restart.",
+									" again from this repository. Your data is retained. For the default installation, stop BeatGEO and back up .beat-geo/postgres, .beat-geo/database.json and your .env configuration together. Never delete them to restart.",
 								)}
 							</p>
 						</details>
@@ -403,6 +404,31 @@ function SetupChecklist({ connections }: { connections?: Awaited<ReturnType<type
 				<p className="text-sm font-medium">{t("Website accounts")}</p>
 				<p className="text-sm text-muted-foreground">{t("Login is checked during collection")}</p>
 			</div>
+		</section>
+	);
+}
+
+function RuntimeStatus({ runtime }: { runtime?: Awaited<ReturnType<typeof getConnectionsFn>>["runtime"] }) {
+	const t = useT();
+	const workerMessage =
+		runtime?.worker === "ready"
+			? "Worker ready"
+			: runtime?.worker === "offline"
+				? "Worker offline"
+				: "Worker not ready";
+	return (
+		<section className="rounded-xl border bg-card p-4 text-sm" aria-label={t("Service health")}>
+			<div className="flex flex-wrap justify-between gap-3">
+				<span>
+					{t("Local storage")}: {t(!runtime ? "Checking…" : runtime.database === "ready" ? "Ready" : "Unavailable")}
+				</span>
+				<span role="status">{t(workerMessage)}</span>
+			</div>
+			{runtime && runtime.worker !== "ready" && (
+				<p className="mt-2 text-muted-foreground">
+					{t("Collection is not ready. Start pnpm local:start and refresh; queued questions are preserved.")}
+				</p>
+			)}
 		</section>
 	);
 }

@@ -25,6 +25,7 @@ test("installation preflight distinguishes missing tools, wrong versions and a s
 	const { inspectLocalRequirements } = await import("./local-doctor.mjs");
 	const checks = inspectLocalRequirements({
 		nodeVersion: "22.0.0",
+		databaseMode: "docker",
 		run: (command, args) => {
 			if (command === "pnpm") return { status: 0, stdout: "11.0.0" };
 			if (command === "git") return { status: null, error: new Error("not found") };
@@ -43,4 +44,16 @@ test("installation preflight accepts the supported source-install environment", 
 		run: () => ({ status: 0, stdout: "12.4.1\n" }),
 	});
 	assert(checks.every((check) => check.ok));
+});
+
+test("default install does not require Docker or a database command", async () => {
+	const { inspectLocalRequirements } = await import("./local-doctor.mjs");
+	const commands = [];
+	const checks = inspectLocalRequirements({ nodeVersion: "24.19.0", run: (command) => {
+		commands.push(command);
+		return { status: 0, stdout: "12.4.1" };
+	} });
+	assert(checks.every((check) => check.ok));
+	assert.deepEqual(commands, ["pnpm", "git"]);
+	assert.equal(localEnvironment().BEAT_GEO_DATABASE_MODE, "embedded");
 });

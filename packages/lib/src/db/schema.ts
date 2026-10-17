@@ -14,6 +14,7 @@ import {
 	uuid,
 } from "drizzle-orm/pg-core";
 import type { Observation } from "../monitoring";
+import type { SiteAudit } from "../site-audit";
 // `organization` is referenced by the brands FK below; the re-export makes it
 // (and the rest of the auth schema) visible to `import * as schema` consumers.
 import { organization } from "./schema-auth";
@@ -359,8 +360,30 @@ export const optimizationActions = pgTable(
 		baseline: jsonb("baseline").$type<Observation[]>().notNull(),
 		status: text("status").notNull().default("planned"),
 		implementationNote: text("implementation_note"),
+		contentDraft: text("content_draft"),
+		draftRevision: integer("draft_revision").notNull().default(0),
+		reviewedRevision: integer("reviewed_revision"),
 		createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 		appliedAt: timestamp("applied_at", { withTimezone: true }),
 	},
 	(t) => ({ brandCreatedIdx: index("optimization_brand_created_idx").on(t.brandId, t.createdAt) }),
+).enableRLS();
+
+export const runtimeHeartbeats = pgTable("runtime_heartbeats", {
+	id: uuid("id").primaryKey().notNull(),
+	service: text("service").notNull(),
+	lastSeen: timestamp("last_seen", { withTimezone: true }).defaultNow().notNull(),
+}).enableRLS();
+
+export const siteAudits = pgTable(
+	"site_audits",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		brandId: text("brand_id")
+			.notNull()
+			.references(() => brands.id, { onDelete: "cascade" }),
+		result: jsonb("result").$type<SiteAudit>().notNull(),
+		createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+	},
+	(t) => ({ brandCreatedIdx: index("site_audits_brand_created_idx").on(t.brandId, t.createdAt) }),
 ).enableRLS();

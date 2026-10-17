@@ -3,11 +3,13 @@ import { db } from "@workspace/lib/db/db";
 import { citations, collectionAttempts, prompts } from "@workspace/lib/db/schema";
 import { CollectionError, PROMPT_JOB_OPTIONS } from "@workspace/lib/monitoring";
 import { getProvider } from "@workspace/lib/providers";
+import { startWorkerHeartbeat } from "@workspace/lib/runtime-health";
 import { eq, sql } from "drizzle-orm";
 import { type Job, PgBoss } from "pg-boss";
 import { afterAll, beforeAll, expect, it, vi } from "vitest";
 import {
 	applyOptimizationAction,
+	collectOneQuestion,
 	createOptimizationAction,
 	readMonitoring,
 	retestOptimizationAction,
@@ -109,7 +111,7 @@ it("rejects empty answers and keeps other brands out of action writes and reads"
 	const action = (await readMonitoring(brand)).actions[0];
 	await expect(applyOptimizationAction(other, action.id, "Invalid")).rejects.toThrow("unavailable");
 	await expect(retestOptimizationAction(other, action.id)).rejects.toThrow("before retesting");
-	expect(await readMonitoring(other)).toEqual({ attempts: [], actions: [] });
+	expect(await readMonitoring(other)).toMatchObject({ attempts: [], actions: [], questions: [] });
 });
 
 it("does not retest changed questions against an old baseline", async () => {
@@ -130,4 +132,20 @@ it("rolls back a run if evidence cannot be saved", async () => {
 	expect(attempt.observation).toBeNull();
 	const { promptRuns } = await import("@workspace/lib/db/schema");
 	expect(await db.select().from(promptRuns).where(eq(promptRuns.promptId, prompt))).toHaveLength(0);
+});
+
+it("queues one owned question, deduplicates manual retries and rejects an offline worker", async () => {
+	const prompt = await createPrompt(brand, { value: "manual collection fixture" });
+	const stop = await startWorkerHeartbeat(vi.fn());
+	try {
+		await expect(collectOneQuestion(other, prompt)).rejects.toThrow("from this brand");
+		expect(await collectOneQuestion(brand, prompt)).toEqual({ queued: true });
+		expect(await collectOneQuestion(brand, prompt)).toEqual({ queued: false });
+		const [queued] = await boss.fetch<ProcessPromptData>("process-prompt");
+		expect(queued.data.promptId).toBe(prompt);
+		await boss.complete("process-prompt", queued.id);
+	} finally {
+		await stop();
+	}
+	await expect(collectOneQuestion(brand, prompt)).rejects.toThrow("Start the collection worker");
 });

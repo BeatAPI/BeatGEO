@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { readRuntimeHealth } from "@workspace/lib/runtime-health";
 import { getCredential, refreshCredentialOverlay } from "@workspace/lib/secrets";
 import { z } from "zod";
 import { canManageConnections, requireAuthSession } from "@/lib/auth/helpers";
@@ -19,7 +20,11 @@ async function resolveKey(key?: string) {
 export const getConnectionsFn = createServerFn({ method: "GET" }).handler(async () => {
 	await requireLocalAdmin();
 	await refreshCredentialOverlay();
-	return { beatapi: connectionSummary(), browser: await browserRequest("/api/browser") };
+	const [browser, runtime] = await Promise.all([
+		browserRequest("/api/browser"),
+		readRuntimeHealth().catch(() => ({ database: "unavailable" as const, worker: "unknown" as const, lastSeen: null })),
+	]);
+	return { beatapi: connectionSummary(), browser, runtime };
 });
 export const inspectBeatApiFn = createServerFn({ method: "POST" })
 	.validator(keyInput)

@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { CollectionCheck } from "@/components/collection-check";
+import { ContentDraft } from "@/components/content-draft";
 import { useT } from "@/lib/i18n";
 import { applyOptimizationActionFn, getMonitoringFn, retestOptimizationActionFn } from "@/server/monitoring-fn";
 
@@ -50,9 +52,8 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 		},
 	});
 	return (
-		<section className="space-y-4 rounded-xl border p-5" aria-label={t("Optimization and retesting")}>
-			<h2 className="font-semibold">{t("Optimize & retest")}</h2>
-			<p className="text-sm text-muted-foreground">
+		<section className="space-y-6" aria-label={t("Optimization and retesting")}>
+			<p className="max-w-3xl text-[13px] text-muted-foreground">
 				{t(
 					"Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate do not prove causation.",
 				)}
@@ -65,13 +66,41 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 					{t(notice.message, notice.values)}
 				</p>
 			)}
+			{data && <CollectionCheck brandId={brandId} ready={data.runtime.worker === "ready"} questions={data.questions} />}
+			{data && data.attempts.length > 0 && (
+				<div className="border-l-2 border-border pl-4 py-1" role="status">
+					<p className="text-sm font-medium">{t("Latest collection")}</p>
+					<div className="mt-2 flex flex-wrap justify-between gap-2 text-sm">
+						<span>
+							{data.attempts[0].model} · {data.attempts[0].provider}
+						</span>
+						<strong
+							className={
+								data.attempts[0].status === "completed"
+									? "text-emerald-400"
+									: data.attempts[0].status === "running"
+										? "text-muted-foreground"
+										: "text-amber-300"
+							}
+						>
+							{t(COLLECTION_STATUS[data.attempts[0].status] || "Failed")}
+						</strong>
+					</div>
+					<p className="mt-2 break-words text-sm text-muted-foreground">{data.attempts[0].promptValue}</p>
+					<p className="mt-1 text-xs text-muted-foreground">
+						<time dateTime={new Date(data.attempts[0].startedAt).toISOString()}>
+							{new Date(data.attempts[0].startedAt).toLocaleString()}
+						</time>
+					</p>
+				</div>
+			)}
 			{data?.actions.length === 0 && (
 				<p className="text-sm text-muted-foreground">
-					{t("No actions yet. Save an opportunity below after collecting a baseline.")}
+					{t("No saved actions yet. Collect a baseline, then save a recommendation.")}
 				</p>
 			)}
 			{data?.actions.map((action) => (
-				<article key={action.id} className="space-y-3 rounded-lg border p-4">
+				<article key={action.id} className="space-y-3 border-t pt-6">
 					<div className="flex items-center justify-between gap-4">
 						<h3 className="font-medium">{action.title}</h3>
 						<span className="text-xs text-muted-foreground">
@@ -79,6 +108,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 						</span>
 					</div>
 					<p className="text-sm text-muted-foreground">{action.description}</p>
+					<ContentDraft brandId={brandId} action={action} />
 					{action.status === "planned" ? (
 						<div className="flex flex-wrap gap-2">
 							<input
@@ -92,7 +122,11 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 							<button
 								className={button}
 								type="button"
-								disabled={mutation.isPending || !notes[action.id]?.trim()}
+								disabled={
+									mutation.isPending ||
+									!notes[action.id]?.trim() ||
+									Boolean(action.contentDraft && action.reviewedRevision !== action.draftRevision)
+								}
 								onClick={() => mutation.mutate({ id: action.id, operation: "apply" })}
 							>
 								{t("Mark implemented")}
@@ -127,10 +161,10 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 					)}
 				</article>
 			))}
-			<details>
+
+			<details className="border-t pt-5">
 				<summary className="cursor-pointer text-sm font-medium">
-					{t("Recent collection attempts (")}
-					{data?.attempts.length ?? 0})
+					{t("Recent collections ({count})", { count: data?.attempts.length ?? 0 })}
 				</summary>
 				<p className="my-2 text-xs text-muted-foreground">
 					{t(

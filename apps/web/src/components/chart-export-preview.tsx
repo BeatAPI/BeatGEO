@@ -55,14 +55,18 @@ export function ChartExportPreview({
 	return (
 		<div
 			style={{ width: EXPORT_W, height: EXPORT_H, paddingTop: HEADER_TOP, fontSize: 16 }}
-			className="bg-white overflow-hidden flex flex-col"
+			className="bg-background text-foreground overflow-hidden flex flex-col"
 		>
 			{/* Title bar */}
 			<div
 				style={{ height: HEADER_H, marginBottom: GAP_HEADER_CARD }}
 				className="flex items-center justify-between px-10 gap-6 shrink-0"
 			>
-				<h2 className="font-semibold text-gray-900 truncate flex-1 min-w-0" style={{ fontSize: 22 }} title={promptName}>
+				<h2
+					className="font-semibold text-foreground truncate flex-1 min-w-0"
+					style={{ fontSize: 22 }}
+					title={promptName}
+				>
 					{promptName}
 				</h2>
 				{visibility !== null && (
@@ -80,7 +84,7 @@ export function ChartExportPreview({
 			{/* Chart card */}
 			<div className="px-8 shrink-0">
 				<div
-					className="rounded-xl border border-gray-200 overflow-hidden pl-0"
+					className="rounded-xl border border-border overflow-hidden pl-0"
 					style={{ paddingRight: 12, paddingTop: 12, paddingBottom: 8 }}
 				>
 					<BaseChart
@@ -104,21 +108,21 @@ export function ChartExportPreview({
 							src={isWhitelabel ? branding.icon : "/icons/beatgeo-mark.png"}
 							alt={`${name} logo`}
 							style={{ width: 28, height: 28 }}
-							className="object-contain"
+							className={hasCustomIcon ? "object-contain" : "object-contain beat-logo-mark"}
 							crossOrigin="anonymous"
 						/>
 					)}
 					{isWhitelabel ? (
-						<span style={{ fontSize: 18 }} className="text-gray-500 font-semibold">
+						<span style={{ fontSize: 18 }} className="text-muted-foreground font-semibold">
 							{name}
 						</span>
 					) : (
-						<span className="font-semibold tracking-tight text-gray-900" style={{ fontSize: 24 }}>
+						<span className="font-semibold tracking-tight text-foreground" style={{ fontSize: 24 }}>
 							{name}
 						</span>
 					)}
 				</div>
-				<span style={{ fontSize: 18 }} className="text-gray-400 font-medium">
+				<span style={{ fontSize: 18 }} className="text-muted-foreground font-medium">
 					{domain}
 				</span>
 			</div>

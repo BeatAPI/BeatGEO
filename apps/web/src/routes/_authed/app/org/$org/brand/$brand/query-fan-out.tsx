@@ -263,10 +263,11 @@ function LoadingState() {
 }
 
 function EmptyState({ message }: { message: string }) {
+	const t = useT();
 	return (
 		<Card>
 			<CardContent className="py-8">
-				<div className="text-muted-foreground text-center">{message}</div>
+				<div className="text-muted-foreground text-center">{t(message)}</div>
 			</CardContent>
 		</Card>
 	);

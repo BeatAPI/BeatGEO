@@ -6,6 +6,7 @@ import { Fragment, memo, useCallback, useMemo } from "react";
 import { useOptionalChartDataContext } from "@/contexts/chart-data-context";
 import { useChartExport } from "@/hooks/use-chart-export";
 import { visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 import { BaseChart } from "./base-chart";
 import { ChartActionsFooter } from "./chart-footer";
@@ -107,6 +108,7 @@ export const CachedPromptChart = memo(function CachedPromptChart({
 	searchHighlight = "",
 	hasEverBeenEvaluated = false,
 }: CachedPromptChartProps) {
+	const t = useT();
 	const chartContext = useOptionalChartDataContext();
 
 	const chartData = useMemo(() => {
@@ -148,39 +150,19 @@ export const CachedPromptChart = memo(function CachedPromptChart({
 		const isFirstEval = !hasEverBeenEvaluated;
 
 		return (
-			<Card className="py-3 gap-3">
-				<CardHeader className="flex justify-between items-center px-3">
-					<PromptTitle name={promptName} highlight={searchHighlight} />
-				</CardHeader>
-				<Separator className="py-0 my-0" />
-				{/* h-[300px] instead of h-[250px] to compensate for the missing footer section,
-				   keeping overall card height consistent with data-filled cards for virtualization */}
-				<CardContent className="px-3">
-					<div className="h-[300px] flex items-center justify-center">
-						<div className="flex flex-col items-center text-center max-w-xs">
-							{isFirstEval ? (
-								<>
-									<div className="flex space-x-1.5 mb-3">
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse" />
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse [animation-delay:0.2s]" />
-										<div className="h-2 w-2 rounded-full bg-muted-foreground/30 animate-pulse [animation-delay:0.4s]" />
-									</div>
-									<p className="text-sm font-medium text-muted-foreground">Evaluating for the first time</p>
-									<p className="text-xs text-muted-foreground/70 mt-1">Results will appear here shortly.</p>
-								</>
-							) : (
-								<>
-									<PlaceholderBars heights={[20, 35, 15, 45, 25, 40, 30, 50, 20, 35, 45, 28]} />
-									<p className="text-sm font-medium text-muted-foreground">No data in selected time range</p>
-									<p className="text-xs text-muted-foreground/70 mt-1">
-										Try selecting a longer time period to see historical data.
-									</p>
-								</>
-							)}
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+			<section className="border-b py-4">
+				<PromptTitle name={promptName} highlight={searchHighlight} />
+				<p className="mt-2 text-[13px] text-muted-foreground">
+					{t(isFirstEval ? "No completed answers yet" : "No data in selected time range")}
+				</p>
+				<p className="mt-1 text-xs text-muted-foreground">
+					{t(
+						isFirstEval
+							? "Check collection status in Overview or Actions & retests."
+							: "Try selecting a longer time period to see historical data.",
+					)}
+				</p>
+			</section>
 		);
 	}
 

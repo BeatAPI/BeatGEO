@@ -12,7 +12,7 @@ export function useChartDownload(fileName: string) {
 		try {
 			const canvas = await html2canvas(chartRef.current, {
 				scale: 2,
-				backgroundColor: "#ffffff",
+				backgroundColor: getComputedStyle(document.body).backgroundColor,
 				logging: false,
 				onclone: (clonedDoc) => {
 					for (const el of clonedDoc.querySelectorAll(".print\\:hidden")) el.remove();

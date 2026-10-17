@@ -198,7 +198,7 @@ function ReportsPage() {
 						</div>
 
 						{submitError && <p className="text-sm text-destructive">{submitError}</p>}
-						{success && <p className="text-sm text-green-600">{success}</p>}
+						{success && <p className="text-sm text-emerald-400">{success}</p>}
 
 						<Button type="submit" disabled={createMutation.isPending} className="cursor-pointer">
 							{createMutation.isPending ? t("Creating Report...") : t("Create Report")}
@@ -236,12 +236,14 @@ function ReportsPage() {
 						!error && (
 							<div className="space-y-3">
 								{reports.map((report: any) => (
-									<div key={report.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+									<div key={report.id} className="bg-card border border-border rounded-lg p-4">
 										<div className="flex items-center justify-between">
 											<div className="flex-1 min-w-0">
 												<h3 className="font-semibold text-lg">
 													{report.brandName}{" "}
-													<span className="text-gray-600 font-normal">({extractDomain(report.brandWebsite)})</span>
+													<span className="text-muted-foreground font-normal">
+														({extractDomain(report.brandWebsite)})
+													</span>
 												</h3>
 											</div>
 											<div className="ml-4">
