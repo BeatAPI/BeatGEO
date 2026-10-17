@@ -48,7 +48,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@beatapi/beat-browser": "github:BeatAPI/BeatBrowser#8f4c6570ead24483350a0f7929177d3c40f44988",
+    "@beatapi/beat-browser": "github:BeatAPI/BeatBrowser#5bb14965b8127ca2eb45d1d8e2496db0bd21daed",
     "embedded-postgres": "17.10.0-beta.17"
   }
 }

@@ -4,7 +4,7 @@ BeatGEO is maintained by BeatAPI and incorporates the MIT-licensed Elmo codebase
 
 Inherited statistics include share-of-voice and citation-stability calculations. The local metrics module reuses the same answer-level share-of-voice ratio.
 
-[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included as a pinned MIT dependency (`8f4c6570ead24483350a0f7929177d3c40f44988`); its original license and notices remain in the package. Its Chrome extension is copied locally during setup, with no separate product account or database.
+[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included as a pinned MIT dependency (`5bb14965b8127ca2eb45d1d8e2496db0bd21daed`); its original license and notices remain in the package. Its Chrome extension is copied locally during setup, with no separate product account or database.
 
 Research references, not bundled complete products:
 
