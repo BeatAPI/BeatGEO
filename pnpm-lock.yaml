@@ -190,8 +190,8 @@ importers:
   .:
     dependencies:
       '@beatapi/beat-browser':
-        specifier: github:BeatAPI/BeatBrowser#9aefd38bbd4e3fc7762751bcff57599fe8405588
-        version: https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/9aefd38bbd4e3fc7762751bcff57599fe8405588(supports-color@8.1.1)(zod@4.6.5)
+        specifier: github:BeatAPI/BeatBrowser#8f4c6570ead24483350a0f7929177d3c40f44988
+        version: https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/8f4c6570ead24483350a0f7929177d3c40f44988(supports-color@8.1.1)(zod@4.6.5)
       embedded-postgres:
         specifier: 17.10.0-beta.17
         version: 17.10.0-beta.17
@@ -1473,9 +1473,9 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@beatapi/beat-browser@https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/9aefd38bbd4e3fc7762751bcff57599fe8405588':
-    resolution: {gitHosted: true, integrity: sha512-ROIHxHVtiEDaGHZpv161ucUOB0wh2R7gtes8bO2bXm5WSdPU1RF1TORGUR+2He3vHSj9f9OpdL6HapDwOX7Qcg==, tarball: https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/9aefd38bbd4e3fc7762751bcff57599fe8405588}
-    version: 1.3.2
+  '@beatapi/beat-browser@https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/8f4c6570ead24483350a0f7929177d3c40f44988':
+    resolution: {gitHosted: true, integrity: sha512-kll+W9QwyfDL88B725X+bkWzt7cytmWtOdB4uzcxmjcr646jHwgcwyBKgf1r9TMuhfJxb2IneTCSKT9ASiruRg==, tarball: https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/8f4c6570ead24483350a0f7929177d3c40f44988}
+    version: 1.4.0
     engines: {node: '>=20'}
     hasBin: true
 
@@ -10954,7 +10954,7 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@beatapi/beat-browser@https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/9aefd38bbd4e3fc7762751bcff57599fe8405588(supports-color@8.1.1)(zod@4.6.5)':
+  '@beatapi/beat-browser@https://codeload.github.com/BeatAPI/BeatBrowser/tar.gz/8f4c6570ead24483350a0f7929177d3c40f44988(supports-color@8.1.1)(zod@4.6.5)':
     dependencies:
       '@modelcontextprotocol/sdk': 1.32.1(supports-color@8.1.1)(zod@4.6.5)
       ws: 8.21.3
