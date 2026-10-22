@@ -2,30 +2,47 @@
 
 ## Verified implementation
 
-The local MCP now exposes 27 tools. The added workflow group covers brand creation inside an existing authorized organization, website context, shared workspace state, semantic commands, one-shot collection submission/progress/cancellation, direct collection comparison and website checks. Shared services persist the same brands, questions, actions, drafts and evidence the dashboard reads.
+The local MCP exposes 27 tools. The added workflow group covers brand creation inside an existing authorized organization, website context, shared workspace state, semantic commands, one-shot collection submission/progress/cancellation, direct collection comparison and website checks. MCP and the dashboard persist and read the same brands, questions, actions, drafts and evidence.
 
-Operation receipts use the additive `0027_workspace_commands` migration. Stable keys replay completed results and reject changed arguments; failed or interrupted operations remain inspectable. Draft revision checks and brand-settings compare-and-swap prevent stale writes. New projects start paused. Browser samples and action retests are one-shot and pin their question text and target contract; a changed queued contract is not executed.
+Operation receipts use the additive `0027_workspace_commands` migration. Stable keys replay completed results and reject changed arguments; failed or interrupted operations remain inspectable. Draft revision checks and brand-settings compare-and-swap prevent stale writes. New projects start paused. Browser samples and action retests are one-shot and pin question text and target configuration; a changed queued contract is not executed.
 
-Local tools retain organization/brand scope and read-only restrictions and are withheld from hosted deployments. They do not issue credentials, modify billing, create organizations, delete project data, publish content or call a paid research model.
+Local tools retain organization/brand scope and read-only restrictions and are withheld from hosted deployments. They do not issue credentials, modify billing, create organizations, delete project data or publish content.
 
 ## Automated acceptance
 
-`pnpm test:mvp` passed 1,576 checks: 21 browser collector tests, 17 script tests, 119 config, 35 CLI, 704 lib, 52 deployment, 581 web unit and 47 PostgreSQL integration tests. Provider replies in these tests are synthetic. The integration workflow uses the official MCP client and real disposable PostgreSQL/pg-boss to exercise creation/replay, bounded job submission, persistence, scoped reads, draft conflicts, implementation records and matched retests.
+`pnpm test:mvp` passed 1,579 checks: 22 browser collector tests, 17 script tests, 119 config, 35 CLI, 706 lib, 52 deployment, 581 web unit and 47 PostgreSQL integration tests. Provider replies in these tests are synthetic. Integration checks use the official MCP client and disposable PostgreSQL/pg-boss for creation/replay, bounded jobs, persistence, scoped reads, draft conflicts, implementation records and matched retests. Integration files run sequentially because worker availability is shared database state.
 
-Eight workspace type tasks passed. Biome checked 872 files successfully. The web production build passed with existing dependency/chunk warnings. These are local checks, not a claim of remote CI, publication or deployment.
+Eight workspace type tasks passed. Biome checked 873 files successfully. The web production build passed with dependency/chunk warnings. The implementation head also passed remote browser-lab, quality and PostgreSQL integration CI. Checks and CI do not constitute publication or deployment.
 
-The official MCP SDK connected to the running local HTTP endpoint and the new authenticated stdio proxy. Both exposed the expected local tool catalog; the stdio handshake and identity call succeeded.
+The official MCP SDK connected to the running local HTTP endpoint and authenticated stdio proxy. Both exposed the expected catalog; the stdio handshake and identity call succeeded.
 
-## Manual dashboard acceptance
+## Real BeatAPI workflow
 
-A fresh, dedicated local test instance was initialized without altering another product's database. A generated local test owner signed in through the normal auth endpoint. Headless Chromium inspected the Actions & retests view at 1440px and 390px: shared questions, monitoring state, operation history and failed collection status were visible, with no uncaught page errors or horizontal overflow. Private screenshots and test-account credentials remain outside Git.
+A dedicated local test instance and generated test owner were used. MCP created a paused BeatAPI brand, saved two unbranded buyer questions and competitor references. BeatBrowser read the live homepage; its statements remain first-party claims.
 
-## Real website and browser attempt
+Two separate, fresh consumer-ChatGPT samples of the same question completed through MCP, the queue, the real Chrome collector and PostgreSQL. The question asked which platforms let a small development team access text, image and video models with one API key, with capabilities, limitations and sources. `get_collection`, `list_runs` and `get_run` read back the completed evidence:
 
-MCP created a paused BeatAPI brand, saved two unbranded buyer questions and configured competitor references. BeatBrowser read the live BeatAPI homepage. These are first-party website statements, not independently established price or capability claims.
+| Sample | Duration | Answer characters | Saved visible citation links | BeatAPI mentioned |
+| --- | --- | --- | --- | --- |
+| Baseline | About 9 minutes | 13,838 | 23 | No |
+| Follow-up | About 8 minutes 21 seconds | 14,318 | 25 | No |
 
-The initial real collection did not complete: the connected extension/Agent CLI was 1.3.2 while the included collector CLI was 1.4.1. Alternating CLI versions restarted the shared bridge, causing disconnections. These attempts are retained as failures, not zero visibility or successful answers. The collector and local launcher now reject an existing mismatched bridge instead of replacing it. The test runner was explicitly aligned with the already installed CLI; completing the remaining browser check requires the human to reconnect the extension.
+`compare_collections` returned one matched question/target/brand-definition pair, zero missing pairs, and a zero-point mention-rate difference. These were fresh samples without an intervening website change. They validate collection and comparison, not improvement or causation.
 
-Server-side website fetching also encountered proxy DNS resolving the site to a reserved address. Public-network protections remain enabled. The MCP returns an unavailable state, a reason and a connected-browser next step rather than claiming it read the site.
+The browser runner persists its initial evidence record before acknowledging asynchronous submission. The worker polls only that run with authenticated loopback requests, avoiding a long-held HTTP response. Both successful samples exceeded the approximately five-minute request failure observed with synchronous transport. Control leases cover answer waiting plus setup and evidence reads.
 
-No successful fresh AI answer, long-running cadence, paid model request, published content, production deployment or causal improvement is claimed by this acceptance. Private runtime receipts remain under `.beat-geo`.
+## Dashboard and MCP read-back
+
+MCP created a planned documentation action linked to the completed baseline, saved draft revision 1 and reviewed that exact revision. A headless browser then edited through the ordinary dashboard controls, saved and reloaded. MCP read-back confirmed revision 2, the saved editorial text, cleared review, planned status and no implementation timestamp. A stale MCP write was rejected without overwriting the dashboard edit.
+
+The signed-in Actions & retests view was inspected at 1440px and 390px with real evidence and the draft: no uncaught page errors or horizontal overflow. Manual monitoring controls were enabled and then paused; MCP confirmed the paused state and 24-hour cadence. Credentials, screenshots and raw account evidence remain outside Git.
+
+## Boundaries and retained failures
+
+Initial bridge-version and user-takeover failures, and the answer whose synchronous worker request failed, remain failures rather than zero-exposure observations. Replaying a completed submission key returned its original job instead of sending another question. Comparing incomplete collections returned null rates and delta. A mismatched bridge is reported rather than replaced, and user takeover is not automatically resumed.
+
+Server-side website fetching encountered proxy DNS resolving the site to a reserved address. Public-network protections remain enabled. Website context returns an unavailable reason and browser next step. The saved website check and its MCP read-back contain nine unknown checks with zero evaluated checks; this is not a failed website score.
+
+Citation coverage is visible answer links only; collapsed source panels were not expanded. Account model/search mode and region were not pinned. The configured search flag is not evidence that the consumer UI performed no search. Model-generated platform claims were collected, not independently verified by this acceptance.
+
+The final draft remains unpublished and needs review; the action is planned and recurring monitoring is paused. No overnight cadence, paid research-model API request, public content publication, production deployment, broad visibility benchmark or causal improvement is claimed. Private runtime receipts remain under `.beat-geo`.
