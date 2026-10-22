@@ -10,7 +10,7 @@
 
 [공식 웹사이트](https://beatapi.io/geo) · [빠른 시작](#빠른-시작) · [제품 흐름](#제품-흐름) · [지원 현황](#지원-현황) · [로드맵](docs/roadmap.md) · [MIT 라이선스](LICENSE.md)
 
-[![40초 BeatGEO 데모 보기](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+[![44초 BeatGEO 데모 보기](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
 2026-10-22에 기록한 BeatAPI 실측의 실제 화면을 정리한 회고이며, 실시간 실행이 아닙니다. [사례 기록 — 중국어](docs/beat-geo/cases/beatapi-agent/README.md)
 

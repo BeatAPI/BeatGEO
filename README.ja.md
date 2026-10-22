@@ -10,7 +10,7 @@
 
 [公式サイト](https://beatapi.io/geo) · [クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
 
-[![40秒の BeatGEO デモを見る](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+[![44秒の BeatGEO デモを見る](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
 2026-10-22 に記録した BeatAPI 実測の実画面をまとめた振り返りで、ライブ実行ではありません。[ケース記録（中国語）](docs/beat-geo/cases/beatapi-agent/README.md)
 

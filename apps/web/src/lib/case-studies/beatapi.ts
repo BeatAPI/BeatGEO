@@ -121,8 +121,8 @@ export const beatapiCase = {
 			"本机代理 DNS 导致九项网站检查为未知，不能把它当成网站零分。",
 		),
 		copy(
-			"No continuous screen recording was captured. The 41-second README video replays current local screens of these results; it is not a recording of the original session.",
-			"此次没有全程录屏。README 中 41 秒视频用当前本地界面回顾这些结果，不是原始会话录像。",
+			"No continuous screen recording was captured. The 44-second README video replays current local screens of these results; it is not a recording of the original session.",
+			"此次没有全程录屏。README 中 44 秒视频用当前本地界面回顾这些结果，不是原始会话录像。",
 		),
 	],
 };

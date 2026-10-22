@@ -10,7 +10,7 @@
 
 [项目官网](https://beatapi.io/geo) · [快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
 
-[![观看 40 秒 BeatGEO 演示](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+[![观看 44 秒 BeatGEO 演示](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
 画面来自 2026-10-22 的 BeatAPI 实测记录，是结果回顾，不是实时运行。[案例说明](docs/beat-geo/cases/beatapi-agent/README.md)
 

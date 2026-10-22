@@ -34,7 +34,7 @@
 
 - 已有：本地原始回答、引用、MCP 操作回执、工作台截图和测试日志。
 - 已整理：公开摘要、[技术验收记录](../../agent-workflow-acceptance-2026-10-22.md)、[素材索引](./evidence-index.json)、[视频分镜](./video-script.md)、[录制工作台](./recording-workbench.html)。
-- 已剪辑：README 中 41 秒无口播短片（`assets/readme/beatgeo-demo.mp4`），画面是 2026-10-22 之后本地工作台的真实截图与实测数据回顾，不是原始会话录屏；工程文件不在本仓库。
+- 已剪辑：README 中 44 秒短片（英文口播为 KKKK 本人 Fish Audio 克隆声音，含配乐与音效，Logo 3D 动画由 Blender 按品牌原始几何渲染）（`assets/readme/beatgeo-demo.mp4`），画面是 2026-10-22 之后本地工作台的真实截图与实测数据回顾，不是原始会话录屏；工程文件不在本仓库。
 - 没有：这次历史会话的全程录屏、跨夜监控证据。
 - 后续补拍：聊天给网址、后台浏览器、工作台查看回答与修改草稿。应标为复现演示；等待时间压缩时展示原始耗时。
 

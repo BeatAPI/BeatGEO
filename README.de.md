@@ -10,7 +10,7 @@ Ein quelloffener GEO-/AEO-Arbeitsbereich von [BeatAPI](https://beatapi.io). Verf
 
 [Website](https://beatapi.io/geo) · [Schnellstart](#schnellstart) · [Ablauf](#ablauf) · [Funktionsstand](#funktionsstand) · [Roadmap](docs/roadmap.md) · [MIT-Lizenz](LICENSE.md)
 
-[![40-Sekunden-Demo von BeatGEO ansehen](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+[![44-Sekunden-Demo von BeatGEO ansehen](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
 Echte Bildschirme aus einem aufgezeichneten BeatAPI-Test vom 2026-10-22, als Rückblick und nicht als Live-Lauf. [Fallnotizen auf Chinesisch](docs/beat-geo/cases/beatapi-agent/README.md)
 
