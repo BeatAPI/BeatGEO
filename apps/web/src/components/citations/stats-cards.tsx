@@ -16,7 +16,7 @@ function StatCard({ title, tooltip, value }: { title: string; tooltip: React.Rea
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="flex-1 flex items-center">
-				<div className="text-2xl sm:text-3xl lg:text-4xl font-bold">{value}</div>
+				<div className="text-2xl sm:text-3xl font-medium tracking-tight tabular-nums">{value}</div>
 			</CardContent>
 		</Card>
 	);

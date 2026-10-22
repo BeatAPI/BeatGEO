@@ -6,13 +6,8 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@workspace/ui/comp
 import { Separator } from "@workspace/ui/components/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { useMemo, useState } from "react";
-import {
-	extractFilenameFromUrl,
-	formatUrlForDisplay,
-	getCategoryColorClass,
-	getCategoryLabel,
-	UnderlineTabs,
-} from "@/components/citations/shared";
+import { CategoryPill } from "@/components/citations/category-breakdown";
+import { extractFilenameFromUrl, formatUrlForDisplay, UnderlineTabs } from "@/components/citations/shared";
 import type { CitationData } from "@/components/citations/types";
 import { ListPagination, usePagedList } from "@/components/list-pagination";
 import { SiteIcon } from "@/components/site-icon";
@@ -168,13 +163,9 @@ export function TopUrlsCard({
 								<SiteIcon domain={citation.domain} size="lg" className="mt-0.5" />
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center gap-2 mb-0.5">
-										<Badge
-											className={`text-[10px] px-1.5 py-0 h-[18px] border-0 shadow-none ${getCategoryColorClass(citation.category)}`}
-										>
-											{getCategoryLabel(citation.category)}
-										</Badge>
+										<CategoryPill category={citation.category} />
 										{citation.isNew && (
-											<Badge className="text-[10px] px-1.5 py-0 h-[18px] border-0 shadow-none bg-green-100 text-green-700">
+											<Badge className="text-[10px] px-1.5 py-0 h-[18px] border-0 shadow-none bg-emerald-500/15 text-emerald-400">
 												{t("NEW")}
 											</Badge>
 										)}
