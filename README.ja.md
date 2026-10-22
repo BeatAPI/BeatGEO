@@ -10,6 +10,10 @@
 
 [公式サイト](https://beatapi.io/geo) · [クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
 
+[![40秒の BeatGEO デモを見る](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+
+2026-10-22 に記録した BeatAPI 実測の実画面をまとめた振り返りで、ライブ実行ではありません。[ケース記録（中国語）](docs/beat-geo/cases/beatapi-agent/README.md)
+
 > **ローカル MVP / ソースプレビュー版。** ChatGPT の収集 → データベース → worker は実環境のスモークテストを通過しています。他のエンジン、有料リサーチ、長期間の無人運用は別途検証が必要です。[検証記録（英語）](docs/beat-geo/validation.md)
 
 ## Web サイトから、継続して測定できる質問へ

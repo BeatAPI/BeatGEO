@@ -10,6 +10,10 @@
 
 [项目官网](https://beatapi.io/geo) · [快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
 
+[![观看 40 秒 BeatGEO 演示](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+
+画面来自 2026-10-22 的 BeatAPI 实测记录，是结果回顾，不是实时运行。[案例说明](docs/beat-geo/cases/beatapi-agent/README.md)
+
 > **本地 MVP / 源码预览版。** ChatGPT 采集 → 数据库 → worker 已通过真实冒烟测试。其他平台、付费研究与长期无人值守分别验收。[验收记录](docs/beat-geo/validation.md)
 
 ## 从一个网站，开始持续观察
