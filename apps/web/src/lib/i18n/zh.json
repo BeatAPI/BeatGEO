@@ -1027,5 +1027,7 @@
 	"Interval in hours": "间隔小时数",
 	"Enable or update monitoring": "开启或更新监测",
 	"Pause monitoring": "暂停监测",
-	"Workspace operation history": "工作区操作记录"
+	"Workspace operation history": "工作区操作记录",
+	"Real workflow case": "真实案例",
+	"Learn": "学习"
 }

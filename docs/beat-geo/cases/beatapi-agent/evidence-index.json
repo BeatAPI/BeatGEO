@@ -1,0 +1,57 @@
+{
+  "case": "beatapi-agent",
+  "testedOn": "2026-10-22",
+  "continuousRecording": false,
+  "editedVideo": false,
+  "provenance": "Retained original evidence; public case is an authored summary, new filming is a reproduction.",
+  "files": [
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/baseline-run-detail.json",
+      "sha256": "9ead9c51e339b99e017698fb665129dcb5788ce9a0ad3688d4caed53673071a8",
+      "purpose": "第一轮已入库回答与引用",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/followup-run-detail.json",
+      "sha256": "5372fe3f5cb03f7ea6d51037a93ca79f1a4a2a807f3af0280c6ef0298f136fd1",
+      "purpose": "第二轮已入库回答与引用",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/real-comparison.json",
+      "sha256": "820cc1268e7833005fbd9d9d3d9ea2642933ebc5dcec633b30f61468c618f9e2",
+      "purpose": "真实配对比较回执",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/workspace-after-manual-edit.json",
+      "sha256": "9e91bd1f38c75b353e9afa36512e225703654bb09b8b41148b1daa4ddf2dd19b",
+      "purpose": "界面编辑后的 MCP 读回",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/draft-manual-readback.png",
+      "sha256": "8aeaae18218b9f4c34e249529bb1f29f083e335392eaefce548070f04cf36e57",
+      "purpose": "界面草稿截图",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/workspace-1440.png",
+      "sha256": "61aad282dcb1f2ae7b2ce40286ce19786bb2be869e982175c7b972c5e0f7bad3",
+      "purpose": "桌面工作台截图",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/workspace-390.png",
+      "sha256": "e28468ee80383307720316d70877b94e9738feb209c4a71ee3ba31da419d5afa",
+      "purpose": "手机宽度工作台截图",
+      "visibility": "private-local; not bundled or approved as public footage"
+    },
+    {
+      "localFile": ".beat-geo/case-archives/beatapi-agent-20261022/website-check-readback.json",
+      "sha256": "5cbbc2c30efcf92872f01758407c8c5f74df98593a7a7030a410b7ed2cfc7c9f",
+      "purpose": "网站检查未知状态",
+      "visibility": "private-local; not bundled or approved as public footage"
+    }
+  ]
+}

@@ -69,6 +69,9 @@ function organizationGroups(
 		{ title: "MCP", link: { to: "/app/org/$org/settings/mcp", params }, icon: IconPlugConnected },
 	];
 
+	if (mode === "local")
+		docs.push({ title: "Real workflow case", link: { to: "/app/org/$org/settings/cases", params }, icon: IconSchool });
+
 	// The skill is BeatGEO's, and whitelabel deployments never point users at BeatGEO.
 	if (mode !== "whitelabel") {
 		docs.push({ title: "Skill", link: { to: "/app/org/$org/settings/skill", params }, icon: IconSchool });
@@ -149,6 +152,18 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 		...(section === "organization" && organization ? organizationGroups(organization, features, mode) : []),
 		...(section === "admin" && adminItems.length > 0 ? [{ label: "Admin", items: adminItems }] : []),
 	];
+	if (mode === "local" && section === "brand" && organization) {
+		groups.push({
+			label: "Learn",
+			items: [
+				{
+					title: "Real workflow case",
+					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
+					icon: IconSchool,
+				},
+			],
+		});
+	}
 	const brandmark = (
 		<>
 			<Logo />

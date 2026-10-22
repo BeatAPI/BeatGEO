@@ -1,0 +1,158 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BeatGEO 真实案例｜3 分 30 秒录制工作台</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;600;700&family=Noto+Serif+SC:wght@700;900&display=swap"><style>/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation.
+   Slides are authored at 1920×1080 and scaled as a whole.
+   =========================================== */
+
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage.
+   Content must be laid out at 1920×1080, not reflowed per device. */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+/* === APPROVED PAPER AND INK VISUAL SYSTEM === */
+:root{--paper:#f4f0e7;--ink:#171714;--muted:#716f68;--line:#252520;--accent:#f15a3a;--slide-bg:var(--paper);--stage-bg:#171714}*{box-sizing:border-box}body{font-family:'Noto Sans SC','PingFang SC',sans-serif;color:var(--ink)}.slide{padding:90px 100px}.eyebrow{font-size:25px;letter-spacing:3px;color:var(--muted);margin:0 0 40px}.slide h1{font-family:'Noto Serif SC','Songti SC',serif;font-size:86px;line-height:1.23;letter-spacing:-2px;max-width:1450px;margin:0 0 35px}.body{font-size:33px;line-height:1.65;max-width:1320px;margin:0 0 40px}.numbers{display:flex;gap:100px;border-top:2px solid var(--line);padding-top:32px;width:1300px}.numbers b{font-size:90px;font-family:ui-monospace,monospace;display:block;color:var(--accent)}.numbers span{font-size:29px}.flow{display:flex;align-items:center;gap:22px;margin:50px 0}.flow div{border:2px solid var(--line);padding:28px;font-size:31px;background:#fbf8f1}.flow i{font-size:45px;font-style:normal;color:var(--accent)}blockquote{font-size:42px;line-height:1.7;border-left:8px solid var(--accent);padding:20px 40px;margin:30px 0;max-width:1320px;background:#fbf8f1}.aside{font-size:27px;line-height:1.7;max-width:1300px;color:var(--muted);margin:28px 0}.rows{max-width:1320px;border-top:2px solid var(--line)}.rows>div{display:flex;justify-content:space-between;padding:24px 0;border-bottom:1px solid #bbb5a9;font-size:30px}.rows b{color:var(--accent);font-size:40px}.state{display:flex;align-items:center;gap:26px;border:2px solid var(--line);padding:35px;width:1300px;font-size:32px}.state>span:last-child{margin-left:auto;color:var(--muted)}.dot{width:20px;height:20px;background:#f15a3a;border-radius:50%}ul{font-size:31px;line-height:1.9;max-width:1300px;padding-left:38px}a{color:inherit;text-underline-offset:7px}.camera{position:absolute;right:50px;bottom:70px;width:390px;height:180px;border:2px dashed #b5afa3;display:grid;place-content:center;color:#8a8377;font-size:22px;text-align:center}.stamp{position:absolute;bottom:115px;left:100px;font-size:23px;letter-spacing:2px;color:var(--muted)}.topbar{position:fixed;top:12px;right:16px;z-index:1000;color:#f4f0e7;background:#171714e8;border:1px solid #766e62;border-radius:8px;padding:8px 12px;font:13px ui-monospace,monospace}.deck-controls{display:flex;max-width:96vw;gap:6px;align-items:center;background:#171714ef;padding:8px;border:1px solid #766e62;border-radius:10px;color:#fff;white-space:nowrap;overflow-x:auto;font:13px sans-serif}button{font:inherit;cursor:pointer;padding:7px 10px;background:transparent;color:inherit;border:1px solid #6c675e;border-radius:4px}button:focus-visible{outline:2px solid #f15a3a;outline-offset:3px}button[aria-current=true]{background:#f15a3a;color:#171714}#chapterNav{display:flex;gap:5px}#notice{position:fixed;top:45px;right:16px;color:white;z-index:1001;font:12px sans-serif}.editable-note{position:fixed;top:12px;left:16px;color:#aaa;z-index:1000;font:12px sans-serif}#pageIndicator{padding:0 5px}@media print{.topbar,.editable-note,.camera,#notice{display:none}}
+
+/* === EDITOR CONTROLS: a grace period keeps the hover target reachable. === */
+.edit-hotzone{position:fixed;top:0;left:0;width:70px;height:70px;z-index:1001}.edit-toggle{position:fixed;top:38px;left:16px;z-index:1002;opacity:0;pointer-events:none;color:white;background:#171714}.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto}[contenteditable=true]{outline:2px dashed #f15a3a;outline-offset:6px}#saveButton[hidden]{display:none}.slide{transition:opacity .2s ease}
+</style></head><body><div class="deck-viewport"><main class="deck-stage"><section class="slide active" data-group="任务" data-title="从一个网址开始"><p class="eyebrow">BEATGEO / 实测案例 / 从一个网址开始</p><h1 contenteditable="true">给 Agent 一个网址，<br>走完一次 GEO 工作流。</h1><p class="body" contenteditable="true">用户提出目标，Agent 负责操作；回答、引用和草稿留在同一个工作台。</p><div class="numbers"><div><b>2</b><span>真实回答</span></div><div><b>23 / 25</b><span>可见引用</span></div><div><b>0 / 2</b><span>提及 BeatAPI</span></div></div><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="任务" data-title="最低限度的理解"><p class="eyebrow">BEATGEO / 实测案例 / 最低限度的理解</p><h1 contenteditable="true">你说目标。<br>Agent 执行，结果可检查。</h1><p class="body" contenteditable="true">MCP 是 Agent 操作 BeatGEO 的入口；BeatBrowser 负责真实浏览器，人工界面让用户随时接手。</p><div class="flow"><div>对话里的任务</div><i>→</i><div>Agent / MCP</div><i>→</i><div>共用工作台</div></div><p class="aside">这是 2026-10-22 实测回顾，页面本身不会启动采集。</p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="证据" data-title="一个可以复现的任务"><p class="eyebrow">BEATGEO / 实测案例 / 一个可以复现的任务</p><h1 contenteditable="true">第一步，只给网址<br>和你要完成的事。</h1><p class="body" contenteditable="true">下面是整理后的可复用指令，并非原始对话逐字稿。</p><blockquote contenteditable="true">用 beatapi.io 建立 GEO 项目，整理买家会问的问题，采集真实浏览器回答，对比两轮样本，并准备一份待审核草稿。</blockquote><p class="aside">已保存两个问题；实际选取其中一个，做两轮独立采样。</p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="证据" data-title="看已保存的证据"><p class="eyebrow">BEATGEO / 实测案例 / 看已保存的证据</p><h1 contenteditable="true">两轮都有正文和引用。<br>两次都没提及 BeatAPI。</h1><p class="body" contenteditable="true">先看结果，再讨论内容方向。两轮之间没有修改官网，不能把这组数据说成优化效果。</p><div class="rows"><div><span>第一轮 · 8:59</span><b>23 条引用</b><span>13,838 字符</span></div><div><span>第二轮 · 8:21</span><b>25 条引用</b><span>14,318 字符</span></div></div><p class="aside">匹配 1 组，缺失 0。仅记录可见引用，账号模型/搜索模式未锁定。</p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="交接" data-title="用户可以接手内容"><p class="eyebrow">BEATGEO / 实测案例 / 用户可以接手内容</p><h1 contenteditable="true">Agent 写的草稿，<br>也能在界面里修改。</h1><p class="body" contenteditable="true">通过普通人工操作界面完成保存与刷新，再由 MCP 读回，验证两种入口使用同一份数据。</p><div class="flow"><div>草稿 v1</div><i>→</i><div>界面编辑保存</div><i>→</i><div>草稿 v2</div></div><p class="aside">旧审核自动清除；过期写入被拒绝。草稿待审核，动作尚未实施。</p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="交接" data-title="监控也需要有状态"><p class="eyebrow">BEATGEO / 实测案例 / 监控也需要有状态</p><h1 contenteditable="true">监控可以启用，<br>也可以明确暂停。</h1><p class="body" contenteditable="true">本次测试了启用与暂停，并读回 24 小时间隔；没有做跨夜监控。</p><div class="state"><span class="dot"></span><b>当前：暂停</b><span>24 小时配置已保存</span></div><p class="aside">本地任务需要电脑、BeatGEO 服务与 Chrome 保持在线。</p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section><section class="slide" data-group="边界" data-title="怎样把它做成视频"><p class="eyebrow">BEATGEO / 实测案例 / 怎样把它做成视频</p><h1 contenteditable="true">记录真实结果，<br>补拍时标明复现。</h1><p class="body" contenteditable="true">已有回答、回执与截图。历史会话没有全程录屏，后续补拍的动作不能冒充当时录像。</p><ul><li>原始等待超过八分钟，剪辑压缩时保留耗时说明。</li><li>两轮小样本不代表整体 GEO 表现。</li><li>网站检查因本机 DNS 限制为未知，草稿未发布。</li></ul><p class="aside"><a href="https://github.com/BeatAPI/BeatGEO/blob/1b58829717065ae3a184518ff76f3837a23c29ca/docs/beat-geo/agent-workflow-acceptance-2026-10-22.md" target="_blank" rel="noreferrer">打开固定版本实测记录 ↗</a></p><div class="camera">讲述者安全区<br>可裁切 / 放摄像头</div><p class="stamp">BEATAPI.IO · 2026-10-22 · 实测回顾</p></section></main></div><p class="editable-note">E 编辑 · 方向键翻页 · 空格计时 · F 全屏</p><div class="edit-hotzone"></div><button type="button" class="edit-toggle" id="editToggle">编辑</button><div class="topbar">讲解计时 <span id="clock">00:00</span> / 03:30</div><p id="notice" role="status"></p><div class="deck-controls"><button type="button" id="prevButton">←</button><span id="pageIndicator"></span><button type="button" id="nextButton">→</button><nav id="chapterNav" aria-label="章节"></nav><button type="button" id="timerButton">开始计时</button><button type="button" id="resetButton">归零</button><button type="button" id="fullscreenButton">全屏</button><button type="button" id="saveButton" hidden>导出编辑</button></div><script>
+/* === TOPIC CONTROLLER: preserve one fixed stage for every viewport. === */
+const DECK={chapters:['任务','证据','交接','边界']};class SlidePresentation{constructor(){const slides=[...document.querySelectorAll('.slide')], stage=document.querySelector('.deck-stage');let index=0,running=false,elapsed=0,since=0;
+const q=id=>document.getElementById(id);function fit(){const scale=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(${(innerWidth-1920*scale)/2}px,${(innerHeight-1080*scale)/2}px) scale(${scale})`}addEventListener('resize',fit);document.addEventListener('fullscreenchange',fit);fit();
+const starts=DECK.chapters.map(group=>slides.findIndex(s=>s.dataset.group===group));DECK.chapters.forEach((name,i)=>{const b=document.createElement('button');b.type='button';b.textContent=name;b.onclick=()=>show(starts[i]);q('chapterNav').append(b)});
+function show(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===index));q('pageIndicator').textContent=`${index+1} / ${slides.length}`;[...q('chapterNav').children].forEach((b,i)=>b.setAttribute('aria-current',String(slides[index].dataset.group===DECK.chapters[i])));history.replaceState(null,'','#'+(index+1))}
+q('prevButton').onclick=()=>show(index-1);q('nextButton').onclick=()=>show(index===slides.length-1?0:index+1);function toggle(){if(running)elapsed+=Date.now()-since;else since=Date.now();running=!running;q('timerButton').textContent=running?'暂停计时':'开始计时';renderTimer()}function renderTimer(){const seconds=Math.floor((elapsed+(running?Date.now()-since:0))/1000);q('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}q('timerButton').onclick=toggle;q('resetButton').onclick=()=>{running=false;elapsed=0;q('timerButton').textContent='开始计时';renderTimer()};setInterval(renderTimer,250);
+q('fullscreenButton').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch{q('notice').textContent='当前浏览器不支持全屏，请手动放大窗口。'}};
+addEventListener('keydown',e=>{if(e.target.isContentEditable)return;if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault();q('nextButton').click()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();q('prevButton').click()}else if(e.key===' '){e.preventDefault();toggle()}else if(e.key.toLowerCase()==='f')q('fullscreenButton').click();else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1)});show(Number(location.hash.slice(1))-1||0);renderTimer();
+
+/* === TOUCH AND WHEEL NAVIGATION === */
+let touchX=0,touchY=0,lastWheel=0;stage.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY},{passive:true});stage.addEventListener('touchend',e=>{if(e.target.isContentEditable)return;const dx=e.changedTouches[0].clientX-touchX,dy=e.changedTouches[0].clientY-touchY;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))show(index+(dx<0?1:-1))},{passive:true});stage.addEventListener('wheel',e=>{if(e.target.isContentEditable||Date.now()-lastWheel<700||Math.abs(e.deltaY)<25)return;lastWheel=Date.now();show(index+(e.deltaY>0?1:-1))},{passive:true});
+/* === LOCAL EDITOR: edits are saved only in this browser until exported. === */
+const editable=[...document.querySelectorAll('[contenteditable]')];editable.forEach(n=>n.contentEditable='false');const editKey='beatgeo-case-workbench-edits-v1';let editing=false;try{const values=JSON.parse(localStorage.getItem(editKey)||'[]');editable.forEach((n,i)=>{if(typeof values[i]==='string'){n.textContent=values[i];n.style.whiteSpace='pre-line'}})}catch{}
+function edit(){editing=!editing;editable.forEach(n=>n.contentEditable=String(editing));q('editToggle').classList.toggle('active',editing);q('saveButton').hidden=!editing;q('notice').textContent=editing?'编辑模式 · 自动保存到本浏览器，导出后才生成文件。':''}q('editToggle').onclick=edit;
+editable.forEach(n=>n.addEventListener('input',()=>{try{localStorage.setItem(editKey,JSON.stringify(editable.map(n=>n.innerText)))}catch{q('notice').textContent='本浏览器无法保存编辑，请导出文件。'}}));
+let hide;const hot=document.querySelector('.edit-hotzone'),editButton=q('editToggle');for(const node of[hot,editButton]){node.addEventListener('mouseenter',()=>{clearTimeout(hide);editButton.classList.add('show')});node.addEventListener('mouseleave',()=>{hide=setTimeout(()=>{if(!editing)editButton.classList.remove('show')},400)})}hot.onclick=edit;addEventListener('keydown',e=>{if(!e.target.isContentEditable&&e.key.toLowerCase()==='e')edit()});
+q('saveButton').onclick=()=>{const clone=document.documentElement.cloneNode(true);clone.querySelectorAll('[contenteditable]').forEach(n=>n.contentEditable='false');const url=URL.createObjectURL(new Blob(['<!doctype html>'+clone.outerHTML],{type:'text/html;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='beatgeo-case-recording-edited.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+}}new SlidePresentation();
+</script></body></html>
