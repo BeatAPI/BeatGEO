@@ -2,7 +2,7 @@ import { IconInfoCircle } from "@tabler/icons-react";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { Area, AreaChart, ResponsiveContainer, YAxis } from "recharts";
-import { getDaysFromLookback } from "@/lib/chart-utils";
+import { getDaysFromLookback, isEarlySignal } from "@/lib/chart-utils";
 import { useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 
@@ -20,6 +20,15 @@ interface VisibilityBarProps {
 	lookback: LookbackPeriod;
 	isLoading?: boolean;
 }
+
+const NEUTRAL_COLORS = {
+	bg: "bg-muted/30",
+	text: "text-foreground",
+	border: "border-border",
+	muted: "text-muted-foreground",
+	stroke: "#2563eb",
+	fill: "#2563eb",
+};
 
 function getVisibilityColors(value: number) {
 	if (value > 75) {
@@ -71,14 +80,15 @@ export function VisibilityBar({
 		return null;
 	}
 
-	const colors = getVisibilityColors(currentVisibility);
+	const earlySignal = isEarlySignal(totalRuns);
+	const colors = earlySignal ? NEUTRAL_COLORS : getVisibilityColors(currentVisibility);
 	// A week or less is too few points for the sparkline to read as a trend.
 	const showChart = getDaysFromLookback(lookback) > 7;
 
-	// Prepare chart data
+	// Days without observations stay empty rather than drawing a line at 0%.
 	const chartData = visibilityTimeSeries.map((point) => ({
 		date: point.date,
-		value: point.visibility ?? 0,
+		value: point.visibility,
 	}));
 
 	return (
@@ -90,8 +100,9 @@ export function VisibilityBar({
 				<span className={`text-base sm:text-lg font-semibold whitespace-nowrap ${colors.text}`}>
 					{currentVisibility}% <span className="font-normal">{t("Visibility")}</span>
 				</span>
+				{earlySignal && <span className="text-xs text-muted-foreground whitespace-nowrap">{t("Early signal")}</span>}
 
-				{showChart && (
+				{showChart && !earlySignal && (
 					<div className="w-24 h-6 hidden sm:block shrink-0">
 						<ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 1, height: 1 }}>
 							<AreaChart data={chartData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>

@@ -24,6 +24,7 @@ import { useBrand } from "@/hooks/use-brands";
 import { useDashboardSummary } from "@/hooks/use-dashboard-summary";
 import { useBrandParams } from "@/hooks/use-route-params";
 import { useShareOfVoice } from "@/hooks/use-share-of-voice";
+import { EARLY_SIGNAL_RUNS, isEarlySignal } from "@/lib/chart-utils";
 import { useT } from "@/lib/i18n";
 import { describeTargetSchedule, type TrackedTarget } from "@/lib/model-filter";
 import { setPersonProperties } from "@/lib/posthog";
@@ -159,6 +160,7 @@ function TrendSection({
 	value,
 	series,
 	loading,
+	earlySignal,
 }: {
 	icon: typeof IconEye;
 	title: string;
@@ -170,9 +172,12 @@ function TrendSection({
 	value: number | null;
 	series: TrendPoint[];
 	loading: boolean;
+	/** Caption that replaces the colour verdict while the sample is small. */
+	earlySignal?: string;
 }) {
 	const params = useBrandParams();
-	const heroTone = value === null ? "" : `${getVisibilityBgColor(value)} ${getVisibilityBorderColor(value)}`;
+	const heroTone =
+		value === null || earlySignal ? "" : `${getVisibilityBgColor(value)} ${getVisibilityBorderColor(value)}`;
 	return (
 		<section className="space-y-2">
 			<div className="flex items-center justify-between">
@@ -191,7 +196,7 @@ function TrendSection({
 
 			<div className="grid gap-4 lg:grid-cols-4">
 				<Card className={`shadow-none flex flex-col gap-3 py-4 ${heroTone}`}>
-					<HeroStat value={value} loading={loading} />
+					<HeroStat value={value} loading={loading} earlySignal={earlySignal} />
 				</Card>
 				<Card className="shadow-none lg:col-span-3 flex flex-col gap-3 py-4">
 					<CardHeader className="border-b border-dotted pb-2!">
@@ -375,15 +380,14 @@ function ResearchBrandData({ brandId, clientConfig }: { brandId: string; clientC
 }
 
 /** The big "current" stat that fills a card — the latest point of its trend, colour-coded by value. */
-function HeroStat({ value, loading }: { value: number | null; loading: boolean }) {
+function HeroStat({ value, loading, earlySignal }: { value: number | null; loading: boolean; earlySignal?: string }) {
+	const tone = value === null || earlySignal ? "text-foreground" : getVisibilityTextColor(value);
 	return (
-		<CardContent className="flex-1 flex items-center justify-center">
-			<div
-				className={`font-bold tracking-tight tabular-nums ${value === null ? "text-muted-foreground" : getVisibilityTextColor(value)}`}
-				style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
-			>
+		<CardContent className="flex-1 flex flex-col items-center justify-center gap-1 text-center">
+			<div className={`font-bold tracking-tight tabular-nums ${tone}`} style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}>
 				{loading ? <Skeleton className="h-16 w-32" /> : value === null ? "—" : `${value}%`}
 			</div>
+			{!loading && earlySignal && <p className="text-xs text-muted-foreground text-balance">{earlySignal}</p>}
 		</CardContent>
 	);
 }
@@ -419,6 +423,28 @@ const visibilityTooltipText = (nonBrandedVisibility: number) =>
 const SOV_TOOLTIP =
 	"Your brand's share of all brand and competitor mentions across the AI answers to your prompts — the big number is the latest point on this line. It shifts as AI models change, as you and competitors publish, or as the sites AI scans move; the line is smoothed for staggered prompt schedules.";
 
+/** The hero caption while the sample is too small for a red/amber/green verdict. */
+function useEarlySignalCaption(loading: boolean, totalRuns: number): string | undefined {
+	const t = useT();
+	if (loading || !isEarlySignal(totalRuns)) return undefined;
+	return t("Early signal · {count} answers so far", { count: totalRuns });
+}
+
+function BaselineNotice({ totalRuns }: { totalRuns: number }) {
+	const t = useT();
+	return (
+		<div className="rounded-lg border bg-muted/40 px-4 py-3 text-sm">
+			<p className="font-medium">{t("Collecting a baseline")}</p>
+			<p className="text-muted-foreground">
+				{t(
+					"{count} answers collected so far. Percentages move a lot until about {target} answers are in, so read them as a first look rather than a score.",
+					{ count: totalRuns, target: EARLY_SIGNAL_RUNS },
+				)}
+			</p>
+		</div>
+	);
+}
+
 function DashboardPage() {
 	const t = useT();
 	const brandId = useBrandId();
@@ -442,6 +468,8 @@ function DashboardPage() {
 	const loadingVisibility = isLoadingBrand || isLoadingSummary;
 	const loadingSov = isLoadingBrand || isLoadingSov;
 
+	const earlySignal = useEarlySignalCaption(loadingVisibility, totalRuns);
+
 	if (!isLoadingBrand && !brand?.onboarded) {
 		return <ResearchBrandData brandId={brandId} clientConfig={clientConfig} />;
 	}
@@ -453,7 +481,8 @@ function DashboardPage() {
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<div className="m-auto flex w-full max-w-[1600px] flex-col gap-3 p-4">
+			<div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 p-4">
+				{earlySignal && <BaselineNotice totalRuns={totalRuns} />}
 				<p className="text-xs text-muted-foreground">
 					{t(
 						"Trend estimates may carry earlier answers across missing days. They are not fresh daily observations; see Observed answers in Opportunities for actual sample counts and timestamps.",
@@ -474,6 +503,7 @@ function DashboardPage() {
 					value={lastValue(visibilityTimeSeries, "overall")}
 					series={visibilityTimeSeries.map((p) => ({ date: p.date, value: p.overall }))}
 					loading={loadingVisibility}
+					earlySignal={earlySignal}
 				/>
 
 				<TrendSection
@@ -487,6 +517,7 @@ function DashboardPage() {
 					value={lastValue(sovTimeSeries, "share")}
 					series={sovTimeSeries.map((p) => ({ date: p.date, value: p.share }))}
 					loading={loadingSov}
+					earlySignal={earlySignal}
 				/>
 
 				<section className="pt-2">
