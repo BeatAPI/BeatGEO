@@ -49,3 +49,20 @@ export async function resolveBrandLookbackDays(
 	const { fromDateStr, toDateStr } = await resolveBrandWindow(brandId, lookback, "UTC", options);
 	return Math.round((Date.parse(toDateStr) - Date.parse(fromDateStr)) / 86_400_000) + 1;
 }
+
+/**
+ * The first day a trend may be smoothed over: the window start for a brand
+ * observed before it, otherwise the brand's first observed day. Undefined when
+ * the brand has never been observed, which leaves the smoothing to fall back to
+ * the earliest day in its own data.
+ */
+export async function resolveObservedFrom(
+	brandId: string,
+	timezone: string,
+	fromDateStr: string,
+): Promise<string | undefined> {
+	const earliest = await getBrandEarliestRunDate(brandId);
+	if (!earliest) return undefined;
+	const earliestDay = calendarDayInTimezone(timezone, new Date(earliest));
+	return earliestDay > fromDateStr ? earliestDay : fromDateStr;
+}

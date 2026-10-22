@@ -116,22 +116,38 @@ export interface DailyVisibilityBucket {
  * forward over the days it didn't run. Pre-seeded with the prompt's earliest
  * observation so days before its first run still contribute — otherwise a
  * staggered schedule reads as a ramp-up rather than steady coverage.
+ *
+ * Seeding stops at `observedFrom`, the brand's first observed day (by default
+ * the earliest day in `byPrompt`): before any collection there is nothing to
+ * smooth, and back-filling it would draw weeks of answers that were never seen.
  */
 function carryForward<V>(
 	byPrompt: Map<string, Map<string, V>>,
 	dateRange: string[],
 	visit: (promptId: string, date: string, carried: V, actual: V | undefined) => void,
+	observedFrom?: string,
 ): void {
+	const start = observedFrom ?? firstObservedDate(byPrompt);
 	for (const [promptId, byDate] of byPrompt) {
 		const earliest = [...byDate.entries()].sort(([a], [b]) => a.localeCompare(b))[0]?.[1];
 		let carried = earliest;
 		for (const date of dateRange) {
+			if (start && date < start) continue;
 			const actual = byDate.get(date);
 			if (actual !== undefined) carried = actual;
 			if (carried === undefined) continue;
 			visit(promptId, date, carried, actual);
 		}
 	}
+}
+
+/** Earliest observed day across every prompt, or undefined when nothing was observed. */
+export function firstObservedDate(byPrompt: Map<string, Map<string, unknown>>): string | undefined {
+	let first: string | undefined;
+	for (const byDate of byPrompt.values()) {
+		for (const date of byDate.keys()) if (first === undefined || date < first) first = date;
+	}
+	return first;
 }
 
 /**
@@ -148,6 +164,7 @@ export function applyPerPromptLVCF(
 	perPromptData: PerPromptVisibilityPoint[],
 	dateRange: string[],
 	brandedPromptIds: string[],
+	observedFrom?: string,
 ): {
 	dailyVisibilityMap: Map<string, DailyVisibilityBucket>;
 	totalBrandedRuns: number;
@@ -170,24 +187,29 @@ export function applyPerPromptLVCF(
 		nonBranded: { runs: 0, mentioned: 0 },
 	};
 
-	carryForward(byPrompt, dateRange, (promptId, date, carried, actual) => {
-		const isBranded = brandedSet.has(promptId);
-		const bucket = dailyVisibilityMap.get(date) ?? {
-			branded: { total: 0, mentioned: 0 },
-			nonBranded: { total: 0, mentioned: 0 },
-		};
-		dailyVisibilityMap.set(date, bucket);
+	carryForward(
+		byPrompt,
+		dateRange,
+		(promptId, date, carried, actual) => {
+			const isBranded = brandedSet.has(promptId);
+			const bucket = dailyVisibilityMap.get(date) ?? {
+				branded: { total: 0, mentioned: 0 },
+				nonBranded: { total: 0, mentioned: 0 },
+			};
+			dailyVisibilityMap.set(date, bucket);
 
-		const day = isBranded ? bucket.branded : bucket.nonBranded;
-		day.total += carried.total;
-		day.mentioned += carried.mentioned;
+			const day = isBranded ? bucket.branded : bucket.nonBranded;
+			day.total += carried.total;
+			day.mentioned += carried.mentioned;
 
-		// Period totals measure observations, not the synthetic daily series.
-		if (!actual) return;
-		const period = isBranded ? observed.branded : observed.nonBranded;
-		period.runs += actual.total;
-		period.mentioned += actual.mentioned;
-	});
+			// Period totals measure observations, not the synthetic daily series.
+			if (!actual) return;
+			const period = isBranded ? observed.branded : observed.nonBranded;
+			period.runs += actual.total;
+			period.mentioned += actual.mentioned;
+		},
+		observedFrom,
+	);
 
 	return {
 		dailyVisibilityMap,
@@ -212,6 +234,7 @@ export function applyPerPromptKeyedLVCF<K extends string>(
 	dateRange: string[],
 	cadenceHours: number | null | undefined,
 	allKeys: readonly K[],
+	observedFrom?: string,
 ): Map<string, Record<K, number>> {
 	const cadenceDays = Math.max(1, Math.ceil((cadenceHours ?? getDefaultDelayHours()) / 24));
 	const empty = (): Record<K, number> => Object.fromEntries(allKeys.map((k) => [k, 0])) as Record<K, number>;
@@ -227,11 +250,16 @@ export function applyPerPromptKeyedLVCF<K extends string>(
 	}
 
 	const daily = new Map<string, Record<K, number>>();
-	carryForward(byPrompt, dateRange, (_promptId, date, carried) => {
-		const day = daily.get(date) ?? empty();
-		for (const key of allKeys) day[key] += carried[key] / cadenceDays;
-		daily.set(date, day);
-	});
+	carryForward(
+		byPrompt,
+		dateRange,
+		(_promptId, date, carried) => {
+			const day = daily.get(date) ?? empty();
+			for (const key of allKeys) day[key] += carried[key] / cadenceDays;
+			daily.set(date, day);
+		},
+		observedFrom,
+	);
 
 	// Values are intentionally left fractional: both consumers
 	// convert to percentages via toRoundedPercentages, where the 1/cadenceDays factor
@@ -246,6 +274,7 @@ export function applyPerPromptCitationLVCF(
 	dateRange: string[],
 	cadenceHours: number | null | undefined,
 	categorizeDomain: (domain: string) => CitationCategory,
+	observedFrom?: string,
 ): Map<string, CitationCategories> {
 	return applyPerPromptKeyedLVCF(
 		perPromptData.map((r) => ({
@@ -257,6 +286,7 @@ export function applyPerPromptCitationLVCF(
 		dateRange,
 		cadenceHours,
 		CITATION_CATEGORIES,
+		observedFrom,
 	);
 }
 
@@ -265,10 +295,25 @@ export interface ChartDataPoint {
 	[key: string]: number | string | boolean | null;
 }
 
-export function visibilityBadgeProps(value: number): {
-	variant: "default" | "secondary" | "destructive";
+/**
+ * Below this many answers a visibility percentage is an early read, not a score:
+ * one or two samples swing between 0% and 100%, so it is shown without the
+ * red/amber/green verdict until then.
+ */
+export const EARLY_SIGNAL_RUNS = 10;
+
+export function isEarlySignal(runs: number): boolean {
+	return runs < EARLY_SIGNAL_RUNS;
+}
+
+export function visibilityBadgeProps(
+	value: number,
+	runs?: number,
+): {
+	variant: "default" | "secondary" | "destructive" | "outline";
 	className: string;
 } {
+	if (runs !== undefined && isEarlySignal(runs)) return { variant: "outline", className: "text-foreground" };
 	if (value > 75) return { variant: "default", className: "bg-emerald-600 hover:bg-emerald-600 text-white" };
 	if (value > 45) return { variant: "secondary", className: "bg-amber-500 hover:bg-amber-500 text-white" };
 	return { variant: "destructive", className: "bg-rose-500 hover:bg-rose-500 text-white" };
@@ -435,11 +480,10 @@ export function filterAndCompleteChartData(chartData: ChartDataPoint[], lookback
 }
 
 /**
- * Extends line chart data to the edges of the time frame.
- * For each entity (brand/competitor), extends the first non-null value backward
- * to fill the start of the chart, and extends the last non-null value forward
- * to fill the end of the chart. This prevents gaps at the edges of the chart
- * when data collection started mid-period or hasn't been collected yet for recent dates.
+ * Extends each line forward from its last observation to the end of the time
+ * frame, so a series that hasn't been collected yet for recent dates doesn't
+ * stop short. Lines are never extended backward: a dashed line before the
+ * first observation would show weeks of results that were never collected.
  *
  * Extended points are marked with `_extended_{key}: true` so the chart can:
  * - Skip rendering dots for extended points
@@ -452,19 +496,15 @@ export function extendLinesToChartEdges(chartData: ChartDataPoint[], dataKeys: s
 	const extendedData = chartData.map((point) => ({ ...point }));
 
 	for (const key of dataKeys) {
-		const observed = extendedData
-			.map((point, index) => ({ index, value: point[key] }))
-			.filter((entry) => entry.value !== null && entry.value !== undefined);
-		const first = observed[0];
-		const last = observed[observed.length - 1];
-		if (!first || !last) continue;
+		let lastIndex = -1;
+		extendedData.forEach((point, index) => {
+			if (point[key] !== null && point[key] !== undefined) lastIndex = index;
+		});
+		if (lastIndex < 0) continue;
+		const lastValue = extendedData[lastIndex][key];
 
-		for (let i = 0; i < first.index; i++) {
-			extendedData[i][key] = first.value;
-			extendedData[i][`_extended_${key}`] = true;
-		}
-		for (let i = last.index + 1; i < extendedData.length; i++) {
-			extendedData[i][key] = last.value;
+		for (let i = lastIndex + 1; i < extendedData.length; i++) {
+			extendedData[i][key] = lastValue;
 			extendedData[i][`_extended_${key}`] = true;
 		}
 	}

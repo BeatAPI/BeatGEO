@@ -263,7 +263,8 @@ export interface VisibilityDailyAggregate {
  * and groups rows by the running count of non-null observations to carry the
  * last observation forward. Leading-null dates
  * (before a prompt's first observation) are back-seeded with the prompt's
- * earliest value to mirror the existing JS behavior. The result is already
+ * earliest value to mirror the existing JS behavior, but never before the
+ * brand's first observed day: days before any collection carry nothing. The result is already
  * aggregated by day and bucketed by branded / non-branded.
  *
  * Returns one row per date in [fromDate, toDate], which is O(days) transfer
@@ -350,6 +351,15 @@ export async function getVisibilityDailyAggregate(
 				LEFT JOIN observations obs
 					ON obs.prompt_id = pl.prompt_id AND obs.obs_date = dr.day
 			),
+			-- All-time, not just this window: a brand observed before the window
+			-- keeps its back-seeded start, a newer one starts on its first day.
+			observed_from AS (
+				SELECT min((created_at AT TIME ZONE ${timezone})::date) AS day
+				FROM prompt_runs
+				WHERE brand_id = ${brandId}
+					AND prompt_id IN (${uuidList(enabledPromptIds)})
+					${modelFilter(model)}
+			),
 			lvcf AS (
 				SELECT
 					g.prompt_id,
@@ -366,7 +376,9 @@ export async function getVisibilityDailyAggregate(
 						fo.first_mentioned
 					) AS lvcf_mentioned
 				FROM grid g
-				LEFT JOIN first_obs fo ON fo.prompt_id = g.prompt_id
+				LEFT JOIN first_obs fo
+					ON fo.prompt_id = g.prompt_id
+					AND g.date >= (SELECT day FROM observed_from)
 			)
 		SELECT
 			to_char(date, 'YYYY-MM-DD') AS date,

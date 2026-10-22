@@ -32,6 +32,8 @@ export function TrendChart({
 	className?: string;
 }) {
 	const config = { value: { label, color } } satisfies ChartConfig;
+	const observedCount = data.filter((point) => point.value != null).length;
+	const observedIndex = data.findIndex((point) => point.value != null);
 
 	return (
 		<ChartContainer config={config} className={className}>
@@ -89,6 +91,22 @@ export function TrendChart({
 					fill={color}
 					fillOpacity={0.18}
 					connectNulls
+					// A lone observation has no line to sit on, so it would otherwise not be drawn at all.
+					dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) =>
+						observedCount === 1 && index === observedIndex && cx != null && cy != null ? (
+							<circle
+								key="only-observation"
+								cx={cx}
+								cy={cy}
+								r={4}
+								fill={color}
+								stroke="var(--background)"
+								strokeWidth={2}
+							/>
+						) : (
+							<g key={`no-dot-${index}`} />
+						)
+					}
 				/>
 			</AreaChart>
 		</ChartContainer>

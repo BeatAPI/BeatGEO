@@ -127,10 +127,22 @@ describe("shareOfVoiceTimeSeriesLVCF", () => {
 			],
 			["2026-01-01", "2026-01-02"],
 		);
-		// day1: both prompts carry their earliest (day2) obs -> brand 1 / total 2
-		expect(series[0]).toEqual({ date: "2026-01-01", share: 0.5 });
+		// day1 is before anything was collected, so there is nothing to carry
+		expect(series[0]).toEqual({ date: "2026-01-01", share: null });
 		expect(series[1]).toEqual({ date: "2026-01-02", share: 0.5 });
 		expect(shareOfVoiceTimeSeriesLVCF([], ["2026-01-01"])).toEqual([{ date: "2026-01-01", share: null }]);
+	});
+
+	it("back-seeds a later prompt only as far as the brand's first observed day", () => {
+		const series = shareOfVoiceTimeSeriesLVCF(
+			[
+				{ promptId: "a", date: "2026-01-02", brandMentions: 1, competitorMentions: 1 },
+				{ promptId: "b", date: "2026-01-03", brandMentions: 0, competitorMentions: 2 },
+			],
+			["2026-01-01", "2026-01-02", "2026-01-03"],
+		);
+		// b's first run on day3 still counts on day2 (staggered schedule), never on day1.
+		expect(series.map((s) => s.share)).toEqual([null, 0.25, 0.25]);
 	});
 });
 

@@ -32,6 +32,7 @@ import {
 	isCalendarDay,
 } from "@/lib/postgres-read";
 import { computeShareOfVoice, shareOfVoiceLeaderboardLVCF, shareOfVoiceTimeSeriesLVCF } from "@/lib/visibility-stats";
+import { resolveObservedFrom } from "@/server/brand-window";
 import { resolveFilteredPrompts } from "@/server/prompt-resolution";
 
 export interface AnalyticsWindow {
@@ -162,10 +163,11 @@ export async function getBrandShareOfVoice(
 
 	const bounds = windowInstants(window);
 	const dateRange = generateDateRange(bounds.start, new Date(bounds.end.getTime() - 1));
-	const [totals, perPromptDaily, perPromptCompetitorDaily] = await Promise.all([
+	const [totals, perPromptDaily, perPromptCompetitorDaily, observedFrom] = await Promise.all([
 		getBrandMentionTotals(brandId, from, to, timezone, scope.promptIds, filters.model),
 		getPerPromptDailyMentions(brandId, from, to, timezone, scope.promptIds, filters.model),
 		getPerPromptDailyCompetitorMentions(brandId, from, to, timezone, scope.promptIds, filters.model),
+		resolveObservedFrom(brandId, timezone, from),
 	]);
 
 	const standings = shareOfVoiceLeaderboardLVCF(
@@ -195,6 +197,7 @@ export async function getBrandShareOfVoice(
 			competitorMentions: row.competitor_mentions,
 		})),
 		dateRange,
+		observedFrom,
 	);
 
 	// Exact ratios: each edge rounds once, on the way out.
