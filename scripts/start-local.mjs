@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { startEmbeddedDatabase } from "./local-database.mjs";
 import { prepareExtension } from "./local-runtime.mjs";
+import { assertCompatibleBridge } from "../apps/browser-lab/core.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const envPath = process.argv[2] || path.join(root, ".env");
@@ -63,10 +64,16 @@ try {
 	start(process.execPath, ["apps/browser-lab/server.mjs"]);
 	// The shared bridge may serve other agents, so it is not stopped with BeatGEO.
 	try {
-		execFileSync(process.execPath, ["node_modules/@beatapi/beat-browser/src/cli.js", "doctor", "--json"], {
+		const external = process.env.BEAT_BROWSER_COMMAND;
+		if (!external) assertCompatibleBridge(JSON.parse(readFileSync(path.join(root, "node_modules/@beatapi/beat-browser/package.json"), "utf8")).version);
+		const prefix = external ? JSON.parse(process.env.BEAT_BROWSER_ARGS_JSON || "[]") : ["node_modules/@beatapi/beat-browser/src/cli.js"];
+		if (!Array.isArray(prefix) || !prefix.every((arg) => typeof arg === "string")) throw new Error("Invalid browser CLI arguments.");
+		execFileSync(external || process.execPath, [...prefix, "doctor", "--json"], {
 			cwd: root, timeout: 15000, stdio: "pipe",
 		});
-	} catch { console.log("Chrome is not connected yet. Complete the extension step in Setup."); }
+	} catch (error) {
+		console.log(error.message?.startsWith("[BROWSER_VERSION_MISMATCH]") ? error.message : "Chrome is not connected yet. Complete the extension step in Setup.");
+	}
 	start("pnpm", ["--filter", "@workspace/web", "exec", "vite", "--host", "127.0.0.1", "--port", app.port || "3140", "--strictPort"]);
 	start("pnpm", ["--filter", "@workspace/worker", "start"]);
 	console.log(`BeatGEO setup: ${app.origin}/setup\nKeep this terminal running for scheduled monitoring. Ctrl+C stops these services and saves local data.`);

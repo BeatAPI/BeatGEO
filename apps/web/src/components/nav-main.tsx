@@ -57,7 +57,7 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
 								<SidebarMenuButton
 									render={<Link {...item.link} onClick={() => setOpenMobile(false)} />}
 									tooltip={t(item.title)}
-									className="text-[13px] font-normal"
+									className="h-9 rounded-lg text-sm font-normal data-[active=true]:font-normal"
 									isActive={href === activeHref}
 								>
 									{item.icon && <item.icon />}

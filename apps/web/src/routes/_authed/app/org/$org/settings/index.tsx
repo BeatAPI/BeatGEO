@@ -58,7 +58,7 @@ function OrganizationSettingsPage() {
 
 	return (
 		<div className="max-w-2xl space-y-6">
-			<h1 className="text-3xl font-bold">{t("Organization")}</h1>
+			<h1 className="beat-page-title">{t("Organization")}</h1>
 
 			<form onSubmit={handleSave} className="space-y-4">
 				<div className="space-y-2">

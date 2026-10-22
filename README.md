@@ -10,6 +10,10 @@ An open-source GEO / AEO workspace by [BeatAPI](https://beatapi.io). Track brand
 
 [Website](https://beatapi.io/geo) · [Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
 
+[![Watch the 44-second BeatGEO demo](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
+
+Real screens from a recorded BeatAPI test on 2026-10-22, replayed as a summary rather than a live run. [Case notes](docs/beat-geo/cases/beatapi-agent/README.md)
+
 > **Local MVP / source preview.** The ChatGPT collection → database → worker path has passed live smoke tests. Other engines, paid research and unattended operation have separate acceptance boundaries. [Validation log](docs/beat-geo/validation.md)
 
 ## From a website to a repeatable question set
@@ -44,6 +48,10 @@ The installer prepares a dedicated local PostgreSQL database and the included ex
 **To keep monitoring:** leave the computer awake and online, with Chrome and `pnpm local:start` running. You can close the dashboard tab. Restart with `pnpm local:start`; do not recreate the database. This local edition does not provide monitoring while your computer is offline.
 
 [Detailed onboarding — Chinese](docs/beat-geo/getting-started.md) · [Manual PostgreSQL setup — Chinese](docs/self-hosting.md)
+
+## Work from your Agent
+
+Give your MCP-capable Agent a website. The local MCP can create a paused brand, save reviewed questions, queue bounded BeatBrowser collection, inspect evidence, edit shared content drafts and control monitoring. The manual dashboard shows the same project and operation history. [Agent workflow and connection guide](docs/beat-geo/agent-workflow.md).
 
 ## The product workflow
 

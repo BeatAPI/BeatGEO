@@ -4,11 +4,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@workspace/ui/comp
 import { Separator } from "@workspace/ui/components/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { useMemo, useState } from "react";
+import { CategoryPill } from "@/components/citations/category-breakdown";
 import { UnderlineTabs } from "@/components/citations/shared";
 import { TrackDomainPopover } from "@/components/citations/track-domain-popover";
 import type { CitationData } from "@/components/citations/types";
 import { ListPagination, usePagedList } from "@/components/list-pagination";
-import { DOMAIN_CATEGORY_COLORS, ProgressBarChart } from "@/components/progress-bar-chart";
 import { SiteIcon } from "@/components/site-icon";
 import { useT } from "@/lib/i18n";
 
@@ -46,6 +46,8 @@ export function TopDomainsCard({
 	}, [domains, selectedCategory, domainSearch]);
 
 	const { page, setPage, pageItems, totalItems } = usePagedList(filteredDomains, maxDomains);
+	// Share of every domain citation, not of the filtered rows, so a tab never inflates it.
+	const totalCount = useMemo(() => domains.reduce((sum, d) => sum + d.count, 0), [domains]);
 
 	return (
 		<Card className="gap-4">
@@ -100,26 +102,49 @@ export function TopDomainsCard({
 				    search shows this message instead of hiding the section (#322). */}
 				{filteredDomains.length > 0 ? (
 					<>
-						<ProgressBarChart
-							items={pageItems.map((domain) => ({
-								label: domain.domain,
-								count: domain.count,
-								icon: <SiteIcon domain={domain.domain} size="md" />,
-								category: domain.category || "other",
-								action:
-									domain.category === "other" && brandId && competitors ? (
-										<TrackDomainPopover
-											domain={domain.domain}
-											brandId={brandId}
-											brandName={brandName}
-											competitors={competitors}
-											onAdded={onCompetitorAdded}
-										/>
-									) : undefined,
-							}))}
-							colorMapping={DOMAIN_CATEGORY_COLORS}
-							percentageMode="max"
-						/>
+						<div className="-mx-6 overflow-x-auto">
+							<table className="w-full min-w-[34rem] text-sm">
+								<thead>
+									<tr className="border-b text-left text-xs text-muted-foreground">
+										<th className="w-14 py-2.5 pl-6 font-normal">{t("Rank")}</th>
+										<th className="py-2.5 font-normal">{t("Domain")}</th>
+										<th className="py-2.5 font-normal">{t("Category")}</th>
+										<th className="py-2.5 text-right font-normal">{t("Citations")}</th>
+										<th className="w-28 py-2.5 pr-6 text-right font-normal">{t("Citation share")}</th>
+									</tr>
+								</thead>
+								<tbody className="divide-y">
+									{pageItems.map((domain, index) => (
+										<tr key={domain.domain} className="hover:bg-muted/40">
+											<td className="py-3 pl-6 text-muted-foreground tabular-nums">{page * maxDomains + index + 1}</td>
+											<td className="py-3">
+												<span className="flex min-w-0 items-center gap-2.5">
+													<SiteIcon domain={domain.domain} size="md" />
+													<span className="truncate">{domain.domain}</span>
+													{domain.category === "other" && brandId && competitors && (
+														<TrackDomainPopover
+															domain={domain.domain}
+															brandId={brandId}
+															brandName={brandName}
+															competitors={competitors}
+															onAdded={onCompetitorAdded}
+														/>
+													)}
+												</span>
+											</td>
+											<td className="py-3">
+												<CategoryPill category={domain.category || "other"} />
+											</td>
+											<td className="py-3 text-right tabular-nums">{domain.count}</td>
+											<td className="py-3 pr-6 text-right tabular-nums">
+												{totalCount > 0 ? `${((domain.count / totalCount) * 100).toFixed(1)}%` : "—"}
+												<ChangeDelta change={domain.changePercent} />
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
 						<ListPagination page={page} pageSize={maxDomains} totalItems={totalItems} onPageChange={setPage} />
 					</>
 				) : (
@@ -127,5 +152,16 @@ export function TopDomainsCard({
 				)}
 			</CardContent>
 		</Card>
+	);
+}
+
+/** Change against the previous period, shown only when there is one to compare. */
+function ChangeDelta({ change }: { change?: number | null }) {
+	if (change === undefined || change === null || !Number.isFinite(change) || change === 0) return null;
+	return (
+		<span className={`ml-2 text-xs ${change > 0 ? "text-emerald-400" : "text-rose-400"}`}>
+			{change > 0 ? "+" : ""}
+			{Math.round(change)}%
+		</span>
 	);
 }

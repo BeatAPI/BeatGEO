@@ -174,8 +174,9 @@ describe("daily visibility aggregate", () => {
 				row.lvcf_nonbranded_mentioned,
 			]),
 		).toEqual([
+			// Nothing was collected for the brand yet, so nothing is carried.
+			["2026-03-01", 0, 0, 0, 0],
 			// Before a prompt's first run, its first observation is back-filled.
-			["2026-03-01", 1, 1, 2, 1],
 			["2026-03-02", 1, 1, 2, 1],
 			["2026-03-03", 1, 1, 2, 1],
 			["2026-03-04", 1, 1, 1, 1],

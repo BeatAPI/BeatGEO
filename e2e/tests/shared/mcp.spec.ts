@@ -85,7 +85,7 @@ test.describe("MCP", () => {
 
     const namesOf = async (client: Client) => (await client.listTools()).tools.map((t) => t.name).sort();
     expect(await namesOf(admin)).toEqual(await namesOf(member));
-    for (const name of await namesOf(admin)) expect(name).not.toMatch(/^(delete_|create_(brand|organization))/);
+    for (const name of await namesOf(admin)) expect(name).not.toMatch(/^(delete_|create_organization)/);
 
     await Promise.all([admin.close(), member.close()]);
   });

@@ -8,6 +8,7 @@
 
 import { type ChartConfig, ChartContainer, ChartTooltip } from "@workspace/ui/components/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useLocale } from "@/lib/i18n";
 
 export interface TrendPoint {
 	date: string;
@@ -31,7 +32,11 @@ export function TrendChart({
 	color: string;
 	className?: string;
 }) {
+	const { locale } = useLocale();
+	const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 	const config = { value: { label, color } } satisfies ChartConfig;
+	const observedCount = data.filter((point) => point.value != null).length;
+	const observedIndex = data.findIndex((point) => point.value != null);
 
 	return (
 		<ChartContainer config={config} className={className}>
@@ -45,7 +50,7 @@ export function TrendChart({
 					minTickGap={50}
 					tick={{ fontSize: 11 }}
 					tickFormatter={(value: string) =>
-						localDate(value).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+						localDate(value).toLocaleDateString(dateLocale, { month: "short", day: "numeric" })
 					}
 				/>
 				<YAxis
@@ -64,7 +69,7 @@ export function TrendChart({
 						if (!active || !payload?.length) return null;
 						const value = payload[0]?.value as number | null;
 						if (value == null) return null;
-						const formattedDate = localDate(dateLabel as string).toLocaleDateString("en-US", {
+						const formattedDate = localDate(dateLabel as string).toLocaleDateString(dateLocale, {
 							month: "long",
 							day: "numeric",
 							year: "numeric",
@@ -89,6 +94,22 @@ export function TrendChart({
 					fill={color}
 					fillOpacity={0.18}
 					connectNulls
+					// A lone observation has no line to sit on, so it would otherwise not be drawn at all.
+					dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) =>
+						observedCount === 1 && index === observedIndex && cx != null && cy != null ? (
+							<circle
+								key="only-observation"
+								cx={cx}
+								cy={cy}
+								r={4}
+								fill={color}
+								stroke="var(--background)"
+								strokeWidth={2}
+							/>
+						) : (
+							<g key={`no-dot-${index}`} />
+						)
+					}
 				/>
 			</AreaChart>
 		</ChartContainer>

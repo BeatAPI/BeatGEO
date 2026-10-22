@@ -416,7 +416,7 @@ export async function saveWizardOnboarding(input: WizardOnboardingInput): Promis
 			organizationId: existing.organizationId,
 		});
 	});
-	await createMultiplePromptJobSchedulers(wizardPromptIds);
+	if (existing.enabled) await createMultiplePromptJobSchedulers(wizardPromptIds);
 
 	const refreshed = await db.query.brands.findFirst({ where: eq(brands.id, input.brandId) });
 	return buildBrandResult(refreshed!);

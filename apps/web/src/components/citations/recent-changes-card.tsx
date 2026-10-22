@@ -43,23 +43,29 @@ const CHANGE_ICONS: Record<ChangeType, ReactNode> = {
 
 const MAX_VISIBLE_CHANGES = 6;
 
-const plural = (count: number) => (count === 1 ? "" : "s");
-
-function describeChange(change: Change): { id: string; label: string; url: string; description: ReactNode } {
+function describeChange(
+	change: Change,
+	t: (message: string, values?: Record<string, string | number>) => string,
+): { id: string; label: string; url: string; description: ReactNode } {
 	switch (change.type) {
 		case "new_pages":
 			return {
 				id: change.url,
 				label: formatUrlForDisplay(change.url),
 				url: change.url,
-				description: `0 → ${change.count} citations across ${change.promptCount} prompt${plural(change.promptCount)}`,
+				description: t(
+					change.promptCount === 1
+						? "0 → {count} citations across 1 prompt"
+						: "0 → {count} citations across {prompts} prompts",
+					{ count: change.count, prompts: change.promptCount },
+				),
 			};
 		case "dropped_pages":
 			return {
 				id: change.url,
 				label: formatUrlForDisplay(change.url),
 				url: change.url,
-				description: `${change.previousCount} → ${change.currentCount} citations`,
+				description: t("{before} → {after} citations", { before: change.previousCount, after: change.currentCount }),
 			};
 		case "title":
 			return {
@@ -79,14 +85,22 @@ function describeChange(change: Change): { id: string; label: string; url: strin
 				id: change.domain,
 				label: change.domain,
 				url: `https://${change.domain}`,
-				description: `${change.count} citation${plural(change.count)} in the current period`,
+				description: t(
+					change.count === 1 ? "1 citation in the current period" : "{count} citations in the current period",
+					{
+						count: change.count,
+					},
+				),
 			};
 		case "dropped_domains":
 			return {
 				id: change.domain,
 				label: change.domain,
 				url: `https://${change.domain}`,
-				description: `${change.previousCount} citation${plural(change.previousCount)} last period, none now`,
+				description: t(
+					change.previousCount === 1 ? "1 citation last period, none now" : "{count} citations last period, none now",
+					{ count: change.previousCount },
+				),
 			};
 	}
 }
@@ -121,7 +135,7 @@ export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsC
 		return byType[changeTypeFilter].slice(0, MAX_VISIBLE_CHANGES);
 	}, [whatsChanged, changeTypeFilter]);
 
-	const activeTabLabel = CHANGE_TYPE_TABS.find((t) => t.key === changeTypeFilter)?.label.toLowerCase();
+	const period = t(formatPeriodLabel(days), { days });
 
 	return (
 		<Card className="h-full flex flex-col">
@@ -131,18 +145,14 @@ export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsC
 					<Tooltip>
 						<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
 						<TooltipContent className="max-w-xs text-sm font-normal">
-							{t("Compares this ")}
-							{formatPeriodLabel(days)}
-							{t(" with the ")}
-							{formatPeriodLabel(days)}
-							{t(" before it. Shows new and dropped pages, title changes, and new and dropped domains.")}
+							{t(
+								"Compares this {period} with the {period} before it. Shows new and dropped pages, title changes, and new and dropped domains.",
+								{ period },
+							)}
 						</TooltipContent>
 					</Tooltip>
 				</CardTitle>
-				<CardDescription>
-					{t("How AI citations have shifted over the past ")}
-					{formatPeriodLabel(days)}
-				</CardDescription>
+				<CardDescription>{t("How AI citations have shifted over the past {period}", { period })}</CardDescription>
 			</CardHeader>
 			<Separator />
 			<CardContent className="flex-1">
@@ -153,14 +163,12 @@ export function RecentChangesCard({ whatsChanged, days }: { whatsChanged: WhatsC
 				/>
 				<div className="divide-y divide-border/50">
 					{visibleChanges.map((change) => {
-						const described = describeChange(change);
+						const described = describeChange(change, t);
 						return <ChangeRow key={`${change.type}-${described.id}`} icon={CHANGE_ICONS[change.type]} {...described} />;
 					})}
 					{visibleChanges.length === 0 && (
 						<p className="text-sm text-muted-foreground text-center py-4">
-							{t("No ")}
-							{activeTabLabel ?? changeTypeFilter}
-							{t(" changes in this period.")}
+							{t("No changes of this kind in this period.")}
 						</p>
 					)}
 				</div>

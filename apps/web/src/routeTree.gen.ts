@@ -72,6 +72,7 @@ import { Route as AuthedAppOrgOrgSettingsApiRouteImport } from './routes/_authed
 import { Route as AuthedAppOrgOrgSettingsApiKeysRouteImport } from './routes/_authed/app/org/$org/settings/api-keys'
 import { Route as AuthedAppOrgOrgSettingsBillingRouteImport } from './routes/_authed/app/org/$org/settings/billing'
 import { Route as AuthedAppOrgOrgSettingsBrandsRouteImport } from './routes/_authed/app/org/$org/settings/brands'
+import { Route as AuthedAppOrgOrgSettingsCasesRouteImport } from './routes/_authed/app/org/$org/settings/cases'
 import { Route as AuthedAppOrgOrgSettingsMcpRouteImport } from './routes/_authed/app/org/$org/settings/mcp'
 import { Route as AuthedAppOrgOrgSettingsMembersRouteImport } from './routes/_authed/app/org/$org/settings/members'
 import { Route as AuthedAppOrgOrgSettingsSkillRouteImport } from './routes/_authed/app/org/$org/settings/skill'
@@ -432,6 +433,12 @@ const AuthedAppOrgOrgSettingsBrandsRoute =
     path: '/brands',
     getParentRoute: () => AuthedAppOrgOrgSettingsRoute,
   } as any)
+const AuthedAppOrgOrgSettingsCasesRoute =
+  AuthedAppOrgOrgSettingsCasesRouteImport.update({
+    id: '/cases',
+    path: '/cases',
+    getParentRoute: () => AuthedAppOrgOrgSettingsRoute,
+  } as any)
 const AuthedAppOrgOrgSettingsMcpRoute =
   AuthedAppOrgOrgSettingsMcpRouteImport.update({
     id: '/mcp',
@@ -639,6 +646,7 @@ export interface FileRoutesByFullPath {
   '/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
   '/app/org/$org/settings/billing': typeof AuthedAppOrgOrgSettingsBillingRoute
   '/app/org/$org/settings/brands': typeof AuthedAppOrgOrgSettingsBrandsRoute
+  '/app/org/$org/settings/cases': typeof AuthedAppOrgOrgSettingsCasesRoute
   '/app/org/$org/settings/mcp': typeof AuthedAppOrgOrgSettingsMcpRoute
   '/app/org/$org/settings/members': typeof AuthedAppOrgOrgSettingsMembersRoute
   '/app/org/$org/settings/skill': typeof AuthedAppOrgOrgSettingsSkillRoute
@@ -721,6 +729,7 @@ export interface FileRoutesByTo {
   '/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
   '/app/org/$org/settings/billing': typeof AuthedAppOrgOrgSettingsBillingRoute
   '/app/org/$org/settings/brands': typeof AuthedAppOrgOrgSettingsBrandsRoute
+  '/app/org/$org/settings/cases': typeof AuthedAppOrgOrgSettingsCasesRoute
   '/app/org/$org/settings/mcp': typeof AuthedAppOrgOrgSettingsMcpRoute
   '/app/org/$org/settings/members': typeof AuthedAppOrgOrgSettingsMembersRoute
   '/app/org/$org/settings/skill': typeof AuthedAppOrgOrgSettingsSkillRoute
@@ -811,6 +820,7 @@ export interface FileRoutesById {
   '/_authed/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
   '/_authed/app/org/$org/settings/billing': typeof AuthedAppOrgOrgSettingsBillingRoute
   '/_authed/app/org/$org/settings/brands': typeof AuthedAppOrgOrgSettingsBrandsRoute
+  '/_authed/app/org/$org/settings/cases': typeof AuthedAppOrgOrgSettingsCasesRoute
   '/_authed/app/org/$org/settings/mcp': typeof AuthedAppOrgOrgSettingsMcpRoute
   '/_authed/app/org/$org/settings/members': typeof AuthedAppOrgOrgSettingsMembersRoute
   '/_authed/app/org/$org/settings/skill': typeof AuthedAppOrgOrgSettingsSkillRoute
@@ -901,6 +911,7 @@ export interface FileRouteTypes {
     | '/app/org/$org/settings/api-keys'
     | '/app/org/$org/settings/billing'
     | '/app/org/$org/settings/brands'
+    | '/app/org/$org/settings/cases'
     | '/app/org/$org/settings/mcp'
     | '/app/org/$org/settings/members'
     | '/app/org/$org/settings/skill'
@@ -983,6 +994,7 @@ export interface FileRouteTypes {
     | '/app/org/$org/settings/api-keys'
     | '/app/org/$org/settings/billing'
     | '/app/org/$org/settings/brands'
+    | '/app/org/$org/settings/cases'
     | '/app/org/$org/settings/mcp'
     | '/app/org/$org/settings/members'
     | '/app/org/$org/settings/skill'
@@ -1072,6 +1084,7 @@ export interface FileRouteTypes {
     | '/_authed/app/org/$org/settings/api-keys'
     | '/_authed/app/org/$org/settings/billing'
     | '/_authed/app/org/$org/settings/brands'
+    | '/_authed/app/org/$org/settings/cases'
     | '/_authed/app/org/$org/settings/mcp'
     | '/_authed/app/org/$org/settings/members'
     | '/_authed/app/org/$org/settings/skill'
@@ -1579,6 +1592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedAppOrgOrgSettingsBrandsRouteImport
       parentRoute: typeof AuthedAppOrgOrgSettingsRoute
     }
+    '/_authed/app/org/$org/settings/cases': {
+      id: '/_authed/app/org/$org/settings/cases'
+      path: '/cases'
+      fullPath: '/app/org/$org/settings/cases'
+      preLoaderRoute: typeof AuthedAppOrgOrgSettingsCasesRouteImport
+      parentRoute: typeof AuthedAppOrgOrgSettingsRoute
+    }
     '/_authed/app/org/$org/settings/mcp': {
       id: '/_authed/app/org/$org/settings/mcp'
       path: '/mcp'
@@ -1771,6 +1791,7 @@ interface AuthedAppOrgOrgSettingsRouteChildren {
   AuthedAppOrgOrgSettingsApiKeysRoute: typeof AuthedAppOrgOrgSettingsApiKeysRoute
   AuthedAppOrgOrgSettingsBillingRoute: typeof AuthedAppOrgOrgSettingsBillingRoute
   AuthedAppOrgOrgSettingsBrandsRoute: typeof AuthedAppOrgOrgSettingsBrandsRoute
+  AuthedAppOrgOrgSettingsCasesRoute: typeof AuthedAppOrgOrgSettingsCasesRoute
   AuthedAppOrgOrgSettingsMcpRoute: typeof AuthedAppOrgOrgSettingsMcpRoute
   AuthedAppOrgOrgSettingsMembersRoute: typeof AuthedAppOrgOrgSettingsMembersRoute
   AuthedAppOrgOrgSettingsSkillRoute: typeof AuthedAppOrgOrgSettingsSkillRoute
@@ -1783,6 +1804,7 @@ const AuthedAppOrgOrgSettingsRouteChildren: AuthedAppOrgOrgSettingsRouteChildren
     AuthedAppOrgOrgSettingsApiKeysRoute: AuthedAppOrgOrgSettingsApiKeysRoute,
     AuthedAppOrgOrgSettingsBillingRoute: AuthedAppOrgOrgSettingsBillingRoute,
     AuthedAppOrgOrgSettingsBrandsRoute: AuthedAppOrgOrgSettingsBrandsRoute,
+    AuthedAppOrgOrgSettingsCasesRoute: AuthedAppOrgOrgSettingsCasesRoute,
     AuthedAppOrgOrgSettingsMcpRoute: AuthedAppOrgOrgSettingsMcpRoute,
     AuthedAppOrgOrgSettingsMembersRoute: AuthedAppOrgOrgSettingsMembersRoute,
     AuthedAppOrgOrgSettingsSkillRoute: AuthedAppOrgOrgSettingsSkillRoute,

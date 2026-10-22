@@ -1,8 +1,8 @@
 /**
  * `scopes` decides what a connection is offered at all, so `tools/list` is the
- * caller's capabilities. `readOnly` is required rather than inferred, so adding
- * a tool that writes is deliberate. There is no `adminOnly` and must not be:
- * operator-only verbs stay on `/api/v1`.
+ * caller's capabilities. `readOnly` is required rather than inferred. Local
+ * workspace commands are withheld on hosted deployments; operator-only verbs
+ * such as credential configuration remain outside the MCP catalog.
  */
 import { z } from "zod";
 import { type AnalyticsFilters, resolveAnalyticsWindow } from "@/lib/api/analytics-range";
@@ -22,6 +22,7 @@ export interface McpTool {
 	description: string;
 	scopes: readonly ApiScope[];
 	readOnly: boolean;
+	localOnly?: boolean;
 	/** `false` for a write tool that only adds. */
 	destructive?: boolean;
 	input: z.ZodRawShape;
@@ -35,6 +36,7 @@ export function defineTool<S extends z.ZodRawShape>(tool: {
 	description: string;
 	scopes?: readonly ApiScope[];
 	readOnly: boolean;
+	localOnly?: boolean;
 	destructive?: boolean;
 	input: S;
 	run(ctx: McpToolContext, args: z.output<z.ZodObject<S>>): Promise<unknown>;

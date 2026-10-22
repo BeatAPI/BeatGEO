@@ -34,7 +34,7 @@ function SkillPage() {
 	return (
 		<div className="max-w-4xl space-y-8">
 			<header className="space-y-1">
-				<h1 className="text-3xl font-bold">{t("Skill")}</h1>
+				<h1 className="beat-page-title">{t("Skill")}</h1>
 				<p className="max-w-2xl text-muted-foreground">
 					{t("The ")}
 					<InlineCode>{t("aeo")}</InlineCode>

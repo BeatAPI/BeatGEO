@@ -1,3 +1,4 @@
+import { parseScrapeTargets } from "@workspace/config/scrape-targets";
 import { db } from "@workspace/lib/db/db";
 import { collectionAttempts, optimizationActions, prompts } from "@workspace/lib/db/schema";
 import {
@@ -140,7 +141,13 @@ export async function retestOptimizationAction(brandId: string, id: string) {
 	for (const prompt of sameQuestions) {
 		const job = await boss.send(
 			"process-prompt",
-			{ promptId: prompt.id, force: true },
+			{
+				promptId: prompt.id,
+				force: true,
+				oneShot: true,
+				expectedPromptValue: prompt.value,
+				expectedTargets: JSON.stringify(parseScrapeTargets(process.env.SCRAPE_TARGETS)),
+			},
 			{ ...PROMPT_JOB_OPTIONS, singletonKey: `retest-${id}-${prompt.id}`, singletonSeconds: 300 },
 		);
 		if (job) queued++;
@@ -148,7 +155,11 @@ export async function retestOptimizationAction(brandId: string, id: string) {
 	return { queued, skipped: ids.length - sameQuestions.length };
 }
 
-export async function collectOneQuestion(brandId: string, promptId: string) {
+export async function collectOneQuestion(
+	brandId: string,
+	promptId: string,
+	options: { oneShot?: boolean; key?: string } = {},
+) {
 	const [prompt] = await db
 		.select()
 		.from(prompts)
@@ -171,8 +182,18 @@ export async function collectOneQuestion(brandId: string, promptId: string) {
 	const boss = await getBoss();
 	const id = await boss.send(
 		"process-prompt",
-		{ promptId, force: true },
-		{ ...PROMPT_JOB_OPTIONS, singletonKey: `manual-${promptId}`, singletonSeconds: 300 },
+		{
+			promptId,
+			force: true,
+			...(options.oneShot
+				? {
+						oneShot: true,
+						expectedPromptValue: prompt.value,
+						expectedTargets: JSON.stringify(parseScrapeTargets(process.env.SCRAPE_TARGETS)),
+					}
+				: {}),
+		},
+		{ ...PROMPT_JOB_OPTIONS, singletonKey: options.key || `manual-${promptId}`, singletonSeconds: 300 },
 	);
-	return { queued: Boolean(id) };
+	return options.oneShot ? { queued: Boolean(id), jobId: id } : { queued: Boolean(id) };
 }

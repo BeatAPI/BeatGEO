@@ -62,38 +62,42 @@
 :root,
 .dark {
 	color-scheme: dark;
-	--radius: 0.625rem;
-	--background: #121110;
-	--foreground: #f5f4f2;
-	--card: #191817;
-	--card-foreground: #f5f4f2;
-	--popover: #211f1e;
-	--popover-foreground: #f5f4f2;
-	--primary: #f5f4f2;
-	--primary-foreground: #171615;
-	--secondary: #252423;
-	--secondary-foreground: #f5f4f2;
-	--muted: #242322;
-	--muted-foreground: #aaa8a5;
-	--accent: #302e2c;
-	--accent-foreground: #f5f4f2;
-	--destructive: #ff8b85;
-	--border: #2d2c2a;
-	--input: #45423e;
-	--ring: #8caaff;
-	--chart-1: #8caaff;
-	--chart-2: #66d4b1;
-	--chart-3: #edc57c;
-	--chart-4: #bba1ef;
-	--chart-5: #ee9297;
-	--sidebar: #181716;
-	--sidebar-foreground: #e5e3df;
-	--sidebar-primary: #8caaff;
-	--sidebar-primary-foreground: #121110;
-	--sidebar-accent: #302e2c;
-	--sidebar-accent-foreground: #f5f4f2;
-	--sidebar-border: #2d2c2a;
-	--sidebar-ring: #8caaff;
+	/* Near-black analytics palette: one ground for page and sidebar, cards one
+	   step lighter with hairline borders, colour only where data needs it. */
+	--radius: 0.75rem;
+	--background: #08090a;
+	--foreground: #f2f3f5;
+	--card: #111214;
+	--card-foreground: #f2f3f5;
+	--popover: #16171a;
+	--popover-foreground: #f2f3f5;
+	--primary: #f2f3f5;
+	--primary-foreground: #0b0c0e;
+	--secondary: #1c1d21;
+	--secondary-foreground: #f2f3f5;
+	--muted: #17181b;
+	--muted-foreground: #8d909b;
+	--accent: #1d1e22;
+	--accent-foreground: #f2f3f5;
+	--destructive: #ff7a72;
+	--border: #1f2024;
+	--input: #2a2c31;
+	--ring: #7d95ff;
+	--chart-1: #7d95ff;
+	--chart-2: #3ecf8e;
+	--chart-3: #f5b452;
+	--chart-4: #b58cff;
+	--chart-5: #ff7a8a;
+	--sidebar: #08090a;
+	--sidebar-foreground: #8d909b;
+	--sidebar-primary: #7d95ff;
+	--sidebar-primary-foreground: #08090a;
+	--sidebar-accent: #17181b;
+	--sidebar-accent-foreground: #f2f3f5;
+	--sidebar-border: #1a1b1e;
+	--sidebar-ring: #7d95ff;
+	--code-ink: #f2f3f5;
+	--grid-line: rgba(141, 144, 155, 0.07);
 }
 
 @layer base {
@@ -102,8 +106,9 @@
 	}
 	body {
 		@apply bg-background text-foreground;
-		font-size: 0.8125rem;
-		line-height: 1.6;
+		font-size: 0.875rem;
+		line-height: 1.55;
+		-webkit-font-smoothing: antialiased;
 		font-synthesis: none;
 	}
 	button:not(:disabled),
@@ -159,21 +164,29 @@
 	}
 }
 
-/* Keep the texture in the header band; data and editing surfaces stay opaque. */
+/* The code texture sits behind the header band; data and editing surfaces stay opaque. */
 .beat-workspace {
 	position: relative;
 	isolation: isolate;
 }
-.beat-workspace::before {
-	content: "";
-	position: absolute;
-	inset: 0 0 auto;
-	height: 280px;
-	z-index: -1;
-	pointer-events: none;
-	background: url("/code-texture.svg") top right / 1000px 800px no-repeat;
-	mask-image: linear-gradient(#000, transparent);
-	opacity: 0.12;
+.beat-code-texture pre {
+	mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.beat-grid {
+	background-image:
+		linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+	background-size: 32px 32px;
+	mask-image: radial-gradient(ellipse 70% 100% at 70% 0%, #000 20%, transparent 75%);
+}
+.beat-page-title {
+	font-size: 1.75rem;
+	line-height: 1.2;
+	font-weight: 500;
+	letter-spacing: -0.02em;
+}
+:lang(zh) .beat-page-title {
+	letter-spacing: 0;
 }
 .beat-workspace [data-slot="table-container"] {
 	background: var(--card);
@@ -200,14 +213,8 @@
 .beat-section-tabs [data-slot="tabs-content"][hidden] {
 	display: none;
 }
-@media (max-width: 640px) {
-	.beat-workspace::before {
-		background-position: top right -150px;
-		opacity: 0.18;
-	}
-}
 @media print {
-	.beat-workspace::before {
+	.beat-code-texture {
 		display: none;
 	}
 	.beat-logo-mark {

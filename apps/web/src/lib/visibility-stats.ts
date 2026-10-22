@@ -186,11 +186,13 @@ function accumulateCarriedMentions(
 	dateMap: Map<string, MentionCounts>,
 	dateRange: string[],
 	daily: Map<string, MentionCounts>,
+	observedFrom: string | undefined,
 ): void {
 	const sorted = [...dateMap.entries()].sort(([a], [b]) => a.localeCompare(b));
 	let carried = sorted.length > 0 ? sorted[0][1] : null;
 
 	for (const date of dateRange) {
+		if (observedFrom && date < observedFrom) continue;
 		carried = dateMap.get(date) ?? carried;
 		if (!carried) continue;
 		const bucket = daily.get(date) ?? { brand: 0, competitor: 0 };
@@ -205,16 +207,21 @@ function accumulateCarriedMentions(
  * Forward (mirrors the visibility trend): each prompt's last-known brand and
  * competitor mention counts are carried across days it didn't run, then summed
  * per day, so staggered prompt schedules do not create artificial dips. The carry is
- * pre-seeded with each prompt's earliest observation to avoid a ramp-up dip.
+ * pre-seeded with each prompt's earliest observation to avoid a ramp-up dip, but
+ * never before `observedFrom` (the brand's first observed day, by default the
+ * earliest day in `perPrompt`), so days before any collection stay empty.
  * Share = brand / (brand + competitor), as a 0–100 percentage (null = no data).
  */
 export function shareOfVoiceTimeSeriesLVCF(
 	perPrompt: PerPromptDailyMentions[],
 	dateRange: string[],
+	observedFrom?: string,
 ): Array<{ date: string; share: number | null }> {
+	const start =
+		observedFrom ?? perPrompt.reduce<string | undefined>((min, r) => (min && min <= r.date ? min : r.date), undefined);
 	const daily = new Map<string, MentionCounts>();
 	for (const dateMap of groupMentionsByPromptAndDate(perPrompt).values()) {
-		accumulateCarriedMentions(dateMap, dateRange, daily);
+		accumulateCarriedMentions(dateMap, dateRange, daily, start);
 	}
 
 	return dateRange.map((date) => {

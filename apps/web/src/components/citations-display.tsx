@@ -7,6 +7,7 @@ import {
 	PAGE_TYPE_CONFIG,
 } from "@workspace/lib/citations/domain-categories";
 import { useMemo } from "react";
+import { CategoryBreakdown } from "@/components/citations/category-breakdown";
 import { ContentGapsCard } from "@/components/citations/content-gaps-card";
 import { GoogleShoppingCard } from "@/components/citations/google-shopping-card";
 import { RecentChangesCard } from "@/components/citations/recent-changes-card";
@@ -194,6 +195,12 @@ export function CitationsDisplay({
 					totalCitations={citationData.totalCitations}
 				/>
 			)}
+
+			<CategoryBreakdown
+				categoryCounts={citationData.categoryCounts}
+				categories={chartSourceCategories}
+				totalCitations={citationData.totalCitations}
+			/>
 
 			<CitationTrendCharts
 				citationData={citationData}

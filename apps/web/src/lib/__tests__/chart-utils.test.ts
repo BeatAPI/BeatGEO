@@ -2,7 +2,9 @@ import { toRoundedPercentages } from "@workspace/lib/citations/domain-categories
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	applyPerPromptKeyedLVCF,
+	applyPerPromptLVCF,
 	citationDateWindow,
+	extendLinesToChartEdges,
 	filterAndCompleteChartData,
 	generateDateRange,
 	getDaysFromLookback,
@@ -160,5 +162,36 @@ describe("filterAndCompleteChartData with a custom range", () => {
 			{ date: "2026-03-03", brand: 60 },
 			{ date: "2026-03-04" },
 		]);
+	});
+});
+
+describe("trends before the first collection", () => {
+	const range = ["2026-10-20", "2026-10-21", "2026-10-22"];
+
+	it("leaves days before the brand's first observation empty", () => {
+		const { dailyVisibilityMap } = applyPerPromptLVCF(
+			[{ prompt_id: "p1", date: "2026-10-22", total_runs: 2, brand_mentioned_count: 0 }],
+			range,
+			[],
+		);
+		expect([...dailyVisibilityMap.keys()]).toEqual(["2026-10-22"]);
+	});
+
+	it("still back-fills from an earlier observed day supplied by the caller", () => {
+		const { dailyVisibilityMap } = applyPerPromptLVCF(
+			[{ prompt_id: "p1", date: "2026-10-22", total_runs: 2, brand_mentioned_count: 1 }],
+			range,
+			[],
+			"2026-10-20",
+		);
+		expect(dailyVisibilityMap.get("2026-10-20")?.nonBranded).toEqual({ total: 2, mentioned: 1 });
+	});
+
+	it("extends a line forward to today but never backward", () => {
+		const extended = extendLinesToChartEdges(
+			[{ date: "2026-10-20" }, { date: "2026-10-21", brand: 40 }, { date: "2026-10-22" }],
+			["brand"],
+		);
+		expect(extended.map((p) => p.brand)).toEqual([undefined, 40, 40]);
 	});
 });

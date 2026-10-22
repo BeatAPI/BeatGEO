@@ -19,7 +19,7 @@ function OrganizationBrandsPage() {
 
 	return (
 		<div className="max-w-2xl space-y-6">
-			<h1 className="text-3xl font-bold">{t("Brands")}</h1>
+			<h1 className="beat-page-title">{t("Brands")}</h1>
 
 			<div className="flex flex-col gap-2">
 				{organization.brands.length === 0 && <p className="text-sm text-muted-foreground">{t("No brands yet.")}</p>}

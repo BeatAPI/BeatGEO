@@ -107,13 +107,14 @@ function PlatformTierCard({
 	groups: PlatformGroup[];
 	renderGroup: (group: PlatformGroup) => ReactNode;
 }) {
+	const t = useT();
 	return (
 		<Card className="gap-0 py-0">
 			{groups.map((group, index) => (
 				<div key={group.id} className={cn("flex flex-col gap-6 py-6", index > 0 && "border-t")}>
 					<CardHeader>
-						<CardTitle>{group.title}</CardTitle>
-						<CardDescription>{group.description}</CardDescription>
+						<CardTitle>{t(group.title)}</CardTitle>
+						<CardDescription>{t(group.description)}</CardDescription>
 					</CardHeader>
 					<CardContent>{renderGroup(group)}</CardContent>
 				</div>
@@ -262,7 +263,7 @@ function UpgradePanel({ options }: { options: ModelPickerState["upgradeOptions"]
 			<div className="space-y-2.5">
 				{groupPlatformOptions(options).map((group) => (
 					<div key={group.id} className="space-y-1.5">
-						<p className="text-xs text-muted-foreground">{group.title}</p>
+						<p className="text-xs text-muted-foreground">{t(group.title)}</p>
 						<div className="flex flex-wrap gap-1.5">
 							{group.options.map((option) => (
 								<span
@@ -306,13 +307,13 @@ function PremiumApiPool({ premium }: { premium: PremiumPool }) {
 		<Card>
 			<CardHeader>
 				<CardTitle className="flex items-center justify-between gap-3">
-					<span>{copy.title}</span>
+					<span>{t(copy.title)}</span>
 					<Badge variant={remaining === 0 ? "destructive" : "secondary"}>
 						{premium.assigned} / {premium.total}
 						{t(" pairings")}
 					</Badge>
 				</CardTitle>
-				<CardDescription>{copy.description}</CardDescription>
+				<CardDescription>{t(copy.description)}</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<div className="space-y-2">
@@ -390,7 +391,7 @@ function AddPlatformsCard({ platforms }: { platforms: ModelPickerState["unconfig
 				<div className={`${PROVIDER_GRID} gap-y-2 border-b pb-2 text-xs font-medium text-muted-foreground`}>
 					<span>{t("Platform")}</span>
 					{PROVIDER_COLUMNS.map((column) => (
-						<span key={column.access}>{column.header}</span>
+						<span key={column.access}>{t(column.header)}</span>
 					))}
 				</div>
 				<div className="divide-y">

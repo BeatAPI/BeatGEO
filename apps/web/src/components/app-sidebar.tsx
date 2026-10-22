@@ -69,12 +69,24 @@ function organizationGroups(
 		{ title: "MCP", link: { to: "/app/org/$org/settings/mcp", params }, icon: IconPlugConnected },
 	];
 
+	if (mode === "local")
+		docs.push({ title: "Real workflow case", link: { to: "/app/org/$org/settings/cases", params }, icon: IconSchool });
+
 	// The skill is BeatGEO's, and whitelabel deployments never point users at BeatGEO.
 	if (mode !== "whitelabel") {
 		docs.push({ title: "Skill", link: { to: "/app/org/$org/settings/skill", params }, icon: IconSchool });
 	}
 
+	// Org pages replace the brand menu, so keep a way straight back to each brand's dashboard.
+	const brands: NavItem[] = organization.brands.map((brand) => ({
+		title: brand.name,
+		link: { to: "/app/org/$org/brand/$brand", params: brandLinkParams(organization, brand) },
+		icon: IconDashboard,
+		exact: true,
+	}));
+
 	return [
+		...(brands.length > 0 ? [{ label: "Brand dashboards", items: brands }] : []),
 		{ label: "Organization Settings", items },
 		{ label: "Docs", items: docs },
 	];
@@ -149,6 +161,18 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 		...(section === "organization" && organization ? organizationGroups(organization, features, mode) : []),
 		...(section === "admin" && adminItems.length > 0 ? [{ label: "Admin", items: adminItems }] : []),
 	];
+	if (mode === "local" && section === "brand" && organization) {
+		groups.push({
+			label: "Learn",
+			items: [
+				{
+					title: "Real workflow case",
+					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
+					icon: IconSchool,
+				},
+			],
+		});
+	}
 	const brandmark = (
 		<>
 			<Logo />

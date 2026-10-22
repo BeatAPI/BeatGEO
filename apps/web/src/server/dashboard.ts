@@ -20,7 +20,7 @@ import {
 	getPerPromptDailyCitationStats,
 	getPerPromptVisibilityTimeSeries,
 } from "@/lib/postgres-read";
-import { resolveBrandWindow } from "@/server/brand-window";
+import { resolveBrandWindow, resolveObservedFrom } from "@/server/brand-window";
 
 interface VisibilityTimeSeriesPoint {
 	date: string;
@@ -91,10 +91,11 @@ export const getDashboardSummaryFn = createServerFn({ method: "GET" })
 			.filter((p) => getEffectiveBrandedStatus(p.systemTags || [], p.tags || []).isBranded)
 			.map((p) => p.id);
 
-		const [summaryResult, perPromptVisibility, perPromptCitations] = await Promise.all([
+		const [summaryResult, perPromptVisibility, perPromptCitations, observedFrom] = await Promise.all([
 			getDashboardSummary(data.brandId, fromDateStr, toDateStr, timezone, enabledPromptIds),
 			getPerPromptVisibilityTimeSeries(data.brandId, fromDateStr, toDateStr, timezone, enabledPromptIds),
 			getPerPromptDailyCitationStats(data.brandId, fromDateStr, toDateStr, timezone, enabledPromptIds),
+			resolveObservedFrom(data.brandId, timezone, fromDateStr),
 		]);
 
 		const summary = summaryResult[0];
@@ -111,7 +112,7 @@ export const getDashboardSummaryFn = createServerFn({ method: "GET" })
 			totalBrandedMentioned,
 			totalNonBrandedRuns,
 			totalNonBrandedMentioned,
-		} = applyPerPromptLVCF(perPromptVisibility, dateRange, brandedPromptIds);
+		} = applyPerPromptLVCF(perPromptVisibility, dateRange, brandedPromptIds, observedFrom);
 
 		const totalQualifyingRuns = totalBrandedRuns + totalNonBrandedRuns;
 		const totalMentioned = totalBrandedMentioned + totalNonBrandedMentioned;
@@ -139,6 +140,7 @@ export const getDashboardSummaryFn = createServerFn({ method: "GET" })
 			dateRange,
 			brandResult[0]?.delayOverrideHours,
 			(domain: string) => categorizeDomain(domain, brandDomains, competitorDomains),
+			observedFrom,
 		);
 		const citationTimeSeries: CitationTimeSeriesPoint[] = dateRange.map((date) => {
 			const c = smoothedCitations.get(date);
