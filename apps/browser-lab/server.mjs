@@ -57,13 +57,14 @@ function allowedRequest(request) {
 	return true;
 }
 
-async function executeRun(input) {
+async function executeRun(input, started) {
 	active = { status: "opening" };
 	try {
 		const result = await collect(input, {
 			publish: async (run) => {
 				active = { ...run };
 				await saveRun(directory, run);
+				started?.(run.id);
 			},
 		});
 		await saveRun(directory, result);
@@ -131,15 +132,25 @@ async function selectProfile(request, response) {
 async function handle(request, response) {
 	if (!allowedRequest(request)) return json(response, 403, { error: "Loopback same-origin requests only." });
 	const url = new URL(request.url, `http://127.0.0.1:${port}`);
-	if (request.method === "GET") return handleRead(url, response);
+	if (request.method === "GET") return handleRead(url, request, response);
 	if (request.method === "POST" && url.pathname === "/api/browser/profile") return selectProfile(request, response);
 	if (request.method !== "POST" || !["/api/run", "/api/collect"].includes(url.pathname))
 		return json(response, 404, { error: "Not found" });
 	return handleCollection(request, response, url);
 }
 
-async function handleRead(url, response) {
+async function handleRead(url, request, response) {
 	if (await staticAsset(url, response)) return;
+	const collection = url.pathname.match(/^\/api\/collect\/([a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})$/i);
+	if (collection) {
+		if (!authorized(request)) return json(response, 403, { error: "Invalid local runner token" });
+		try {
+			return json(response, 200, JSON.parse(await readFile(path.join(directory, `${collection[1]}.json`), "utf8")));
+		} catch (error) {
+			if (error.code !== "ENOENT") throw error;
+			return json(response, 404, { error: "Collection not found" });
+		}
+	}
 	if (url.pathname === "/") {
 		response.writeHead(200, {
 			"Content-Type": "text/html; charset=utf-8",
@@ -166,7 +177,16 @@ async function handleCollection(request, response, url) {
 	if (active) return json(response, 409, { error: "A browser run is already active. Wait before submitting another." });
 	const input = validateInput(await bodyOf(request));
 	if (active) return json(response, 409, { error: "A browser run started while this request was being read." });
-	const operation = executeRun(input);
+	const started = Promise.withResolvers();
+	const operation = executeRun(input, started.resolve);
+	if (url.pathname === "/api/collect" && request.headers.prefer === "respond-async") {
+		operation.catch((error) => {
+			started.reject(error);
+			console.error("Run failed:", error.message);
+		});
+		// A receipt is returned only after its initial private run record is durable.
+		return json(response, 202, { accepted: true, runId: await started.promise });
+	}
 	if (url.pathname === "/api/collect") return json(response, 200, await operation);
 	operation.catch((error) => console.error("Run failed:", error.message));
 	return json(response, 202, { accepted: true });

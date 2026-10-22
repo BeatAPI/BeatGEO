@@ -212,6 +212,8 @@ async function openRunPage(config, run, transport, useSpaces) {
 				action: "open",
 				url: ENGINES[config.engine].url,
 				label: `BeatGEO · ${ENGINES[config.engine].name}`,
+				// Keep control through composer attachment, answer waiting and evidence reads.
+				leaseMs: Math.min(3_600_000, run.timeoutMs + 90_000),
 				profileId: config.profileId || process.env.BEAT_BROWSER_PROFILE_ID || undefined,
 			}),
 		);

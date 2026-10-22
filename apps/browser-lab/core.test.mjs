@@ -163,12 +163,13 @@ test("an interrupted TaskSpace never falls back to an ordinary browser tab", asy
 	assert(calls.every((call) => call.tool === "spaces"));
 });
 
-test("default collection uses the chosen profile and preserves evidence pages", async () => {
+test("collection retains the chosen profile through long answer waits and preserves evidence pages", async () => {
 	const calls = [];
 	let submitted = false;
 	const run = await collect(
 		{ engine: "chatgpt", prompt: "best providers", brand: "Example", profileId: "chosen-profile" },
 		{
+			timeoutMs: 1_800_000,
 			delay: async () => {},
 			browser: async (tool, params) => {
 				calls.push({ tool, params });
@@ -188,6 +189,7 @@ test("default collection uses the chosen profile and preserves evidence pages", 
 	assert.equal(run.status, "completed");
 	assert.equal(run.brandMentioned, true);
 	assert.equal(calls[0].params.profileId, "chosen-profile");
+	assert(calls[0].params.leaseMs > run.timeoutMs + 60_000);
 	assert.equal(
 		calls.some((call) => call.tool === "tabs"),
 		false,

@@ -5,6 +5,45 @@ import { beatBrowser } from "./beat-browser";
 afterEach(() => {
 	vi.unstubAllEnvs();
 	vi.unstubAllGlobals();
+	vi.useRealTimers();
+});
+
+it("polls the accepted browser run without resubmitting while a long answer is generated", async () => {
+	vi.useFakeTimers();
+	vi.stubEnv("BROWSER_RUNNER_TOKEN", "local-test-token");
+	const id = "11111111-1111-4111-8111-111111111111";
+	const request = vi
+		.fn()
+		.mockResolvedValueOnce(new Response(JSON.stringify({ accepted: true, runId: id }), { status: 202 }))
+		.mockResolvedValueOnce(new Response(JSON.stringify({ id, status: "waiting" })))
+		.mockResolvedValueOnce(
+			new Response(JSON.stringify({ id, status: "completed", answer: "A finished answer.", citations: [] })),
+		);
+	vi.stubGlobal("fetch", request);
+	const operation = beatBrowser.run("chatgpt", "best providers", {});
+	await vi.advanceTimersByTimeAsync(4000);
+	expect((await operation).textContent).toBe("A finished answer.");
+	expect(request).toHaveBeenCalledTimes(3);
+	expect(request.mock.calls.filter((call) => call[1].method === "POST")).toHaveLength(1);
+	expect(request.mock.calls[0][1].headers.Prefer).toBe("respond-async");
+	expect(request.mock.calls.slice(1).every((call) => call[0].pathname === `/api/collect/${id}`)).toBe(true);
+});
+
+it("does not resubmit when the runner disappears after accepting a browser task", async () => {
+	vi.useFakeTimers();
+	vi.stubEnv("BROWSER_RUNNER_TOKEN", "local-test-token");
+	const request = vi
+		.fn()
+		.mockResolvedValueOnce(
+			new Response(JSON.stringify({ runId: "11111111-1111-4111-8111-111111111111" }), { status: 202 }),
+		)
+		.mockResolvedValueOnce(new Response("not found", { status: 404 }));
+	vi.stubGlobal("fetch", request);
+	const rejected = expect(beatBrowser.run("chatgpt", "best providers", {})).rejects.toThrow("did not complete");
+	await vi.advanceTimersByTimeAsync(2000);
+	await rejected;
+	expect(request).toHaveBeenCalledTimes(2);
+	expect(request.mock.calls.filter((call) => call[1].method === "POST")).toHaveLength(1);
 });
 
 it("preserves a completed browser answer and its citations through history rendering", async () => {

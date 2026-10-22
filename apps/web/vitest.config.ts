@@ -30,6 +30,8 @@ export default defineConfig({
 				extends: true,
 				test: {
 					name: "integration",
+					// Worker availability is shared database state across these scenarios.
+					fileParallelism: false,
 					include: ["src/**/*.integration.test.ts"],
 					globalSetup: ["src/test/integration/global-setup.ts"],
 					// Its own variable rather than DATABASE_URL, which in a dev checkout
