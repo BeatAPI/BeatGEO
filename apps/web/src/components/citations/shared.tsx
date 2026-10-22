@@ -31,7 +31,7 @@ export function formatPeriodLabel(days: number): string {
 	if (days === 30) return "month";
 	if (days === 60) return "2 months";
 	if (days === 90) return "3 months";
-	return `${days} days`;
+	return "{days} days";
 }
 
 export const extractSubreddit = (url: string): string | null => {
@@ -87,7 +87,7 @@ export function UnderlineTabs<T extends string>({
 							: "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
 					}`}
 				>
-					{label}
+					{t(label)}
 				</button>
 			))}
 		</nav>

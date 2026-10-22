@@ -163,7 +163,7 @@ function McpSettingsPage() {
 	return (
 		<div className="max-w-4xl space-y-8">
 			<header className="space-y-1">
-				<h1 className="text-3xl font-bold">MCP</h1>
+				<h1 className="beat-page-title">MCP</h1>
 				<p className="max-w-2xl text-muted-foreground">
 					{t("Connect any chat bot to ")}
 					{appName}.

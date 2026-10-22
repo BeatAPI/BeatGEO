@@ -182,8 +182,8 @@ export function PromptsEditor({ initialPrompts, brandId, pageTitle, pageDescript
 		<div className="space-y-6">
 			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">{pageTitle}</h1>
-					<p className="text-muted-foreground">{pageDescription}</p>
+					<h1 className="beat-page-title">{t(pageTitle)}</h1>
+					<p className="text-[15px] text-muted-foreground">{t(pageDescription)}</p>
 				</div>
 				<Button
 					variant="outline"

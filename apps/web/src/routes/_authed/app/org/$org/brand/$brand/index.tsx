@@ -19,7 +19,8 @@ import { useDashboardSummary } from "@/hooks/use-dashboard-summary";
 import { useBrandParams } from "@/hooks/use-route-params";
 import { useShareOfVoice } from "@/hooks/use-share-of-voice";
 import { EARLY_SIGNAL_RUNS, isEarlySignal } from "@/lib/chart-utils";
-import { useT } from "@/lib/i18n";
+import { useLocale, useT } from "@/lib/i18n";
+import type { Values } from "@/lib/i18n/messages";
 import { describeTargetSchedule, type TrackedTarget } from "@/lib/model-filter";
 import { setPersonProperties } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
@@ -39,8 +40,8 @@ function lastValue<T>(series: T[], key: keyof T): number | null {
 	return null;
 }
 
-function formatRelativeTime(dateString: string | null): string {
-	if (!dateString) return "Never";
+function formatRelativeTime(dateString: string | null, t: (message: string, values?: Values) => string): string {
+	if (!dateString) return t("Never");
 
 	const date = new Date(dateString);
 	const now = new Date();
@@ -49,10 +50,10 @@ function formatRelativeTime(dateString: string | null): string {
 	const diffHours = Math.floor(diffMs / 3600000);
 	const diffDays = Math.floor(diffMs / 86400000);
 
-	if (diffMins < 1) return "Just now";
-	if (diffMins < 60) return `${diffMins}m ago`;
-	if (diffHours < 24) return `${diffHours}h ago`;
-	if (diffDays < 7) return `${diffDays}d ago`;
+	if (diffMins < 1) return t("Just now");
+	if (diffMins < 60) return t("{count}m ago", { count: diffMins });
+	if (diffHours < 24) return t("{count}h ago", { count: diffHours });
+	if (diffDays < 7) return t("{count}d ago", { count: diffDays });
 
 	return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
@@ -87,6 +88,7 @@ function StatWithTooltip({
 	value: string | number;
 	tooltip: ReactNode;
 }) {
+	const t = useT();
 	return (
 		<Tooltip>
 			<TooltipTrigger render={<div className="flex items-center gap-2 cursor-help" />}>
@@ -96,7 +98,7 @@ function StatWithTooltip({
 				</span>
 				<IconInfoCircle className="h-3.5 w-3.5 opacity-50" />
 			</TooltipTrigger>
-			<TooltipContent className="max-w-xs text-sm">{tooltip}</TooltipContent>
+			<TooltipContent className="max-w-xs text-sm">{typeof tooltip === "string" ? t(tooltip) : tooltip}</TooltipContent>
 		</Tooltip>
 	);
 }
@@ -111,13 +113,14 @@ function CardTitleWithTooltip({
 	tooltip?: string;
 	className?: string;
 }) {
+	const t = useT();
 	return (
 		<CardTitle className={`text-sm font-medium flex items-center gap-1.5 ${className}`}>
 			{title}
 			{tooltip ? (
 				<Tooltip>
 					<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 text-muted-foreground cursor-help" />} />
-					<TooltipContent className="max-w-xs text-sm font-normal">{tooltip}</TooltipContent>
+					<TooltipContent className="max-w-xs text-sm font-normal">{t(tooltip)}</TooltipContent>
 				</Tooltip>
 			) : (
 				<IconInfoCircle className="h-3.5 w-3.5 opacity-70" />
@@ -273,6 +276,7 @@ function TrackingStats({
 	trackedTargets: TrackedTarget[];
 }) {
 	const t = useT();
+	const { locale } = useLocale();
 	if (loading) {
 		return (
 			<div className="flex flex-col gap-4 text-sm text-muted-foreground">
@@ -339,10 +343,12 @@ function TrackingStats({
 			<StatWithTooltip
 				icon={IconRefresh}
 				label={t("last updated")}
-				value={formatRelativeTime(lastUpdatedAt)}
+				value={formatRelativeTime(lastUpdatedAt, t)}
 				tooltip={
 					lastUpdatedAt
-						? `The last prompts we evaluated for your brand were run on ${new Date(lastUpdatedAt).toLocaleString()}`
+						? t("The last prompts we evaluated for your brand were run on {date}", {
+								date: new Date(lastUpdatedAt).toLocaleString(locale === "zh" ? "zh-CN" : "en-US"),
+							})
 						: "No evaluations have been run yet."
 				}
 			/>
@@ -441,8 +447,8 @@ function useReportedPromptCount(totalPrompts: number | undefined) {
 	}, [totalPrompts]);
 }
 
-const visibilityTooltipText = (nonBrandedVisibility: number) =>
-	`The percentage of AI answers to your prompts that mention your brand — the big number is the latest point on this line. For prompts that don't name your brand, it's ${nonBrandedVisibility}%. Visibility shifts as AI models, the prompts you track, or the sites AI scans change; the line is smoothed for staggered prompt schedules.`;
+const VISIBILITY_TOOLTIP =
+	"The percentage of AI answers to your prompts that mention your brand — the big number is the latest point on this line. For prompts that don't name your brand, it's {value}%. Visibility shifts as AI models, the prompts you track, or the sites AI scans change; the line is smoothed for staggered prompt schedules.";
 
 const SOV_TOOLTIP =
 	"Your brand's share of all brand and competitor mentions across the AI answers to your prompts — the big number is the latest point on this line. It shifts as AI models change, as you and competitors publish, or as the sites AI scans move; the line is smoothed for staggered prompt schedules.";
@@ -529,7 +535,7 @@ function DashboardPage() {
 					chartTitle={t("Visibility Trends (30d)")}
 					chartLabel={t("AI Visibility (7d avg)")}
 					// The tooltips quote live figures, so they stay off until those have loaded.
-					tooltip={loadingVisibility ? undefined : visibilityTooltipText(nonBrandedVisibility)}
+					tooltip={loadingVisibility ? undefined : t(VISIBILITY_TOOLTIP, { value: nonBrandedVisibility })}
 					// "Current" = the latest plotted point, so the hero number always
 					// matches the right end of the chart beside it (rather than the
 					// whole-window average).

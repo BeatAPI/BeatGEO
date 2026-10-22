@@ -34,7 +34,7 @@ function ApiSettingsPage() {
 	return (
 		<div className="space-y-6">
 			<header className="space-y-1">
-				<h1 className="text-3xl font-bold">{t("API Docs")}</h1>
+				<h1 className="beat-page-title">{t("API Docs")}</h1>
 				<p className="max-w-2xl text-muted-foreground">
 					{t("Programmatic interface for ")}
 					{appName}.

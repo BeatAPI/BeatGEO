@@ -14,7 +14,7 @@ import {
 	selectCompetitorsToDisplay,
 	visibilityBadgeProps,
 } from "@/lib/chart-utils";
-import { useT } from "@/lib/i18n";
+import { useLocale, useT } from "@/lib/i18n";
 import type { LookbackPeriod } from "@/lib/lookback";
 
 /** The brand's own line is the one people are looking for, so it carries more
@@ -110,6 +110,8 @@ export function BaseChart({
 	chartColors: chartColorsProp,
 	chartHeight = "250px",
 }: BaseChartProps) {
+	const { locale } = useLocale();
+	const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 	const completeData = filterAndCompleteChartData(data, lookback);
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const [hoveredSeries, setHoveredSeries] = React.useState<string | null>(null);
@@ -228,7 +230,7 @@ export function BaseChart({
 									// value is already a properly bucketed date string like "2025-07-21"
 									const [year, month, day] = value.split("-").map(Number);
 									const date = new Date(year, month - 1, day); // Create local date
-									return date.toLocaleDateString("en-US", {
+									return date.toLocaleDateString(dateLocale, {
 										month: "short",
 										day: "numeric",
 									});
@@ -252,7 +254,7 @@ export function BaseChart({
 										labelFormatter={(value) => {
 											const [year, month, day] = String(value).split("-").map(Number);
 											const date = new Date(year, month - 1, day);
-											return date.toLocaleDateString("en-US", {
+											return date.toLocaleDateString(dateLocale, {
 												month: "short",
 												day: "numeric",
 											});
@@ -313,7 +315,7 @@ export function BaseChart({
 									// value is already a properly bucketed date string like "2025-07-21"
 									const [year, month, day] = value.split("-").map(Number);
 									const date = new Date(year, month - 1, day); // Create local date
-									return date.toLocaleDateString("en-US", {
+									return date.toLocaleDateString(dateLocale, {
 										month: "short",
 										day: "numeric",
 									});
@@ -348,7 +350,7 @@ export function BaseChart({
 
 									const [year, month, day] = (label as string).split("-").map(Number);
 									const date = new Date(year, month - 1, day);
-									const formattedDate = date.toLocaleDateString("en-US", {
+									const formattedDate = date.toLocaleDateString(dateLocale, {
 										month: "short",
 										day: "numeric",
 									});

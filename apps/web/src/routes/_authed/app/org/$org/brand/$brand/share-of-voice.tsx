@@ -154,13 +154,13 @@ function ShareOfVoicePage() {
 									<TableHead className="w-10">#</TableHead>
 									<TableHead>{t("Brand")}</TableHead>
 									<TableHead className="text-right">
-										<ColHead label={t("Mentions")} tip={TIPS.mentions} right />
+										<ColHead label={t("Mentions")} tip={t(TIPS.mentions)} right />
 									</TableHead>
 									<TableHead className="w-[34%]">
-										<ColHead label={t("Share")} tip={TIPS.share} />
+										<ColHead label={t("Share")} tip={t(TIPS.share)} />
 									</TableHead>
 									<TableHead className="text-right">
-										<ColHead label={t("Prompts")} tip={TIPS.prompts} right />
+										<ColHead label={t("Prompts")} tip={t(TIPS.prompts)} right />
 									</TableHead>
 								</TableRow>
 							</TableHeader>

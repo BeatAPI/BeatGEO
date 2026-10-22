@@ -8,6 +8,7 @@
 
 import { type ChartConfig, ChartContainer, ChartTooltip } from "@workspace/ui/components/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useLocale } from "@/lib/i18n";
 
 export interface TrendPoint {
 	date: string;
@@ -31,6 +32,8 @@ export function TrendChart({
 	color: string;
 	className?: string;
 }) {
+	const { locale } = useLocale();
+	const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 	const config = { value: { label, color } } satisfies ChartConfig;
 	const observedCount = data.filter((point) => point.value != null).length;
 	const observedIndex = data.findIndex((point) => point.value != null);
@@ -47,7 +50,7 @@ export function TrendChart({
 					minTickGap={50}
 					tick={{ fontSize: 11 }}
 					tickFormatter={(value: string) =>
-						localDate(value).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+						localDate(value).toLocaleDateString(dateLocale, { month: "short", day: "numeric" })
 					}
 				/>
 				<YAxis
@@ -66,7 +69,7 @@ export function TrendChart({
 						if (!active || !payload?.length) return null;
 						const value = payload[0]?.value as number | null;
 						if (value == null) return null;
-						const formattedDate = localDate(dateLabel as string).toLocaleDateString("en-US", {
+						const formattedDate = localDate(dateLabel as string).toLocaleDateString(dateLocale, {
 							month: "long",
 							day: "numeric",
 							year: "numeric",

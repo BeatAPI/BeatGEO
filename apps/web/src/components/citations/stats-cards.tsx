@@ -4,6 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/component
 import { useT } from "@/lib/i18n";
 
 function StatCard({ title, tooltip, value }: { title: string; tooltip: React.ReactNode; value: React.ReactNode }) {
+	const t = useT();
 	return (
 		<Card className="flex flex-col">
 			<CardHeader className="gap-0">
@@ -11,7 +12,9 @@ function StatCard({ title, tooltip, value }: { title: string; tooltip: React.Rea
 					{title}
 					<Tooltip>
 						<TooltipTrigger render={<IconInfoCircle className="h-3.5 w-3.5 cursor-help" />} />
-						<TooltipContent className="max-w-xs text-sm font-normal">{tooltip}</TooltipContent>
+						<TooltipContent className="max-w-xs text-sm font-normal">
+							{typeof tooltip === "string" ? t(tooltip) : tooltip}
+						</TooltipContent>
 					</Tooltip>
 				</CardTitle>
 			</CardHeader>

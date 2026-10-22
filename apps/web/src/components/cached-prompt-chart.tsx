@@ -216,7 +216,7 @@ export const CachedPromptChart = memo(function CachedPromptChart({
 							variant={visibilityBadgeProps(lastBrandVisibility, totalRuns).variant}
 							className={visibilityBadgeProps(lastBrandVisibility, totalRuns).className}
 						>
-							{lastBrandVisibility}% Visibility
+							{t("{value}% Visibility", { value: lastBrandVisibility })}
 						</Badge>
 					)}
 				</CardHeader>
