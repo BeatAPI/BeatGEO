@@ -77,7 +77,16 @@ function organizationGroups(
 		docs.push({ title: "Skill", link: { to: "/app/org/$org/settings/skill", params }, icon: IconSchool });
 	}
 
+	// Org pages replace the brand menu, so keep a way straight back to each brand's dashboard.
+	const brands: NavItem[] = organization.brands.map((brand) => ({
+		title: brand.name,
+		link: { to: "/app/org/$org/brand/$brand", params: brandLinkParams(organization, brand) },
+		icon: IconDashboard,
+		exact: true,
+	}));
+
 	return [
+		...(brands.length > 0 ? [{ label: "Brand dashboards", items: brands }] : []),
 		{ label: "Organization Settings", items },
 		{ label: "Docs", items: docs },
 	];

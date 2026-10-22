@@ -1029,5 +1029,14 @@
 	"Pause monitoring": "暂停监测",
 	"Workspace operation history": "工作区操作记录",
 	"Real workflow case": "真实案例",
-	"Learn": "学习"
+	"Learn": "学习",
+	"Early signal · {count} answers so far": "初步信号 · 目前 {count} 条回答",
+	"Collecting a baseline": "正在建立基线",
+	"{count} answers collected so far. Percentages move a lot until about {target} answers are in, so read them as a first look rather than a score.": "目前已采集 {count} 条回答。样本达到约 {target} 条之前，百分比波动很大，请把它当作初步观察，而不是评分。",
+	"Early signal": "初步信号",
+	"Saved actions": "已保存的动作",
+	"Recurring monitoring": "定期监测",
+	"Paused": "已暂停",
+	"Agents and this page share the same settings and history.": "Agent 与本页面共用同一套设置和记录。",
+	"Brand dashboards": "品牌看板"
 }

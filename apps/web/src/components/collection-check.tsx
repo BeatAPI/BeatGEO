@@ -20,7 +20,7 @@ export function CollectionCheck({
 		onSuccess: () => client.invalidateQueries({ queryKey: ["monitoring", brandId] }),
 	});
 	return (
-		<div className="space-y-3 border-b pb-6">
+		<div className="space-y-3">
 			<p className="flex items-center gap-2 text-xs text-muted-foreground">
 				<span aria-hidden className={`size-1.5 rounded-full ${ready ? "bg-emerald-400" : "bg-amber-300"}`} />
 				{t(ready ? "Worker ready" : "Worker not ready")}

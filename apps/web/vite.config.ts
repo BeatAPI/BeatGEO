@@ -18,6 +18,13 @@ export default defineConfig({
 	define: {
 		__APP_VERSION__: JSON.stringify(pkg.version),
 	},
+	server: {
+		// The local edition runs this dev server, so without warmup the first visit
+		// to each dashboard page waits seconds for on-demand compilation.
+		warmup: {
+			clientFiles: ["./src/routes/_authed/**/*.tsx", "./src/components/**/*.tsx", "!./src/**/*.stories.tsx"],
+		},
+	},
 	resolve: {
 		tsconfigPaths: true,
 		alias: {

@@ -39,16 +39,21 @@ export function WorkspaceControl({ brandId }: { brandId: string }) {
 	if (error) return <p role="alert">{t("Workspace history unavailable. Check local storage.")}</p>;
 	if (!data) return null;
 	return (
-		<section className="space-y-3 border-t pt-5" aria-label={t("Agent and manual workspace")}>
-			<h3 className="text-sm font-medium">{t("Agent and manual workspace")}</h3>
-			<p className="text-sm text-muted-foreground">
-				{t(data.brand.enabled ? "Recurring monitoring enabled" : "Recurring monitoring paused")}
-			</p>
+		<section className="space-y-3" aria-label={t("Agent and manual workspace")}>
+			<div className="flex items-center justify-between gap-2">
+				<h3 className="text-sm font-medium">{t("Recurring monitoring")}</h3>
+				<span
+					className={`rounded-full border px-2 py-0.5 text-xs ${data.brand.enabled ? "border-emerald-500/40 text-emerald-400" : "text-muted-foreground"}`}
+				>
+					{t(data.brand.enabled ? "Enabled" : "Paused")}
+				</span>
+			</div>
 			<p className="text-xs text-muted-foreground">
+				{t("Agents and this page share the same settings and history.")}{" "}
 				{t("One-shot collections do not enable monitoring. Keep BeatGEO and Chrome online for scheduled work.")}
 			</p>
 			<div className="flex flex-wrap items-center gap-2">
-				<label className="text-sm">
+				<label className="text-sm text-muted-foreground">
 					{t("Interval in hours")}{" "}
 					<input
 						className="w-20 rounded border bg-background p-1"
