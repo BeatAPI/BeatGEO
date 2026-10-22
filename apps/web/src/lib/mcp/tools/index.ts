@@ -11,6 +11,7 @@ import type { McpTool } from "./define";
 import { listModels, whoami } from "./identity";
 import { createPromptsTool, listPromptsTool, listPromptTags, updatePromptTool } from "./prompts";
 import { getRun, listRuns } from "./runs";
+import { WORKSPACE_TOOLS } from "./workspace";
 
 export type { McpTool } from "./define";
 
@@ -32,6 +33,7 @@ export const MCP_TOOLS: readonly McpTool[] = [
 	getOpportunities,
 	listRuns,
 	getRun,
+	...WORKSPACE_TOOLS,
 ];
 
 /** Filtered rather than refused at call time, so `tools/list` is an honest
@@ -40,6 +42,7 @@ export function toolsFor(auth: Principal): McpTool[] {
 	const held = principalScopes(auth);
 	const readOnlyDeployment = getDeployment().features.readOnly;
 	return MCP_TOOLS.filter((tool) => {
+		if (tool.localOnly && getDeployment().mode !== "local") return false;
 		if (readOnlyDeployment && !tool.readOnly) return false;
 		return tool.scopes.every((scope) => held.has(scope));
 	});

@@ -50,5 +50,5 @@ export const collectOneQuestionFn = createServerFn({ method: "POST" })
 	.validator(brandInput.extend({ promptId: z.uuid() }))
 	.handler(async ({ data }) => {
 		await requireBrandSession(data.brandId);
-		return collectOneQuestion(data.brandId, data.promptId);
+		return collectOneQuestion(data.brandId, data.promptId, { oneShot: true });
 	});

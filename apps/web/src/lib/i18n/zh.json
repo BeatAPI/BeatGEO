@@ -1018,5 +1018,14 @@
 	"Couldn't load query fan-out right now. Reload the page to try again.": "衍生搜索加载失败，请刷新重试。",
 	"No runs with web search enabled for the selected filters. Fan-out appears once your prompts have been run by an engine with web search.": "暂无联网搜索记录，完成支持网页搜索的采集后将显示在这里。",
 	"No web queries in this period — the engines you track didn't expose any searches for these prompts and filters.": "当前时间范围内，采集平台没有返回可查看的搜索词。",
-	"Search responses...": "搜索回答…"
+	"Search responses...": "搜索回答…",
+	"Workspace history unavailable. Check local storage.": "操作记录不可用，请检查本地存储。",
+	"Agent and manual workspace": "Agent 与人工协作",
+	"Recurring monitoring enabled": "持续监测已开启",
+	"Recurring monitoring paused": "持续监测已暂停",
+	"One-shot collections do not enable monitoring. Keep BeatGEO and Chrome online for scheduled work.": "单次采集不会开启持续监测。定时运行需要保持 BeatGEO 和 Chrome 在线。",
+	"Interval in hours": "间隔小时数",
+	"Enable or update monitoring": "开启或更新监测",
+	"Pause monitoring": "暂停监测",
+	"Workspace operation history": "工作区操作记录"
 }

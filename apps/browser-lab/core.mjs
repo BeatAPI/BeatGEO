@@ -1,7 +1,8 @@
 import { execFile } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -47,6 +48,12 @@ export function createBrowser(env = process.env) {
 		throw new Error("BEAT_BROWSER_ARGS_JSON must be a JSON array of command arguments.");
 	}
 	return async (tool, params) => {
+		if (useBundle)
+			assertCompatibleBridge(
+				JSON.parse(
+					readFileSync(new URL("../../node_modules/@beatapi/beat-browser/package.json", import.meta.url), "utf8"),
+				).version,
+			);
 		const { stdout } = await execute(command, [...prefix, "call", tool, JSON.stringify(params)], {
 			timeout: 45_000,
 			maxBuffer: 4 * 1024 * 1024,
@@ -54,6 +61,19 @@ export function createBrowser(env = process.env) {
 		if (/^\[[A-Z][A-Z_]+\]/m.test(stdout)) throw new Error(stdout);
 		return stdout;
 	};
+}
+
+export function assertCompatibleBridge(expected, metadataPath = path.join(os.homedir(), ".beat-browser/bridge.json")) {
+	let info;
+	try {
+		info = JSON.parse(readFileSync(metadataPath, "utf8"));
+	} catch {
+		return;
+	}
+	if (info.version && info.version !== expected)
+		throw new Error(
+			`[BROWSER_VERSION_MISMATCH] Existing BeatBrowser bridge ${info.version} differs from bundled ${expected}. Reuse the matching installed CLI with BEAT_BROWSER_COMMAND and BEAT_BROWSER_ARGS_JSON, or update the connected extension and Agent clients together. The shared bridge was not restarted.`,
+		);
 }
 
 export function validateInput(input) {

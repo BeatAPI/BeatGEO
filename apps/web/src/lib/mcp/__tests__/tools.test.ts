@@ -8,7 +8,15 @@ import { API_SCOPES, type ApiScope } from "@/lib/api/scopes";
 import type { AdminAuth, OrganizationAuth, UserAuth } from "@/lib/auth/api-auth";
 import { MCP_TOOLS, toolsFor } from "../tools";
 
-const WRITE_TOOLS = ["create_prompts", "update_prompt"];
+const WRITE_TOOLS = [
+	"create_prompts",
+	"update_prompt",
+	"create_brand",
+	"apply_workspace_command",
+	"start_collection",
+	"cancel_collection",
+	"check_website",
+];
 const UNSCOPED_TOOLS = ["whoami", "list_models"];
 
 const adminKey: AdminAuth = { kind: "admin", scopes: null, organizationId: null };
@@ -74,9 +82,9 @@ describe("the tool registry", () => {
 		expect(writers.sort()).toEqual([...WRITE_TOOLS].sort());
 	});
 
-	it("offers nothing that deletes and nothing that creates a brand or workspace", () => {
+	it("offers local brand creation but never deletes or creates organizations", () => {
 		const names = MCP_TOOLS.map((tool) => tool.name);
-		for (const forbidden of ["delete_prompt", "delete_brand", "create_brand", "create_organization"]) {
+		for (const forbidden of ["delete_prompt", "delete_brand", "create_organization"]) {
 			expect(names).not.toContain(forbidden);
 		}
 		for (const name of names) expect(name).not.toMatch(/^delete_/);
@@ -84,6 +92,13 @@ describe("the tool registry", () => {
 });
 
 describe("which tools a connection is offered", () => {
+	it("withholds local workspace control on cloud deployments", () => {
+		vi.stubEnv("DEPLOYMENT_MODE", "cloud");
+		resetDeploymentCache();
+		expect(names(adminKey)).not.toContain("create_brand");
+		expect(names(adminKey)).not.toContain("start_collection");
+	});
+
 	it("gives an admin key the same tools as a fully scoped organization key, and no more", () => {
 		expect(names(adminKey).sort()).toEqual(names(orgKey([...API_SCOPES])).sort());
 	});

@@ -28,7 +28,6 @@ import {
 	resolveBrandPromptRunPlans,
 	selectDueTargets,
 	slowestIntervalHours,
-	targetKey,
 } from "@workspace/lib/run-policy";
 import { estimateRunCostUsd } from "@workspace/lib/usage";
 import { and, eq, gt, sql } from "drizzle-orm";
@@ -39,6 +38,9 @@ import { trackWorkerEvent } from "../telemetry";
 export interface ProcessPromptData {
 	promptId: string;
 	force?: boolean;
+	oneShot?: boolean;
+	expectedPromptValue?: string;
+	expectedTargets?: string;
 	/** Accepted for queued jobs created by older app versions; the worker resolves cadence from current policy. */
 	cadenceHours?: number;
 	/** Cycles in a row where every run failed, carried forward to size the backoff. */
@@ -366,6 +368,8 @@ async function processPrompt(
 	consecutiveFailures: number,
 	jobId: string,
 	force = false,
+	oneShot = false,
+	expectedPromptValue?: string,
 ): Promise<void> {
 	console.log(`Processing prompt ${promptId}`);
 
@@ -377,11 +381,15 @@ async function processPrompt(
 	}
 
 	const { prompt, brand, competitors: competitorsList } = context;
+	if (!matchesExpectedQuestion(prompt.value, expectedPromptValue)) return;
+	const schedule = async (hours: number, failures: number) => {
+		if (!oneShot) await scheduleNextRun(promptId, hours, failures);
+	};
 
-	if (!prompt.enabled || !brand.enabled) {
+	if (!prompt.enabled || (!brand.enabled && !oneShot)) {
 		console.log(`Prompt ${promptId} or brand ${brand.id} is disabled, skipping but rescheduling`);
 		// Still reschedule at the brand cadence - the prompt might be enabled later
-		await scheduleNextRun(promptId, brand.delayOverrideHours ?? getDefaultDelayHours(), 0);
+		await schedule(brand.delayOverrideHours ?? getDefaultDelayHours(), 0);
 		return;
 	}
 
@@ -402,7 +410,7 @@ async function processPrompt(
 		// Fired early (expedite, duplicate send): everything is fresh. Keep the
 		// prompt going without spending anything.
 		console.log(`Prompt ${promptId}: no targets due yet, rescheduling in ${plan.rescheduleHours}h`);
-		await scheduleNextRun(promptId, plan.rescheduleHours, 0);
+		await schedule(plan.rescheduleHours, 0);
 		return;
 	}
 
@@ -415,7 +423,7 @@ async function processPrompt(
 			scope.setFingerprint(["org-daily-ceiling", brand.organizationId]);
 			Sentry.captureMessage(`Org ${brand.organizationId} hit its daily run ceiling (${ceiling})`, "warning");
 		});
-		await scheduleNextRun(promptId, plan.rescheduleHours, 0);
+		await schedule(plan.rescheduleHours, 0);
 		return;
 	}
 
@@ -474,7 +482,7 @@ async function processPrompt(
 	// (rescheduleHours, its fastest target), so a prompt that stays broken costs
 	// what a healthy one costs rather than more.
 	const failedCycles = runTasks.length > 0 && successCount === 0 ? consecutiveFailures + 1 : 0;
-	await scheduleNextRun(promptId, plan.rescheduleHours, failedCycles);
+	await schedule(plan.rescheduleHours, failedCycles);
 }
 
 /**
@@ -488,12 +496,15 @@ export async function processPromptJob(jobs: Job<ProcessPromptData>[]): Promise<
 
 	// pg-boss v12 passes an array of jobs - process each one
 	for (const job of jobs) {
+		if (!matchesExpectedQuestion(JSON.stringify(scrapeConfigs), job.data.expectedTargets)) continue;
 		await processPrompt(
 			job.data.promptId,
 			scrapeConfigs,
 			job.data.consecutiveFailures ?? 0,
 			job.id,
 			job.data.force ?? false,
+			job.data.oneShot ?? false,
+			job.data.expectedPromptValue,
 		);
 	}
 }
@@ -503,4 +514,8 @@ async function settleRuns(tasks: (() => Promise<void>)[], serial: boolean): Prom
 	const results: PromiseSettledResult<void>[] = [];
 	for (const run of tasks) results.push(...(await Promise.allSettled([run()])));
 	return results;
+}
+
+function matchesExpectedQuestion(value: string, expected: string | undefined): boolean {
+	return expected === undefined || value === expected;
 }

@@ -250,3 +250,18 @@ for (const readiness of ["transient", "persistent", "human-pause"]) {
 		if (readiness === "human-pause") assert.equal(run.errorCode, "needs_attention");
 	});
 }
+
+test("a different shared bridge is left untouched and returns an actionable compatibility error", async () => {
+	const { writeFile } = await import("node:fs/promises");
+	const { assertCompatibleBridge } = await import("./core.mjs");
+	const root = await mkdtemp(path.join(os.tmpdir(), "beatgeo-bridge-"));
+	const file = path.join(root, "bridge.json");
+	try {
+		await writeFile(file, JSON.stringify({ version: "1.3.2", pid: 123, token: "private-fixture" }));
+		assert.throws(() => assertCompatibleBridge("1.4.1", file), /shared bridge was not restarted/);
+		assert.doesNotThrow(() => assertCompatibleBridge("1.3.2", file));
+		assert.doesNotThrow(() => assertCompatibleBridge("1.4.1", path.join(root, "absent.json")));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});

@@ -178,6 +178,10 @@ be configured server-side through the `ADMIN_API_KEYS` environment variable.
 
 For a full measure-diagnose-fix workflow on top of this data, install the [skill](/docs/api/skill).
 
+## Local workspace control
+
+Local instances additionally expose `create_brand`, `get_workspace`, `inspect_website`, `apply_workspace_command`, `start_collection`, `get_collection`, `compare_collections`, `cancel_collection`, `check_website` and `get_website_check`. They share the manual dashboard services, persist operation receipts and support one-shot browser collection, shared drafts and recurring monitoring controls. Read-only keys receive only readers, brand restrictions remain enforced, and hosted instances withhold this local tool group. See the repository guide `docs/beat-geo/agent-workflow.md` for the complete website-to-evidence workflow.
+
 ## Scopes
 
 A connection is only offered the tools its scopes allow, so a client is never shown something it

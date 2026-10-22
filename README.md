@@ -45,6 +45,10 @@ The installer prepares a dedicated local PostgreSQL database and the included ex
 
 [Detailed onboarding — Chinese](docs/beat-geo/getting-started.md) · [Manual PostgreSQL setup — Chinese](docs/self-hosting.md)
 
+## Work from your Agent
+
+Give your MCP-capable Agent a website. The local MCP can create a paused brand, save reviewed questions, queue bounded BeatBrowser collection, inspect evidence, edit shared content drafts and control monitoring. The manual dashboard shows the same project and operation history. [Agent workflow and connection guide](docs/beat-geo/agent-workflow.md).
+
 ## The product workflow
 
 ![The product workflow](assets/readme/workflow.en.svg)

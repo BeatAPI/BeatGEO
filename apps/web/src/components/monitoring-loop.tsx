@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { CollectionCheck } from "@/components/collection-check";
 import { ContentDraft } from "@/components/content-draft";
+import { WorkspaceControl } from "@/components/workspace-control";
 import { useT } from "@/lib/i18n";
 import { applyOptimizationActionFn, getMonitoringFn, retestOptimizationActionFn } from "@/server/monitoring-fn";
 
@@ -53,6 +54,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 	});
 	return (
 		<section className="space-y-6" aria-label={t("Optimization and retesting")}>
+			<WorkspaceControl brandId={brandId} />
 			<p className="max-w-3xl text-[13px] text-muted-foreground">
 				{t(
 					"Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate do not prove causation.",

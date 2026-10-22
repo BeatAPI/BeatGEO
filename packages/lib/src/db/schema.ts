@@ -387,3 +387,26 @@ export const siteAudits = pgTable(
 	},
 	(t) => ({ brandCreatedIdx: index("site_audits_brand_created_idx").on(t.brandId, t.createdAt) }),
 ).enableRLS();
+
+export const workspaceCommands = pgTable(
+	"workspace_commands",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		organizationId: text("organization_id")
+			.notNull()
+			.references(() => organization.id, { onDelete: "cascade" }),
+		brandId: text("brand_id").references(() => brands.id, { onDelete: "cascade" }),
+		operation: text("operation").notNull(),
+		idempotencyKey: text("idempotency_key").notNull(),
+		fingerprint: text("fingerprint").notNull(),
+		status: text("status").notNull().default("running"),
+		result: jsonb("result").$type<unknown>(),
+		error: text("error"),
+		createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+		finishedAt: timestamp("finished_at", { withTimezone: true }),
+	},
+	(t) => ({
+		keyIdx: uniqueIndex("workspace_command_key_idx").on(t.organizationId, t.idempotencyKey),
+		brandIdx: index("workspace_command_brand_idx").on(t.brandId, t.createdAt),
+	}),
+).enableRLS();

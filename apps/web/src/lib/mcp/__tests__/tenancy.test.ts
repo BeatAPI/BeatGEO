@@ -68,6 +68,20 @@ const SCOPE_CHECKS = [
 const WINDOW = { start: "2026-01-01T00:00:00Z", end: "2026-02-01T00:00:00Z" };
 
 const CALLS: Record<string, Record<string, unknown>> = {
+	compare_collections: { brandId: "brand_1", baselineId: "command_1", headId: "command_2" },
+	create_brand: { organizationId: "org_1", website: "https://example.com", idempotencyKey: "test" },
+	get_workspace: { brandId: "brand_1" },
+	inspect_website: { brandId: "brand_1", category: "api", language: "en" },
+	apply_workspace_command: {
+		brandId: "brand_1",
+		idempotencyKey: "test",
+		command: { type: "update_brand", name: "Test" },
+	},
+	start_collection: { brandId: "brand_1", idempotencyKey: "test", promptIds: ["prompt_1"], repeats: 1 },
+	get_collection: { brandId: "brand_1", commandId: "command_1" },
+	cancel_collection: { brandId: "brand_1", commandId: "command_1" },
+	check_website: { brandId: "brand_1" },
+	get_website_check: { brandId: "brand_1" },
 	list_brands: {},
 	get_brand: { brandId: "brand_1" },
 	list_competitors: { brandId: "brand_1" },
