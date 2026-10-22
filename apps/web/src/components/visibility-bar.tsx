@@ -22,7 +22,7 @@ interface VisibilityBarProps {
 }
 
 const NEUTRAL_COLORS = {
-	bg: "bg-muted/30",
+	bg: "bg-card",
 	text: "text-foreground",
 	border: "border-border",
 	muted: "text-muted-foreground",

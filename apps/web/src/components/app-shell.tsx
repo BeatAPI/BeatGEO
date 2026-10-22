@@ -1,5 +1,6 @@
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/sidebar";
 import type { CSSProperties, ReactNode } from "react";
+import { CodeTexture } from "@/components/code-texture";
 
 export function AppShell({
 	sidebar,
@@ -15,6 +16,7 @@ export function AppShell({
 			{sidebar}
 			{/* Clip horizontal overflow without changing the sticky header's scroll parent. */}
 			<SidebarInset className="beat-workspace overflow-clip">
+				<CodeTexture />
 				{header}
 				{children}
 			</SidebarInset>

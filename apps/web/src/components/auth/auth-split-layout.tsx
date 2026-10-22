@@ -14,6 +14,7 @@
  */
 
 import type { ReactNode } from "react";
+import { CodeTexture } from "@/components/code-texture";
 import { LanguageSwitch } from "@/components/language-switch";
 import { Logo } from "@/components/logo";
 
@@ -56,7 +57,8 @@ export function AuthSplitLayout({ title, subtitle, children, pitch, footer }: Au
 				</div>
 			</div>
 
-			<aside className={`relative border-t bg-muted/40 lg:border-l lg:border-t-0 ${COLUMN}`}>
+			<aside className={`relative isolate border-t bg-muted/40 lg:border-l lg:border-t-0 ${COLUMN}`}>
+				<CodeTexture />
 				<div className={`relative mx-auto ${BAND} max-w-lg`}>{pitch}</div>
 			</aside>
 		</div>
