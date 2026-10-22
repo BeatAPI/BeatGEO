@@ -15,7 +15,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@workspace/ui/components/popover";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { ChevronDown, Clock, Search, Tag as TagIcon, X } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactElement, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MdSelectAll } from "react-icons/md";
 import { formatLookbackLabel, LookbackPicker } from "@/components/lookback-picker";
 import { useBrand } from "@/hooks/use-brands";
@@ -72,8 +72,8 @@ export function FilterTriggerButton({
 			variant="outline"
 			size="sm"
 			{...props}
-			className={`h-7 gap-1.5 cursor-pointer border-transparent bg-transparent shadow-none text-[13px] font-medium ${
-				active ? "border-foreground/30 bg-accent/50" : ""
+			className={`h-8 gap-1.5 cursor-pointer rounded-lg border-transparent bg-secondary shadow-none text-[13px] font-medium hover:bg-accent ${
+				active ? "border-foreground/25 bg-accent" : ""
 			} ${className ?? ""}`}
 		>
 			<span className="text-muted-foreground flex items-center">{icon}</span>
@@ -155,7 +155,10 @@ function ModelDropdown({ trackedTargets }: { trackedTargets: TrackedTarget[] }) 
 // Lookback dropdown — subscribes to only the "lookback" URL key.
 // ------------------------------------------------------------------
 
+const INLINE_LOOKBACKS = ["1w", "1m", "3m"] as const;
+
 function LookbackDropdown() {
+	const t = useT();
 	const { locale } = useLocale();
 	const { data: brand } = useBrand();
 	const defaultLookback = useMemo(() => getDefaultLookbackPeriod(brand?.earliestDataDate), [brand?.earliestDataDate]);
@@ -167,19 +170,50 @@ function LookbackDropdown() {
 		setFilters({ lookback: next === defaultLookback ? undefined : next });
 	};
 
+	const picker = (trigger: ReactElement) => (
+		<LookbackPicker value={selected} defaultValue={defaultLookback} onChange={handleChange} trigger={trigger} />
+	);
+	const inlineSelected = (INLINE_LOOKBACKS as readonly LookbackPeriod[]).includes(selected);
+
 	return (
-		<LookbackPicker
-			value={selected}
-			defaultValue={defaultLookback}
-			onChange={handleChange}
-			trigger={
-				<FilterTriggerButton
-					icon={<Clock className="size-3.5" />}
-					label={formatLookbackLabel(selected, locale)}
-					active={parseCustomLookback(selected) !== null}
-				/>
-			}
-		/>
+		<>
+			{/* Wide screens show the common ranges as tabs; the menu keeps every range and custom dates. */}
+			<div className="hidden items-center gap-1 md:flex">
+				{INLINE_LOOKBACKS.map((period) => (
+					<button
+						key={period}
+						type="button"
+						aria-pressed={selected === period}
+						onClick={() => handleChange(period)}
+						className={`h-8 cursor-pointer rounded-lg px-3 text-[13px] font-medium transition-colors ${
+							selected === period ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+						}`}
+					>
+						{formatLookbackLabel(period, locale)}
+					</button>
+				))}
+				{picker(
+					<button
+						type="button"
+						className={`flex h-8 cursor-pointer items-center gap-1 rounded-lg px-3 text-[13px] font-medium transition-colors ${
+							inlineSelected ? "text-muted-foreground hover:text-foreground" : "bg-secondary text-foreground"
+						}`}
+					>
+						{inlineSelected ? t("More ranges") : formatLookbackLabel(selected, locale)}
+						<ChevronDown className="size-3.5" />
+					</button>,
+				)}
+			</div>
+			<div className="md:hidden">
+				{picker(
+					<FilterTriggerButton
+						icon={<Clock className="size-3.5" />}
+						label={formatLookbackLabel(selected, locale)}
+						active={parseCustomLookback(selected) !== null}
+					/>,
+				)}
+			</div>
+		</>
 	);
 }
 
@@ -393,15 +427,17 @@ export function FilterBar({
 	extraControls?: ReactNode;
 }) {
 	return (
-		<div className="flex flex-wrap items-center justify-between gap-2">
+		<div className="flex flex-wrap items-center justify-between gap-2 border-b pb-4">
+			<div className="flex flex-wrap items-center gap-1.5">
+				<LookbackDropdown />
+				<ResultCount count={resultCount} total={resultTotal} />
+			</div>
 			<div className="flex flex-wrap items-center gap-1.5">
 				{showModelSelector && <ModelDropdown trackedTargets={trackedTargets} />}
 				<TagsDropdown availableTags={availableTags} />
-				<LookbackDropdown />
 				{extraControls}
-				<ResultCount count={resultCount} total={resultTotal} />
+				{showSearch && <SearchInput placeholder={searchPlaceholder} searching={searching} />}
 			</div>
-			{showSearch && <SearchInput placeholder={searchPlaceholder} searching={searching} />}
 		</div>
 	);
 }

@@ -17,6 +17,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { type ReactNode, useEffect } from "react";
 import { FirstCollectionStatus } from "@/components/first-collection-status";
+import { PageHeader } from "@/components/page-header";
 import PromptWizard from "@/components/prompt-wizard";
 import { TrendChart, type TrendPoint } from "@/components/trend-chart";
 import { useBrandId } from "@/hooks/use-brand-id";
@@ -433,7 +434,7 @@ function useEarlySignalCaption(loading: boolean, totalRuns: number): string | un
 function BaselineNotice({ totalRuns }: { totalRuns: number }) {
 	const t = useT();
 	return (
-		<div className="rounded-lg border bg-muted/40 px-4 py-3 text-sm">
+		<div className="rounded-xl border bg-card px-4 py-3 text-sm">
 			<p className="font-medium">{t("Collecting a baseline")}</p>
 			<p className="text-muted-foreground">
 				{t(
@@ -481,7 +482,8 @@ function DashboardPage() {
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 p-4">
+			<div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3">
+				<PageHeader title={t("Overview")} subtitle={t("How AI answers mention and cite your brand.")} />
 				{earlySignal && <BaselineNotice totalRuns={totalRuns} />}
 				<p className="text-xs text-muted-foreground">
 					{t(
