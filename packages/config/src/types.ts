@@ -12,7 +12,7 @@ export interface FeaturesConfig {
 	canEditOrganizations: boolean;
 	/**
 	 * Whether public self-serve registration is available. True only in cloud
-	 * mode. Local allows a single bootstrap signup (see ClientConfig.canRegister);
+	 * mode. Local establishes its private workspace identity automatically;
 	 * demo/whitelabel never expose signup.
 	 */
 	selfServeSignup: boolean;
@@ -81,7 +81,7 @@ export interface ClientConfig {
 	defaultDelayHours: number;
 	/**
 	 * Whether /auth/register should be reachable. True in cloud mode (self-serve
-	 * signup) and in local mode before the first user is bootstrapped.
+	 * signup). Local workspaces never expose registration.
 	 * Demo/whitelabel always false.
 	 */
 	canRegister: boolean;

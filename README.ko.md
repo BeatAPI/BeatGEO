@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 [BeatAPI](https://beatapi.io)가 만드는 오픈 소스 GEO / AEO 워크스페이스입니다. 실제 AI 답변에서 브랜드 언급과 인용을 추적하고, 개선 사항을 실행한 뒤 같은 질문으로 다시 측정해 변화를 비교합니다.
 
-[빠른 시작](#빠른-시작) · [제품 흐름](#제품-흐름) · [지원 현황](#지원-현황) · [로드맵](docs/roadmap.md) · [MIT 라이선스](LICENSE.md)
+[공식 웹사이트](https://beatapi.io/geo) · [빠른 시작](#빠른-시작) · [제품 흐름](#제품-흐름) · [지원 현황](#지원-현황) · [로드맵](docs/roadmap.md) · [MIT 라이선스](LICENSE.md)
 
 > **로컬 MVP / 소스 미리보기 버전.** ChatGPT 수집 → 데이터베이스 → worker 경로는 실제 스모크 테스트를 통과했습니다. 다른 엔진, 유료 리서치, 장기 무인 운영은 별도로 검증해야 합니다. [검증 기록 — 영어](docs/beat-geo/validation.md)
 
@@ -33,11 +33,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-**http://localhost:3140/setup**을 열어 로컬 관리자를 등록합니다.
+**http://localhost:3140/**을 열면 로컬 작업 공간으로 바로 들어갑니다. BeatGEO 회원가입, 로그인, 비밀번호 설정은 필요하지 않습니다. `/setup`에서 BeatAPI와 Chrome을 연결할 수 있습니다.
 
-1. **리서치 연결.** Connections에서 BeatAPI 키를 검증하고 리서치 모델을 선택해 저장합니다. 건너뛰고 업종별 기본 질문을 사용해도 됩니다.
+1. **브랜드 생성.** 웹사이트 입력 → 질문 생성 및 확인 → 첫 수집 → 답변과 인용 확인 → 개선 항목 저장 → 같은 질문으로 재측정합니다.
 2. **Chrome 연결.** `chrome://extensions`에서 개발자 모드를 켜고 `.beat-geo/extension`을 압축 해제된 확장 프로그램으로 로드합니다. 연결된 프로필을 선택하고 같은 프로필에서 ChatGPT에 로그인하세요. 확장 프로그램 연결과 웹사이트 로그인은 별개입니다.
-3. **브랜드 생성.** 웹사이트 입력 → 질문 생성 및 확인 → 첫 수집 → 답변과 인용 확인 → 개선 항목 저장 → 같은 질문으로 재측정합니다.
+3. **리서치 연결.** Connections에서 BeatAPI 키를 검증하고 리서치 모델을 선택해 저장합니다. 건너뛰고 업종별 기본 질문을 사용해도 됩니다.
 
 설치 과정에서 전용 로컬 PostgreSQL과 확장 프로그램을 준비합니다. 별도의 저장소 복제, BeatBrowser 계정, 전역 CLI 설치는 필요하지 않습니다. 기존 BeatBrowser 연결을 재사용할 수 있지만, Chrome 프로필 하나에는 확장 프로그램 한 개만 활성화하세요.
 
@@ -47,16 +47,7 @@ pnpm local:start
 
 ## 제품 흐름
 
-```mermaid
-flowchart LR
-    A[웹사이트와 브랜드] --> B[질문 생성 및 확인]
-    B --> C[AI 답변 수집]
-    C --> D[언급과 인용 확인]
-    D --> E[개선 항목과 기준값 저장]
-    E --> F[변경 사항 적용]
-    F --> G[같은 질문으로 재측정]
-    G --> D
-```
+![제품 워크플로](assets/readme/workflow.ko.svg)
 
 BeatGEO는 제품 데이터와 일정을 관리합니다. **BeatBrowser**는 로그인된 브라우저에서 작업을 실행합니다. **BeatAPI**는 리서치와 개선을 위한 검색, 페이지 읽기, 모델 분석을 제공할 수 있습니다.
 

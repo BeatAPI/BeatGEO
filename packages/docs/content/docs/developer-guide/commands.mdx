@@ -166,25 +166,17 @@ pnpm cli:link
 pnpm cli:unlink
 ```
 
-## Docker
+## Local Workspace
 
-```bash
-# Build Docker images locally
-beatgeo compose build
-
-# Build without cache
-beatgeo compose build --no-cache
-
-# Build only web or worker
-beatgeo compose build web
-beatgeo compose build worker
-
-# Run other docker compose commands
-beatgeo compose up -d
-beatgeo compose ps
-beatgeo compose logs -f web
-beatgeo compose down
+```sh
+pnpm local:doctor
+pnpm local:setup
+pnpm local:start
+# Resume an interrupted automatic setup without replacing configuration
+pnpm local:setup --resume
 ```
+
+The source CLI offers the same operations with `pnpm beatgeo doctor`, `pnpm beatgeo init` and `pnpm beatgeo start`. Stop the running launcher with Ctrl+C. Local PostgreSQL is bundled and managed automatically.
 
 ## Versioning
 

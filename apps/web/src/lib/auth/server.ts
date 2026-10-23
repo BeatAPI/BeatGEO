@@ -9,33 +9,15 @@
  */
 import { getCloudAuthOptions } from "@workspace/deployment/auth-hooks/cloud";
 import { getWhitelabelAuthOptions } from "@workspace/deployment/auth-hooks/whitelabel";
+import { localWorkspacePlugin } from "@workspace/lib/auth/local-workspace";
 import { type CreateAuthOptions, createAuth } from "@workspace/lib/auth/server";
-import { countUsers, provisionLocalOrg } from "@workspace/lib/db/provisioning";
+import { ensureLocalWorkspace } from "@workspace/lib/db/local-workspace";
 
-/**
- * Local mode hooks: enforce "exactly one user, with an admin org created
- * atomically on signup". The `before` hook rejects any signup once a user
- * exists; the `after` hook creates the organization and membership.
- *
- * Also applies to direct POST /api/auth/sign-up/email calls — the hooks
- * fire regardless of whether signup is triggered from our UI or a curl.
- */
 function getLocalAuthOptions(): CreateAuthOptions {
 	return {
-		databaseHooks: {
-			user: {
-				create: {
-					before: async () => {
-						if ((await countUsers()) > 0) {
-							throw new Error("This instance is already bootstrapped. Sign in with the existing account instead.");
-						}
-					},
-					after: async (user) => {
-						await provisionLocalOrg({ userId: user.id });
-					},
-				},
-			},
-		},
+		emailAndPasswordEnabled: false,
+		disableSignUp: true,
+		extraPlugins: [localWorkspacePlugin(ensureLocalWorkspace)],
 	};
 }
 
@@ -54,7 +36,7 @@ function getDeploymentAuthOptions(): CreateAuthOptions | undefined {
 			return getCloudAuthOptions();
 		}
 		default:
-			return getLocalAuthOptions();
+			return process.env.READ_ONLY === "true" ? { disableSignUp: true } : getLocalAuthOptions();
 	}
 }
 

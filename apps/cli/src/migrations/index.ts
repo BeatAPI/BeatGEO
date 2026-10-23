@@ -5,7 +5,7 @@ export * from "./planner.js";
 export * from "./types.js";
 
 // Register migrations here when a release needs to change config/env on disk.
-// Most releases need NO entry — docker images roll automatically on `elmo upgrade`.
+// These inherited configuration migrations are retained for existing deployment data.
 //
 // Each entry runs once when a user upgrades through its `from` version. Keep the
 // `run` function pure over the passed-in context so it stays unit-testable.

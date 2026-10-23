@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 An open-source GEO / AEO workspace by [BeatAPI](https://beatapi.io). Track brand mentions and citations in real AI answers, turn gaps into actions, and rerun the same questions to compare results.
 
-[Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
+[Website](https://beatapi.io/geo) · [Quick start](#quick-start) · [Product workflow](#the-product-workflow) · [Current support](#current-support) · [Roadmap](docs/roadmap.md) · [MIT license](LICENSE.md)
 
 > **Local MVP / source preview.** The ChatGPT collection → database → worker path has passed live smoke tests. Other engines, paid research and unattended operation have separate acceptance boundaries. [Validation log](docs/beat-geo/validation.md)
 
@@ -33,11 +33,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-Open **http://localhost:3140/setup** and register your local administrator:
+Open **http://localhost:3140/** to enter your local workspace directly. There is no BeatGEO registration, login or password. Connections at `/setup` lets you add an optional BeatAPI key and connect Chrome:
 
-1. **Connect research.** In Connections, enter a BeatAPI key, validate it, select a research model and save. You can skip research and use industry starter questions.
+1. **Create a brand.** Enter the website, generate and confirm questions, then start the first collection. Read the answers and citations, save an improvement, and compare a retest.
 2. **Connect Chrome.** Load `.beat-geo/extension` via `chrome://extensions` → Developer mode → Load unpacked. Select the connected profile and sign in to ChatGPT in that profile. An extension connection does not establish website login.
-3. **Create a brand.** Enter the website, generate and confirm questions, then start the first collection. Read the answers and citations, save an improvement, and compare a retest.
+3. **Connect research.** In Connections, enter a BeatAPI key, validate it, select a research model and save. You can skip research and use industry starter questions.
 
 The installer prepares a dedicated local PostgreSQL database and the included extension. No second repository clone, BeatBrowser account or global CLI installation is needed. Existing BeatBrowser connections can be reused; enable only one extension copy per profile.
 
@@ -47,16 +47,7 @@ The installer prepares a dedicated local PostgreSQL database and the included ex
 
 ## The product workflow
 
-```mermaid
-flowchart LR
-    A[Website and brand] --> B[Generate and confirm questions]
-    B --> C[Collect AI answers]
-    C --> D[Inspect mentions and citations]
-    D --> E[Save action and baseline]
-    E --> F[Implement changes]
-    F --> G[Retest the same questions]
-    G --> D
-```
+![The product workflow](assets/readme/workflow.en.svg)
 
 BeatGEO owns the product records and schedule. **BeatBrowser** handles the signed-in browser task. **BeatAPI** can supply search, page reading and model analysis for research and optimization.
 
@@ -100,7 +91,7 @@ Browser collection, starter templates and basic statistics do not require paid m
 
 Forking BeatGEO keeps the **pinned BeatBrowser dependency**; it does not create a separate fork of BeatBrowser. Setup downloads that revision and prepares the extension. Developers changing BeatBrowser itself should fork it separately and explicitly update the dependency and lockfile.
 
-Each local installation has its own account, database, keys and Chrome sessions. Do not commit `.env`, `.beat-geo/`, browser evidence or credentials. Local services bind to loopback; do not expose them through a public tunnel. [Privacy](docs/privacy.md)
+Each local installation has its own private workspace, database, keys and Chrome sessions. Do not commit `.env`, `.beat-geo/`, browser evidence or credentials. Local services bind to loopback; do not expose them through a public tunnel. [Privacy](docs/privacy.md)
 
 ## Development and references
 

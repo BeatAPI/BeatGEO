@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 Ein quelloffener GEO-/AEO-Arbeitsbereich von [BeatAPI](https://beatapi.io). Verfolge Markennennungen und Quellen in echten KI-Antworten, leite Verbesserungen ab und wiederhole dieselben Fragen, um Veränderungen zu vergleichen.
 
-[Schnellstart](#schnellstart) · [Ablauf](#ablauf) · [Funktionsstand](#funktionsstand) · [Roadmap](docs/roadmap.md) · [MIT-Lizenz](LICENSE.md)
+[Website](https://beatapi.io/geo) · [Schnellstart](#schnellstart) · [Ablauf](#ablauf) · [Funktionsstand](#funktionsstand) · [Roadmap](docs/roadmap.md) · [MIT-Lizenz](LICENSE.md)
 
 > **Lokales MVP / Quellcode-Vorschau.** Die Kette ChatGPT-Erfassung → Datenbank → Worker wurde in Live-Smoke-Tests geprüft. Andere Engines, kostenpflichtige Recherche und unbeaufsichtigter Dauerbetrieb haben eigene Prüfgrenzen. [Prüfprotokoll auf Englisch](docs/beat-geo/validation.md)
 
@@ -33,11 +33,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-Öffne **http://localhost:3140/setup** und registriere den lokalen Administrator:
+Öffne **http://localhost:3140/** direkt im lokalen Arbeitsbereich. Für BeatGEO sind weder Registrierung noch Anmeldung oder Passwort nötig. BeatAPI und Chrome lassen sich unter `/setup` verbinden:
 
-1. **Recherche verbinden.** BeatAPI-Key unter Connections prüfen, Recherchemodell auswählen und speichern. Alternativ diesen Schritt überspringen und Branchenvorlagen nutzen.
+1. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
 2. **Chrome verbinden.** Unter `chrome://extensions` den Entwicklermodus aktivieren und `.beat-geo/extension` entpackt laden. Verbundenes Profil auswählen und dort bei ChatGPT anmelden. Eine verbundene Erweiterung bestätigt keine Website-Anmeldung.
-3. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
+3. **Recherche verbinden.** BeatAPI-Key unter Connections prüfen, Recherchemodell auswählen und speichern. Alternativ diesen Schritt überspringen und Branchenvorlagen nutzen.
 
 Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ein. Kein zweiter Repository-Klon, kein zusätzliches BeatBrowser-Konto und keine globale CLI-Installation nötig. Eine vorhandene BeatBrowser-Verbindung kann verwendet werden; pro Chrome-Profil nur eine Erweiterungskopie aktivieren.
 
@@ -47,16 +47,7 @@ Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ei
 
 ## Ablauf
 
-```mermaid
-flowchart LR
-    A[Website und Marke] --> B[Fragen erzeugen und bestätigen]
-    B --> C[KI-Antworten erfassen]
-    C --> D[Nennungen und Quellen prüfen]
-    D --> E[Maßnahme und Ausgangswerte speichern]
-    E --> F[Änderungen umsetzen]
-    F --> G[Dieselben Fragen wiederholen]
-    G --> D
-```
+![Der Produktablauf](assets/readme/workflow.de.svg)
 
 BeatGEO verwaltet Produktdaten und Zeitplanung. **BeatBrowser** führt Aufgaben im angemeldeten Browser aus. **BeatAPI** kann Suche, Seitenabruf und Modellanalyse für Recherche und Optimierung bereitstellen.
 

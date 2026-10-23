@@ -1,6 +1,6 @@
 import type { DeploymentMode } from "@workspace/config/types";
 
-export type EntryRoute = "/auth/login" | "/auth/register";
+export type EntryRoute = "/auth/login" | "/auth/register" | "/app";
 
 interface EntryConfig {
 	mode: DeploymentMode;
@@ -10,6 +10,7 @@ interface EntryConfig {
 
 export function entryRouteForVisitor(config: EntryConfig | undefined): EntryRoute | null {
 	if (!config || config.mode === "whitelabel") return null;
+	if (config.mode === "local") return "/app";
 	if (config.canRegister && (config.mode === "cloud" || !config.hasUsers)) return "/auth/register";
 	return "/auth/login";
 }

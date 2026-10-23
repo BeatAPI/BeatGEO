@@ -6,7 +6,7 @@ import { useT } from "@/lib/i18n";
  * ?error=INVALID_TOKEN on a bad one.
  */
 
-import { createFileRoute, Link, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate, useRouteContext } from "@tanstack/react-router";
 import type { ClientConfig } from "@workspace/config/types";
 import { authClient } from "@workspace/lib/auth/client";
 import { Alert, AlertDescription } from "@workspace/ui/components/alert";
@@ -20,6 +20,9 @@ import { SalesFooterLinks, SalesPanel } from "@/components/auth/sales-panel";
 import { buildTitle, getAppName } from "@/lib/route-head";
 
 export const Route = createFileRoute("/auth/reset-password")({
+	beforeLoad: ({ context }) => {
+		if (context.clientConfig?.mode === "local") throw redirect({ to: "/app" });
+	},
 	validateSearch: z.object({
 		token: z.string().optional(),
 		error: z.string().optional(),

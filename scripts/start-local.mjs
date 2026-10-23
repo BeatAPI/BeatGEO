@@ -5,13 +5,14 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { startEmbeddedDatabase } from "./local-database.mjs";
-import { prepareExtension } from "./local-runtime.mjs";
+import { prepareExtension, requireBundledStorage } from "./local-runtime.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const envPath = process.argv[2] || path.join(root, ".env");
 if (!existsSync(envPath)) throw new Error("Run pnpm local:setup first, or supply your BeatGEO environment file.");
 Object.assign(process.env, parseEnv(readFileSync(envPath, "utf8")));
 if (process.env.DEPLOYMENT_MODE !== "local") throw new Error("This launcher only starts a local BeatGEO instance.");
+requireBundledStorage(process.env);
 const app = new URL(process.env.APP_URL || "http://localhost:3140");
 if (!["localhost", "127.0.0.1"].includes(app.hostname))
 	throw new Error("Use a loopback APP_URL for the local launcher.");
@@ -49,17 +50,11 @@ process.on("SIGINT", () => { void stop(); });
 process.on("SIGTERM", () => { void stop(); });
 try {
 	await prepareExtension(root);
-	if (process.env.BEAT_GEO_DATABASE_MODE === "embedded") {
-		database = await startEmbeddedDatabase(root, process.env);
-		// Migrations are applied before either application process starts.
-		execFileSync(process.execPath, ["node_modules/drizzle-kit/bin.cjs", "migrate"], {
-			cwd: path.join(root, "packages/lib"), stdio: "inherit", env: process.env,
-		});
-	} else {
-		const compose = path.join(root, ".beat-geo/compose.yaml");
-		if (!process.argv[2] && existsSync(compose))
-			execFileSync("docker", ["compose", "-p", "beatgeo-local", "-f", compose, "up", "-d", "--wait"], { stdio: "inherit" });
-	}
+	database = await startEmbeddedDatabase(root, process.env);
+	// Migrations are applied before either application process starts.
+	execFileSync(process.execPath, ["node_modules/drizzle-kit/bin.cjs", "migrate"], {
+		cwd: path.join(root, "packages/lib"), stdio: "inherit", env: process.env,
+	});
 	start(process.execPath, ["apps/browser-lab/server.mjs"]);
 	// The shared bridge may serve other agents, so it is not stopped with BeatGEO.
 	try {
@@ -69,7 +64,7 @@ try {
 	} catch { console.log("Chrome is not connected yet. Complete the extension step in Setup."); }
 	start("pnpm", ["--filter", "@workspace/web", "exec", "vite", "--host", "127.0.0.1", "--port", app.port || "3140", "--strictPort"]);
 	start("pnpm", ["--filter", "@workspace/worker", "start"]);
-	console.log(`BeatGEO setup: ${app.origin}/setup\nKeep this terminal running for scheduled monitoring. Ctrl+C stops these services and saves local data.`);
+	console.log(`BeatGEO workspace: ${app.origin}/\nKeep this terminal running for scheduled monitoring. Ctrl+C stops these services and saves local data.`);
 } catch (error) {
 	console.error(error instanceof Error ? error.message : "BeatGEO could not start.");
 	await stop(1);

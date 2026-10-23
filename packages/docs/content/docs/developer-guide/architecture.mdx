@@ -12,7 +12,7 @@ BeatGEO is a pnpm monorepo managed by Turborepo. The codebase is split into **ap
 ├── apps/
 │   ├── web/          # Main dashboard (TanStack Start)
 │   ├── worker/       # Background job runner (pg-boss)
-│   ├── cli/          # @beatapi/geo-cli npm package
+│   ├── cli/          # Private local source CLI
 │   └── www/          # Marketing site (this site)
 │
 ├── packages/
@@ -26,7 +26,6 @@ BeatGEO is a pnpm monorepo managed by Turborepo. The codebase is split into **ap
 │   ├── og/           # Shared OG image generation
 │   └── api-spec/     # OpenAPI specification
 │
-├── docker/           # Dockerfile (multi-stage)
 ├── e2e/              # End-to-end tests
 ├── biome.json        # Linting and formatting
 ├── turbo.json        # Task pipeline configuration
@@ -58,7 +57,7 @@ What matters for development:
 - The **Web App** serves the dashboard UI and the REST API (`/api/v1`).
 - The **Worker** processes background jobs — querying AI models, running evaluations.
 - Both import shared code from `packages/lib` (database schema, AI provider config) and `packages/config` (deployment types).
-- The **CLI** generates Docker Compose configurations and manages the deployment lifecycle.
+- The **CLI** runs the same bundled-storage setup, startup and environment check as the root local scripts.
 
 ## Deployment Modes
 

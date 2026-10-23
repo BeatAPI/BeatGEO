@@ -1,4 +1,4 @@
-![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)
+[![BeatGEO — AI answers, citations and retests](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 [BeatAPI](https://beatapi.io) が開発するオープンソースの GEO / AEO ワークスペースです。実際の AI 回答からブランドへの言及と引用を追跡し、改善事項を記録。同じ質問で再測定して変化を比較します。
 
-[クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
+[公式サイト](https://beatapi.io/geo) · [クイックスタート](#クイックスタート) · [ワークフロー](#ワークフロー) · [対応状況](#対応状況) · [ロードマップ](docs/roadmap.md) · [MIT ライセンス](LICENSE.md)
 
 > **ローカル MVP / ソースプレビュー版。** ChatGPT の収集 → データベース → worker は実環境のスモークテストを通過しています。他のエンジン、有料リサーチ、長期間の無人運用は別途検証が必要です。[検証記録（英語）](docs/beat-geo/validation.md)
 
@@ -33,11 +33,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-**http://localhost:3140/setup** を開き、ローカル管理者を登録します。
+**http://localhost:3140/** を開くと、ローカルワークスペースに直接入れます。BeatGEO の登録・ログイン・パスワード設定は不要です。BeatAPI と Chrome の接続は `/setup` で行えます。
 
-1. **リサーチを設定。** Connections で BeatAPI キーを検証し、リサーチモデルを選択して保存します。スキップして業種別の初期質問を使うこともできます。
+1. **ブランドを作成。** サイトを入力 → 質問を生成して確認 → 初回収集 → 回答と引用を確認 → 改善を記録 → 同じ質問で再測定します。
 2. **Chrome を接続。** `chrome://extensions` でデベロッパーモードを有効にし、`.beat-geo/extension` を読み込みます。接続したプロファイルを選び、同じプロファイルで ChatGPT にログインしてください。拡張機能の接続とサイトへのログインは別です。
-3. **ブランドを作成。** サイトを入力 → 質問を生成して確認 → 初回収集 → 回答と引用を確認 → 改善を記録 → 同じ質問で再測定します。
+3. **リサーチを設定。** Connections で BeatAPI キーを検証し、リサーチモデルを選択して保存します。スキップして業種別の初期質問を使うこともできます。
 
 セットアップが専用のローカル PostgreSQL と拡張機能を準備します。BeatBrowser を別にクローンしたり、別アカウントやグローバル CLI を用意したりする必要はありません。既存の接続も利用できますが、同じ Chrome プロファイルで拡張機能を二重に有効化しないでください。
 
@@ -47,16 +47,7 @@ pnpm local:start
 
 ## ワークフロー
 
-```mermaid
-flowchart LR
-    A[サイトとブランド] --> B[質問を生成して確認]
-    B --> C[AI 回答を収集]
-    C --> D[言及と引用を確認]
-    D --> E[改善と基準値を保存]
-    E --> F[変更を実施]
-    F --> G[同じ質問で再測定]
-    G --> D
-```
+![プロダクトの流れ](assets/readme/workflow.ja.svg)
 
 BeatGEO が製品データとスケジュールを管理し、**BeatBrowser** がログイン済みブラウザで処理を実行します。**BeatAPI** はリサーチ向けの検索、ページ読み取り、モデル分析を提供できます。
 

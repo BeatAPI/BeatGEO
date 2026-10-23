@@ -7,7 +7,7 @@ flowchart TD
     A[准备 Git、Node 24、pnpm、Chrome] --> B[环境检查 local:doctor]
     B --> C[local:setup 自动建独立数据库并准备扩展]
     C --> D[local:start 启动网页、采集器和调度进程]
-    D --> E[注册本地 BeatGEO 管理员]
+    D --> E[直接进入本地工作台并填写网站]
     E --> F[保存 BeatAPI Key 和研究模型]
     F --> G[加载内置 BeatBrowser、选择 Chrome 配置]
     G --> H[在该配置登录 ChatGPT]
@@ -31,7 +31,7 @@ flowchart TD
 | BeatAPI Key、余额、可用研究模型 | 网站研究、生成问题、分析机会 | 在 Connections 验证并保存；模板路线可跳过 |
 | ChatGPT 网站账号 | 默认网页采集目标 | 在选定 Chrome 配置登录；与 BeatAPI Key 无关 |
 
-默认使用随依赖安装的 PostgreSQL，由 BeatGEO 启停。用户不需要 Docker、数据库命令或数据库密码。可选 `pnpm local:setup --docker`，已有专用 PostgreSQL 也可按[手动指南](../self-hosting.md)配置；已有数据不会自动转换或覆盖。当前不支持 SQLite。
+默认使用随依赖安装的 PostgreSQL，由 BeatGEO 启停。用户不需要 Docker、数据库命令或数据库密码。本地安装和启动只使用内置数据库，不再提供 Docker 选项。已有专用 PostgreSQL 可按[手动指南](../self-hosting.md)配置；已有数据不会自动转换或覆盖。当前不支持 SQLite。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
@@ -41,7 +41,7 @@ pnpm local:setup
 pnpm local:start
 ```
 
-环境检查只读取工具版本。安装脚本会安装锁定依赖、准备本地 PostgreSQL、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。默认打开 http://localhost:3140/setup，若端口被占用会自动选择其他端口，以终端输出为准；首次注册的是本地 BeatGEO 管理员，不会注册或绑定一个新的 BeatAPI 账号。
+环境检查只读取工具版本。安装脚本会安装锁定依赖、准备本地 PostgreSQL、生成随机凭据、初始化表并准备扩展。已有配置不会被覆盖。默认打开 http://localhost:3140/，若端口被占用会自动选择其他端口，以终端输出为准；本地工作台自动建立私有身份，无需注册、登录或设置密码；不会注册新的 BeatAPI 账号。
 
 ## 页面引导
 
@@ -82,6 +82,10 @@ flowchart LR
 ```
 
 这里没有向 BeatAPI 主站数据库“POST 数据库”的操作：网页请求本地 BeatGEO 服务，由本地服务读写自己的 PostgreSQL。BeatAPI 网关只处理其能力调用和计费。
+
+## 本地访问保护
+
+本地工作台只接受本机 loopback 地址，自动建立私有浏览器会话。跨来源请求、代理地址及直接注册/改密/邀请接口均被拒绝。已有单用户数据库沿用原身份和数据；多用户数据库不会被自动接管。不要通过公网隧道或局域网公开本地服务。
 
 ## 当前还需要完善的产品体验
 

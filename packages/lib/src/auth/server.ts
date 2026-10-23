@@ -86,14 +86,18 @@ function mcpResourceDefault(resource: string) {
 	} satisfies BetterAuthPlugin;
 }
 
+function developmentOrigin(): string | undefined {
+	if (process.env.DEPLOYMENT_MODE === "local" || process.env.NODE_ENV === "production") return undefined;
+	return `http://localhost:${process.env.PORT ?? "3000"}`;
+}
+
 export function createAuth(options?: CreateAuthOptions) {
 	const appUrl = process.env.APP_URL || process.env.VITE_APP_URL;
 	if (!appUrl) {
 		throw new Error("APP_URL or VITE_APP_URL must be set for Better Auth");
 	}
 
-	const localOrigin =
-		process.env.NODE_ENV !== "production" ? `http://localhost:${process.env.PORT ?? "3000"}` : undefined;
+	const localOrigin = developmentOrigin();
 	const baseURL = localOrigin ?? appUrl;
 
 	const origin = baseURL.replace(/\/$/, "");

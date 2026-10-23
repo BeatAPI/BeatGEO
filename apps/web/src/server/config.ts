@@ -41,10 +41,7 @@ export const getClientConfig = createServerFn({ method: "GET" }).handler(async (
 
 	const userCount = await countUsers();
 	const hasUsers = userCount > 0;
-	// Cloud is public self-serve, so registration is always open. Otherwise it's
-	// only reachable in local mode before the first user signs up — once the
-	// instance is bootstrapped, both the UI and API reject signups.
-	const canRegister = deployment.features.selfServeSignup || (deployment.mode === "local" && !hasUsers);
+	const canRegister = deployment.features.selfServeSignup;
 
 	return {
 		mode: deployment.mode,
@@ -65,7 +62,7 @@ export const getClientConfig = createServerFn({ method: "GET" }).handler(async (
 export const getEnvValidationStateFn = createServerFn({ method: "GET" }).handler(async () => {
 	await storedCredentialsLoaded();
 	const envState = getEnvValidationState(withStoredCredentials());
-	// Local operators must be able to sign in before adding their research key.
+	// Opening a local workspace never requires a research key.
 	const missing = envState.missing.filter((item) => !(envState.mode === "local" && item.id === "RESEARCH_PROVIDER"));
 	return {
 		mode: envState.mode,

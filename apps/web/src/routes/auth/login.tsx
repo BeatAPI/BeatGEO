@@ -19,7 +19,6 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Separator } from "@workspace/ui/components/separator";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import { AuthSplitLayout } from "@/components/auth/auth-split-layout";
 import { SalesFooterLinks, SalesPanel } from "@/components/auth/sales-panel";
 import FullPageCard from "@/components/full-page-card";
@@ -52,9 +51,8 @@ interface LoginSearch {
 
 export const Route = createFileRoute("/auth/login")({
 	validateSearch: (search: Record<string, unknown>): LoginSearch => search,
-	beforeLoad: ({ context, search }) => {
-		if (context.clientConfig?.mode === "local" && !context.clientConfig.hasUsers)
-			throw redirect({ to: "/auth/register", search: { returnTo: safeReturnTo(search.returnTo || "/setup") } });
+	beforeLoad: ({ context }) => {
+		if (context.clientConfig?.mode === "local") throw redirect({ to: "/app" });
 	},
 	head: ({ match }) => {
 		const appName = getAppName(match);

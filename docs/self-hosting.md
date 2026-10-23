@@ -2,9 +2,11 @@
 
 For the complete first-use journey, see [Getting started](beat-geo/getting-started.md). Run `node scripts/local-doctor.mjs` to check prerequisites without changing data.
 
-For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/setup. This source installer requires Git, Node.js 24, pnpm 12.4.1 and Chrome; it bundles and manages its own PostgreSQL (no Docker required) and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGEO npm CLI, SDK or container images are published in this MVP.
+For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/. This source installer requires Git, Node.js 24, pnpm 12.4.1 and Chrome; it bundles and manages its own PostgreSQL (no Docker required) and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGEO npm CLI, SDK or container images are published in this MVP.
 
-Default local storage lives in `.beat-geo/postgres`. Stop BeatGEO before backing up this directory together with `.beat-geo/database.json` and both private `.env` files. Existing Docker/manual installations keep their original data and configuration. For a new optional Docker install, run `pnpm local:setup --docker`. The native path has been exercised on macOS arm64; other upstream-supported platforms still require release validation.
+Default local storage lives in `.beat-geo/postgres`. Stop BeatGEO before backing up this directory together with `.beat-geo/database.json` and both private `.env` files. Older Docker/manual installations keep their original data and configuration; the local installer does not convert them. Back up and explicitly migrate existing data before switching to bundled storage. The local installer and launcher support bundled storage only. The native path has been exercised on macOS arm64; other upstream-supported platforms still require release validation.
+
+Local mode has no registration, login, passwords, team invitations or organization switching. It establishes a private browser session automatically and accepts only loopback requests. Existing multi-user databases are never claimed automatically. Hosted commercial editions are not currently offered.
 
 ## Configure one local instance
 
@@ -24,7 +26,7 @@ RUNS_PER_PROMPT=1
 BROWSER_RUNNER_URL=http://127.0.0.1:4318
 BROWSER_RUNNER_TOKEN=REPLACE_WITH_RANDOM_RUNNER_SECRET
 
-# Optional: configure these in Connections after signing in instead.
+# Optional: configure these in Connections after opening the local workspace instead.
 # BEATAPI_API_KEY=YOUR_BEATAPI_KEY
 # BEATAPI_RESEARCH_MODEL=MODEL_ID_AVAILABLE_TO_YOUR_KEY
 ```
@@ -51,7 +53,7 @@ pnpm --filter @workspace/worker dev
 
 For source BeatBrowser, also set `BEAT_BROWSER_COMMAND=node` and `BEAT_BROWSER_ARGS_JSON` to a JSON array containing the absolute path to `beat-browser/src/cli.js`. Set `BEAT_BROWSER_PROFILE_ID` if multiple Chrome profiles are connected. Share the same `BROWSER_RUNNER_TOKEN` between collector and worker; it is distinct from a model API key.
 
-Open **http://localhost:3000**, register the local administrator, add a brand/website, use Connections to configure optional research credentials, then generate and review website-based questions (or an industry starter set without a key) and start collection. In Opportunities, save a recommendation with a completed baseline, record the change you made, and choose Retest. The queue processes the same questions and shows matched comparisons; changing a question or model configuration creates a different cohort. Timeouts and failures remain visible and do not count as zero exposure.
+Open **http://localhost:3000**, enter the workspace directly and add a brand/website, use Connections to configure optional research credentials, then generate and review website-based questions (or an industry starter set without a key) and start collection. In Opportunities, save a recommendation with a completed baseline, record the change you made, and choose Retest. The queue processes the same questions and shows matched comparisons; changing a question or model configuration creates a different cohort. Timeouts and failures remain visible and do not count as zero exposure.
 
 The browser bridge is serial, synchronous and loopback-only: run **one worker per collector**, with `RUNS_PER_PROMPT=1`. Add `gemini:beat-browser` only after validating that platform with your account; its background completion remains less reliable. A cloud worker cannot reach a user's localhost. Device leasing and offline recovery remain roadmap work. A sleeping laptop cannot provide continuous monitoring.
 

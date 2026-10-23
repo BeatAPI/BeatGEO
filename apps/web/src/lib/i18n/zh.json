@@ -1018,5 +1018,10 @@
 	"Couldn't load query fan-out right now. Reload the page to try again.": "衍生搜索加载失败，请刷新重试。",
 	"No runs with web search enabled for the selected filters. Fan-out appears once your prompts have been run by an engine with web search.": "暂无联网搜索记录，完成支持网页搜索的采集后将显示在这里。",
 	"No web queries in this period — the engines you track didn't expose any searches for these prompts and filters.": "当前时间范围内，采集平台没有返回可查看的搜索词。",
-	"Search responses...": "搜索回答…"
+	"Search responses...": "搜索回答…",
+	"Workspace": "工作台",
+	"Your websites": "你的网站",
+	"Open a website to view its questions, answers and progress.": "打开网站，查看问题、回答和监测进度。",
+	"Add a website": "添加网站",
+	"Add your website to start monitoring AI answers.": "添加网站，开始监测 AI 回答。"
 }

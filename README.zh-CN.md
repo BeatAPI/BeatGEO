@@ -1,4 +1,4 @@
-![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.png)
+[![BeatGEO — AI 回答、引用与持续复测](assets/readme/cover.png)](https://beatapi.io/geo)
 
 # BeatGEO
 
@@ -8,7 +8,7 @@
 
 [BeatAPI](https://beatapi.io) 出品的开源 GEO / AEO 工作台。从真实 AI 回答中追踪品牌提及与引用，把发现的问题变成优化行动，再用同一组问题复测效果。
 
-[快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
+[项目官网](https://beatapi.io/geo) · [快速开始](#快速开始) · [产品闭环](#产品闭环) · [支持范围](#支持范围) · [路线图](docs/roadmap.md) · [MIT 许可](LICENSE.md)
 
 > **本地 MVP / 源码预览版。** ChatGPT 采集 → 数据库 → worker 已通过真实冒烟测试。其他平台、付费研究与长期无人值守分别验收。[验收记录](docs/beat-geo/validation.md)
 
@@ -33,11 +33,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-打开 **http://localhost:3140/setup**，注册本地管理员：
+打开 **http://localhost:3140/**，直接进入本地工作台，无需注册、登录或设置密码。可在 `/setup` 连接 BeatAPI 和 Chrome：
 
-1. **连接研究能力。** 在 Connections 填入 BeatAPI Key → 验证 → 选择研究模型 → 保存。也可跳过，使用行业模板题库。
+1. **创建品牌。** 填网站 → 生成并确认问题 → 首次采集 → 查看回答和引用 → 保存优化行动 → 同组复测。
 2. **连接 Chrome。** 在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension`。选择连接的配置，并在同一配置登录 ChatGPT。扩展连接成功不代表网站已经登录。
-3. **创建品牌。** 填网站 → 生成并确认问题 → 首次采集 → 查看回答和引用 → 保存优化行动 → 同组复测。
+3. **连接研究能力。** 在 Connections 填入 BeatAPI Key → 验证 → 选择研究模型 → 保存。也可跳过，使用行业模板题库。
 
 安装脚本会准备独立 PostgreSQL 和内置扩展，不必再克隆 BeatBrowser、注册另一套账号或安装全局 CLI。已有 BeatBrowser 可以复用，同一 Chrome 配置只启用一份扩展。
 
@@ -47,16 +47,7 @@ pnpm local:start
 
 ## 产品闭环
 
-```mermaid
-flowchart LR
-    A[网站与品牌] --> B[生成并确认问题]
-    B --> C[采集 AI 回答]
-    C --> D[查看提及与引用]
-    D --> E[保存行动与基线]
-    E --> F[实施修改]
-    F --> G[同组问题复测]
-    G --> D
-```
+![产品闭环](assets/readme/workflow.zh-CN.svg)
 
 BeatGEO 管理产品数据和调度，**BeatBrowser** 执行已登录浏览器任务，**BeatAPI** 为研究与优化提供搜索、网页阅读和模型分析。
 
@@ -100,7 +91,7 @@ README 提供英文、中文、日文、德文和韩文。**产品界面通过 E
 
 Fork BeatGEO 会保留 **BeatBrowser 的固定版本依赖**，不会额外创建一个 BeatBrowser fork。安装时下载该版本并准备扩展。只有需要改 BeatBrowser 源码的开发者才需要单独 fork，再更新依赖和锁文件。
 
-每位成员本机的账号、数据库、Key 和 Chrome 会话相互独立。不要提交 `.env`、`.beat-geo/`、浏览器证据或凭据。本地服务绑定 loopback，不要通过公网隧道暴露。[隐私说明](docs/privacy.md)
+每台电脑的工作台、数据库、Key 和 Chrome 会话相互独立，不需要 BeatGEO 账号。不要提交 `.env`、`.beat-geo/`、浏览器证据或凭据。本地服务绑定 loopback，不要通过公网隧道暴露。[隐私说明](docs/privacy.md)
 
 ## 开发与参考
 

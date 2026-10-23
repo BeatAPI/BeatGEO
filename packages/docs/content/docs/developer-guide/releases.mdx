@@ -1,65 +1,12 @@
 ---
 title: Versioning & Releases
-description: How BeatGEO handles versioning, changesets, and the release process.
+description: Source validation and release boundaries for BeatGEO.
 ---
 
-## Changesets
+BeatGEO uses Changesets with fixed workspace versioning. Add a changeset for a user-facing package change; documentation-only changes and internal refactors do not require one. Maintainers apply version changes after review.
 
-BeatGEO uses [Changesets](https://github.com/changesets/changesets) for version management. All packages in the monorepo use fixed versioning — they stay on the same version number.
+The supported installation path is the source quick start with bundled local storage. The source CLI is private. No BeatGEO npm CLI or container images are published, and inherited upstream publishing workflows are disabled.
 
-### Adding a Changeset
+Before a source release, run lint, workspace type checks and tests, browser contracts, and the documented isolated database regression. Validate the local setup and browser extension on each claimed platform. Unit tests and synthetic provider responses do not prove real account collection or paid-provider behavior.
 
-Every PR that changes user-facing behavior should include a changeset:
-
-```bash
-pnpm changeset
-```
-
-This interactive command asks:
-1. Which packages are affected
-2. Whether the change is a major, minor, or patch
-3. A short description of what changed
-
-A markdown file is created in the `.changeset/` directory. Commit this file with your PR.
-
-### What Needs a Changeset
-
-- Bug fixes → `patch`
-- New features → `minor`
-- Breaking changes → `major`
-- Documentation-only changes → usually don't need a changeset
-- Internal refactors that don't change behavior → usually don't need a changeset
-
-## Release Process (Maintainers)
-
-When ready to release a new version:
-
-1. **Apply changesets and bump versions** locally:
-   ```bash
-   pnpm version-packages
-   ```
-   This consumes all pending changeset files, updates `package.json` versions across the monorepo, and generates `CHANGELOG.md` entries.
-
-2. **Review and commit** the version changes:
-   ```bash
-   git add .
-   git commit -m "chore: release v$(node -p "require('./apps/cli/package.json').version")"
-   git push
-   ```
-
-3. **Trigger the release workflow** from GitHub Actions:
-   - Go to **Actions → Release → Run workflow**
-   - This creates a GitHub release and publishes to Docker Hub and npm
-
-## What Gets Published
-
-| Artifact | Registry | Description |
-|----------|----------|-------------|
-| `@beatapi/geo-cli` | npm | The BeatGEO CLI package |
-| `beatapi/beat-geo-web` | Docker Hub | Web app Docker image |
-| `beatapi/beat-geo-worker` | Docker Hub | Worker Docker image |
-| `beatapi/beat-geo-db-migrate` | Docker Hub | One-shot drizzle migrations image |
-
-## Versioning Strategy
-
-All packages share the same version number. When any package changes, all versions bump together. This keeps things simple and avoids compatibility issues between packages.
+Back up existing local databases and private configuration before applying schema changes. Changing the PostgreSQL major version requires an explicit data migration; do not replace a database directory with files from another major version.

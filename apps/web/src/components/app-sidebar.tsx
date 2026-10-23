@@ -50,7 +50,16 @@ function organizationGroups(
 ): NavGroup[] {
 	const params = orgLinkParams(organization);
 	const items: NavItem[] = [
-		{ title: "Organization", link: { to: "/app/org/$org/settings", params }, icon: IconBriefcase, exact: true },
+		...(mode === "local"
+			? []
+			: [
+					{
+						title: "Organization",
+						link: { to: "/app/org/$org/settings" as const, params },
+						icon: IconBriefcase,
+						exact: true,
+					},
+				]),
 		{ title: "Brands", link: { to: "/app/org/$org/settings/brands", params }, icon: IconBuildings },
 	];
 
@@ -75,7 +84,7 @@ function organizationGroups(
 	}
 
 	return [
-		{ label: "Organization Settings", items },
+		{ label: mode === "local" ? "Workspace" : "Organization Settings", items },
 		{ label: "Docs", items: docs },
 	];
 }
@@ -134,9 +143,13 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 
 	// A gate page offers no destinations: every link would either 404 or bounce
 	// the user straight back to the gate.
-	const adminItems = section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
+	const adminItems =
+		mode === "local" || section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
 
 	const groups: NavGroup[] = [
+		...(mode === "local"
+			? [{ label: "Workspace", items: [{ title: "Brands", link: { to: "/app" as const }, icon: IconBuildings }] }]
+			: []),
 		...(context.canManageConnections && mode === "local"
 			? [
 					{
@@ -179,7 +192,9 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 				<NavMain groups={groups} />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser showOrganizations={section !== "account"} adminItems={section === "admin" ? [] : adminItems} />
+				{mode !== "local" && (
+					<NavUser showOrganizations={section !== "account"} adminItems={section === "admin" ? [] : adminItems} />
+				)}
 				<NavAppInfo />
 			</SidebarFooter>
 		</Sidebar>

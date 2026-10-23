@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="440" viewBox="0 0 1240 440" role="img" aria-labelledby="title desc" xml:lang="zh-CN">
+<!-- [INPUT] README flowchart labels and connections. [OUTPUT] Static, accessible README diagram. [POS] Repository documentation asset. [PROTOCOL] Preserve all flow branches; no scripts or interactive viewer. -->
+<title id="title">产品闭环</title>
+<desc id="desc">flowchart LR
+    A[网站与品牌] --&gt; B[生成并确认问题]
+    B --&gt; C[采集 AI 回答]
+    C --&gt; D[查看提及与引用]
+    D --&gt; E[保存行动与基线]
+    E --&gt; F[实施修改]
+    F --&gt; G[同组问题复测]
+    G --&gt; D
+</desc>
+<metadata id="mermaid-source">flowchart LR
+    A[网站与品牌] --&gt; B[生成并确认问题]
+    B --&gt; C[采集 AI 回答]
+    C --&gt; D[查看提及与引用]
+    D --&gt; E[保存行动与基线]
+    E --&gt; F[实施修改]
+    F --&gt; G[同组问题复测]
+    G --&gt; D
+</metadata>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0 0 8 4 0 8Z" fill="#7f9ce9"/></marker></defs>
+<rect width="1240" height="440" rx="18" fill="#111827"/>
+<g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans,Noto Sans CJK SC,Noto Sans CJK JP,Noto Sans CJK KR,Microsoft YaHei,sans-serif">
+<path d="M280 100 H328" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M576 100 H624" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M872 100 H920" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M1044 150 V230" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M920 280 H872" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M624 280 H576" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M328 280 H300 V390 H1208 V100 H1168" fill="none" stroke="#7f9ce9" stroke-width="2" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="32" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="48" y="74" fill="#a9b8d0" font-size="15">01</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="156.0" y="113.0">网站与品牌</tspan>
+</text>
+<rect x="328" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="344" y="74" fill="#a9b8d0" font-size="15">02</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="452.0" y="113.0">生成并确认问题</tspan>
+</text>
+<rect x="624" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="640" y="74" fill="#a9b8d0" font-size="15">03</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="748.0" y="113.0">采集 AI 回答</tspan>
+</text>
+<rect x="920" y="50" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="936" y="74" fill="#a9b8d0" font-size="15">04</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="1044.0" y="113.0">查看提及与引用</tspan>
+</text>
+<rect x="920" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="936" y="254" fill="#a9b8d0" font-size="15">05</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="1044.0" y="293.0">保存行动与基线</tspan>
+</text>
+<rect x="624" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="640" y="254" fill="#a9b8d0" font-size="15">06</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="748.0" y="293.0">实施修改</tspan>
+</text>
+<rect x="328" y="230" width="248" height="100" rx="12" fill="#1c2739" stroke="#35455d" stroke-width="2"/>
+<text x="344" y="254" fill="#a9b8d0" font-size="15">07</text>
+<text fill="#f1f5f9" font-size="22" font-weight="550" text-anchor="middle">
+<tspan x="452.0" y="293.0">同组问题复测</tspan>
+</text>
+</g>
+</svg>

@@ -47,7 +47,7 @@ function AuthedLayout() {
 
 	useEffect(() => {
 		const user = context.session?.user;
-		if (!user || identifiedRef.current === user.id) return;
+		if (context.clientConfig?.mode === "local" || !user || identifiedRef.current === user.id) return;
 		identifiedRef.current = user.id;
 
 		identifyUser(user.id, {

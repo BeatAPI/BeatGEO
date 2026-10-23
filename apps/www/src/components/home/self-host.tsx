@@ -5,7 +5,7 @@ import { SELF_HOST_LINK } from "@/lib/self-host-link";
 import { SectionHeading } from "./ui";
 
 const POINTS = [
-	{ title: "Open Source", body: "MIT-licensed and runs on Docker." },
+	{ title: "Open Source", body: "MIT-licensed with bundled local storage." },
 	{ title: "Own Your Data", body: "Everything is stored in Postgres." },
 	{ title: "Track Anything", body: "BYOK to track any AI model." },
 ];

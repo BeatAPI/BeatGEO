@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { normalizeSlug, ORG_URL_PREFIX } from "@workspace/lib/app-urls";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
@@ -12,6 +12,10 @@ import { useWriteErrorMessage } from "@/lib/write-errors";
 import { updateOrganizationFn } from "@/server/organizations";
 
 export const Route = createFileRoute("/_authed/app/org/$org/settings/")({
+	beforeLoad: ({ context }) => {
+		if (context.clientConfig?.mode === "local")
+			throw redirect({ to: "/app/org/$org/settings/brands", params: { org: context.organization.slug } });
+	},
 	head: pageHead({ title: "Organization", description: "The organization's name and URL." }),
 	component: OrganizationSettingsPage,
 });
