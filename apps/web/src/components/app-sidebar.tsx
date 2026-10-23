@@ -144,6 +144,44 @@ function brandGroups(organization: OrganizationSummary, brand: BrandWithPrompts)
 	return groups;
 }
 
+/** The local workspace's own groups wrap the section's groups: one Workspace entry first, Learn last. */
+function sidebarGroups({
+	section,
+	organization,
+	brand,
+	features,
+	mode,
+	adminItems,
+	canManageConnections,
+}: AppSidebarProps & {
+	features?: FeaturesConfig;
+	mode?: DeploymentMode;
+	adminItems: NavItem[];
+	canManageConnections: boolean;
+}): NavGroup[] {
+	const local = mode === "local";
+	const groups: NavGroup[] = [];
+	if (local)
+		groups.push({ label: "Workspace", items: [{ title: "Brands", link: { to: "/app" }, icon: IconBuildings }] });
+	if (local && canManageConnections)
+		groups.push({ label: "Setup", items: [{ title: "Connections", link: { to: "/setup" }, icon: IconPlugConnected }] });
+	if (section === "brand" && organization && brand) groups.push(...brandGroups(organization, brand));
+	if (section === "organization" && organization) groups.push(...organizationGroups(organization, features, mode));
+	if (section === "admin" && adminItems.length > 0) groups.push({ label: "Admin", items: adminItems });
+	if (local && section === "brand" && organization)
+		groups.push({
+			label: "Learn",
+			items: [
+				{
+					title: "Real workflow case",
+					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
+					icon: IconSchool,
+				},
+			],
+		});
+	return groups;
+}
+
 export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	const { setOpenMobile } = useSidebar();
 	const { isAdmin, hasReportAccess } = useViewer();
@@ -158,34 +196,15 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	const adminItems =
 		mode === "local" || section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
 
-	const groups: NavGroup[] = [
-		...(mode === "local"
-			? [{ label: "Workspace", items: [{ title: "Brands", link: { to: "/app" as const }, icon: IconBuildings }] }]
-			: []),
-		...(context.canManageConnections && mode === "local"
-			? [
-					{
-						label: "Setup",
-						items: [{ title: "Connections", link: { to: "/setup" as const }, icon: IconPlugConnected }],
-					},
-				]
-			: []),
-		...(section === "brand" && organization && brand ? brandGroups(organization, brand) : []),
-		...(section === "organization" && organization ? organizationGroups(organization, features, mode) : []),
-		...(section === "admin" && adminItems.length > 0 ? [{ label: "Admin", items: adminItems }] : []),
-	];
-	if (mode === "local" && section === "brand" && organization) {
-		groups.push({
-			label: "Learn",
-			items: [
-				{
-					title: "Real workflow case",
-					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
-					icon: IconSchool,
-				},
-			],
-		});
-	}
+	const groups = sidebarGroups({
+		section,
+		organization,
+		brand,
+		features,
+		mode,
+		adminItems,
+		canManageConnections: Boolean(context.canManageConnections),
+	});
 	const brandmark = (
 		<>
 			<Logo />

@@ -12,7 +12,6 @@ import pkg from "./package.json" with { type: "json" };
 const tslibEsm = fileURLToPath(import.meta.resolve("tslib/tslib.es6.mjs"));
 
 export default defineConfig({
-	server: { host: "127.0.0.1" },
 	build: {
 		sourcemap: "hidden",
 	},
@@ -20,6 +19,7 @@ export default defineConfig({
 		__APP_VERSION__: JSON.stringify(pkg.version),
 	},
 	server: {
+		host: "127.0.0.1",
 		// The local edition runs this dev server, so without warmup the first visit
 		// to each dashboard page waits seconds for on-demand compilation.
 		warmup: {
