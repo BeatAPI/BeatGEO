@@ -27,23 +27,23 @@ Gib deine Website und dein Geschäftsfeld an, bestätige die vorgeschlagenen Fra
 
 ## Schnellstart
 
-Benötigt werden **Git, Node.js 24, pnpm 12.4.1 und Chrome**. BeatGEO bringt PostgreSQL mit und verwaltet es automatisch. Docker und eine separate Datenbankinstallation sind nicht erforderlich.
+Benötigt werden **Git, pnpm 12.4.1 und Chrome**. pnpm installiert und nutzt für dieses Projekt Node.js 24, unabhängig von der Node.js-Version des Systems. BeatGEO bringt PostgreSQL mit und verwaltet es automatisch. Docker und eine separate Datenbankinstallation sind nicht erforderlich.
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
 cd BeatGEO
-node scripts/local-doctor.mjs
+pnpm local:doctor
 pnpm local:setup
 pnpm local:start
 ```
 
 Öffne **http://localhost:3140/** direkt im lokalen Arbeitsbereich. Für BeatGEO sind weder Registrierung noch Anmeldung oder Passwort nötig. BeatAPI und Chrome lassen sich unter `/setup` verbinden:
 
-1. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
-2. **Chrome verbinden.** Unter `chrome://extensions` den Entwicklermodus aktivieren und `.beat-geo/extension` entpackt laden. Verbundenes Profil auswählen und dort bei ChatGPT anmelden. Eine verbundene Erweiterung bestätigt keine Website-Anmeldung.
+1. **Chrome verbinden.** Unter `chrome://extensions` den Entwicklermodus aktivieren und `.beat-geo/extension` entpackt laden. Verbundenes Profil auswählen und dort bei ChatGPT anmelden. Eine verbundene Erweiterung bestätigt keine Website-Anmeldung. Die Erweiterung verlangt Debugger-Zugriff und Zugriff auf alle Websites, weil sie Seiten in deinem angemeldeten Chrome für dich bedient. Prüfe diese Berechtigungen vor dem Laden.
+2. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
 3. **Recherche verbinden.** BeatAPI-Key unter Connections prüfen, Recherchemodell auswählen und speichern. Alternativ diesen Schritt überspringen und Branchenvorlagen nutzen.
 
-Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ein. Kein zweiter Repository-Klon, kein zusätzliches BeatBrowser-Konto und keine globale CLI-Installation nötig. Eine vorhandene BeatBrowser-Verbindung kann verwendet werden; pro Chrome-Profil nur eine Erweiterungskopie aktivieren.
+Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ein. Kein zweiter Repository-Klon, kein zusätzliches BeatBrowser-Konto und keine globale CLI-Installation nötig. Eine vorhandene BeatBrowser-Verbindung kann verwendet werden; pro Chrome-Profil nur eine Erweiterungskopie aktivieren. Meldet `pnpm local:start` eine bereits laufende andere BeatBrowser-Version, verweise in `.env` mit `BEAT_BROWSER_COMMAND` und `BEAT_BROWSER_ARGS_JSON` auf diese Installation oder aktualisiere sie zusammen mit ihrer Erweiterung.
 
 **Für laufendes Monitoring muss die Umgebung laufen:** Computer wach und online halten; Chrome und `pnpm local:start` müssen aktiv bleiben. Der Dashboard-Tab darf geschlossen werden. Zum Neustart reicht `pnpm local:start`; die Datenbank nicht neu anlegen. Bei ausgeschaltetem oder offline befindlichem Computer findet keine Erfassung statt.
 

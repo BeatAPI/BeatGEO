@@ -27,23 +27,23 @@
 
 ## 快速开始
 
-准备 **Git、Node.js 24、pnpm 12.4.1 和 Chrome**。BeatGEO 自带并管理独立 PostgreSQL，无需安装 Docker 或数据库。
+准备 **Git、pnpm 12.4.1 和 Chrome**。pnpm 会为本项目自动安装并使用 Node.js 24，与电脑上的 Node.js 版本无关。BeatGEO 自带并管理独立 PostgreSQL，无需安装 Docker 或数据库。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
 cd BeatGEO
-node scripts/local-doctor.mjs
+pnpm local:doctor
 pnpm local:setup
 pnpm local:start
 ```
 
 打开 **http://localhost:3140/**，直接进入本地工作台，无需注册、登录或设置密码。可在 `/setup` 连接 BeatAPI 和 Chrome：
 
-1. **创建品牌。** 填网站 → 生成并确认问题 → 首次采集 → 查看回答和引用 → 保存优化行动 → 同组复测。
-2. **连接 Chrome。** 在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension`。选择连接的配置，并在同一配置登录 ChatGPT。扩展连接成功不代表网站已经登录。
+1. **连接 Chrome。** 在 `chrome://extensions` 开启开发者模式，加载 `.beat-geo/extension`。选择连接的配置，并在同一配置登录 ChatGPT。扩展连接成功不代表网站已经登录。扩展会申请调试（debugger）和访问所有网站的权限，因为它要在你已登录的 Chrome 中代你操作页面；加载前请先确认这些权限。
+2. **创建品牌。** 填网站 → 生成并确认问题 → 首次采集 → 查看回答和引用 → 保存优化行动 → 同组复测。
 3. **连接研究能力。** 在 Connections 填入 BeatAPI Key → 验证 → 选择研究模型 → 保存。也可跳过，使用行业模板题库。
 
-安装脚本会准备独立 PostgreSQL 和内置扩展，不必再克隆 BeatBrowser、注册另一套账号或安装全局 CLI。已有 BeatBrowser 可以复用，同一 Chrome 配置只启用一份扩展。
+安装脚本会准备独立 PostgreSQL 和内置扩展，不必再克隆 BeatBrowser、注册另一套账号或安装全局 CLI。已有 BeatBrowser 可以复用，同一 Chrome 配置只启用一份扩展。如果 `pnpm local:start` 提示本机已在运行其他版本的 BeatBrowser，可在 `.env` 用 `BEAT_BROWSER_COMMAND` 和 `BEAT_BROWSER_ARGS_JSON` 指向那份安装，或把它和扩展一起升级。
 
 **持续监测需要持续运行：** 电脑保持唤醒和联网，Chrome、`pnpm local:start` 保持运行。可以关闭工作台网页；下次执行 `pnpm local:start` 即可，不要重建数据库。本地版不会在电脑离线时继续采集。
 

@@ -90,7 +90,7 @@ export async function handleLocalWorkspaceRequest(request: Request, options: Loc
 	if (isUntrustedWrite(request)) return refusal("Local writes require a same-origin browser request.");
 	if (request.headers.has("cookie") && (await options.getSession(request.headers))) return options.next(request);
 	if (!isBrowserNavigation(request) || pathname.startsWith("/api/") || pathname.startsWith("/_server"))
-		return refusal("Open the local workspace in your browser to continue.", 401);
+		return refusal("BeatGEO is running. Open this address in your browser to use the workspace.", 401);
 	const bootstrap = await options.bootstrap(request.headers);
 	if (!bootstrap.ok)
 		return refusal("The local workspace could not be opened. Check its database and configuration.", 503);
