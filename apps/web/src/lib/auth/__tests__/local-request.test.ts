@@ -118,3 +118,25 @@ describe("local workspace request protection", () => {
 		expect(deps.next).not.toHaveBeenCalled();
 	});
 });
+
+describe("first visit through the server runtime", () => {
+	// The server hands over its own Request subclass, which the platform Request
+	// constructor cannot copy: a first visit crashed with a 500 before any cookie existed.
+	function runtimeRequest(path: string, headers: Record<string, string>): Request {
+		const plain = request(path, headers);
+		const runtime = Object.create(Request.prototype) as Request;
+		for (const key of ["url", "method", "headers", "signal"] as const)
+			Object.defineProperty(runtime, key, { get: () => plain[key] });
+		return runtime;
+	}
+
+	it("opens the workspace and sets the session cookie", async () => {
+		const deps = options();
+		const response = await handleLocalWorkspaceRequest(runtimeRequest("/app", navigation), deps);
+		expect(response.status).toBe(200);
+		expect(response.headers.get("set-cookie")).toContain("session=fresh");
+		const forwarded = deps.next.mock.calls[0]?.[0] as Request;
+		expect(forwarded.headers.get("cookie")).toContain("session=fresh");
+		expect(new URL(forwarded.url).pathname).toBe("/app");
+	});
+});

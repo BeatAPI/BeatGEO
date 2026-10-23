@@ -101,7 +101,11 @@ export async function handleLocalWorkspaceRequest(request: Request, options: Loc
 		"cookie",
 		[...cookies.map((cookie) => cookie.split(";", 1)[0]), headers.get("cookie")].filter(Boolean).join("; "),
 	);
-	const response = await options.next(new Request(request, { headers }));
+	// Rebuilt from its parts: the server runtime's own Request cannot be passed to the Request
+	// constructor, and this path only serves body-less GET navigations.
+	const response = await options.next(
+		new Request(request.url, { method: request.method, headers, signal: request.signal }),
+	);
 	const responseHeaders = new Headers(response.headers);
 	for (const cookie of cookies) responseHeaders.append("set-cookie", cookie);
 	responseHeaders.set("cache-control", "no-store");
