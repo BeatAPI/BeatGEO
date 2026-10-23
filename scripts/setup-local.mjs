@@ -17,7 +17,7 @@ let database;
 try {
 	if (process.argv.slice(2).some((arg) => arg !== "--resume"))
 		throw new Error("Use pnpm local:setup or pnpm local:setup --resume. Local storage is bundled; no database option is needed.");
-	if (Number(process.versions.node.split(".")[0]) !== 24) throw new Error("Use Node.js 24 and pnpm 12.4.1.");
+	if (Number(process.versions.node.split(".")[0]) !== 24) throw new Error("Run it as pnpm local:setup; pnpm installs and uses the project's Node.js 24.");
 	const local = path.join(root, ".beat-geo");
 	const resume = process.argv.includes("--resume");
 	const configured = existsSync(path.join(root, ".env")) || existsSync(path.join(root, "apps/web/.env"));
