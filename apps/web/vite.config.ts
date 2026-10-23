@@ -20,11 +20,6 @@ export default defineConfig({
 	},
 	server: {
 		host: "127.0.0.1",
-		// The local edition runs this dev server, so without warmup the first visit
-		// to each dashboard page waits seconds for on-demand compilation.
-		warmup: {
-			clientFiles: ["./src/routes/_authed/**/*.tsx", "./src/components/**/*.tsx", "!./src/**/*.stories.tsx"],
-		},
 	},
 	resolve: {
 		tsconfigPaths: true,
