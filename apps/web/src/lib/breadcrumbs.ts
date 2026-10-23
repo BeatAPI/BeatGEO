@@ -1,4 +1,5 @@
 import { useMatches } from "@tanstack/react-router";
+import { useDeploymentMode } from "@/hooks/use-deployment-features";
 import { BRAND_ROUTE_ID, ORG_ROUTE_ID, routeSubjects } from "@/lib/route-subject";
 
 declare module "@tanstack/react-router" {
@@ -15,10 +16,12 @@ export interface Crumb {
 
 export function useBreadcrumbs(): Crumb[] {
 	const matches = useMatches();
+	const local = useDeploymentMode() === "local";
 	const subjects = routeSubjects(matches);
 
 	return matches.flatMap((match): Crumb[] => {
 		if (match.routeId === ORG_ROUTE_ID) {
+			if (local) return [];
 			const label = subjects.organization?.name;
 			return label ? [{ label, href: match.pathname, kind: "Organization" }] : [];
 		}

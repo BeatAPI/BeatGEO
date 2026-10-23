@@ -1108,5 +1108,10 @@
 	"The total external websites cited by AI models across prompt evaluations.": "AI 模型在问题评估中引用外部网站的总次数。",
 	"Share of citations by source category over time, as a percentage of all citations each day. Smoothed to account for staggered prompt schedules; Google AI Mode search/shopping are excluded (see the Google Shopping section).": "按来源类别统计的引用占比随时间的变化，即每天各类引用占全部引用的百分比。为适应错开的采集时间做了平滑；不含 Google AI Mode 搜索/购物（见 Google Shopping 部分）。",
 	"Share of citations by page type over time — what kind of page each citation points to, inferred from the URL and title.": "按页面类型统计的引用占比随时间的变化：根据 URL 和标题推断每条引用指向哪类页面。",
-	"A trend appears after citations are collected on at least two days.": "至少有两天采集到引用后，才会显示趋势。"
+	"A trend appears after citations are collected on at least two days.": "至少有两天采集到引用后，才会显示趋势。",
+	"Workspace": "工作台",
+	"Your websites": "你的网站",
+	"Open a website to view its questions, answers and progress.": "打开网站，查看问题、回答和监测进度。",
+	"Add a website": "添加网站",
+	"Add your website to start monitoring AI answers.": "添加网站，开始监测 AI 回答。"
 }

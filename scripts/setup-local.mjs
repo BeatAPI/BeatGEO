@@ -5,7 +5,7 @@ import { availablePort, startEmbeddedDatabase } from "./local-database.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { requireLocalEnvironment } from "./local-doctor.mjs";
-import { localCompose, localEnvironment, prepareExtension } from "./local-runtime.mjs";
+import { localEnvironment, prepareExtension, requireBundledStorage } from "./local-runtime.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 function run(command, args, cwd = root, environment = process.env) {
@@ -15,6 +15,8 @@ function run(command, args, cwd = root, environment = process.env) {
 let database;
 
 try {
+	if (process.argv.slice(2).some((arg) => arg !== "--resume"))
+		throw new Error("Use pnpm local:setup or pnpm local:setup --resume. Local storage is bundled; no database option is needed.");
 	if (Number(process.versions.node.split(".")[0]) !== 24) throw new Error("Use Node.js 24 and pnpm 12.4.1.");
 	const local = path.join(root, ".beat-geo");
 	const resume = process.argv.includes("--resume");
@@ -29,24 +31,23 @@ try {
 		const webText = await readFile(path.join(root, "apps/web/.env"), "utf8");
 		const { parseEnv } = await import("node:util");
 		env = parseEnv(rootText);
+		requireBundledStorage(env);
 		const url = new URL(env.DATABASE_URL);
 		if (
 			rootText !== webText ||
 			env.DEPLOYMENT_MODE !== "local" ||
 			url.hostname !== "127.0.0.1" ||
 			!url.port ||
-			url.pathname !== "/beatgeo" ||
-			(env.BEAT_GEO_DATABASE_MODE !== "embedded" &&
-			(await readFile(path.join(local, "compose.yaml"), "utf8")) !== localCompose(env))
+			url.pathname !== "/beatgeo"
 		)
 			throw new Error(
 				"This is not an unchanged automatic local setup. Follow the self-hosting guide; no database was modified.",
 			);
 	} else {
 		const [databasePort, appPort, browserPort] = await Promise.all([55440, 3140, 4319].map(availablePort));
-		env = localEnvironment({ databasePort, appPort, browserPort, databaseMode: process.argv.includes("--docker") ? "docker" : "embedded" });
+		env = localEnvironment({ databasePort, appPort, browserPort });
 	}
-	requireLocalEnvironment(env.BEAT_GEO_DATABASE_MODE || "docker");
+	requireLocalEnvironment();
 	run("pnpm", ["install", "--frozen-lockfile"]);
 	if (!resume) {
 		const text =
@@ -54,13 +55,10 @@ try {
 				.map(([key, value]) => `${key}=${value}`)
 				.join("\n") + "\n";
 		await mkdir(local, { recursive: true, mode: 0o700 });
-		if (env.BEAT_GEO_DATABASE_MODE === "docker")
-			await writeFile(path.join(local, "compose.yaml"), localCompose(env), { mode: 0o600, flag: "wx" });
 		await writeFile(path.join(root, ".env"), text, { mode: 0o600, flag: "wx" });
 		await writeFile(path.join(root, "apps/web/.env"), text, { mode: 0o600, flag: "wx" });
 	}
-	if (env.BEAT_GEO_DATABASE_MODE === "embedded") database = await startEmbeddedDatabase(root, env, { initialize: true });
-	else run("docker", ["compose", "-p", "beatgeo-local", "-f", path.join(local, "compose.yaml"), "up", "-d", "--wait"]);
+	database = await startEmbeddedDatabase(root, env, { initialize: true });
 	run(
 		process.execPath,
 		["--env-file=../../.env", "node_modules/drizzle-kit/bin.cjs", "migrate"],
@@ -69,7 +67,7 @@ try {
 	);
 	const extension = await prepareExtension(root);
 	console.log(
-		`BeatGEO is ready. Included BeatBrowser ${extension.version}.\nRun pnpm local:start, then open ${env.APP_URL}/setup\nLoad the Chrome extension from ${extension.destination}`,
+		`BeatGEO is ready. Included BeatBrowser ${extension.version}.\nRun pnpm local:start, then open ${env.APP_URL}/\nLoad the Chrome extension from ${extension.destination}`,
 	);
 } catch (error) {
 	console.error(error.message);

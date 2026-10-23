@@ -202,7 +202,7 @@ export default {
 	title: "App Sidebar",
 } satisfies Meta;
 
-/** Local (self-hosted) — all nav visible, admin access, self-registered user */
+/** Local workspace exposes no account or organization controls. */
 export const Local: StoryObj = {
 	render: () => {
 		const brand = configureMocks(
@@ -213,18 +213,18 @@ export const Local: StoryObj = {
 		);
 
 		return (
-			<SidebarFrame label="Local — Self-hosted, full admin">
+			<SidebarFrame label="Local workspace">
 				<AppSidebar section="brand" brand={brand} organization={organization} />
 			</SidebarFrame>
 		);
 	},
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
-		await expect(canvas.queryByText("Workflows")).toBeNull();
-
-		await userEvent.click(await canvas.findByRole("button", { name: "Account and organizations" }));
-		await expect(await screen.findByText("Workflows")).toBeInTheDocument();
-		await expect(await screen.findByText("Tools")).toBeInTheDocument();
+		await expect(canvas.getByText("Workspace")).toBeVisible();
+		await expect(canvas.queryByRole("button", { name: "Account and organizations" })).toBeNull();
+		await expect(canvas.queryByRole("button", { name: "Account" })).toBeNull();
+		for (const label of ["Log out", "Team", "Organization", "Organization Settings", "Workflows", "Tools"])
+			await expect(canvas.queryByText(label)).toBeNull();
 	},
 };
 

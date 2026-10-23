@@ -5,6 +5,7 @@ import { Label } from "@workspace/ui/components/label";
 import { useState } from "react";
 import FullPageCard from "@/components/full-page-card";
 import { PlatformSelectionStep } from "@/components/platform-selection-step";
+import { useDeploymentMode } from "@/hooks/use-deployment-features";
 import { useOrganizationsChanged } from "@/hooks/use-organizations";
 import { useOrganizationParams } from "@/hooks/use-route-params";
 import { validateWebsiteUrl } from "@/lib/brand-website";
@@ -34,6 +35,7 @@ export const Route = createFileRoute("/_authed/app/org/$org/new")({
 
 function NewBrandPage() {
 	const t = useT();
+	const local = useDeploymentMode() === "local";
 	const { organizationId, organizationName, blocked } = Route.useLoaderData();
 	const organizationParams = useOrganizationParams();
 	const [step, setStep] = useState<"details" | "platforms">("details");
@@ -147,7 +149,9 @@ function NewBrandPage() {
 	return (
 		<FullPageCard
 			title={t("Create a new brand")}
-			subtitle={`Start tracking a brand in ${organizationName}`}
+			subtitle={
+				local ? t("Add your website to start monitoring AI answers.") : `Start tracking a brand in ${organizationName}`
+			}
 			showBackButton
 		>
 			<form action={handleDetailsSubmit} className="space-y-4">

@@ -7,9 +7,9 @@ describe("entryRouteForVisitor", () => {
 		expect(entryRouteForVisitor({ mode: "cloud", canRegister: true, hasUsers: true })).toBe("/auth/register");
 	});
 
-	it("opens an unbootstrapped local instance on sign-up and a bootstrapped one on sign-in", () => {
-		expect(entryRouteForVisitor({ mode: "local", canRegister: true, hasUsers: false })).toBe("/auth/register");
-		expect(entryRouteForVisitor({ mode: "local", canRegister: false, hasUsers: true })).toBe("/auth/login");
+	it("opens every local instance directly in the workspace", () => {
+		expect(entryRouteForVisitor({ mode: "local", canRegister: true, hasUsers: false })).toBe("/app");
+		expect(entryRouteForVisitor({ mode: "local", canRegister: false, hasUsers: true })).toBe("/app");
 	});
 
 	it("opens demo on sign-in", () => {

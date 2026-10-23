@@ -50,7 +50,16 @@ function organizationGroups(
 ): NavGroup[] {
 	const params = orgLinkParams(organization);
 	const items: NavItem[] = [
-		{ title: "Organization", link: { to: "/app/org/$org/settings", params }, icon: IconBriefcase, exact: true },
+		...(mode === "local"
+			? []
+			: [
+					{
+						title: "Organization",
+						link: { to: "/app/org/$org/settings" as const, params },
+						icon: IconBriefcase,
+						exact: true,
+					},
+				]),
 		{ title: "Brands", link: { to: "/app/org/$org/settings/brands", params }, icon: IconBuildings },
 	];
 
@@ -87,7 +96,7 @@ function organizationGroups(
 
 	return [
 		...(brands.length > 0 ? [{ label: "Brand dashboards", items: brands }] : []),
-		{ label: "Organization Settings", items },
+		{ label: mode === "local" ? "Workspace" : "Organization Settings", items },
 		{ label: "Docs", items: docs },
 	];
 }
@@ -135,6 +144,44 @@ function brandGroups(organization: OrganizationSummary, brand: BrandWithPrompts)
 	return groups;
 }
 
+/** The local workspace's own groups wrap the section's groups: one Workspace entry first, Learn last. */
+function sidebarGroups({
+	section,
+	organization,
+	brand,
+	features,
+	mode,
+	adminItems,
+	canManageConnections,
+}: AppSidebarProps & {
+	features?: FeaturesConfig;
+	mode?: DeploymentMode;
+	adminItems: NavItem[];
+	canManageConnections: boolean;
+}): NavGroup[] {
+	const local = mode === "local";
+	const groups: NavGroup[] = [];
+	if (local)
+		groups.push({ label: "Workspace", items: [{ title: "Brands", link: { to: "/app" }, icon: IconBuildings }] });
+	if (local && canManageConnections)
+		groups.push({ label: "Setup", items: [{ title: "Connections", link: { to: "/setup" }, icon: IconPlugConnected }] });
+	if (section === "brand" && organization && brand) groups.push(...brandGroups(organization, brand));
+	if (section === "organization" && organization) groups.push(...organizationGroups(organization, features, mode));
+	if (section === "admin" && adminItems.length > 0) groups.push({ label: "Admin", items: adminItems });
+	if (local && section === "brand" && organization)
+		groups.push({
+			label: "Learn",
+			items: [
+				{
+					title: "Real workflow case",
+					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
+					icon: IconSchool,
+				},
+			],
+		});
+	return groups;
+}
+
 export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 	const { setOpenMobile } = useSidebar();
 	const { isAdmin, hasReportAccess } = useViewer();
@@ -146,33 +193,18 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 
 	// A gate page offers no destinations: every link would either 404 or bounce
 	// the user straight back to the gate.
-	const adminItems = section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
+	const adminItems =
+		mode === "local" || section === "account" ? [] : adminNavItems({ isAdmin, hasReportAccess, reportsEnabled });
 
-	const groups: NavGroup[] = [
-		...(context.canManageConnections && mode === "local"
-			? [
-					{
-						label: "Setup",
-						items: [{ title: "Connections", link: { to: "/setup" as const }, icon: IconPlugConnected }],
-					},
-				]
-			: []),
-		...(section === "brand" && organization && brand ? brandGroups(organization, brand) : []),
-		...(section === "organization" && organization ? organizationGroups(organization, features, mode) : []),
-		...(section === "admin" && adminItems.length > 0 ? [{ label: "Admin", items: adminItems }] : []),
-	];
-	if (mode === "local" && section === "brand" && organization) {
-		groups.push({
-			label: "Learn",
-			items: [
-				{
-					title: "Real workflow case",
-					link: { to: "/app/org/$org/settings/cases", params: orgLinkParams(organization) },
-					icon: IconSchool,
-				},
-			],
-		});
-	}
+	const groups = sidebarGroups({
+		section,
+		organization,
+		brand,
+		features,
+		mode,
+		adminItems,
+		canManageConnections: Boolean(context.canManageConnections),
+	});
 	const brandmark = (
 		<>
 			<Logo />
@@ -203,7 +235,9 @@ export function AppSidebar({ section, organization, brand }: AppSidebarProps) {
 				<NavMain groups={groups} />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser showOrganizations={section !== "account"} adminItems={section === "admin" ? [] : adminItems} />
+				{mode !== "local" && (
+					<NavUser showOrganizations={section !== "account"} adminItems={section === "admin" ? [] : adminItems} />
+				)}
 				<NavAppInfo />
 			</SidebarFooter>
 		</Sidebar>

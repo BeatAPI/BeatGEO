@@ -13,7 +13,7 @@ BeatGEO is an open-source AI visibility platform (Answer Engine Optimization): i
 - `apps/web` — product dashboard (TanStack Start + Vite, port 3000)
 - `apps/worker` — pg-boss background jobs (AI evaluations, citation tracking, reports)
 - `apps/www` — marketing site, docs, and blog (port 3001)
-- `apps/cli` — `@beatapi/geo-cli`, the Docker Compose deployment CLI
+- `apps/cli` — private source CLI for the bundled local setup, startup and environment check
 - `packages/lib` — shared logic and the Drizzle schema/migrations
 - `packages/ui` — shared shadcn-based UI components
 - `packages/docs` — user-facing docs content (MDX), rendered by `apps/www`
@@ -54,7 +54,7 @@ Before handing work back or opening a PR, run `pnpm lint` and get it passing; CI
 
 ## Environment
 
-`.env` must exist at **both** the repo root and `apps/web/.env` (Vite reads its project root; the worker reads `apps/web/.env` via `--env-file`). Minimum for local mode: `DATABASE_URL`, `DEPLOYMENT_MODE=local`, `BETTER_AUTH_SECRET`, `BEAT_GEO_ENCRYPTION_KEY` (`openssl rand -base64 32`), `APP_URL`/`VITE_APP_URL`, `DISABLE_TELEMETRY=1`, and `SCRAPE_TARGETS` plus the keys of the providers it names. Local web registration/setup remains accessible without a research key; industry starter questions and browser monitoring need no research provider. AI-assisted onboarding and Opportunities require a research provider: `BEATAPI_API_KEY` plus `BEATAPI_RESEARCH_MODEL`, or one direct LLM key (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, or `MISTRAL_API_KEY`) for onboarding and the Opportunities report. For UI-only work, `SCRAPE_TARGETS=stub:stub` and `ONBOARDING_LLM_TARGET=stub:stub` need no keys at all.
+`.env` must exist at **both** the repo root and `apps/web/.env` (Vite reads its project root; the worker reads `apps/web/.env` via `--env-file`). Minimum for local mode: `DATABASE_URL`, `DEPLOYMENT_MODE=local`, `BETTER_AUTH_SECRET`, `BEAT_GEO_ENCRYPTION_KEY` (`openssl rand -base64 32`), `APP_URL`/`VITE_APP_URL`, `DISABLE_TELEMETRY=1`, and `SCRAPE_TARGETS` plus the keys of the providers it names. Local workspaces establish a private owner/session automatically and expose no registration, login, password, team or organization-switching UI. Hosted commercial modes are inherited code, not a launched service. Local setup remains accessible without a research key; industry starter questions and browser monitoring need no research provider. AI-assisted onboarding and Opportunities require a research provider: `BEATAPI_API_KEY` plus `BEATAPI_RESEARCH_MODEL`, or one direct LLM key (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, or `MISTRAL_API_KEY`) for onboarding and the Opportunities report. For UI-only work, `SCRAPE_TARGETS=stub:stub` and `ONBOARDING_LLM_TARGET=stub:stub` need no keys at all.
 
 ## Git workflow
 

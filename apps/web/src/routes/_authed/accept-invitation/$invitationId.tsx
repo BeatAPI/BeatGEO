@@ -6,7 +6,7 @@
  * Better-auth requires the session email to match the invited email
  * (case-insensitively) and rejects expired or already-handled invitations.
  */
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { Alert, AlertDescription } from "@workspace/ui/components/alert";
 import { Button, buttonVariants } from "@workspace/ui/components/button";
 import { useState } from "react";
@@ -18,6 +18,9 @@ import { useWriteErrorMessage } from "@/lib/write-errors";
 import { acceptInvitationFn, getInvitationFn } from "@/server/team";
 
 export const Route = createFileRoute("/_authed/accept-invitation/$invitationId")({
+	beforeLoad: ({ context }) => {
+		if (context.clientConfig?.mode === "local") throw redirect({ to: "/app" });
+	},
 	loader: async ({ params }) => {
 		try {
 			const invitation = await getInvitationFn({ data: { invitationId: params.invitationId } });

@@ -1,13 +1,15 @@
-# BeatGEO deployment CLI — source preview
+# BeatGEO local CLI — source preview
 
-This is internal deployment tooling for [BeatGEO](https://github.com/BeatAPI/BeatGEO). The npm package and container images are **not published**. Start with the root [quick start](../../README.md#quick-start) or [self-hosting guide](../../docs/self-hosting.md).
+This private source CLI uses the same bundled-storage setup and startup scripts as the root quick start. No npm package or container images are published.
 
-After installing the workspace dependencies with pnpm, inspect the CLI from the repository root:
+From a source checkout with Node.js 24 and pnpm 12.4.1:
 
 ```sh
-pnpm beatgeo --help
+pnpm beatgeo doctor
+pnpm beatgeo init
+pnpm beatgeo start
 ```
 
-The source `init --dev` flow builds a Docker stack locally. It can initialize databases and start containers; use a dedicated development environment. Deployment upgrades require backups and review of migrations. This flow has not received release validation.
+`init --resume` resumes an interrupted setup without replacing private configuration. `start` runs the web app, browser collector and worker until Ctrl+C. Local PostgreSQL is bundled and managed automatically. The `--dir` option selects another source checkout.
 
-Telemetry is disabled by default. Events require an explicitly configured operator-owned `BEAT_GEO_POSTHOG_KEY`; `DISABLE_TELEMETRY=1` always disables them. There is no newsletter signup or upstream tracking destination.
+Existing installations are never converted automatically. Back up their data and private configuration before following the [self-hosting guide](../../docs/self-hosting.md).

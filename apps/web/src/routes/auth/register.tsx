@@ -28,6 +28,7 @@ import { buildTitle, getAppName } from "@/lib/route-head";
 
 export const Route = createFileRoute("/auth/register")({
 	beforeLoad: ({ context, search }) => {
+		if (context.clientConfig?.mode === "local") throw redirect({ to: "/app" });
 		if (!context.clientConfig?.canRegister)
 			throw redirect({ to: "/auth/login", search: { returnTo: search.returnTo } });
 	},
