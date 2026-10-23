@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TD
-    A[准备 Git、Node 24、pnpm、Chrome] --> B[环境检查 local:doctor]
+    A[准备 Git、pnpm、Chrome（Node 24 由 pnpm 自动安装）] --> B[环境检查 local:doctor]
     B --> C[local:setup 自动建独立数据库并准备扩展]
     C --> D[local:start 启动网页、采集器和调度进程]
     D --> E[直接进入本地工作台并填写网站]

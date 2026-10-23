@@ -1,8 +1,8 @@
 # Self-hosting
 
-For the complete first-use journey, see [Getting started](beat-geo/getting-started.md). Run `node scripts/local-doctor.mjs` to check prerequisites without changing data.
+For the complete first-use journey, see [Getting started](beat-geo/getting-started.md). Run `pnpm local:doctor` to check prerequisites without changing data.
 
-For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/. This source installer requires Git, Node.js 24, pnpm 12.4.1 and Chrome; it bundles and manages its own PostgreSQL (no Docker required) and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGEO npm CLI, SDK or container images are published in this MVP.
+For a new local installation, use `pnpm local:setup` and `pnpm local:start`, then open http://localhost:3140/. This source installer requires Git, pnpm 12.4.1 and Chrome (pnpm installs and uses Node.js 24 for this project); it bundles and manages its own PostgreSQL (no Docker required) and the pinned BeatBrowser extension. The advanced manual path below is for an existing dedicated PostgreSQL installation. SQLite is not supported. Build from source; no BeatGEO npm CLI, SDK or container images are published in this MVP.
 
 Default local storage lives in `.beat-geo/postgres`. Stop BeatGEO before backing up this directory together with `.beat-geo/database.json` and both private `.env` files. Older Docker/manual installations keep their original data and configuration; the local installer does not convert them. Back up and explicitly migrate existing data before switching to bundled storage. The local installer and launcher support bundled storage only. The native path has been exercised on macOS arm64; other upstream-supported platforms still require release validation.
 

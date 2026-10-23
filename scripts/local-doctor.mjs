@@ -8,7 +8,7 @@ const REQUIREMENTS = [
 ];
 
 export function inspectLocalRequirements({ nodeVersion = process.versions.node, run = spawnSync } = {}) {
-	const checks = [{ name: "Node.js 24", ok: nodeVersion.split(".")[0] === "24", fix: "Install and select Node.js 24." }];
+	const checks = [{ name: "Node.js 24", ok: nodeVersion.split(".")[0] === "24", fix: "Run it as pnpm local:doctor; pnpm installs and uses the project's Node.js 24." }];
 	for (const [command, args, name, fix, accepts] of REQUIREMENTS) {
 		const result = run(command, args, { encoding: "utf8", timeout: 5000, stdio: "pipe" });
 		checks.push({ name, ok: !result.error && result.status === 0 && (!accepts || accepts(result.stdout)), fix });
@@ -30,7 +30,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 	for (const check of checks)
 		console.log(`${check.ok ? "OK" : "NEEDS ACTION"} · ${check.name}${check.ok ? "" : ` — ${check.fix}`}`);
 	console.log("Local storage is bundled and managed by BeatGEO. No separate database installation is needed.");
-	console.log("Chrome: install it on this computer, then load the bundled BeatBrowser extension in Setup.");
+	console.log("Chrome: install it, then after pnpm local:setup load .beat-geo/extension at chrome://extensions (Developer mode → Load unpacked).");
 	console.log("This check does not create a database, install extensions or call paid APIs.");
 	process.exitCode = checks.every((check) => check.ok) ? 0 : 1;
 }

@@ -27,23 +27,23 @@
 
 ## クイックスタート
 
-**Git、Node.js 24、pnpm 12.4.1、Chrome** を用意してください。PostgreSQL は BeatGEO に同梱され、自動管理されます。Docker やデータベースの別途インストールは不要です。
+**Git、pnpm 12.4.1、Chrome** を用意してください。このプロジェクトでは pnpm が Node.js 24 を自動でインストールして使うため、システムの Node.js バージョンは問いません。PostgreSQL は BeatGEO に同梱され、自動管理されます。Docker やデータベースの別途インストールは不要です。
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
 cd BeatGEO
-node scripts/local-doctor.mjs
+pnpm local:doctor
 pnpm local:setup
 pnpm local:start
 ```
 
 **http://localhost:3140/** を開くと、ローカルワークスペースに直接入れます。BeatGEO の登録・ログイン・パスワード設定は不要です。BeatAPI と Chrome の接続は `/setup` で行えます。
 
-1. **ブランドを作成。** サイトを入力 → 質問を生成して確認 → 初回収集 → 回答と引用を確認 → 改善を記録 → 同じ質問で再測定します。
-2. **Chrome を接続。** `chrome://extensions` でデベロッパーモードを有効にし、`.beat-geo/extension` を読み込みます。接続したプロファイルを選び、同じプロファイルで ChatGPT にログインしてください。拡張機能の接続とサイトへのログインは別です。
+1. **Chrome を接続。** `chrome://extensions` でデベロッパーモードを有効にし、`.beat-geo/extension` を読み込みます。接続したプロファイルを選び、同じプロファイルで ChatGPT にログインしてください。拡張機能の接続とサイトへのログインは別です。拡張機能は、ログイン済みの Chrome でページを代わりに操作するため、デバッガーとすべてのサイトへのアクセス権限を要求します。読み込む前に権限を確認してください。
+2. **ブランドを作成。** サイトを入力 → 質問を生成して確認 → 初回収集 → 回答と引用を確認 → 改善を記録 → 同じ質問で再測定します。
 3. **リサーチを設定。** Connections で BeatAPI キーを検証し、リサーチモデルを選択して保存します。スキップして業種別の初期質問を使うこともできます。
 
-セットアップが専用のローカル PostgreSQL と拡張機能を準備します。BeatBrowser を別にクローンしたり、別アカウントやグローバル CLI を用意したりする必要はありません。既存の接続も利用できますが、同じ Chrome プロファイルで拡張機能を二重に有効化しないでください。
+セットアップが専用のローカル PostgreSQL と拡張機能を準備します。BeatBrowser を別にクローンしたり、別アカウントやグローバル CLI を用意したりする必要はありません。既存の接続も利用できますが、同じ Chrome プロファイルで拡張機能を二重に有効化しないでください。 `pnpm local:start` が別バージョンの BeatBrowser の稼働を知らせた場合は、`.env` の `BEAT_BROWSER_COMMAND` と `BEAT_BROWSER_ARGS_JSON` でそのインストールを指定するか、拡張機能と一緒に更新してください。
 
 **継続監視には稼働中の環境が必要です。** パソコンをスリープさせず、ネット接続、Chrome、`pnpm local:start` を維持します。ダッシュボードのタブは閉じても構いません。再開時は `pnpm local:start` を実行し、データベースは作り直さないでください。オフライン中の収集はできません。
 

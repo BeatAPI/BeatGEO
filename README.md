@@ -27,23 +27,23 @@ Start with your website and business. Review suggested monitoring questions, col
 
 ## Quick start
 
-Prepare **Git, Node.js 24, pnpm 12.4.1, and Chrome**. PostgreSQL is bundled and managed by BeatGEO; no Docker or separate database installation is required.
+Prepare **Git, pnpm 12.4.1 and Chrome**. pnpm installs and uses Node.js 24 for this project, whatever Node.js version your system has. PostgreSQL is bundled and managed by BeatGEO; no Docker or separate database installation is required.
 
 ```sh
 git clone https://github.com/BeatAPI/BeatGEO.git
 cd BeatGEO
-node scripts/local-doctor.mjs
+pnpm local:doctor
 pnpm local:setup
 pnpm local:start
 ```
 
 Open **http://localhost:3140/** to enter your local workspace directly. There is no BeatGEO registration, login or password. Connections at `/setup` lets you add an optional BeatAPI key and connect Chrome:
 
-1. **Create a brand.** Enter the website, generate and confirm questions, then start the first collection. Read the answers and citations, save an improvement, and compare a retest.
-2. **Connect Chrome.** Load `.beat-geo/extension` via `chrome://extensions` → Developer mode → Load unpacked. Select the connected profile and sign in to ChatGPT in that profile. An extension connection does not establish website login.
+1. **Connect Chrome.** Load `.beat-geo/extension` via `chrome://extensions` → Developer mode → Load unpacked. Select the connected profile and sign in to ChatGPT in that profile. An extension connection does not establish website login. The extension requests debugger access and access to all sites because it operates pages in your signed-in Chrome on your behalf; review these permissions before loading it.
+2. **Create a brand.** Enter the website, generate and confirm questions, then start the first collection. Read the answers and citations, save an improvement, and compare a retest.
 3. **Connect research.** In Connections, enter a BeatAPI key, validate it, select a research model and save. You can skip research and use industry starter questions.
 
-The installer prepares a dedicated local PostgreSQL database and the included extension. No second repository clone, BeatBrowser account or global CLI installation is needed. Existing BeatBrowser connections can be reused; enable only one extension copy per profile.
+The installer prepares a dedicated local PostgreSQL database and the included extension. No second repository clone, BeatBrowser account or global CLI installation is needed. Existing BeatBrowser connections can be reused; enable only one extension copy per profile. If `pnpm local:start` reports a different BeatBrowser version already running, point BeatGEO at that installation with `BEAT_BROWSER_COMMAND` and `BEAT_BROWSER_ARGS_JSON` in `.env`, or update it and its extension together.
 
 **To keep monitoring:** leave the computer awake and online, with Chrome and `pnpm local:start` running. You can close the dashboard tab. Restart with `pnpm local:start`; do not recreate the database. This local edition does not provide monitoring while your computer is offline.
 
