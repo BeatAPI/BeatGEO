@@ -71,7 +71,7 @@ export const PRICING_FAQS: FaqItem[] = [
 	{
 		question: "What do I need to run BeatGEO myself?",
 		answer:
-			"BeatGEO runs as a Docker Compose stack managed by a CLI. Install it, run the interactive init, and it's up in a couple of commands. You can use the bundled database or connect BeatGEO to your own PostgreSQL database.",
+			"Run the source quick start with Node.js 24 and pnpm 12.4.1. BeatGEO bundles and manages PostgreSQL, so there is no container runtime or separate database to configure. Run pnpm local:setup, then pnpm local:start.",
 	},
 	{
 		question: "Do I need a credit card to get started?",

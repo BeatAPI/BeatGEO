@@ -19,7 +19,7 @@ export const FEATURES_BY_MODE: Record<DeploymentMode, FeaturesConfig> = {
 		showOptimizeButton: false,
 		canCreateBrands: true,
 		platformPicksEditable: true,
-		canEditOrganizations: true,
+		canEditOrganizations: false,
 		canCreateOrganizations: false,
 		selfServeSignup: false,
 		billing: false,

@@ -37,11 +37,11 @@ pnpm local:setup
 pnpm local:start
 ```
 
-Öffne **http://localhost:3140/setup** und registriere den lokalen Administrator:
+Öffne **http://localhost:3140/** direkt im lokalen Arbeitsbereich. Für BeatGEO sind weder Registrierung noch Anmeldung oder Passwort nötig. BeatAPI und Chrome lassen sich unter `/setup` verbinden:
 
-1. **Recherche verbinden.** BeatAPI-Key unter Connections prüfen, Recherchemodell auswählen und speichern. Alternativ diesen Schritt überspringen und Branchenvorlagen nutzen.
+1. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
 2. **Chrome verbinden.** Unter `chrome://extensions` den Entwicklermodus aktivieren und `.beat-geo/extension` entpackt laden. Verbundenes Profil auswählen und dort bei ChatGPT anmelden. Eine verbundene Erweiterung bestätigt keine Website-Anmeldung.
-3. **Marke anlegen.** Website eingeben → Fragen erzeugen und bestätigen → erste Erfassung → Antworten und Quellen prüfen → Verbesserung speichern → dieselben Fragen erneut testen.
+3. **Recherche verbinden.** BeatAPI-Key unter Connections prüfen, Recherchemodell auswählen und speichern. Alternativ diesen Schritt überspringen und Branchenvorlagen nutzen.
 
 Das Setup richtet eine eigene lokale PostgreSQL-Datenbank und die Erweiterung ein. Kein zweiter Repository-Klon, kein zusätzliches BeatBrowser-Konto und keine globale CLI-Installation nötig. Eine vorhandene BeatBrowser-Verbindung kann verwendet werden; pro Chrome-Profil nur eine Erweiterungskopie aktivieren.
 

@@ -10,7 +10,7 @@ import { useT } from "@/lib/i18n";
  * exists, to avoid account enumeration.
  */
 
-import { createFileRoute, Link, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useRouteContext } from "@tanstack/react-router";
 import type { ClientConfig } from "@workspace/config/types";
 import { authClient } from "@workspace/lib/auth/client";
 import { Button } from "@workspace/ui/components/button";
@@ -22,6 +22,9 @@ import { SalesFooterLinks, SalesPanel } from "@/components/auth/sales-panel";
 import { buildTitle, getAppName } from "@/lib/route-head";
 
 export const Route = createFileRoute("/auth/forgot-password")({
+	beforeLoad: ({ context }) => {
+		if (context.clientConfig?.mode === "local") throw redirect({ to: "/app" });
+	},
 	head: ({ match }) => {
 		const appName = getAppName(match);
 		return {

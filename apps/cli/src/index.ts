@@ -1,73 +1,66 @@
 #!/usr/bin/env node
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Command } from "commander";
-import pc from "picocolors";
-import { runCompose } from "./commands/compose.js";
-import { runEdit } from "./commands/edit.js";
-import { type InitOptions, runInit } from "./commands/init.js";
-import { runUpgrade, type UpgradeOptions } from "./commands/upgrade.js";
-import type { DirOption } from "./config.js";
-import { printBanner } from "./util.js";
-import { getPackageVersion, maybeNotifyNewVersion } from "./version.js";
+import { getPackageVersion } from "./version.js";
+
+function workspaceRoot(explicitDir?: string): string {
+	let candidate = explicitDir ? path.resolve(explicitDir) : path.dirname(fileURLToPath(import.meta.url));
+	while (!existsSync(path.join(candidate, "scripts/setup-local.mjs"))) {
+		const parent = path.dirname(candidate);
+		if (explicitDir || parent === candidate)
+			throw new Error("Run this CLI from the BeatGEO source checkout, or pass --dir with its path.");
+		candidate = parent;
+	}
+	return candidate;
+}
+
+function runLocal(action: string, options: { dir?: string }, args: string[] = []): void {
+	const root = workspaceRoot(options.dir);
+	const script = action === "setup" ? "setup-local.mjs" : action === "start" ? "start-local.mjs" : "local-doctor.mjs";
+	const result = spawnSync(process.execPath, [path.join(root, "scripts", script), ...args], {
+		cwd: root,
+		env: process.env,
+		stdio: "inherit",
+	});
+	if (result.error) throw result.error;
+	process.exitCode = result.status ?? 1;
+}
 
 async function main() {
-	const version = await getPackageVersion();
 	const program = new Command();
-
 	program
 		.name("beatgeo")
-		.version(version)
-		.option("--dir <path>", "Config directory")
-		.configureHelp({ showGlobalOptions: true })
-		.action(() => {
-			printBanner();
-			program.outputHelp();
-		});
-
+		.version(await getPackageVersion())
+		.description("Run the local BeatGEO workspace with bundled storage")
+		.option("--dir <path>", "BeatGEO source checkout")
+		.configureHelp({ showGlobalOptions: true });
 	program
 		.command("init")
-		.description("set up local BeatGEO instance")
-		.option("--dev", "Use local build context (repo only)")
-		.option("--docker-dir <path>", "Path to Docker build context (dev mode)")
-		.action(async (_opts: object, cmd: Command) => {
-			await withVersionCheck(version, () => runInit(cmd.optsWithGlobals<InitOptions>(), version));
+		.alias("setup")
+		.description("prepare local storage and the browser extension")
+		.option("--resume", "resume an interrupted local setup")
+		.action((_options: object, command: Command) => {
+			const options = command.optsWithGlobals<{ dir?: string; resume?: boolean }>();
+			runLocal("setup", options, options.resume ? ["--resume"] : []);
 		});
-
 	program
-		.command("compose")
-		.description("run Docker Compose commands using your BeatGEO config")
-		.allowUnknownOption(true)
-		.argument("[args...]", "Arguments passed to Docker Compose")
-		.action(async (args: string[], _opts: object, cmd: Command) => {
-			await withVersionCheck(version, () => runCompose(args, cmd.optsWithGlobals<DirOption>()));
+		.command("start")
+		.description("start the local web app, collector and worker")
+		.argument("[env-file]", "Local environment file")
+		.action((envFile: string | undefined, _options: object, command: Command) => {
+			runLocal("start", command.optsWithGlobals(), envFile ? [path.resolve(envFile)] : []);
 		});
-
 	program
-		.command("edit")
-		.description("change API keys, scrape targets, or the Docker Compose YAML")
-		.argument("<env|compose>", "which config file to edit")
-		.action(async (target: string, _opts: object, cmd: Command) => {
-			await runEdit(target, cmd.optsWithGlobals<DirOption>());
-		});
-
-	program
-		.command("upgrade")
-		.description("upgrade your BeatGEO deployment to this CLI's version")
-		.option("--yes", "skip confirmation prompts")
-		.action(async (_opts: object, cmd: Command) => {
-			await runUpgrade(cmd.optsWithGlobals<UpgradeOptions>(), version);
-		});
-
+		.command("doctor")
+		.description("check local prerequisites without changing data")
+		.action((_options: object, command: Command) => runLocal("doctor", command.optsWithGlobals()));
 	await program.parseAsync(process.argv);
 }
 
-async function withVersionCheck(version: string, fn: () => Promise<void>): Promise<void> {
-	const notifyPromise = maybeNotifyNewVersion(version);
-	await fn();
-	await notifyPromise.catch(() => undefined);
-}
-
 main().catch((error) => {
-	const msg = error instanceof Error ? error.message : String(error);
-	console.error(`\n${pc.red("Error:")} ${msg}`);
-	process.exit(1);
+	console.error(error instanceof Error ? error.message : String(error));
+	process.exitCode = 1;
 });

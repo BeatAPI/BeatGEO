@@ -12,6 +12,7 @@ import pkg from "./package.json" with { type: "json" };
 const tslibEsm = fileURLToPath(import.meta.resolve("tslib/tslib.es6.mjs"));
 
 export default defineConfig({
+	server: { host: "127.0.0.1" },
 	build: {
 		sourcemap: "hidden",
 	},
