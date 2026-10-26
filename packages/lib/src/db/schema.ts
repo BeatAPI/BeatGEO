@@ -410,3 +410,21 @@ export const workspaceCommands = pgTable(
 		brandIdx: index("workspace_command_brand_idx").on(t.brandId, t.createdAt),
 	}),
 ).enableRLS();
+
+export const brandDataSources = pgTable(
+	"brand_data_sources",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		brandId: text("brand_id")
+			.notNull()
+			.references(() => brands.id, { onDelete: "cascade" }),
+		kind: text("kind").notNull(),
+		encryptedCredentials: text("encrypted_credentials"),
+		config: jsonb("config").$type<{ property?: { id: string; name: string }; site: string }>(),
+		snapshot: jsonb("snapshot").$type<
+			import("../traffic/ga.mjs").GaSummary | import("../traffic/crawls.mjs").CrawlSummary
+		>(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+	},
+	(t) => ({ brandKindIdx: uniqueIndex("brand_data_sources_brand_kind_idx").on(t.brandId, t.kind) }),
+).enableRLS();
