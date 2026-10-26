@@ -48,7 +48,9 @@
 		"./site-audit": "./src/site-audit.ts",
 		"./observed-metrics": "./src/observed-metrics.ts",
 		"./auth/local-workspace": "./src/auth/local-workspace.ts",
-		"./db/local-workspace": "./src/db/local-workspace.ts"
+		"./db/local-workspace": "./src/db/local-workspace.ts",
+		"./traffic/ga": "./src/traffic/ga.mjs",
+		"./traffic/crawls": "./src/traffic/crawls.mjs"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "^4.0.71",

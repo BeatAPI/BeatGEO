@@ -115,6 +115,7 @@ function brandGroups(organization: OrganizationSummary, brand: BrandWithPrompts)
 				matchLinks: INSIGHT_PAGES.slice(1).map((page) => ({ to: page.to, params })),
 				icon: IconChartBar,
 			},
+			{ title: "AI Traffic & Crawls", link: { to: "/app/org/$org/brand/$brand/traffic", params }, icon: IconChartBar },
 			{ title: "Opportunities", link: { to: "/app/org/$org/brand/$brand/opportunities", params }, icon: IconTarget },
 		);
 	}

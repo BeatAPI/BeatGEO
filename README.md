@@ -49,6 +49,10 @@ The installer prepares a dedicated local PostgreSQL database and the included ex
 
 [Detailed onboarding — Chinese](docs/beat-geo/getting-started.md) · [Manual PostgreSQL setup — Chinese](docs/self-hosting.md)
 
+## AI traffic and crawl evidence
+
+Open **AI Traffic & Crawls** in a brand workspace to connect existing GA4 analytics with read-only Google consent, or import that site's access log. Visits, crawler declarations and answer citations remain separate. The workspace maintainer configures the Google web client once; real-client acceptance is still required. [Setup and evidence limits](docs/ga-and-crawl-sources.md).
+
 ## Work from your Agent
 
 Give your MCP-capable Agent a website. The local MCP can create a paused brand, save reviewed questions, queue bounded BeatBrowser collection, inspect evidence, edit shared content drafts and control monitoring. The manual dashboard shows the same project and operation history. [Agent workflow and connection guide](docs/beat-geo/agent-workflow.md).
