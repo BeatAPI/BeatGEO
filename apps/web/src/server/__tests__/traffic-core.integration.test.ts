@@ -1,16 +1,22 @@
+import { resetDeploymentCache } from "@workspace/deployment";
 import { db } from "@workspace/lib/db/db";
 import { brandDataSources } from "@workspace/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { afterAll, afterEach, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createBrand, deleteBrand } from "@/test/integration/stats-fixtures";
 import ga from "../../../../../packages/lib/src/traffic/__fixtures__/ga.json";
 import { disconnectGa, importCrawlTraffic, readTraffic, saveGaAuthorization, syncGa } from "../traffic-core";
 
 const ids: string[] = [];
+beforeEach(() => {
+	vi.stubEnv("DEPLOYMENT_MODE", "local");
+	resetDeploymentCache();
+});
 afterAll(async () => {
 	for (const id of ids) await deleteBrand(id);
 });
 afterEach(() => {
+	resetDeploymentCache();
 	vi.unstubAllEnvs();
 	vi.unstubAllGlobals();
 });
