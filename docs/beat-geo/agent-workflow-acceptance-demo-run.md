@@ -1,4 +1,4 @@
-# Local Agent workflow acceptance — 2026-10-22
+# Local Agent workflow acceptance — demo run (undated)
 
 ## Verified implementation
 

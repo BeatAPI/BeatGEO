@@ -12,7 +12,7 @@ Ein quelloffener GEO-/AEO-Arbeitsbereich von [BeatAPI](https://beatapi.io). Verf
 
 [![44-Sekunden-Demo von BeatGEO ansehen](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
-Echte Bildschirme aus einem aufgezeichneten BeatAPI-Test vom 2026-10-22, als Rückblick und nicht als Live-Lauf. [Fallnotizen auf Chinesisch](docs/beat-geo/cases/beatapi-agent/README.md)
+Echte Bildschirme aus einem aufgezeichneten BeatAPI-Demolauf, als Rückblick und nicht als Live-Lauf. [Fallnotizen auf Chinesisch](docs/beat-geo/cases/beatapi-agent/README.md)
 
 > **Lokales MVP / Quellcode-Vorschau.** Die Kette ChatGPT-Erfassung → Datenbank → Worker wurde in Live-Smoke-Tests geprüft. Andere Engines, kostenpflichtige Recherche und unbeaufsichtigter Dauerbetrieb haben eigene Prüfgrenzen. [Prüfprotokoll auf Englisch](docs/beat-geo/validation.md)
 

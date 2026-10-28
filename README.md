@@ -12,7 +12,7 @@ An open-source GEO / AEO workspace by [BeatAPI](https://beatapi.io). Track brand
 
 [![Watch the 44-second BeatGEO demo](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
-Real screens from a recorded BeatAPI test on 2026-10-22, replayed as a summary rather than a live run. [Case notes](docs/beat-geo/cases/beatapi-agent/README.md)
+Real screens from a recorded BeatAPI demo run, replayed as a summary rather than a live run. [Case notes](docs/beat-geo/cases/beatapi-agent/README.md)
 
 > **Local MVP / source preview.** The ChatGPT collection → database → worker path has passed live smoke tests. Other engines, paid research and unattended operation have separate acceptance boundaries. [Validation log](docs/beat-geo/validation.md)
 

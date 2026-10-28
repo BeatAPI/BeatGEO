@@ -12,7 +12,7 @@
 
 [![44초 BeatGEO 데모 보기](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
-2026-10-22에 기록한 BeatAPI 실측의 실제 화면을 정리한 회고이며, 실시간 실행이 아닙니다. [사례 기록 — 중국어](docs/beat-geo/cases/beatapi-agent/README.md)
+기록한 BeatAPI 데모 실행의 실제 화면을 정리한 회고이며, 실시간 실행이 아닙니다. [사례 기록 — 중국어](docs/beat-geo/cases/beatapi-agent/README.md)
 
 > **로컬 MVP / 소스 미리보기 버전.** ChatGPT 수집 → 데이터베이스 → worker 경로는 실제 스모크 테스트를 통과했습니다. 다른 엔진, 유료 리서치, 장기 무인 운영은 별도로 검증해야 합니다. [검증 기록 — 영어](docs/beat-geo/validation.md)
 

@@ -12,7 +12,7 @@
 
 [![观看 44 秒 BeatGEO 演示](assets/readme/demo-poster.jpg)](assets/readme/beatgeo-demo.mp4)
 
-画面来自 2026-10-22 的 BeatAPI 实测记录，是结果回顾，不是实时运行。[案例说明](docs/beat-geo/cases/beatapi-agent/README.md)
+画面来自 BeatAPI 演示运行（demo run）的录制记录，是结果回顾，不是实时运行。[案例说明](docs/beat-geo/cases/beatapi-agent/README.md)
 
 > **本地 MVP / 源码预览版。** ChatGPT 采集 → 数据库 → worker 已通过真实冒烟测试。其他平台、付费研究与长期无人值守分别验收。[验收记录](docs/beat-geo/validation.md)
 
