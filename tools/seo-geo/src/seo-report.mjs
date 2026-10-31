@@ -1,4 +1,5 @@
 import { seoOpportunities } from './seo.mjs';
+import { seoFailureMessage, seoStopMessage } from './seo-failure.mjs';
 const NAMES = {
   'domain-overview':['Search footprint','搜索概览'],competitors:['Search competitor candidates','搜索竞品候选'],
   'ranked-keywords':['Ranking keywords','已有排名关键词'],'top-pages':['Leading search pages','搜索主要页面'],
@@ -33,7 +34,11 @@ export function seoReportBlocks(s,lang='en',{standalone=false,geo=null}={}) {
       {label:t('Refresh','刷新'),value:t('Saved snapshot; reopening this report makes no requests.','已保存快照；重新打开报告不发起接口请求。')},
       {label:t('Recorded charges (USD)','已记录费用（美元）'),value:s.actualUsd ?? s.records.reduce((n,r)=>n+(r.actualUsd??0),0)},
       {label:t('Unknown charges','费用未确认的请求'),value:s.records.filter(r=>r.actualUsd===undefined).length} ]});
-  if(s.stopped) blocks.push({t:'note',text:`${t('Collection stopped','采集已停止')}: ${s.stopped}`});
+  if(s.stopped) blocks.push({t:'note',text:seoStopMessage(s.stopped,lang)});
+  const failed=s.records.filter(r=>r.status!=='ok');
+  if(failed.length)blocks.push({t:standalone?'h2':'h3',text:t('Queries needing attention','需要处理的查询')},
+    table(t('Failed queries and next steps','失败查询与处理方法'),[t('Query','查询'),t('Target','对象'),t('What to do next','处理方法')],failed.map(r=>[NAMES[r.tool][zh?1:0],r.input.domain??r.input.keywords.join(', '),seoFailureMessage(r,lang)])),
+    {t:'note',text:t('Failed or missing results are not zero values. Charges that have not been confirmed must be checked against BeatAPI account usage before another analysis.', '失败或缺失的结果不代表数值为零。未确认的费用需以 BeatAPI 账户用量核对，重新分析前请先检查。')});
   const domains=[...new Set(s.records.map(r=>r.input.domain).filter(Boolean))];
   if(geo) blocks.push(table(t('AI citation context by domain','域名的 AI 引用背景'),[t('Domain','域名'),t('Cited answers / sampled answers','被引用回答数 / 采样回答数'),t('Scope','范围')],domains.map(domain=>{
     const d=geo.overall.domains.find(r=>r.domain===domain);
@@ -54,7 +59,7 @@ export function seoReportBlocks(s,lang='en',{standalone=false,geo=null}={}) {
     const title=`${NAMES[r.tool][zh?1:0]} · ${r.input.domain??r.input.keywords.join(', ')} · ${r.input.country??'global'}${r.input.language?` / ${r.input.language}`:''}`;
     const detail=[{t:'meta',items:[{label:t('Fetched at','获取时间'),value:r.fetchedAt},{label:t('Request parameters','查询范围'),value:JSON.stringify(r.input)},
       {label:t('Request ID','请求 ID'),value:r.response?.request_id??'—'},{label:t('Actual USD','实际费用（美元）'),value:r.actualUsd??'—'}]}];
-    if(r.status!=='ok') detail.push({t:'note',text:`${t('Query failed; no substitute data','查询失败，未用其他数据替代')}: ${r.error}`});
+    if(r.status!=='ok') detail.push({t:'note',text:seoFailureMessage(r,lang)});
     else {
       const data=r.response;
       if(data.has_data===false || data.results?.length===0) detail.push({t:'note',text:t('No records returned for this query. This does not establish zero traffic, zero score or absent coverage.','本次查询未返回记录，不代表流量、评分为零或内容不存在。')});

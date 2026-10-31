@@ -83,7 +83,7 @@ Open [the interactive blueprint](docs/product/flow.html) locally to explore its 
 | Scheduling and storage | PostgreSQL + pg-boss. The next cycle was queued in live validation; long unattended operation has not been established. SQLite is not supported. |
 | BeatAPI research | Search/read/model integration is implemented; acceptance with a real key and billed calls remains pending. |
 | Website checks and drafts | Bounded HTML/robots/sitemap checks, free outlines, editable drafts and revision approval. Public-network and paid AI acceptance have stated limits. |
-| SEO datasets | Not connected. No claimed keyword volumes, backlink index or real AI prompt-volume dataset. |
+| SEO datasets | Twelve BeatAPI endpoints are available in the separate local workbench; not embedded in the main dashboard. Keyword search volume is not AI prompt volume. |
 
 README translations: English, Chinese, Japanese, German and Korean. **Switch the dashboard between English and Chinese using EN / 中文. Your preference is saved in this browser.** Questions, brand names and collected answers retain their original language. The translated READMEs do not imply five-language UI support.
 
@@ -97,7 +97,7 @@ For example, 24 mentions in 80 valid answers means **30% (24/80)**, even if 100 
 
 Configure the research key and model in **Connections**. BeatAPI can search for business and competitor information, read pages, generate questions and analyze collected evidence. Saved keys are encrypted and are not returned to the browser client; credentials currently apply to the local instance rather than individual tenants.
 
-Browser collection, starter templates and basic statistics do not require paid model calls. Research and generation use the configured provider's API balance; website collection uses your website account and its limits. Dedicated SEO data endpoints are not connected yet. [API integration design — Chinese](docs/beat-geo/beatapi-product-loop.md)
+Browser collection, starter templates and basic statistics do not require paid model calls. Research and generation use the configured provider's API balance; website collection uses your website account and its limits. Dedicated SEO endpoints are available in the separate workbench below; its connection settings are currently separate from the main dashboard. [API integration design — Chinese](docs/beat-geo/beatapi-product-loop.md)
 
 ## Forking and team use
 

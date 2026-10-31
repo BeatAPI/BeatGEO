@@ -5,6 +5,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { buildSeoPlan, collectSeo, normalizeSeoSnapshot, seoSummary, seoQuestionCandidates, seoOpportunities, diffSeo } from './seo.mjs';
+import { seoFailureMessage } from './seo-failure.mjs';
 import { seoDomain } from './seo-catalog.mjs';
 import { buildRun, writeOutputs } from './run.mjs';
 import { normalizeConfig, loadQuestions } from './config.mjs';
@@ -54,7 +55,7 @@ export async function createWorkbench({dataDir=path.join(root,'runs','workbench'
     const geo=await json(path.join(runPath(id),'geo-summary.json'),null);
     if(meta.status==='interrupted'&&snapshot){await artifacts(id,snapshot,geo);await atomic(path.join(runPath(id),'meta.json'),meta);}
     const reportReady=await stat(path.join(runPath(id),'report.html')).then(()=>true,()=>false);
-    return {meta,reportReady,snapshot:snapshot?normalizeSeoSnapshot(snapshot):null,geo,candidates:snapshot?seoQuestionCandidates(snapshot):{candidates:[]},actions:snapshot?seoOpportunities(snapshot,geo):[],tasks:await json(path.join(runPath(id),'tasks.json'),{}),questions:await json(path.join(runPath(id),'questions.json'),{questions:[]})};
+    return {meta,reportReady,failures:(snapshot?.records??[]).filter(r=>r.status==='error').map(r=>({tool:r.tool,message:seoFailureMessage(r,'zh')})),snapshot:snapshot?normalizeSeoSnapshot(snapshot):null,geo,candidates:snapshot?seoQuestionCandidates(snapshot):{candidates:[]},actions:snapshot?seoOpportunities(snapshot,geo):[],tasks:await json(path.join(runPath(id),'tasks.json'),{}),questions:await json(path.join(runPath(id),'questions.json'),{questions:[]})};
   }
   async function artifacts(id,snapshot,geo=null) {
     const out=runPath(id),summary=seoSummary(snapshot);

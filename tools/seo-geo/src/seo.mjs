@@ -137,7 +137,10 @@ export function normalizeSeoSnapshot(raw) {
     if(!['ok','error'].includes(r.status) || !Number.isFinite(Date.parse(r.fetchedAt))) throw new Error('Invalid SEO record status/time.');
     const clean={id,tool:r.tool,input,fetchedAt:new Date(r.fetchedAt).toISOString(),status:r.status};
     if(r.status==='ok') {clean.response=cleanSeoResponse(r.response);assertResponse(clean.response,{tool:r.tool,input});}
-    else clean.error=safeCode(r.error);
+    else {
+      clean.error=safeCode(r.error);
+      if(Number.isInteger(r.httpStatus)&&r.httpStatus>=400&&r.httpStatus<=599)clean.httpStatus=r.httpStatus;
+    }
     for(const k of ['actualUsd','reservedUsd']) if(typeof r[k]==='number' && Number.isFinite(r[k]) && r[k]>=0) clean[k]=r[k];
     return clean;
   });
