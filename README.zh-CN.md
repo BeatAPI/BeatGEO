@@ -113,3 +113,20 @@ pnpm test
 ## 许可与致谢
 
 [MIT](LICENSE.md)。BeatGEO 基于 Elmo 的 MIT 开源代码，保留原作者版权与历史。[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) 以 MIT 许可集成，详见[第三方声明](THIRD_PARTY_NOTICES.md)。其他研究过的 GEO 项目是参考来源，不代表其全部实现已包含。BeatGEO 与 Profound 无隶属关系。
+
+
+## SEO & GEO 本地工作台
+
+在仓库根目录运行以下命令，打开 **http://127.0.0.1:4317**：
+
+```sh
+node tools/seo-geo/bin/beat-geo-ui.mjs
+```
+
+该工具不需要额外依赖或数据库。已经安装主项目依赖的工作区也可使用 `pnpm seo:workbench`。
+
+页面可连接自己的 BeatAPI Key、预览十二个 SEO 端点的查询费用、执行分析、查看历史报告、导入 GEO 回答、整理内容任务并导出问题集。首次可以点击「体验示例报告」，无需 Key 或收费调用。
+
+这是 [`tools/seo-geo`](tools/seo-geo) 下的独立本机单用户工作台，不替换 3000 端口的主仪表盘。保存 Key 不验证权限、不扣费；执行查询需确认范围和预算。开发验证使用模拟 HTTP 与合成数据，未进行真实接口计费验收。
+
+[使用说明](tools/seo-geo/references/workbench.md) · [CLI 与证据规则](tools/seo-geo/README.md)。测试命令：`pnpm test:seo`。

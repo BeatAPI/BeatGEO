@@ -1,0 +1,66 @@
+{
+  "engines": [
+    {
+      "id": "openai",
+      "label": "OpenAI (native web search)",
+      "api": "responses",
+      "baseUrl": "https://api.openai.com/v1",
+      "model": "<model that supports web search>",
+      "toolType": "web_search",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "pricing": {
+        "inputPerMTok": "<USD per 1M input tokens, from the provider price page>",
+        "outputPerMTok": "<USD per 1M output tokens>",
+        "perSearchCall": "<USD per search call, 0 if none>"
+      },
+      "maxOutputTokens": 1500,
+      "maxSearchCalls": 3
+    },
+    {
+      "id": "messages-engine",
+      "label": "Anthropic-compatible (search tool)",
+      "api": "messages",
+      "baseUrl": "https://<host>/v1",
+      "model": "<model>",
+      "apiKeyEnv": "ANTHROPIC_API_KEY",
+      "pricing": {
+        "inputPerMTok": "<USD per 1M input tokens>",
+        "outputPerMTok": "<USD per 1M output tokens>",
+        "perSearchCall": "<USD per search>"
+      },
+      "maxOutputTokens": 1500,
+      "maxSearchCalls": 3
+    },
+    {
+      "id": "grok",
+      "label": "Grok (provider search)",
+      "api": "responses",
+      "baseUrl": "https://<xai-or-gateway-host>/v1",
+      "model": "<grok model that supports search>",
+      "toolType": "web_search",
+      "apiKeyEnv": "XAI_API_KEY",
+      "pricing": {
+        "inputPerMTok": "<USD per 1M input tokens, from the provider price page>",
+        "outputPerMTok": "<USD per 1M output tokens>",
+        "perSearchCall": "<USD per search call, 0 if none>"
+      },
+      "maxOutputTokens": 1500,
+      "maxSearchCalls": 3
+    },
+    {
+      "id": "no-search-baseline",
+      "label": "Same model, no search tool (model memory only)",
+      "api": "chat",
+      "baseUrl": "https://api.openai.com/v1",
+      "model": "<any text model>",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "pricing": {
+        "inputPerMTok": "<USD per 1M input tokens, from the provider price page>",
+        "outputPerMTok": "<USD per 1M output tokens>",
+        "perSearchCall": "<USD per search call, 0 if none>"
+      },
+      "maxOutputTokens": 1500,
+      "maxSearchCalls": 0
+    }
+  ]
+}

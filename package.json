@@ -44,7 +44,9 @@
     "test:browser": "node --test apps/browser-lab/*.test.mjs",
     "local:setup": "node scripts/setup-local.mjs",
     "local:start": "node scripts/start-local.mjs",
-    "local:doctor": "node scripts/local-doctor.mjs"
+    "local:doctor": "node scripts/local-doctor.mjs",
+    "seo:workbench": "node tools/seo-geo/bin/beat-geo-ui.mjs",
+    "test:seo": "pnpm --dir tools/seo-geo test"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

@@ -4,8 +4,7 @@ const copy = (en: string, zh: string): Copy => ({ en, zh });
 export const beatapiCase = {
 	date: "Demo run (undated)",
 	website: "https://beatapi.io/",
-	evidenceUrl:
-		"https://github.com/BeatAPI/BeatGEO/blob/main/docs/beat-geo/agent-workflow-acceptance-demo-run.md",
+	evidenceUrl: "https://github.com/BeatAPI/BeatGEO/blob/main/docs/beat-geo/agent-workflow-acceptance-demo-run.md",
 	title: copy("One website. A complete Agent workflow.", "给一个网址，走完一次 Agent 工作流。"),
 	intro: copy(
 		"A recorded BeatAPI test: from a website in conversation to browser evidence, a comparison and a draft you can edit yourself.",

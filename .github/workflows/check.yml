@@ -6,6 +6,19 @@ on:
 permissions:
   contents: read
 jobs:
+  seo-workbench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Test standalone SEO and GEO workbench
+        working-directory: tools/seo-geo
+        run: node --test "test/*.test.mjs"
+      - name: Render offline synthetic report
+        working-directory: tools/seo-geo
+        run: node bin/beat-geo.mjs seo --input examples/seo.snapshot.example.json --out runs/ci-seo --lang zh
   browser-lab:
     runs-on: ubuntu-latest
     steps:

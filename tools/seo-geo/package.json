@@ -1,0 +1,42 @@
+{
+  "name": "@beatapi/seo-geo-workbench",
+  "version": "0.3.0",
+  "description": "SEO & GEO research: AI visibility sampling, 12 BeatAPI SEO endpoints, evidence-linked content research, GA4 and crawl observations. Zero dependencies.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "beat-geo": "bin/beat-geo.mjs"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "demo": "node bin/beat-geo.mjs demo --out ./runs/demo",
+    "start": "node bin/beat-geo-ui.mjs",
+    "ui": "node bin/beat-geo-ui.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "references",
+    "examples",
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "web"
+  ],
+  "keywords": [
+    "geo",
+    "ai-search",
+    "llm-visibility",
+    "citations",
+    "agent-skill",
+    "claude-code",
+    "codex",
+    "seo",
+    "beatapi",
+    "keyword-research"
+  ],
+  "private": true
+}
