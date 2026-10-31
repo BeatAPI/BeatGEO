@@ -6,6 +6,19 @@ on:
 permissions:
   contents: read
 jobs:
+  seo-workbench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Test standalone SEO and GEO workbench
+        working-directory: tools/seo-geo
+        run: node --test "test/*.test.mjs"
+      - name: Render offline synthetic report
+        working-directory: tools/seo-geo
+        run: node bin/beat-geo.mjs seo --input examples/seo.snapshot.example.json --out runs/ci-seo --lang zh
   browser-lab:
     runs-on: ubuntu-latest
     steps:
@@ -27,6 +40,10 @@ jobs:
       - run: pnpm lint
       - run: pnpm -r --if-present check-types
       - run: pnpm -r --if-present test
+      - name: Install Chromium for isolated SEO workbench tests
+        run: pnpm --dir e2e exec playwright install --with-deps chromium
+      - name: Test SEO workbench user flows without live API calls
+        run: pnpm test:seo:browser
   postgres-integration:
     runs-on: ubuntu-latest
     services:

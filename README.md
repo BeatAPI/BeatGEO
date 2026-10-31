@@ -83,7 +83,7 @@ Open [the interactive blueprint](docs/product/flow.html) locally to explore its 
 | Scheduling and storage | PostgreSQL + pg-boss. The next cycle was queued in live validation; long unattended operation has not been established. SQLite is not supported. |
 | BeatAPI research | Search/read/model integration is implemented; acceptance with a real key and billed calls remains pending. |
 | Website checks and drafts | Bounded HTML/robots/sitemap checks, free outlines, editable drafts and revision approval. Public-network and paid AI acceptance have stated limits. |
-| SEO datasets | Not connected. No claimed keyword volumes, backlink index or real AI prompt-volume dataset. |
+| SEO datasets | Twelve BeatAPI endpoints are available in the separate local workbench; not embedded in the main dashboard. Keyword search volume is not AI prompt volume. |
 
 README translations: English, Chinese, Japanese, German and Korean. **Switch the dashboard between English and Chinese using EN / 中文. Your preference is saved in this browser.** Questions, brand names and collected answers retain their original language. The translated READMEs do not imply five-language UI support.
 
@@ -97,7 +97,7 @@ For example, 24 mentions in 80 valid answers means **30% (24/80)**, even if 100 
 
 Configure the research key and model in **Connections**. BeatAPI can search for business and competitor information, read pages, generate questions and analyze collected evidence. Saved keys are encrypted and are not returned to the browser client; credentials currently apply to the local instance rather than individual tenants.
 
-Browser collection, starter templates and basic statistics do not require paid model calls. Research and generation use the configured provider's API balance; website collection uses your website account and its limits. Dedicated SEO data endpoints are not connected yet. [API integration design — Chinese](docs/beat-geo/beatapi-product-loop.md)
+Browser collection, starter templates and basic statistics do not require paid model calls. Research and generation use the configured provider's API balance; website collection uses your website account and its limits. Dedicated SEO endpoints are available in the separate workbench below; its connection settings are currently separate from the main dashboard. [API integration design — Chinese](docs/beat-geo/beatapi-product-loop.md)
 
 ## Forking and team use
 
@@ -121,3 +121,20 @@ Keep the lockfile and supply-chain protections. Submit changes through PRs. To i
 ## License and acknowledgements
 
 [MIT](LICENSE.md). BeatGEO builds on the MIT-licensed Elmo codebase and preserves its copyright and history. [BeatBrowser](https://github.com/BeatAPI/BeatBrowser) is included under MIT; see [third-party notices](THIRD_PARTY_NOTICES.md). Other researched GEO projects are references, not a claim that their full implementations are included. BeatGEO is independent of Profound.
+
+
+## SEO & GEO local workbench
+
+From the repository root, run the following and open **http://127.0.0.1:4317**:
+
+```sh
+node tools/seo-geo/bin/beat-geo-ui.mjs
+```
+
+The tool needs no additional dependencies or database. An installed workspace can also use `pnpm seo:workbench`.
+
+Connect your own BeatAPI Key, preview costs for twelve SEO endpoints, execute scoped queries, revisit reports, import GEO answers, track content research tasks and export reviewed question sets. Start with the synthetic demo without a key or paid requests.
+
+This is a separate single-user, loopback-only workbench under [`tools/seo-geo`](tools/seo-geo); it does not replace the main dashboard on port 3000. Saving a Key does not validate access or spend credits. Live execution requires confirmation of the scope and budget. Tests use mocked HTTP and synthetic data; live provider billing remains unverified.
+
+[User guide](tools/seo-geo/references/workbench.md) · [CLI and evidence rules](tools/seo-geo/README.md). Run `pnpm test:seo` for the tool’s tests.

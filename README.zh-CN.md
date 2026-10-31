@@ -75,7 +75,7 @@ BeatGEO 管理产品数据和调度，**BeatBrowser** 执行已登录浏览器�
 | 调度与存储 | PostgreSQL + pg-boss；实测已排入下一轮任务，长期无人值守仍待验收。不支持 SQLite。 |
 | BeatAPI 研究 | 搜索、阅读、模型分析已接入代码，真实 Key 的付费调用仍待验收。 |
 | 网站检查与内容草稿 | 有限 HTML/robots/sitemap 检查、免费大纲、可编辑草稿及版本审核；公网检查与真实付费生成的验收边界见报告。 |
-| SEO 数据 | 尚未接入，不提供虚构的关键词量、外链库或真实 AI 提问量。 |
+| SEO 数据 | 独立本地工作台已支持 12 个 BeatAPI SEO 端点；主仪表盘尚未内嵌。关键词搜索量不代表 AI 提问量。 |
 
 README 提供英文、中文、日文、德文和韩文。**产品界面通过 EN / 中文切换，选择会保存在当前浏览器。** 问题、品牌名和采集原文保留原语言。文档五语言不代表界面五语言。
 
@@ -89,7 +89,7 @@ README 提供英文、中文、日文、德文和韩文。**产品界面通过 E
 
 在 **Connections** 保存研究 Key 和模型。BeatAPI 可以搜索业务与竞品资料、读取网页、生成问题并分析已有证据。Key 加密保存，不回传前端；目前由本地实例统一使用，并非每租户独立凭据。
 
-浏览器采集、行业模板和基础统计不要求付费模型调用。研究与生成消耗配置的提供方 API 余额；网页采集使用你的网站账号及其额度。SEO 专用数据接口尚未接入。[API 接入设计](docs/beat-geo/beatapi-product-loop.md)
+浏览器采集、行业模板和基础统计不要求付费模型调用。研究与生成消耗配置的提供方 API 余额；网页采集使用你的网站账号及其额度。SEO 专用数据接口可通过下方独立工作台使用；与主仪表盘的连接设置目前分别保存。[API 接入设计](docs/beat-geo/beatapi-product-loop.md)
 
 ## Fork 与团队使用
 
@@ -113,3 +113,20 @@ pnpm test
 ## 许可与致谢
 
 [MIT](LICENSE.md)。BeatGEO 基于 Elmo 的 MIT 开源代码，保留原作者版权与历史。[BeatBrowser](https://github.com/BeatAPI/BeatBrowser) 以 MIT 许可集成，详见[第三方声明](THIRD_PARTY_NOTICES.md)。其他研究过的 GEO 项目是参考来源，不代表其全部实现已包含。BeatGEO 与 Profound 无隶属关系。
+
+
+## SEO & GEO 本地工作台
+
+在仓库根目录运行以下命令，打开 **http://127.0.0.1:4317**：
+
+```sh
+node tools/seo-geo/bin/beat-geo-ui.mjs
+```
+
+该工具不需要额外依赖或数据库。已经安装主项目依赖的工作区也可使用 `pnpm seo:workbench`。
+
+页面可连接自己的 BeatAPI Key、预览十二个 SEO 端点的查询费用、执行分析、查看历史报告、导入 GEO 回答、整理内容任务并导出问题集。首次可以点击「体验示例报告」，无需 Key 或收费调用。
+
+这是 [`tools/seo-geo`](tools/seo-geo) 下的独立本机单用户工作台，不替换 3000 端口的主仪表盘。保存 Key 不验证权限、不扣费；执行查询需确认范围和预算。开发验证使用模拟 HTTP 与合成数据，未进行真实接口计费验收。
+
+[使用说明](tools/seo-geo/references/workbench.md) · [CLI 与证据规则](tools/seo-geo/README.md)。测试命令：`pnpm test:seo`。
