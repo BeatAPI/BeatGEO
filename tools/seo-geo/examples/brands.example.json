@@ -1,0 +1,7 @@
+{
+  "brand": { "name": "Acme Render", "aliases": ["Acme"], "domains": ["acmerender.example"] },
+  "competitors": [
+    { "name": "Example Canvas", "domains": ["examplecanvas.example"] },
+    { "name": "Sample Forge", "domains": ["sampleforge.example"] }
+  ]
+}

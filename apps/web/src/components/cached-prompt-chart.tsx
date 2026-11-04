@@ -1,0 +1,236 @@
+import { Badge } from "@workspace/ui/components/badge";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import { Separator } from "@workspace/ui/components/separator";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Fragment, memo, useCallback, useMemo } from "react";
+import { useOptionalChartDataContext } from "@/contexts/chart-data-context";
+import { useChartExport } from "@/hooks/use-chart-export";
+import { visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
+import type { LookbackPeriod } from "@/lib/lookback";
+import { BaseChart } from "./base-chart";
+import { ChartActionsFooter } from "./chart-footer";
+
+function PlaceholderBars({ heights }: { heights: readonly number[] }) {
+	const bars = heights.map((height, index) => ({ key: `bar-${index}`, height }));
+	return (
+		<div className="h-16 w-full mb-3 flex items-end justify-center gap-[3px]">
+			{bars.map((bar) => (
+				<div key={bar.key} className="w-1.5 rounded-sm bg-muted-foreground/10" style={{ height: `${bar.height}%` }} />
+			))}
+		</div>
+	);
+}
+
+function PromptTitle({ name, highlight }: { name: string; highlight: string }) {
+	const term = highlight.trim();
+	if (!term) return <CardTitle className="text-sm">{name}</CardTitle>;
+
+	const pattern = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+	const segments = name.split(pattern).map((part, index) => ({
+		key: `${index}-${part.slice(0, 8)}`,
+		part,
+		isMatch: part.toLowerCase() === term.toLowerCase(),
+	}));
+
+	return (
+		<CardTitle className="text-sm">
+			{segments.map((segment) =>
+				segment.isMatch ? (
+					<mark key={segment.key} className="bg-yellow-200 dark:bg-yellow-800 rounded-sm">
+						{segment.part}
+					</mark>
+				) : (
+					<Fragment key={segment.key}>{segment.part}</Fragment>
+				),
+			)}
+		</CardTitle>
+	);
+}
+
+export function PromptChartSkeleton() {
+	return (
+		<Card className="py-3 gap-3">
+			<CardHeader className="flex justify-between items-center px-3">
+				<Skeleton className="h-4 w-48" />
+				<Skeleton className="h-5 w-24 rounded-full" />
+			</CardHeader>
+			<Separator className="py-0 my-0" />
+			<CardContent className="pl-0 pr-6">
+				<div className="h-[250px] flex items-center justify-center">
+					<div className="space-y-2">
+						<Skeleton className="h-4 w-32 mx-auto" />
+						<div className="flex justify-center space-x-2">
+							<div className="h-2 w-2 bg-primary/20 rounded-full animate-pulse" />
+							<div className="h-2 w-2 bg-primary/20 rounded-full animate-pulse [animation-delay:0.2s]" />
+							<div className="h-2 w-2 bg-primary/20 rounded-full animate-pulse [animation-delay:0.4s]" />
+						</div>
+					</div>
+				</div>
+			</CardContent>
+			<Separator className="py-0 my-0" />
+			<CardFooter className="flex items-center justify-between px-3 pt-3 pb-0">
+				<div className="flex items-center gap-2">
+					<Skeleton className="h-6 w-16 rounded" />
+					<Skeleton className="h-6 w-24 rounded" />
+				</div>
+				<Skeleton className="h-6 w-20 rounded" />
+			</CardFooter>
+		</Card>
+	);
+}
+
+export interface CachedPromptChartProps {
+	promptId: string;
+	promptName: string;
+	brandId: string;
+	lookback: LookbackPeriod;
+	searchHighlight?: string;
+	/** Distinguishes first evaluation from an empty selected time window. */
+	hasEverBeenEvaluated?: boolean;
+}
+
+// Memoized: when a sibling filter / react-query state change re-renders
+// VirtualizedPromptList with identical props, 30+ of these don't need to
+// walk their internal useMemos again.
+export const CachedPromptChart = memo(function CachedPromptChart({
+	promptId,
+	promptName,
+	brandId,
+	lookback = "1m",
+	searchHighlight = "",
+	hasEverBeenEvaluated = false,
+}: CachedPromptChartProps) {
+	const t = useT();
+	const chartContext = useOptionalChartDataContext();
+
+	const chartData = useMemo(() => {
+		if (!chartContext) return null;
+		return chartContext.getChartDataForPrompt(promptId);
+	}, [chartContext, promptId]);
+
+	// Setup export functionality
+	const fileName = chartContext?.brand
+		? `${chartContext.brand.name}-${promptName.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50)}`
+		: `chart-${promptName.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 50)}`;
+	const { isExporting, handleExport, portal: exportPortal } = useChartExport(fileName);
+
+	const brand = chartContext?.brand ?? null;
+	const competitors = chartContext?.competitors;
+	const data = chartData?.chartData;
+	const totalRuns = chartData?.totalRuns ?? 0;
+	const hasVisibilityData = chartData?.hasVisibilityData ?? false;
+	const lastBrandVisibility = chartData?.lastBrandVisibility ?? null;
+
+	const handleDownload = useCallback(() => {
+		if (!brand || !data || !competitors) return;
+		handleExport({
+			promptName,
+			visibility: lastBrandVisibility,
+			data,
+			lookback,
+			brand,
+			competitors,
+		});
+	}, [handleExport, promptName, lastBrandVisibility, data, lookback, brand, competitors]);
+
+	if (!chartContext || chartContext.isLoading || !chartData) {
+		return <PromptChartSkeleton />;
+	}
+
+	// No runs state - distinguish between "never evaluated" vs "no data in selected window"
+	if (totalRuns === 0) {
+		const isFirstEval = !hasEverBeenEvaluated;
+
+		return (
+			<section className="border-b py-4">
+				<PromptTitle name={promptName} highlight={searchHighlight} />
+				<p className="mt-2 text-[13px] text-muted-foreground">
+					{t(isFirstEval ? "No completed answers yet" : "No data in selected time range")}
+				</p>
+				<p className="mt-1 text-xs text-muted-foreground">
+					{t(
+						isFirstEval
+							? "Check collection status in Overview or Actions & retests."
+							: "Try selecting a longer time period to see historical data.",
+					)}
+				</p>
+			</section>
+		);
+	}
+
+	// No visibility data state
+	if (!hasVisibilityData) {
+		return (
+			<>
+				{exportPortal}
+				<Card className="py-3 gap-3">
+					<CardHeader className="flex justify-between items-center px-3">
+						<PromptTitle name={promptName} highlight={searchHighlight} />
+					</CardHeader>
+					<Separator className="py-0 my-0" />
+					<CardContent className="px-3">
+						<div className="h-[250px] flex items-center justify-center">
+							<div className="flex flex-col items-center text-center max-w-xs">
+								<PlaceholderBars heights={[10, 15, 8, 12, 10, 14, 8, 12, 10, 15, 12, 9]} />
+								<p className="text-sm font-medium text-muted-foreground">{t("No brands found in responses")}</p>
+								<p className="text-xs text-muted-foreground/70 mt-1">
+									{t("Your brand and competitors weren't mentioned in the evaluated responses for this question.")}
+								</p>
+							</div>
+						</div>
+					</CardContent>
+					<div className="print:hidden">
+						<ChartActionsFooter
+							promptId={promptId}
+							brandId={brandId}
+							onDownload={handleDownload}
+							isDownloading={isExporting}
+						/>
+					</div>
+				</Card>
+			</>
+		);
+	}
+
+	// Success state with chart
+	return (
+		<>
+			{exportPortal}
+			<Card className="py-3 gap-3">
+				<CardHeader className="flex justify-between items-center px-3">
+					<PromptTitle name={promptName} highlight={searchHighlight} />
+					{lastBrandVisibility !== null && (
+						<Badge
+							variant={visibilityBadgeProps(lastBrandVisibility, totalRuns).variant}
+							className={visibilityBadgeProps(lastBrandVisibility, totalRuns).className}
+						>
+							{t("{value}% Visibility", { value: lastBrandVisibility })}
+						</Badge>
+					)}
+				</CardHeader>
+				<Separator className="py-0 my-0" />
+				<CardContent className="pl-0 pr-6">
+					{brand && data && competitors && (
+						<BaseChart
+							data={data}
+							lookback={lookback}
+							brand={brand}
+							competitors={competitors}
+							isAnimationActive={false}
+							chartType="line"
+						/>
+					)}
+				</CardContent>
+				<div className="print:hidden">
+					<ChartActionsFooter
+						promptId={promptId}
+						brandId={brandId}
+						onDownload={handleDownload}
+						isDownloading={isExporting}
+					/>
+				</div>
+			</Card>
+		</>
+	);
+});

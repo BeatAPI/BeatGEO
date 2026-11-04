@@ -1,0 +1,27 @@
+{
+	"name": "@workspace/config",
+	"version": "0.4.5",
+	"private": true,
+	"license": "MIT",
+	"scripts": {
+		"check-types": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"exports": {
+		"./constants": "./src/constants.ts",
+		"./env": "./src/env.ts",
+		"./env-registry": "./src/env-registry.ts",
+		"./model-filter": "./src/model-filter.ts",
+		"./models": "./src/models.ts",
+		"./platforms": "./src/platforms.ts",
+		"./roles": "./src/roles.ts",
+		"./scrape-targets": "./src/scrape-targets.ts",
+		"./types": "./src/types.ts"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "^26.6.4",
+		"typescript": "^7.0.2",
+		"vitest": "^5.0.3"
+	}
+}

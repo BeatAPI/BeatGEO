@@ -1,0 +1,51 @@
+import { randomBytes } from "node:crypto";
+import { db } from "@workspace/lib/db/db";
+import { secrets } from "@workspace/lib/db/schema";
+import { clearCredentialOverlay, getCredential, refreshCredentialOverlay } from "@workspace/lib/secrets";
+import { inArray } from "drizzle-orm";
+import { afterAll, beforeAll, expect, it, vi } from "vitest";
+import { connectionSummary, disconnectBeatApi, saveBeatApi } from "../connections-core";
+
+const names = ["BEATAPI_API_KEY", "BEATAPI_RESEARCH_MODEL"];
+let previous: Array<typeof secrets.$inferSelect>;
+beforeAll(async () => {
+	previous = await db.select().from(secrets).where(inArray(secrets.name, names));
+	await db.delete(secrets).where(inArray(secrets.name, names));
+	vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", randomBytes(32).toString("base64"));
+});
+afterAll(async () => {
+	await db.delete(secrets).where(inArray(secrets.name, names));
+	if (previous.length) await db.insert(secrets).values(previous);
+	clearCredentialOverlay();
+	vi.unstubAllEnvs();
+	vi.unstubAllGlobals();
+});
+it("shares encrypted key updates and persists disconnect across process reloads without environment fallback", async () => {
+	const request = vi.fn();
+	vi.stubGlobal("fetch", request);
+	vi.stubEnv("BEATAPI_API_KEY", "stale-env-key");
+	vi.stubEnv("BEATAPI_RESEARCH_MODEL", "stale-env-model");
+	await saveBeatApi("test-only-secret-key", "test-text-model");
+	const saved = await db.select().from(secrets).where(inArray(secrets.name, names));
+	expect(saved).toHaveLength(2);
+	expect(JSON.stringify(saved)).not.toContain("test-only-secret-key");
+	expect(JSON.stringify(saved)).not.toContain("test-text-model");
+	expect(getCredential("BEATAPI_API_KEY")).toBe("test-only-secret-key");
+	expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("test-text-model");
+	expect(connectionSummary()).toMatchObject({ configured: true, keyHint: "test••••", model: "test-text-model" });
+	await expect(saveBeatApi("bad key with whitespace")).rejects.toThrow("without spaces");
+	expect(await db.select().from(secrets).where(inArray(secrets.name, names))).toEqual(saved);
+	await saveBeatApi("replacement-test-key");
+	expect(getCredential("BEATAPI_API_KEY")).toBe("replacement-test-key");
+	expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("test-text-model");
+	await disconnectBeatApi();
+	clearCredentialOverlay();
+	await refreshCredentialOverlay();
+	expect(getCredential("BEATAPI_API_KEY")).toBe("");
+	expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("");
+	expect(connectionSummary().configured).toBe(false);
+	await saveBeatApi("reconnected-test-key", "");
+	expect(getCredential("BEATAPI_API_KEY")).toBe("reconnected-test-key");
+	expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("");
+	expect(request).not.toHaveBeenCalled();
+});

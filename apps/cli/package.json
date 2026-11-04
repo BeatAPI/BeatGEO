@@ -1,0 +1,44 @@
+{
+	"name": "@beatapi/geo-cli",
+	"version": "0.4.5",
+	"license": "MIT",
+	"keywords": [
+		"marketing",
+		"typescript",
+		"tools",
+		"aio",
+		"seo",
+		"geo",
+		"gemini",
+		"copilot",
+		"grok",
+		"aso",
+		"perplexity",
+		"aeo",
+		"llmo",
+		"chatgpt",
+		"ai-visibility"
+	],
+	"bin": {
+		"beatgeo": "dist/index.js"
+	},
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"scripts": {
+		"build": "node scripts/build.mjs",
+		"check-types": "tsc -p tsconfig.json",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"commander": "^15.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.4",
+		"rolldown": "^1.2.12",
+		"typescript": "^7.0.2",
+		"vitest": "^5.0.3"
+	},
+	"private": true
+}

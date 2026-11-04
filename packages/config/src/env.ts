@@ -1,0 +1,211 @@
+import { ENV_REGISTRY, RESEARCH_PROVIDER_PREFERENCE } from "./env-registry";
+import { parseScrapeTargets } from "./scrape-targets";
+import type { EnvRequirement } from "./types";
+
+export type EnvMap = Record<string, string | undefined>;
+
+export interface MissingEnvVar {
+	id: string;
+	label: string;
+	description?: string;
+}
+
+/**
+ * Check if an environment variable has a non-empty value
+ */
+export const hasValue = (value: string | undefined): boolean => typeof value === "string" && value.trim().length > 0;
+
+/**
+ * Create a requirement checker that requires all specified keys to have values
+ */
+export const requireAll =
+	(keys: string[]) =>
+	(env: EnvMap): boolean =>
+		keys.every((key) => hasValue(env[key]));
+
+/**
+ * Create a requirement checker that is satisfied when any key has a value.
+ */
+export const requireAny =
+	(keys: string[]) =>
+	(env: EnvMap): boolean =>
+		keys.some((key) => hasValue(env[key]));
+
+/**
+ * Create a simple env requirement for a single key
+ */
+export function createEnvRequirement(key: string, description?: string): EnvRequirement {
+	return {
+		id: key,
+		label: key,
+		description,
+		isSatisfied: requireAll([key]),
+	};
+}
+
+/**
+ * Requirements for every registry var hard-required at startup.
+ */
+function buildStaticRequirements(): EnvRequirement[] {
+	return ENV_REGISTRY.filter((spec) => spec.requiredBy === "required").map((spec) =>
+		createEnvRequirement(spec.name, spec.description),
+	);
+}
+
+function providerKeys(provider: string): string[] {
+	return ENV_REGISTRY.filter((spec) => spec.requiredBy === "dynamic-scrape-targets" && spec.provider === provider).map(
+		(spec) => spec.name,
+	);
+}
+
+/**
+ * Build env requirements for exactly the provider keys referenced by SCRAPE_TARGETS.
+ */
+function buildProviderKeyRequirements(env: EnvMap = process.env): EnvRequirement[] {
+	let providers: string[];
+	try {
+		providers = [...new Set(parseScrapeTargets(env.SCRAPE_TARGETS).map((target) => target.provider))];
+	} catch {
+		// A missing or malformed SCRAPE_TARGETS is reported by its own
+		// requirement (and rejected at worker boot); provider keys can't be
+		// derived from it.
+		return [];
+	}
+
+	const requirements: EnvRequirement[] = [];
+	for (const provider of providers) {
+		const keys = providerKeys(provider);
+		if (keys.length === 0) continue;
+		requirements.push({
+			id: `PROVIDER_${provider.toUpperCase().replace(/-/g, "_")}`,
+			label: keys.join(" + "),
+			description: `Required by SCRAPE_TARGETS provider "${provider}".`,
+			isSatisfied: requireAll(keys),
+		});
+	}
+
+	return requirements;
+}
+
+/**
+ * Brand onboarding and the Opportunities report run on a direct LLM API
+ * provider whatever SCRAPE_TARGETS tracks, so a deployment that only scrapes
+ * would otherwise boot fine and fail the first time either is used.
+ */
+function buildResearchProviderRequirement(): EnvRequirement {
+	const candidates = RESEARCH_PROVIDER_PREFERENCE.map((id) =>
+		id === "beatapi" ? [...providerKeys(id), "BEATAPI_RESEARCH_MODEL"] : providerKeys(id),
+	);
+	return {
+		id: "RESEARCH_PROVIDER",
+		label: candidates.map((keys) => keys.join(" + ")).join(" or "),
+		description:
+			"Needed for brand onboarding and the Opportunities report. Alternatively, set ONBOARDING_LLM_TARGET and that provider's keys.",
+		isSatisfied: (env) => {
+			const target = env.ONBOARDING_LLM_TARGET?.trim();
+			if (!target) return candidates.some((keys) => requireAll(keys)(env));
+			try {
+				const [parsed] = parseScrapeTargets(target);
+				if (!parsed) return false;
+				if (parsed.provider === "stub") return true;
+				if (!RESEARCH_PROVIDER_PREFERENCE.includes(parsed.provider as (typeof RESEARCH_PROVIDER_PREFERENCE)[number]))
+					return false;
+				const keys = providerKeys(parsed.provider);
+				return requireAll(parsed.provider === "beatapi" ? [...keys, "BEATAPI_RESEARCH_MODEL"] : keys)(env);
+			} catch {
+				return false;
+			}
+		},
+	};
+}
+
+export function getEnvRequirements(): EnvRequirement[] {
+	return [...buildStaticRequirements(), ...buildProviderKeyRequirements(), buildResearchProviderRequirement()];
+}
+
+export function getEnvValidationState(env: EnvMap = process.env): {
+	requirements: EnvRequirement[];
+	missing: MissingEnvVar[];
+	isValid: boolean;
+} {
+	const requirements = getEnvRequirements();
+	const missing = requirements
+		.filter((requirement) => !requirement.isSatisfied(env))
+		.map((requirement) => ({
+			id: requirement.id,
+			label: requirement.label,
+			description: requirement.description,
+		}));
+
+	return {
+		requirements,
+		missing,
+		isValid: missing.length === 0,
+	};
+}
+
+/**
+ * Validate environment variables against a specific set of requirements
+ * Used by deployment packages to validate their specific requirements
+ */
+export function validateEnvRequirements(
+	requirements: EnvRequirement[],
+	env: EnvMap = process.env,
+): {
+	missing: MissingEnvVar[];
+	isValid: boolean;
+} {
+	const missing = requirements
+		.filter((requirement) => !requirement.isSatisfied(env))
+		.map((requirement) => ({
+			id: requirement.id,
+			label: requirement.label,
+			description: requirement.description,
+		}));
+
+	return {
+		missing,
+		isValid: missing.length === 0,
+	};
+}
+
+function formatMissingEnvVars(keys: string[]): string {
+	return keys.length === 1
+		? `Missing required environment variable: ${keys[0]}`
+		: `Missing required environment variables: ${keys.join(", ")}`;
+}
+
+/**
+ * Require one or more environment variables, throwing a single error that names
+ * every missing key. Returns the resolved values keyed by the requested names.
+ */
+export function requireEnvVars<const K extends string>(
+	keys: readonly K[],
+	env: EnvMap = process.env,
+): Record<K, string> {
+	const missing = keys.filter((key) => !hasValue(env[key]));
+	if (missing.length > 0) {
+		throw new Error(formatMissingEnvVars(missing));
+	}
+	return Object.fromEntries(keys.map((key) => [key, env[key]!])) as Record<K, string>;
+}
+
+// Provider keys are excluded: they can also come from stored credentials, so
+// SCRAPE_TARGETS validation checks them once those are loaded.
+export function assertRequiredEnv(env: EnvMap = process.env): void {
+	const requirements = buildStaticRequirements();
+	const missing = requirements
+		.filter((requirement) => !requirement.isSatisfied(env))
+		.map((requirement) => requirement.id);
+	if (missing.length > 0) {
+		throw new Error(formatMissingEnvVars(missing));
+	}
+}
+
+/**
+ * Get an optional environment variable with a default value
+ */
+export function getEnv(key: string, defaultValue: string, env: EnvMap = process.env): string {
+	const value = env[key];
+	return hasValue(value) ? value! : defaultValue;
+}

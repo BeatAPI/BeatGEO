@@ -1,0 +1,95 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+
+# turbo
+.turbo
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+.next/
+out/
+
+# tanstack start
+.output/
+.tanstack/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+debug-storybook.log
+storybook-static/
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# playwright
+playwright-report/
+playwright-report-*/
+test-results/
+test-results-*/
+blob-report/
+
+# e2e generated config (created by `beatgeo init --dev --defaults`)
+e2e/.beatgeo/
+e2e/.auth/
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# brand kit (generated assets)
+beatgeo-brand-kit.zip
+og-default.png
+
+# to remove
+prompt_runs.ndjson.gz
+prompt_runs_rows.csv
+prompt_runs.meta.json
+
+# docker
+beatgeo.yaml
+e2e/artifacts
+
+# retroactive cleanup
+# Anchored to the repo root so source directories named features/ stay tracked.
+/features/
+.agents/
+.cursor/
+apps/web/storybook-static/
+
+.claude/settings.local.json
+.claude/worktrees/
+.readonlydb
+.pnpm-store/
+
+# Browser sessions, raw answers and local runner credentials are never published.
+.beat-geo/
+.env.browser-local
+
+# Keep legacy local evidence private during migration.
+.open-profound/
+
+.beatgeo/

@@ -1,0 +1,16 @@
+{
+  "name": "beatgeo",
+  "owner": {
+    "name": "BeatGEO"
+  },
+  "metadata": {
+    "description": "Official BeatGEO plugins for Cursor"
+  },
+  "plugins": [
+    {
+      "name": "beatgeo",
+      "source": "./plugins/beatgeo",
+      "description": "Track how ChatGPT, Claude, Perplexity, Gemini and Google AI Overviews mention and cite your brand"
+    }
+  ]
+}

@@ -1,0 +1,1168 @@
+/**
+ * /reports/render/$reportId - Standalone report rendering page
+ *
+ * Production-quality printable report (US Letter 8.5 x 11 in).
+ * Uses Share of Voice as the primary metric with rich competitive analysis.
+ */
+import { createFileRoute, notFound, useRouteContext } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import type { ClientConfig } from "@workspace/config/types";
+import {
+	analyzeByEngine,
+	analyzeCompetitorFrequency,
+	analyzeWebQueries,
+	computeCompetitorSoVs,
+	computeOverallSoV,
+	computePromptSoV,
+	type FullPromptRun,
+	findContentGaps,
+	getSoVColor,
+	getSoVLevel,
+	type PromptCategory,
+	type PromptSoV,
+	type ReportPromptRun,
+	selectRepresentativePrompts,
+} from "@workspace/lib/report-metrics";
+import { isPromptBranded } from "@workspace/lib/tag-utils";
+import { BarChart3, Rocket, Target } from "lucide-react";
+import { Logo } from "@/components/logo";
+import { PromptChartPrint } from "@/components/prompt-chart-print";
+import { hasReportAccess, requireAuthSession } from "@/lib/auth/helpers";
+import { useLocale, useT } from "@/lib/i18n";
+import { getReportByIdFn } from "@/server/reports";
+
+// ---------- Types ----------
+
+interface ReportData {
+	competitors: CompetitorResult[];
+	prompts: PromptData[];
+	promptRuns: PromptRunResult[];
+}
+
+interface CompetitorResult {
+	name: string;
+	domain: string;
+}
+interface PromptData {
+	value: string;
+}
+
+interface PromptRunResult {
+	promptValue: string;
+	runs: Array<{
+		model: string;
+		version: string;
+		webSearchEnabled: boolean;
+		rawOutput: any;
+		webQueries: string[];
+		textContent: string;
+		brandMentioned: boolean;
+		competitorsMentioned: string[];
+	}>;
+}
+
+interface MockPrompt {
+	id: string;
+	brandId: string;
+	value: string;
+	enabled: boolean;
+	createdAt: Date;
+}
+
+// ---------- Server function ----------
+
+const loadReportData = createServerFn({ method: "GET" })
+	.validator((d: string) => d)
+	.handler(async ({ data: reportId }) => {
+		const session = await requireAuthSession();
+		if (!(await hasReportAccess(session))) throw new Error("Not authorized");
+		return getReportByIdFn({ data: { reportId } });
+	});
+
+type ReportRecord = NonNullable<Awaited<ReturnType<typeof loadReportData>>>;
+
+// ---------- Route ----------
+
+export const Route = createFileRoute("/_authed/reports/render/$reportId")({
+	loader: async ({ params }) => {
+		const report = await loadReportData({ data: params.reportId });
+		if (!report) throw notFound();
+		return { report };
+	},
+	head: () => ({
+		meta: [{ title: "AI Share of Voice Report" }, { name: "robots", content: "noindex, nofollow" }],
+	}),
+	component: ReportRenderPage,
+});
+
+// ---------- Color helpers ----------
+
+function sovBgColor(sov: number | null): string {
+	if (sov === null) return "bg-slate-300";
+	if (sov >= 40) return "bg-emerald-500";
+	if (sov >= 20) return "bg-amber-500";
+	return "bg-rose-500";
+}
+
+// ---------- Main component ----------
+
+type ChartRun = any;
+
+function flattenPromptRuns(promptRuns: PromptRunResult[]): {
+	simpleRuns: ReportPromptRun[];
+	fullRuns: FullPromptRun[];
+	chartRuns: ChartRun[];
+} {
+	const simpleRuns: ReportPromptRun[] = [];
+	const fullRuns: FullPromptRun[] = [];
+	const chartRuns: ChartRun[] = [];
+
+	promptRuns.forEach((promptRun, promptIndex) => {
+		const promptId = `prompt-${promptIndex + 1}`;
+		promptRun.runs.forEach((run, runIndex) => {
+			simpleRuns.push({ promptId, brandMentioned: run.brandMentioned, competitorsMentioned: run.competitorsMentioned });
+			fullRuns.push({
+				promptId,
+				promptValue: promptRun.promptValue,
+				brandMentioned: run.brandMentioned,
+				competitorsMentioned: run.competitorsMentioned,
+				webQueries: run.webQueries || [],
+				textContent: run.textContent || "",
+				model: run.model,
+			});
+			chartRuns.push({
+				id: `run-${promptIndex}-${runIndex}`,
+				promptId,
+				brandMentioned: run.brandMentioned,
+				competitorsMentioned: run.competitorsMentioned,
+				createdAt: new Date(),
+				model: run.model,
+				version: run.version,
+				webSearchEnabled: run.webSearchEnabled,
+				rawOutput: run.rawOutput,
+				webQueries: run.webQueries,
+			});
+		});
+	});
+
+	return { simpleRuns, fullRuns, chartRuns };
+}
+
+function dedupeCompetitors(competitors: CompetitorResult[], isBrandName: (name: string) => boolean) {
+	const seen = new Set<string>();
+	return competitors.filter((competitor) => {
+		const key = competitor.name.toLowerCase().trim();
+		if (isBrandName(competitor.name) || seen.has(key)) return false;
+		seen.add(key);
+		return true;
+	});
+}
+
+/** A query is noise below this length; the report never shows it. */
+const MIN_QUERY_LENGTH = 3;
+
+/** How many of the report's search-query slots go to the most frequent queries. */
+const TOP_QUERIES_BY_FREQUENCY = 3;
+const TOP_QUERIES_TOTAL = 6;
+
+/**
+ * The searches the report shows: the most frequent ones first, then ones that
+ * produced a brand mention, then whatever frequency has left to fill the table.
+ * Ordered by competitor pressure, which is what the surrounding copy discusses.
+ */
+function buildTopSearchQueries(fullRuns: FullPromptRun[], allWebQueries: { query: string; count: number }[]) {
+	const mentionsByQuery = new Map<string, { brandMentioned: boolean; competitorCount: number }>();
+	for (const run of fullRuns) {
+		for (const query of run.webQueries || []) {
+			const normalized = query.toLowerCase().trim();
+			if (normalized.length < MIN_QUERY_LENGTH) continue;
+			const existing = mentionsByQuery.get(normalized);
+			if (!existing) {
+				mentionsByQuery.set(normalized, {
+					brandMentioned: run.brandMentioned,
+					competitorCount: run.competitorsMentioned.length,
+				});
+				continue;
+			}
+			existing.brandMentioned ||= run.brandMentioned;
+			existing.competitorCount = Math.max(existing.competitorCount, run.competitorsMentioned.length);
+		}
+	}
+
+	const enriched = allWebQueries.map((entry) => {
+		const mentions = mentionsByQuery.get(entry.query);
+		return {
+			...entry,
+			brandMentioned: mentions?.brandMentioned ?? false,
+			competitorCount: mentions?.competitorCount ?? 0,
+		};
+	});
+
+	const byFrequency = [...enriched].sort((a, b) => b.count - a.count);
+	const withBrand = byFrequency.filter((entry) => entry.brandMentioned);
+
+	const selected: typeof enriched = [];
+	const used = new Set<string>();
+	const fill = (candidates: typeof enriched, upTo: number) => {
+		for (const entry of candidates) {
+			if (selected.length >= upTo) return;
+			if (used.has(entry.query)) continue;
+			used.add(entry.query);
+			selected.push(entry);
+		}
+	};
+	fill(byFrequency, TOP_QUERIES_BY_FREQUENCY);
+	fill(withBrand, TOP_QUERIES_TOTAL);
+	fill(byFrequency, TOP_QUERIES_TOTAL);
+
+	return selected.sort((a, b) => b.competitorCount - a.competitorCount);
+}
+
+/**
+ * Everything the printed report renders, derived from the stored run data.
+ *
+ * The report is rebuilt from a snapshot rather than from live tables, so the
+ * brand, competitors and prompts are reconstructed as stand-ins with stable ids
+ * that the shared metric and chart helpers can key on.
+ */
+function buildReportModel(report: ReportRecord) {
+	const data: ReportData = report.rawOutput as ReportData;
+
+	const mockBrand = {
+		id: "brand-1",
+		name: report.brandName,
+		website: report.brandWebsite,
+		enabled: true,
+		onboarded: true,
+		delayOverrideHours: null,
+		createdAt: new Date(),
+		updatedAt: new Date(),
+	};
+	const mockCompetitors = data.competitors.map((comp, i) => ({
+		id: `comp-${i + 1}`,
+		name: comp.name,
+		domain: comp.domain,
+		brandId: mockBrand.id,
+		createdAt: new Date(),
+		updatedAt: new Date(),
+	}));
+	const mockPrompts: MockPrompt[] = data.prompts.map((p, i) => ({
+		id: `prompt-${i + 1}`,
+		brandId: mockBrand.id,
+		value: p.value,
+		enabled: true,
+		createdAt: new Date(),
+	}));
+
+	const { simpleRuns, fullRuns, chartRuns } = flattenPromptRuns(data.promptRuns);
+
+	const brandNames = new Set([report.brandName, ...report.brandAliases].map((name) => name.toLowerCase().trim()));
+	const isBrandName = (name: string) => brandNames.has(name.toLowerCase().trim());
+	const filteredCompetitors = dedupeCompetitors(data.competitors, isBrandName);
+
+	// Core metrics
+	const overallSoV = computeOverallSoV(simpleRuns, filteredCompetitors);
+	const competitorSoVs = computeCompetitorSoVs(simpleRuns, filteredCompetitors);
+	const promptSoVs = mockPrompts.map((p) => computePromptSoV(p.id, simpleRuns, filteredCompetitors));
+	const promptMap = new Map(mockPrompts.map((p) => [p.id, p]));
+
+	const selectedPrompts = selectRepresentativePrompts(promptSoVs, (id: string) => {
+		const p = promptMap.get(id);
+		return p ? isPromptBranded(p.value, report.brandName, report.brandWebsite, report.brandAliases) : false;
+	});
+
+	// Rich analysis
+	const contentGaps = findContentGaps(fullRuns, 5);
+	const allWebQueries = analyzeWebQueries(fullRuns, 1000);
+	const competitorFreq = analyzeCompetitorFrequency(fullRuns, filteredCompetitors);
+	const engineBreakdown = analyzeByEngine(fullRuns);
+
+	const topSearchQueries = buildTopSearchQueries(fullRuns, allWebQueries);
+
+	const sovLevel = getSoVLevel(overallSoV);
+	const sovColor = getSoVColor(overallSoV);
+	const totalPrompts = mockPrompts.length;
+	const promptsWithMentions = promptSoVs.filter((p) => p.brandMentionCount > 0).length;
+
+	// Charts: 2 per page
+	const chartPairs: Array<typeof selectedPrompts> = [];
+	for (let i = 0; i < selectedPrompts.length; i += 2) {
+		chartPairs.push(selectedPrompts.slice(i, i + 2));
+	}
+
+	return {
+		mockBrand,
+		mockCompetitors,
+		mockPrompts,
+		simpleRuns,
+		chartRuns,
+		isBrandName,
+		filteredCompetitors,
+		overallSoV,
+		competitorSoVs,
+		promptSoVs,
+		promptMap,
+		selectedPrompts,
+		contentGaps,
+		competitorFreq,
+		engineBreakdown,
+		topSearchQueries,
+		sovLevel,
+		sovColor,
+		totalPrompts,
+		promptsWithMentions,
+		chartPairs,
+	};
+}
+
+function goalMargin(gap: number): number {
+	if (gap > 30) return 5;
+	if (gap > 15) return 8;
+	return 10;
+}
+
+function articlesForGap(gap: number): number {
+	if (gap > 40) return 8;
+	if (gap > 25) return 6;
+	if (gap > 10) return 5;
+	return 4;
+}
+
+const MAX_OPPORTUNITIES = 5;
+
+function buildOpportunities(promptSoVs: PromptSoV[], promptMap: Map<string, MockPrompt>) {
+	return (
+		promptSoVs
+			.filter((p) => p.totalCompetitorMentions > 0)
+			.map((p) => {
+				const brandSoV = p.sov ?? 0;
+				const topCompetitorMentions = Math.max(...Object.values(p.competitorMentions), 0);
+				const totalMentions = p.brandMentionCount + p.totalCompetitorMentions;
+				const maxCompSoV = totalMentions > 0 ? Math.round((topCompetitorMentions / totalMentions) * 100) : 0;
+				const gap = maxCompSoV - brandSoV;
+				return {
+					promptValue: promptMap.get(p.promptId)?.value ?? p.promptId,
+					brandSoV,
+					maxCompSoV,
+					gap,
+					goalSoV: Math.min(100, maxCompSoV + goalMargin(gap)),
+					articleCount: articlesForGap(gap),
+				};
+			})
+			.filter((o) => o.gap > 0)
+			// A prompt the brand already shows up in is more actionable than one it is
+			// absent from, so those lead regardless of gap size.
+			.sort((a, b) => Number(b.brandSoV > 0) - Number(a.brandSoV > 0) || b.gap - a.gap)
+			.slice(0, MAX_OPPORTUNITIES)
+	);
+}
+
+function OpportunitiesTable({
+	promptSoVs,
+	promptMap,
+	brandName,
+}: {
+	promptSoVs: PromptSoV[];
+	promptMap: Map<string, MockPrompt>;
+	brandName: string;
+}) {
+	const t = useT();
+	const opportunities = buildOpportunities(promptSoVs, promptMap);
+
+	if (opportunities.length === 0) {
+		return (
+			<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-6 text-center">
+				<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500 text-sm">
+					{t("{brand} leads or matches competitors across all tested questions.", { brand: brandName })}
+				</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden">
+			<table className="w-full">
+				<thead>
+					<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+						<TH align="left">{t("Question")}</TH>
+						<TH align="center">{t("Current SoV")}</TH>
+						<TH align="center">{t("Top Competitor SoV")}</TH>
+						<TH align="center">{t("Goal SoV")}</TH>
+						<TH align="left">{t("Recommendation")}</TH>
+					</tr>
+				</thead>
+				<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
+					{opportunities.map((o) => (
+						<tr key={o.promptValue}>
+							<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 max-w-[200px] break-words leading-relaxed">
+								{o.promptValue}
+							</td>
+							<td className="py-2.5 px-4 text-center">
+								<span className={`text-xs font-semibold ${getSoVColor(o.brandSoV)}`}>{o.brandSoV}%</span>
+							</td>
+							<td className="py-2.5 px-4 text-center text-xs font-semibold text-slate-600 dark:text-muted-foreground print:text-slate-600">
+								{o.maxCompSoV}%
+							</td>
+							<td className="py-2.5 px-4 text-center text-xs font-semibold text-emerald-600">{o.goalSoV}%</td>
+							<td className="py-2.5 px-4 text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+								{t("Write {count} LLM-friendly articles on “{prompt}”", {
+									count: o.articleCount,
+									prompt: o.promptValue,
+								})}
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	);
+}
+
+type ReportModel = ReturnType<typeof buildReportModel>;
+
+function CoverPage({
+	report,
+	branding,
+	model,
+}: {
+	report: ReportRecord;
+	branding?: ClientConfig["branding"];
+	model: ReportModel;
+}) {
+	const { locale } = useLocale();
+	const t = useT();
+	const { filteredCompetitors, overallSoV, sovLevel, sovColor, totalPrompts, promptsWithMentions } = model;
+	return (
+		<>
+			{/* ===== PAGE 1: COVER ===== */}
+			<div className="print:h-[9.5in] print:flex print:flex-col p-10 print:p-0">
+				<div className="h-[3px] bg-slate-800 -mx-10 print:-mx-0 mb-8" />
+
+				<div className="flex items-center justify-between mb-16">
+					<Logo
+						iconClassName="!size-5"
+						textClassName="text-sm font-semibold text-slate-400 dark:text-muted-foreground print:text-slate-400"
+					/>
+					<span className="text-xs tracking-wide text-slate-400 dark:text-muted-foreground print:text-slate-400">
+						{new Date(report.createdAt).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
+							year: "numeric",
+							month: "long",
+							day: "numeric",
+						})}
+					</span>
+				</div>
+
+				<div className="flex-1 flex flex-col justify-center">
+					<div className="text-[10px] font-semibold tracking-[0.25em] uppercase text-slate-400 dark:text-muted-foreground print:text-slate-400 mb-4">
+						{t("AI Share of Voice Report")}
+					</div>
+					<h1 className="text-4xl font-bold tracking-tight mb-2">{report.brandName}</h1>
+					<div className="w-16 h-[2px] bg-slate-800 mb-12" />
+
+					<div className="bg-slate-50 dark:bg-card print:bg-slate-50 rounded-xl p-8 max-w-md mb-12">
+						<div className="flex items-baseline gap-4">
+							<span className={`text-6xl font-extrabold tracking-tighter ${sovColor}`}>
+								{overallSoV !== null ? `${overallSoV}%` : t("N/A")}
+							</span>
+							<div>
+								<div className="text-sm font-semibold">{t("Share of Voice")}</div>
+								<div className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500">
+									{t(sovLevel.label)} &mdash; {t(sovLevel.description)}
+								</div>
+							</div>
+						</div>
+						<div className="mt-4 w-full bg-slate-200 rounded-full h-2">
+							<div
+								className={`h-2 rounded-full ${sovBgColor(overallSoV)}`}
+								style={{ width: `${Math.max(2, overallSoV ?? 0)}%` }}
+							/>
+						</div>
+					</div>
+
+					<div className="grid grid-cols-3 gap-6 max-w-lg">
+						<CoverStat value={String(totalPrompts)} label={t("Questions Tested")} />
+						<CoverStat value={String(promptsWithMentions)} label={t("Brand Mentions")} />
+						<CoverStat value={String(filteredCompetitors.length)} label={t("Competitors")} />
+					</div>
+				</div>
+
+				<PageFooter branding={branding} />
+			</div>
+		</>
+	);
+}
+
+function CompetitiveOverviewPage({
+	report,
+	branding,
+	model,
+}: {
+	report: ReportRecord;
+	branding?: ClientConfig["branding"];
+	model: ReportModel;
+}) {
+	const t = useT();
+	const {
+		simpleRuns,
+		isBrandName,
+		overallSoV,
+		competitorSoVs,
+		competitorFreq,
+		engineBreakdown,
+		sovColor,
+		totalPrompts,
+		promptsWithMentions,
+	} = model;
+	return (
+		<>
+			{/* ===== PAGE 2: COMPETITIVE OVERVIEW ===== */}
+			<div className="print:break-before-page print:h-[9.5in] print:flex print:flex-col p-10 print:p-0">
+				<RunningHeader brand={report.brandName} />
+
+				<Section
+					title={t("AI Engine Performance")}
+					subtitle={t("Brand mention rate across {value0} evaluations", {
+						value0: engineBreakdown.reduce((s, e) => s + e.totalRuns, 0),
+					})}
+				/>
+				<div className="grid grid-cols-3 gap-3 mb-8">
+					{engineBreakdown.map((eng) => (
+						<div
+							key={eng.engine}
+							className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-4"
+						>
+							<div className="text-[11px] font-medium text-slate-500 dark:text-muted-foreground print:text-slate-500 mb-2">
+								{eng.engine}
+							</div>
+							<div className={`text-3xl font-bold ${getSoVColor(eng.mentionRate)}`}>{eng.mentionRate}%</div>
+							<div className="text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400 mt-1">
+								{t("{mentions} of {runs} runs", { mentions: eng.brandMentions, runs: eng.totalRuns })}
+							</div>
+							<div className="mt-2.5 w-full bg-slate-100 dark:bg-muted print:bg-slate-100 rounded-full h-1.5">
+								<div
+									className={`h-1.5 rounded-full ${sovBgColor(eng.mentionRate)}`}
+									style={{ width: `${Math.max(2, eng.mentionRate)}%` }}
+								/>
+							</div>
+						</div>
+					))}
+				</div>
+
+				<Section
+					title={t("Competitive Landscape")}
+					subtitle={t("Share of voice comparison across all tested questions")}
+				/>
+				<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8 print:pb-px">
+					<table className="w-full">
+						<thead>
+							<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+								<TH align="left">{t("Brand")}</TH>
+								<TH align="right" className="w-16">
+									{t("SoV")}
+								</TH>
+								<TH align="left" className="w-[40%]">
+									{t("Share")}
+								</TH>
+							</tr>
+						</thead>
+						<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
+							{[
+								{ name: report.brandName, sov: overallSoV ?? 0, isBrand: true },
+								...competitorSoVs
+									.filter((c) => !isBrandName(c.name))
+									.slice(0, 3)
+									.map((c) => ({ name: c.name, sov: c.sov, isBrand: false })),
+							]
+								.sort((a, b) => b.sov - a.sov)
+								.map((row) => (
+									<tr
+										key={`sov-${row.name}`}
+										className={row.isBrand ? "bg-blue-50/30 dark:bg-blue-950/30 print:bg-blue-50/30" : ""}
+									>
+										<td
+											className={`py-2.5 px-4 text-sm ${row.isBrand ? "font-semibold" : "text-slate-600 dark:text-muted-foreground print:text-slate-600"}`}
+										>
+											{row.name}
+										</td>
+										<td className="py-2.5 px-4 text-right">
+											<span
+												className={`text-sm font-bold ${row.isBrand ? sovColor : "text-slate-500 dark:text-muted-foreground print:text-slate-500"}`}
+											>
+												{row.sov}%
+											</span>
+										</td>
+										<td className="py-2.5 px-4">
+											<Bar value={row.sov} color={row.isBrand ? "bg-blue-500" : "bg-slate-300"} />
+										</td>
+									</tr>
+								))}
+						</tbody>
+					</table>
+				</div>
+
+				{competitorFreq.length > 0 && (
+					<>
+						<Section
+							title={t("Mention Rate")}
+							subtitle={t(
+								"Each question is evaluated multiple times across AI engines — mentions show total appearances, unique questions show how many distinct questions include the brand",
+							)}
+						/>
+						<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden print:pb-px">
+							<table className="w-full">
+								<thead>
+									<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+										<TH align="left">{t("Brand")}</TH>
+										<TH align="center">{t("Mentions")}</TH>
+										<TH align="center">{t("Unique Questions")}</TH>
+									</tr>
+								</thead>
+								<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
+									{[
+										{
+											name: report.brandName,
+											mentionCount: simpleRuns.filter((r) => r.brandMentioned).length,
+											promptCount: promptsWithMentions,
+											isBrand: true,
+										},
+										...competitorFreq
+											.filter((c) => !isBrandName(c.name))
+											.slice(0, 3)
+											.map((c) => ({ ...c, isBrand: false })),
+									]
+										.sort((a, b) => b.mentionCount - a.mentionCount)
+										.map((c) => (
+											<tr
+												key={`mention-${c.name}`}
+												className={c.isBrand ? "bg-blue-50/30 dark:bg-blue-950/30 print:bg-blue-50/30" : ""}
+											>
+												<td
+													className={`py-2 px-4 text-xs font-medium ${c.isBrand ? "text-slate-900 dark:text-foreground print:text-slate-900" : "text-slate-700 dark:text-foreground print:text-slate-700"}`}
+												>
+													{c.name}
+												</td>
+												<td className="py-2 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+													{c.mentionCount}
+													<span className="text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														/{simpleRuns.length}
+													</span>
+												</td>
+												<td className="py-2 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+													{c.promptCount}
+													<span className="text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														/{totalPrompts}
+													</span>
+												</td>
+											</tr>
+										))}
+								</tbody>
+							</table>
+						</div>
+					</>
+				)}
+
+				<div className="mt-auto">
+					<PageFooter branding={branding} />
+				</div>
+			</div>
+		</>
+	);
+}
+
+function PromptChartPages({
+	report,
+	branding,
+	model,
+}: {
+	report: ReportRecord;
+	branding?: ClientConfig["branding"];
+	model: ReportModel;
+}) {
+	const t = useT();
+	const { mockBrand, mockCompetitors, chartRuns, promptMap, chartPairs } = model;
+	return (
+		<>
+			{/* ===== CHART PAGES ===== */}
+			{chartPairs.map((pair, pageIndex) => (
+				<div
+					key={pair.map((selected) => selected.promptId).join("+")}
+					className="print:break-before-page print:h-[9.5in] print:flex print:flex-col p-10 print:p-0"
+				>
+					<RunningHeader brand={report.brandName} />
+
+					{pageIndex === 0 ? (
+						<Section
+							title={t("Question Analysis")}
+							subtitle={t("Share of voice for representative questions — strengths and growth opportunities")}
+						/>
+					) : (
+						<div className="text-xs text-slate-400 dark:text-muted-foreground print:text-slate-400 italic mb-4">
+							{t("Question Analysis (continued)")}
+						</div>
+					)}
+
+					<div className="flex-1 flex flex-col gap-5">
+						{pair.map((selected) => {
+							const prompt = promptMap.get(selected.promptId);
+							if (!prompt) return null;
+							return (
+								<div key={selected.promptId} className="flex-1 flex flex-col">
+									<PromptChartPrint
+										lookback="1m"
+										promptName={prompt.value}
+										promptId={prompt.id}
+										brand={mockBrand as any}
+										competitors={mockCompetitors as any}
+										promptRuns={chartRuns}
+										category={selected.category}
+									/>
+								</div>
+							);
+						})}
+					</div>
+
+					<div className="mt-auto">
+						<PageFooter branding={branding} />
+					</div>
+				</div>
+			))}
+		</>
+	);
+}
+
+function OpportunitiesPage({
+	report,
+	branding,
+	model,
+}: {
+	report: ReportRecord;
+	branding?: ClientConfig["branding"];
+	model: ReportModel;
+}) {
+	const t = useT();
+	const { contentGaps, topSearchQueries } = model;
+	return (
+		<>
+			{/* ===== OPPORTUNITIES ===== */}
+			<div className="print:break-before-page print:h-[9.5in] print:flex print:flex-col p-10 print:p-0">
+				<RunningHeader brand={report.brandName} />
+
+				<Section
+					title={t("Content Gaps")}
+					subtitle={t("Questions where competitors appear but {value0} does not — highest-value opportunities", {
+						value0: report.brandName,
+					})}
+				/>
+
+				{contentGaps.length > 0 ? (
+					<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8">
+						<table className="w-full">
+							<thead>
+								<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+									<TH align="left">{t("Question")}</TH>
+									<TH align="left" className="w-[50%]">
+										{t("Competitors Found")}
+									</TH>
+								</tr>
+							</thead>
+							<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
+								{contentGaps.map((gap) => (
+									<tr key={gap.promptId}>
+										<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 leading-relaxed max-w-[320px]">
+											{gap.promptValue}
+										</td>
+										<td className="py-2.5 px-4">
+											<div className="flex flex-wrap gap-1">
+												{gap.competitorsMentioned.slice(0, 3).map((c) => (
+													<span
+														key={c}
+														className="inline-block px-2 py-0.5 rounded-md bg-slate-100 dark:bg-muted print:bg-slate-100 text-slate-600 dark:text-muted-foreground print:text-slate-600 text-[10px] font-medium"
+													>
+														{c}
+													</span>
+												))}
+												{gap.competitorsMentioned.length > 3 && (
+													<span className="text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400">
+														+{gap.competitorsMentioned.length - 3}
+													</span>
+												)}
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				) : (
+					<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg p-6 text-center mb-8">
+						<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500 text-sm">
+							{t("{brand} appears in all questions where competitors are mentioned.", { brand: report.brandName })}
+						</p>
+					</div>
+				)}
+
+				{topSearchQueries.length > 0 && (
+					<>
+						<Section
+							title={t("Top AI Search Queries")}
+							subtitle={t("Common web search queries AI models run when answering questions in your category")}
+						/>
+						<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden">
+							<table className="w-full">
+								<thead>
+									<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+										<TH align="left">{t("Query")}</TH>
+										<TH align="center" className="w-28">
+											{t("Competitors Found")}
+										</TH>
+										<TH align="center" className="w-24">
+											{t("Brand Mentioned")}
+										</TH>
+									</tr>
+								</thead>
+								<tbody className="divide-y divide-slate-100 dark:divide-border print:divide-slate-100">
+									{topSearchQueries.map((q) => (
+										<tr key={q.query}>
+											<td className="py-2.5 px-4 text-xs text-slate-700 dark:text-foreground print:text-slate-700 max-w-[350px] break-words">
+												{q.query}
+											</td>
+											<td className="py-2.5 px-4 text-center text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+												{q.competitorCount}
+											</td>
+											<td className="py-2.5 px-4 text-center">
+												{q.brandMentioned ? (
+													<span className="text-emerald-600 font-semibold text-xs">&#10003;</span>
+												) : (
+													<span className="text-slate-300 text-xs">&mdash;</span>
+												)}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</>
+				)}
+
+				<div className="mt-auto">
+					<PageFooter branding={branding} />
+				</div>
+			</div>
+		</>
+	);
+}
+
+/** How much room the brand has left to gain. The badge and the recommendation
+ *  read off the same SoV tiers, so they're resolved together. */
+function sovOpportunity(overallSoV: number | null) {
+	const sov = overallSoV ?? 0;
+	if (sov < 20) {
+		return {
+			label: "High",
+			badgeClass:
+				"bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 print:bg-rose-50 print:text-rose-700",
+			recommendation: "Prioritize content creation to establish AI presence",
+		};
+	}
+	if (sov < 40) {
+		return {
+			label: "Medium",
+			badgeClass:
+				"bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 print:bg-amber-50 print:text-amber-700",
+			recommendation: "Expand content to increase brand share of voice",
+		};
+	}
+	return {
+		label: "Low",
+		badgeClass:
+			"bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 print:bg-emerald-50 print:text-emerald-700",
+		recommendation: "Maintain leadership and defend competitive position",
+	};
+}
+
+function NextStepsPage({
+	report,
+	branding,
+	model,
+}: {
+	report: ReportRecord;
+	branding?: ClientConfig["branding"];
+	model: ReportModel;
+}) {
+	const t = useT();
+	const { overallSoV, promptSoVs, promptMap, sovColor, totalPrompts, promptsWithMentions } = model;
+	const opportunity = sovOpportunity(overallSoV);
+	return (
+		<>
+			{/* ===== SoV OPPORTUNITY + WHAT TO DO NEXT ===== */}
+			<div className="print:break-before-page print:h-[9.5in] print:flex print:flex-col p-10 print:p-0">
+				<RunningHeader brand={report.brandName} />
+
+				<Section
+					title={t("Share of Voice Opportunity")}
+					subtitle={t("Overview of your current AI share of voice and growth potential")}
+				/>
+
+				<div className="border border-slate-200 dark:border-border print:border-slate-200 rounded-lg overflow-hidden mb-8">
+					<table className="w-full">
+						<thead>
+							<tr className="bg-slate-50 dark:bg-card print:bg-slate-50 border-b border-slate-200 dark:border-border print:border-slate-200">
+								<TH align="center">{t("Questions With Mentions")}</TH>
+								<TH align="center">{t("Total Questions Tested")}</TH>
+								<TH align="center">{t("Overall SoV")}</TH>
+								<TH align="center">{t("Opportunity")}</TH>
+								<TH align="left">{t("Recommendation")}</TH>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td className="text-center py-3 px-4 text-sm font-semibold">{promptsWithMentions}</td>
+								<td className="text-center py-3 px-4 text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600">
+									{totalPrompts}
+								</td>
+								<td className="text-center py-3 px-4">
+									<span className={`text-sm font-bold ${sovColor}`}>{overallSoV ?? 0}%</span>
+								</td>
+								<td className="text-center py-3 px-4">
+									<span
+										className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold ${opportunity.badgeClass}`}
+									>
+										{t(opportunity.label)}
+									</span>
+								</td>
+								<td className="py-3 px-4 text-xs text-slate-600 dark:text-muted-foreground print:text-slate-600">
+									{t(opportunity.recommendation)}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<Section
+					title={t("What Should I Do Next?")}
+					subtitle={t("Questions where competitors outperform {value0} — your biggest growth opportunities", {
+						value0: report.brandName,
+					})}
+				/>
+
+				<OpportunitiesTable promptSoVs={promptSoVs} promptMap={promptMap} brandName={report.brandName} />
+
+				<div className="mt-auto">
+					<PageFooter branding={branding} />
+				</div>
+			</div>
+		</>
+	);
+}
+
+function CallToActionPage({ branding }: { branding?: ClientConfig["branding"] }) {
+	const t = useT();
+	return (
+		<>
+			{/* ===== CTA ===== */}
+			<div className="print:break-before-page print:h-[9.5in] print:flex print:flex-col print:justify-center p-10 print:p-0">
+				<div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-card dark:to-muted print:from-blue-50 print:to-indigo-50 border border-blue-200 dark:border-blue-900 print:border-blue-200 rounded-xl p-10 text-center">
+					<h2 className="text-2xl font-bold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+						{t("Ready to Optimize Your AI Visibility?")}
+					</h2>
+					<p className="text-slate-600 dark:text-muted-foreground print:text-slate-600 text-base mb-8">
+						{t("Take your brand's AI presence to the next level with {product}", {
+							product: branding?.name || "BeatGEO",
+						})}
+					</p>
+
+					<div className="grid grid-cols-3 gap-6 mb-8">
+						<div className="text-center p-4">
+							<div className="flex justify-center mb-3">
+								<Target className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
+							</div>
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								{t("Strategic Optimization")}
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
+								{t("Develop content strategies that increase your brand's share of voice in AI responses")}
+							</p>
+						</div>
+						<div className="text-center p-4">
+							<div className="flex justify-center mb-3">
+								<BarChart3 className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
+							</div>
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								{t("Continuous Monitoring")}
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
+								{t("Track your AI share of voice across hundreds of relevant questions and topics")}
+							</p>
+						</div>
+						<div className="text-center p-4">
+							<div className="flex justify-center mb-3">
+								<Rocket className="h-8 w-8 text-slate-600 dark:text-muted-foreground print:text-slate-600" />
+							</div>
+							<h3 className="font-semibold text-slate-800 dark:text-foreground print:text-slate-800 mb-2">
+								{t("Competitive Advantage")}
+							</h3>
+							<p className="text-sm text-slate-600 dark:text-muted-foreground print:text-slate-600 leading-relaxed">
+								{t("Stay ahead of competitors in the rapidly evolving AI search landscape")}
+							</p>
+						</div>
+					</div>
+
+					<div className="pt-6 border-t border-blue-200 dark:border-blue-900 print:border-blue-200">
+						<p className="text-slate-800 dark:text-foreground print:text-slate-800 font-medium mb-2">
+							{t("Get started with {product} today", { product: branding?.name || "BeatGEO" })}
+						</p>
+						<p className="text-slate-600 dark:text-muted-foreground print:text-slate-600 text-sm text-balance">
+							{t("Visit {url} to learn more about our AI visibility platform and services.", {
+								url: branding?.url || "github.com/BeatAPI/BeatGEO",
+							})}
+						</p>
+					</div>
+				</div>
+			</div>
+		</>
+	);
+}
+
+function ReportRenderPage() {
+	const t = useT();
+	const { report } = Route.useLoaderData();
+	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
+	const branding = context.clientConfig?.branding;
+
+	if (report.status !== "completed") {
+		return (
+			<div className="max-w-3xl mx-auto p-8 text-center">
+				<p className="text-slate-500 dark:text-muted-foreground print:text-slate-500">
+					{t("Report status:")}
+					<span className="font-medium">{t(report.status)}</span>
+				</p>
+			</div>
+		);
+	}
+
+	const model = buildReportModel(report);
+
+	return (
+		<div className="max-w-[780px] mx-auto bg-white dark:bg-background print:bg-white print:max-w-none text-slate-900 dark:text-foreground print:text-slate-900">
+			<CoverPage report={report} branding={branding} model={model} />
+
+			<CompetitiveOverviewPage report={report} branding={branding} model={model} />
+
+			<PromptChartPages report={report} branding={branding} model={model} />
+
+			<OpportunitiesPage report={report} branding={branding} model={model} />
+
+			<NextStepsPage report={report} branding={branding} model={model} />
+
+			<CallToActionPage branding={branding} />
+		</div>
+	);
+}
+
+// ---------- Sub-components ----------
+
+function RunningHeader({ brand }: { brand: string }) {
+	const t = useT();
+	return (
+		<div className="flex items-center justify-between mb-6 pb-3 border-b border-slate-100 dark:border-border print:border-slate-100">
+			<span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400 dark:text-muted-foreground print:text-slate-400">
+				{t("AI Share of Voice Report")}
+			</span>
+			<span className="text-[10px] font-medium text-slate-400 dark:text-muted-foreground print:text-slate-400">
+				{brand}
+			</span>
+		</div>
+	);
+}
+
+function Section({ title, subtitle }: { title: string; subtitle?: string }) {
+	return (
+		<div className="border-l-[3px] border-slate-800 dark:border-border print:border-slate-800 pl-3 mb-4">
+			<h2 className="text-base font-semibold">{title}</h2>
+			{subtitle && (
+				<p className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500 mt-0.5 leading-relaxed">
+					{subtitle}
+				</p>
+			)}
+		</div>
+	);
+}
+
+function TH({
+	children,
+	align,
+	className = "",
+}: {
+	children: React.ReactNode;
+	align: "left" | "center" | "right";
+	className?: string;
+}) {
+	const alignCls = align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left";
+	return (
+		<th
+			className={`py-2.5 px-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-muted-foreground print:text-slate-500 ${alignCls} ${className}`}
+		>
+			{children}
+		</th>
+	);
+}
+
+function CoverStat({ value, label }: { value: string; label: string }) {
+	return (
+		<div className="border-t-2 border-slate-800 dark:border-border print:border-slate-800 pt-3">
+			<div className="text-2xl font-bold">{value}</div>
+			<div className="text-[10px] text-slate-500 dark:text-muted-foreground print:text-slate-500 mt-0.5">{label}</div>
+		</div>
+	);
+}
+
+function Bar({ value, color }: { value: number | null; color: string }) {
+	return (
+		<div className="w-full bg-slate-100 dark:bg-muted print:bg-slate-100 rounded-full h-2.5">
+			<div className={`${color} h-2.5 rounded-full`} style={{ width: `${Math.max(2, value ?? 0)}%` }} />
+		</div>
+	);
+}
+
+function Badge({ category }: { category: PromptCategory }) {
+	const t = useT();
+	const cls =
+		category === "strength"
+			? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 print:bg-emerald-50 print:text-emerald-700 border-emerald-200"
+			: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 print:bg-amber-50 print:text-amber-700 border-amber-200";
+	return (
+		<span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${cls}`}>
+			{category === "strength" ? t("Strength") : t("Opportunity")}
+		</span>
+	);
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+	return (
+		<div className="flex justify-between items-center">
+			<span className="text-xs text-slate-500 dark:text-muted-foreground print:text-slate-500">{label}</span>
+			<span className="text-xs font-semibold">{value}</span>
+		</div>
+	);
+}
+
+function Finding({ children }: { children: React.ReactNode }) {
+	return (
+		<div className="flex gap-3 items-start">
+			<div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-[7px] shrink-0" />
+			<p className="text-sm text-slate-700 dark:text-foreground print:text-slate-700 leading-relaxed">{children}</p>
+		</div>
+	);
+}
+
+function PageFooter({ branding }: { branding?: ClientConfig["branding"] }) {
+	return (
+		<div className="pt-4 border-t border-slate-100 dark:border-border print:border-slate-100 flex justify-between items-center text-[10px] text-slate-400 dark:text-muted-foreground print:text-slate-400">
+			<Logo
+				iconClassName="!size-3"
+				textClassName="text-[10px] font-medium text-slate-400 dark:text-muted-foreground print:text-slate-400"
+			/>
+			<span>{branding?.url || "github.com/BeatAPI/BeatGEO"}</span>
+		</div>
+	);
+}

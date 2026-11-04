@@ -1,0 +1,27 @@
+meta {
+  name: the key plugin's delete endpoint is not reachable over HTTP
+  type: http
+  seq: 22
+}
+
+post {
+  url: {{baseUrl}}/api/auth/api-key/delete
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "keyId": "e2e-apikey-1"
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Account management is not available in the local workspace.
+}
+
+docs {
+  Revocation is blocked over HTTP for the same reason creation is: it goes
+  through the dashboard, where the org role that may do it is checked.
+}

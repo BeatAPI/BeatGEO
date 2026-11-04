@@ -1,0 +1,211 @@
+import { MAX_PROMPTS } from "@workspace/lib/constants";
+import { Button } from "@workspace/ui/components/button";
+import { Sparkles } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import {
+	SUGGESTION_PLACEHOLDER_ROWS,
+	SuggestionsReadyPill,
+	SuggestionsStatus,
+	usePromptSuggestions,
+} from "@/components/prompt-suggestions";
+import { type EditablePrompt, PromptsListEditor } from "@/components/prompts-list-editor";
+import { UnsavedChangesBar } from "@/components/unsaved-changes-bar";
+import { useInvalidatePromptsSummary } from "@/hooks/use-prompts-summary";
+import { useT } from "@/lib/i18n";
+import { trackEvent } from "@/lib/posthog";
+import { useWriteErrorMessage } from "@/lib/write-errors";
+import { updatePromptsFn } from "@/server/prompts";
+
+interface PromptRow {
+	id: string;
+	value: string;
+	enabled: boolean;
+	tags?: string[] | null;
+	systemTags?: string[] | null;
+}
+
+interface PromptsEditorProps {
+	initialPrompts: PromptRow[];
+	brandId: string;
+	pageTitle: string;
+	pageDescription: string;
+}
+
+/** Same ordering the route loader asks Postgres for, so the list a save leaves
+ *  behind matches what a reload would show. */
+function toEditablePrompts(rows: PromptRow[]): EditablePrompt[] {
+	return rows
+		.map((p) => ({
+			id: p.id,
+			_key: p.id,
+			value: p.value,
+			enabled: p.enabled,
+			tags: p.tags || [],
+			systemTags: p.systemTags || [],
+		}))
+		.sort(
+			(a, b) => a.value.localeCompare(b.value) || Number(b.enabled) - Number(a.enabled) || a.id.localeCompare(b.id),
+		);
+}
+
+function sameTags(a: string[], b: string[]) {
+	if (a.length !== b.length) return false;
+	const sortedB = [...b].sort();
+	return [...a].sort().every((t, i) => t === sortedB[i]);
+}
+
+/** How one row differs from its baseline, or null when it is unchanged.
+ *  Clearing the text drops the prompt on save, so it counts as removed rather
+ *  than edited; an untouched blank row from "Add Prompt" isn't a change yet. */
+function classifyPrompt(
+	prompt: EditablePrompt,
+	prev: EditablePrompt | undefined,
+): "added" | "removed" | "edited" | null {
+	if (!prompt.value.trim()) return prev ? "removed" : null;
+	if (!prev) return "added";
+	const edited =
+		prompt.value.trim() !== prev.value.trim() || prompt.enabled !== prev.enabled || !sameTags(prompt.tags, prev.tags);
+	return edited ? "edited" : null;
+}
+
+function diffPrompts(baseline: EditablePrompt[], prompts: EditablePrompt[]) {
+	const before = new Map(baseline.map((p) => [p.id, p]));
+	const changed = new Set<string>();
+	let added = 0;
+	let edited = 0;
+
+	for (const p of prompts) {
+		const status = classifyPrompt(p, p.id ? before.get(p.id) : undefined);
+		if (!status) continue;
+		changed.add(p._key);
+		if (status === "added") added++;
+		else if (status === "edited") edited++;
+	}
+
+	const liveIds = new Set(prompts.filter((p) => p.value.trim()).map((p) => p.id));
+	return {
+		changedKeys: changed,
+		addedCount: added,
+		editedCount: edited,
+		removedCount: baseline.filter((p) => !liveIds.has(p.id)).length,
+	};
+}
+
+export function PromptsEditor({ initialPrompts, brandId, pageTitle, pageDescription }: PromptsEditorProps) {
+	const t = useT();
+	const [baseline, setBaseline] = useState<EditablePrompt[]>(() => toEditablePrompts(initialPrompts));
+	const [prompts, setPrompts] = useState<EditablePrompt[]>(baseline);
+	const [isSaving, setIsSaving] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const suggestionsRef = useRef<HTMLDivElement>(null);
+	const saveInProgress = useRef(false);
+	const invalidatePromptsSummary = useInvalidatePromptsSummary();
+	const writeError = useWriteErrorMessage();
+
+	const { changedKeys, removedCount, addedCount, editedCount } = useMemo(
+		() => diffPrompts(baseline, prompts),
+		[prompts, baseline],
+	);
+
+	const filledValues = useMemo(() => prompts.map((p) => p.value).filter((v) => v.trim().length > 0), [prompts]);
+	const suggestions = usePromptSuggestions({ brandId, prompts, setPrompts });
+	const isDirty = changedKeys.size > 0 || removedCount > 0;
+	const summary = [
+		addedCount && `${addedCount} added`,
+		editedCount && `${editedCount} edited`,
+		removedCount && `${removedCount} removed`,
+	]
+		.filter(Boolean)
+		.join(" · ");
+
+	const savePrompts = async () => {
+		if (saveInProgress.current) return;
+
+		saveInProgress.current = true;
+		setIsSaving(true);
+		setError(null);
+		try {
+			const validPrompts = prompts.filter((p) => p.value.trim());
+
+			const currentIds = new Set(validPrompts.filter((p) => p.id).map((p) => p.id));
+			const removedPrompts = baseline
+				.filter((p) => !currentIds.has(p.id))
+				.map((p) => ({ id: p.id, value: p.value, enabled: false, tags: p.tags }));
+
+			const allPrompts = [
+				...validPrompts.map((p) => ({
+					...(p.id ? { id: p.id } : {}),
+					value: p.value.trim(),
+					enabled: p.enabled,
+					tags: p.tags,
+				})),
+				...removedPrompts,
+			];
+
+			const saved = await updatePromptsFn({ data: { brandId, prompts: allPrompts } });
+
+			trackEvent("prompts_updated", {
+				added: addedCount,
+				edited: editedCount,
+				deleted: removedCount,
+				suggested: validPrompts.filter((p) => p.suggested && !p.id).length,
+			});
+
+			// Adopt the server's rows so newly inserted prompts carry their real
+			// ids — re-saving without them would insert duplicates.
+			const next = toEditablePrompts(saved);
+			setPrompts(next);
+			setBaseline(next);
+			invalidatePromptsSummary(brandId);
+		} catch (err) {
+			console.error("Error saving prompts:", err);
+			setError(writeError(err, "Failed to save prompts."));
+		} finally {
+			setIsSaving(false);
+			saveInProgress.current = false;
+		}
+	};
+
+	return (
+		<div className="space-y-6">
+			<div className="flex flex-wrap items-center justify-between gap-4">
+				<div>
+					<h1 className="beat-page-title">{t(pageTitle)}</h1>
+					<p className="text-[15px] text-muted-foreground">{t(pageDescription)}</p>
+				</div>
+				<Button
+					variant="outline"
+					type="button"
+					onClick={suggestions.start}
+					disabled={suggestions.running || filledValues.length >= MAX_PROMPTS || suggestions.remaining === 0}
+					className="flex shrink-0 items-center gap-2 cursor-pointer"
+				>
+					<Sparkles className="h-4 w-4" />
+					{t(" Suggest Questions")}
+				</Button>
+			</div>
+
+			<PromptsListEditor
+				prompts={prompts}
+				onChange={setPrompts}
+				changedKeys={changedKeys}
+				leading={<SuggestionsStatus suggestions={suggestions} ref={suggestionsRef} />}
+				pendingRows={suggestions.running ? SUGGESTION_PLACEHOLDER_ROWS : 0}
+			/>
+
+			<SuggestionsReadyPill arrived={suggestions.arrived} target={suggestionsRef} />
+
+			<UnsavedChangesBar
+				isDirty={isDirty}
+				isSaving={isSaving}
+				summary={summary || undefined}
+				error={error}
+				onSave={savePrompts}
+				onDiscard={() => {
+					setPrompts(baseline);
+					setError(null);
+				}}
+			/>
+		</div>
+	);
+}

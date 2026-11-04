@@ -1,0 +1,52 @@
+import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { embedBinaries } from "@workspace/og/vite-plugin";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite";
+import pkg from "./package.json" with { type: "json" };
+
+const tslibEsm = fileURLToPath(import.meta.resolve("tslib/tslib.es6.mjs"));
+
+export default defineConfig({
+	// Keep application dependencies separate from component-test transforms.
+	cacheDir: "node_modules/.vite-app",
+	build: {
+		sourcemap: "hidden",
+	},
+	define: {
+		__APP_VERSION__: JSON.stringify(pkg.version),
+	},
+	server: {
+		host: "127.0.0.1",
+	},
+	resolve: {
+		tsconfigPaths: true,
+		alias: {
+			"@/": new URL("./src/", import.meta.url).pathname,
+			tslib: tslibEsm,
+		},
+	},
+	plugins: [
+		embedBinaries(),
+		// Parallel browser tests must not receive another request's server console errors.
+		devtools({ consolePiping: { enabled: !process.env.BEAT_GEO_TEST_ENV_DIR } }),
+		tailwindcss(),
+		tanstackStart(),
+		nitro({
+			traceDeps: ["@takumi-rs/core"],
+			exportConditions: ["import"],
+			sourcemap: true,
+			alias: {
+				tslib: tslibEsm,
+			},
+			noExternals: ["@opentelemetry", "@prisma/instrumentation"],
+			rollupConfig: {
+				external: ["fsevents"],
+			},
+		}),
+		viteReact(),
+	],
+});

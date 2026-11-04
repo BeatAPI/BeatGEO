@@ -1,0 +1,507 @@
+{
+	"ga": {
+		"schema": "beat-geo/ga-summary@1",
+		"generatedAt": "2026-10-26T07:46:04.835Z",
+		"synthetic": true,
+		"property": {
+			"id": "123456789",
+			"name": "Example site"
+		},
+		"site": "example.com",
+		"dates": {
+			"startDate": "2026-09-28",
+			"endDate": "2026-10-25"
+		},
+		"timeZone": "Asia/Shanghai",
+		"fetchedAt": "2026-10-26T00:00:00.000Z",
+		"quality": {
+			"sources": {
+				"timeZone": "Asia/Shanghai",
+				"thresholded": false,
+				"otherRow": false,
+				"sampled": false,
+				"truncated": false,
+				"restricted": false,
+				"emptyReason": false
+			},
+			"landing": {
+				"timeZone": "Asia/Shanghai",
+				"thresholded": false,
+				"otherRow": false,
+				"sampled": false,
+				"truncated": false,
+				"restricted": false,
+				"emptyReason": false
+			}
+		},
+		"warnings": [],
+		"totals": {
+			"sessions": 22,
+			"engagedSessions": 13,
+			"keyEvents": 3
+		},
+		"platforms": [
+			{
+				"platform": "ChatGPT",
+				"sessions": 12,
+				"engagedSessions": 8,
+				"keyEvents": 2
+			},
+			{
+				"platform": "豆包 / Doubao",
+				"sessions": 7,
+				"engagedSessions": 4,
+				"keyEvents": 1
+			},
+			{
+				"platform": "Other AI Assistant",
+				"sessions": 3,
+				"engagedSessions": 1,
+				"keyEvents": 0
+			}
+		],
+		"sources": [
+			{
+				"source": "chatgpt.com",
+				"medium": "ai-assistant",
+				"channel": "AI Assistant",
+				"platform": "ChatGPT",
+				"basis": "source-domain",
+				"sessions": 12,
+				"engagedSessions": 8,
+				"keyEvents": 2
+			},
+			{
+				"source": "doubao.com",
+				"medium": "referral",
+				"channel": "Referral",
+				"platform": "豆包 / Doubao",
+				"basis": "source-domain",
+				"sessions": 7,
+				"engagedSessions": 4,
+				"keyEvents": 1
+			},
+			{
+				"source": "new-assistant.example",
+				"medium": "ai-assistant",
+				"channel": "AI Assistant",
+				"platform": "Other AI Assistant",
+				"basis": "ga-channel",
+				"sessions": 3,
+				"engagedSessions": 1,
+				"keyEvents": 0
+			}
+		],
+		"pages": [
+			{
+				"source": "chatgpt.com",
+				"medium": "ai-assistant",
+				"channel": "AI Assistant",
+				"path": "/docs",
+				"platform": "ChatGPT",
+				"basis": "source-domain",
+				"sessions": 9,
+				"engagedSessions": 7,
+				"keyEvents": 2
+			},
+			{
+				"source": "chatgpt.com",
+				"medium": "ai-assistant",
+				"channel": "AI Assistant",
+				"path": "/pricing",
+				"platform": "ChatGPT",
+				"basis": "source-domain",
+				"sessions": 3,
+				"engagedSessions": 1,
+				"keyEvents": 0
+			},
+			{
+				"source": "doubao.com",
+				"medium": "referral",
+				"channel": "Referral",
+				"path": "/",
+				"platform": "豆包 / Doubao",
+				"basis": "source-domain",
+				"sessions": 7,
+				"engagedSessions": 4,
+				"keyEvents": 1
+			},
+			{
+				"source": "new-assistant.example",
+				"medium": "ai-assistant",
+				"channel": "AI Assistant",
+				"path": "/docs",
+				"platform": "Other AI Assistant",
+				"basis": "ga-channel",
+				"sessions": 3,
+				"engagedSessions": 1,
+				"keyEvents": 0
+			}
+		],
+		"observation": "observed"
+	},
+	"crawls": {
+		"schema": "beat-geo/crawl-summary@1",
+		"generatedAt": "2026-10-26T07:46:04.836Z",
+		"site": "example.com",
+		"synthetic": true,
+		"ruleVersion": "beat-geo/crawlers@1",
+		"catalogue": [
+			{
+				"id": "gptbot",
+				"name": "GPTBot",
+				"platform": "OpenAI",
+				"purpose": "training",
+				"documentation": "https://developers.openai.com/api/docs/bots",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "oai-searchbot",
+				"name": "OAI-SearchBot",
+				"platform": "OpenAI",
+				"purpose": "search",
+				"documentation": "https://developers.openai.com/api/docs/bots",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "chatgpt-user",
+				"name": "ChatGPT-User",
+				"platform": "OpenAI",
+				"purpose": "user",
+				"documentation": "https://developers.openai.com/api/docs/bots",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "claudebot",
+				"name": "ClaudeBot",
+				"platform": "Anthropic",
+				"purpose": "training",
+				"documentation": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "claude-searchbot",
+				"name": "Claude-SearchBot",
+				"platform": "Anthropic",
+				"purpose": "search",
+				"documentation": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "claude-user",
+				"name": "Claude-User",
+				"platform": "Anthropic",
+				"purpose": "user",
+				"documentation": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "perplexitybot",
+				"name": "PerplexityBot",
+				"platform": "Perplexity",
+				"purpose": "search",
+				"documentation": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "perplexity-user",
+				"name": "Perplexity-User",
+				"platform": "Perplexity",
+				"purpose": "user",
+				"documentation": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "kimibot",
+				"name": "KimiBot",
+				"platform": "Kimi",
+				"purpose": "training",
+				"documentation": "https://www.kimi.com/policies/kimi-crawlers",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "kimi-searchbot",
+				"name": "Kimi-SearchBot",
+				"platform": "Kimi",
+				"purpose": "search",
+				"documentation": "https://www.kimi.com/policies/kimi-crawlers",
+				"reviewedAt": "2026-10-26"
+			},
+			{
+				"id": "kimi-user",
+				"name": "Kimi-User",
+				"platform": "Kimi",
+				"purpose": "user",
+				"documentation": "https://www.kimi.com/policies/kimi-crawlers",
+				"reviewedAt": "2026-10-26"
+			}
+		],
+		"input": {
+			"sha256": "6e09a1f31ba9db83a7c45d230d6f8e9bf55f334877428e502ee44318c1e7a64a",
+			"format": "json",
+			"total": 6,
+			"parsed": 6,
+			"rejected": 0,
+			"otherHost": 0,
+			"outsideWindow": 0,
+			"inWindow": 6,
+			"unrecognized": 1,
+			"ambiguous": 0,
+			"errors": []
+		},
+		"observation": {
+			"state": "observed",
+			"coverage": "unknown",
+			"requestedFrom": null,
+			"requestedTo": null,
+			"observedFrom": "2026-10-25T08:00:00.000Z",
+			"observedTo": "2026-10-25T11:00:00.000Z",
+			"configuredHostRequests": 0
+		},
+		"totals": {
+			"requests": 5,
+			"get2xx": 2,
+			"head": 1,
+			"notModified": 1,
+			"denied": 1,
+			"errors5xx": 0,
+			"statuses": {
+				"200": 3,
+				"304": 1,
+				"403": 1
+			},
+			"firstSeen": "2026-10-25T08:00:00.000Z",
+			"lastSeen": "2026-10-25T10:00:00.000Z",
+			"pages": 3,
+			"identities": 4,
+			"verifiedRequests": null
+		},
+		"crawlers": [
+			{
+				"id": "oai-searchbot",
+				"name": "OAI-SearchBot",
+				"platform": "OpenAI",
+				"purpose": "search",
+				"documentation": "https://developers.openai.com/api/docs/bots",
+				"reviewedAt": "2026-10-26",
+				"requests": 2,
+				"get2xx": 1,
+				"head": 0,
+				"notModified": 0,
+				"denied": 1,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1,
+					"403": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T08:00:00.000Z",
+				"lastSeen": "2026-10-25T08:10:00.000Z",
+				"pages": 2
+			},
+			{
+				"id": "claude-searchbot",
+				"name": "Claude-SearchBot",
+				"platform": "Anthropic",
+				"purpose": "search",
+				"documentation": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
+				"reviewedAt": "2026-10-26",
+				"requests": 1,
+				"get2xx": 0,
+				"head": 0,
+				"notModified": 1,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"304": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T09:00:00.000Z",
+				"lastSeen": "2026-10-25T09:00:00.000Z",
+				"pages": 1
+			},
+			{
+				"id": "kimibot",
+				"name": "KimiBot",
+				"platform": "Kimi",
+				"purpose": "training",
+				"documentation": "https://www.kimi.com/policies/kimi-crawlers",
+				"reviewedAt": "2026-10-26",
+				"requests": 1,
+				"get2xx": 1,
+				"head": 0,
+				"notModified": 0,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T10:00:00.000Z",
+				"lastSeen": "2026-10-25T10:00:00.000Z",
+				"pages": 1
+			},
+			{
+				"id": "perplexitybot",
+				"name": "PerplexityBot",
+				"platform": "Perplexity",
+				"purpose": "search",
+				"documentation": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
+				"reviewedAt": "2026-10-26",
+				"requests": 1,
+				"get2xx": 0,
+				"head": 1,
+				"notModified": 0,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T09:05:00.000Z",
+				"lastSeen": "2026-10-25T09:05:00.000Z",
+				"pages": 1
+			}
+		],
+		"pages": [
+			{
+				"crawlerId": "kimibot",
+				"name": "KimiBot",
+				"path": "/blog",
+				"requests": 1,
+				"get2xx": 1,
+				"head": 0,
+				"notModified": 0,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T10:00:00.000Z",
+				"lastSeen": "2026-10-25T10:00:00.000Z"
+			},
+			{
+				"crawlerId": "claude-searchbot",
+				"name": "Claude-SearchBot",
+				"path": "/docs",
+				"requests": 1,
+				"get2xx": 0,
+				"head": 0,
+				"notModified": 1,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"304": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T09:00:00.000Z",
+				"lastSeen": "2026-10-25T09:00:00.000Z"
+			},
+			{
+				"crawlerId": "oai-searchbot",
+				"name": "OAI-SearchBot",
+				"path": "/docs",
+				"requests": 1,
+				"get2xx": 1,
+				"head": 0,
+				"notModified": 0,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T08:00:00.000Z",
+				"lastSeen": "2026-10-25T08:00:00.000Z"
+			},
+			{
+				"crawlerId": "perplexitybot",
+				"name": "PerplexityBot",
+				"path": "/docs",
+				"requests": 1,
+				"get2xx": 0,
+				"head": 1,
+				"notModified": 0,
+				"denied": 0,
+				"errors5xx": 0,
+				"statuses": {
+					"200": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T09:05:00.000Z",
+				"lastSeen": "2026-10-25T09:05:00.000Z"
+			},
+			{
+				"crawlerId": "oai-searchbot",
+				"name": "OAI-SearchBot",
+				"path": "/pricing",
+				"requests": 1,
+				"get2xx": 0,
+				"head": 0,
+				"notModified": 0,
+				"denied": 1,
+				"errors5xx": 0,
+				"statuses": {
+					"403": 1
+				},
+				"verification": "unverified",
+				"firstSeen": "2026-10-25T08:10:00.000Z",
+				"lastSeen": "2026-10-25T08:10:00.000Z"
+			}
+		],
+		"requests": [
+			{
+				"line": 1,
+				"time": "2026-10-25T08:00:00.000Z",
+				"path": "/docs",
+				"method": "GET",
+				"status": 200,
+				"hostBasis": "request_host",
+				"crawlerId": "oai-searchbot",
+				"verification": "unverified"
+			},
+			{
+				"line": 2,
+				"time": "2026-10-25T08:10:00.000Z",
+				"path": "/pricing",
+				"method": "GET",
+				"status": 403,
+				"hostBasis": "request_host",
+				"crawlerId": "oai-searchbot",
+				"verification": "unverified"
+			},
+			{
+				"line": 3,
+				"time": "2026-10-25T09:00:00.000Z",
+				"path": "/docs",
+				"method": "GET",
+				"status": 304,
+				"hostBasis": "request_host",
+				"crawlerId": "claude-searchbot",
+				"verification": "unverified"
+			},
+			{
+				"line": 4,
+				"time": "2026-10-25T09:05:00.000Z",
+				"path": "/docs",
+				"method": "HEAD",
+				"status": 200,
+				"hostBasis": "request_host",
+				"crawlerId": "perplexitybot",
+				"verification": "unverified"
+			},
+			{
+				"line": 5,
+				"time": "2026-10-25T10:00:00.000Z",
+				"path": "/blog",
+				"method": "GET",
+				"status": 200,
+				"hostBasis": "request_host",
+				"crawlerId": "kimibot",
+				"verification": "unverified"
+			}
+		],
+		"ambiguous": []
+	}
+}

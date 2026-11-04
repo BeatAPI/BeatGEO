@@ -1,0 +1,257 @@
+{
+  "schema": "beat-geo/ga-export@1",
+  "synthetic": true,
+  "property": {
+    "id": "123456789",
+    "name": "Example site"
+  },
+  "site": "example.com",
+  "dates": {
+    "startDate": "2026-09-28",
+    "endDate": "2026-10-25"
+  },
+  "fetchedAt": "2026-10-26T00:00:00.000Z",
+  "sources": {
+    "dimensionHeaders": [
+      {
+        "name": "sessionSource"
+      },
+      {
+        "name": "sessionMedium"
+      },
+      {
+        "name": "sessionDefaultChannelGroup"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions"
+      },
+      {
+        "name": "engagedSessions"
+      },
+      {
+        "name": "keyEvents"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "chatgpt.com"
+          },
+          {
+            "value": "ai-assistant"
+          },
+          {
+            "value": "AI Assistant"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "12"
+          },
+          {
+            "value": "8"
+          },
+          {
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "doubao.com"
+          },
+          {
+            "value": "referral"
+          },
+          {
+            "value": "Referral"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "7"
+          },
+          {
+            "value": "4"
+          },
+          {
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "new-assistant.example"
+          },
+          {
+            "value": "ai-assistant"
+          },
+          {
+            "value": "AI Assistant"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "3"
+          },
+          {
+            "value": "1"
+          },
+          {
+            "value": "0"
+          }
+        ]
+      }
+    ],
+    "rowCount": 3,
+    "metadata": {
+      "timeZone": "Asia/Shanghai"
+    }
+  },
+  "landing": {
+    "dimensionHeaders": [
+      {
+        "name": "sessionSource"
+      },
+      {
+        "name": "sessionMedium"
+      },
+      {
+        "name": "sessionDefaultChannelGroup"
+      },
+      {
+        "name": "landingPage"
+      }
+    ],
+    "metricHeaders": [
+      {
+        "name": "sessions"
+      },
+      {
+        "name": "engagedSessions"
+      },
+      {
+        "name": "keyEvents"
+      }
+    ],
+    "rows": [
+      {
+        "dimensionValues": [
+          {
+            "value": "chatgpt.com"
+          },
+          {
+            "value": "ai-assistant"
+          },
+          {
+            "value": "AI Assistant"
+          },
+          {
+            "value": "/docs"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "9"
+          },
+          {
+            "value": "7"
+          },
+          {
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "chatgpt.com"
+          },
+          {
+            "value": "ai-assistant"
+          },
+          {
+            "value": "AI Assistant"
+          },
+          {
+            "value": "/pricing"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "3"
+          },
+          {
+            "value": "1"
+          },
+          {
+            "value": "0"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "doubao.com"
+          },
+          {
+            "value": "referral"
+          },
+          {
+            "value": "Referral"
+          },
+          {
+            "value": "/"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "7"
+          },
+          {
+            "value": "4"
+          },
+          {
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "dimensionValues": [
+          {
+            "value": "new-assistant.example"
+          },
+          {
+            "value": "ai-assistant"
+          },
+          {
+            "value": "AI Assistant"
+          },
+          {
+            "value": "/docs"
+          }
+        ],
+        "metricValues": [
+          {
+            "value": "3"
+          },
+          {
+            "value": "1"
+          },
+          {
+            "value": "0"
+          }
+        ]
+      }
+    ],
+    "rowCount": 4,
+    "metadata": {
+      "timeZone": "Asia/Shanghai"
+    }
+  }
+}

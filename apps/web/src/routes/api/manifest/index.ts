@@ -1,0 +1,105 @@
+/**
+ * /api/manifest - Dynamic Web App Manifest
+ *
+ * Generates a manifest.json for the workspace's branding:
+ *   - A custom APP_ICON: single 128×128 icon from that URL
+ *   - Otherwise (BeatGEO): static SVG icons committed to public/icons/
+ *
+ * Branding values (name, theme color, etc.) are read from server config
+ * so they stay in sync with the rest of the app.
+ */
+import { createFileRoute } from "@tanstack/react-router";
+import { BEAT_GEO_BACKGROUND_COLOR, BEAT_GEO_THEME_COLOR, DEFAULT_APP_ICON } from "@workspace/config/constants";
+import { getDeployment } from "@workspace/deployment";
+
+interface ManifestIcon {
+	src: string;
+	sizes: string;
+	type: string;
+	purpose?: string;
+}
+
+function buildManifest(): object {
+	const deployment = getDeployment();
+	const { branding } = deployment;
+	const hasCustomIcon = branding.icon !== DEFAULT_APP_ICON;
+
+	let icons: ManifestIcon[];
+
+	if (hasCustomIcon) {
+		icons = [
+			{
+				src: branding.icon,
+				sizes: "128x128",
+				type: "image/png",
+			},
+		];
+	} else {
+		// BeatGEO-only assets — never reference these from the custom-icon branch.
+		icons = [
+			{
+				src: "/icons/beatgeo-icon.svg",
+				sizes: "any",
+				type: "image/svg+xml",
+			},
+			{
+				src: "/icons/beatgeo-icon-maskable.svg",
+				sizes: "any",
+				type: "image/svg+xml",
+				purpose: "maskable",
+			},
+			// PWA installers on Android/Chrome require concrete PNG sizes.
+			{
+				src: "/icons/beatgeo-icon-192.png",
+				sizes: "192x192",
+				type: "image/png",
+			},
+			{
+				src: "/icons/beatgeo-icon-512.png",
+				sizes: "512x512",
+				type: "image/png",
+			},
+			{
+				src: "/icons/beatgeo-icon-maskable-192.png",
+				sizes: "192x192",
+				type: "image/png",
+				purpose: "maskable",
+			},
+			{
+				src: "/icons/beatgeo-icon-maskable-512.png",
+				sizes: "512x512",
+				type: "image/png",
+				purpose: "maskable",
+			},
+		];
+	}
+
+	const themeColor = hasCustomIcon ? "#000000" : BEAT_GEO_THEME_COLOR;
+
+	return {
+		short_name: branding.name,
+		name: `${branding.name} - AI Search Optimization`,
+		icons,
+		start_url: "/",
+		scope: "/",
+		display: "standalone",
+		theme_color: themeColor,
+		background_color: BEAT_GEO_BACKGROUND_COLOR,
+	};
+}
+
+export const Route = createFileRoute("/api/manifest/")({
+	server: {
+		handlers: {
+			GET: () => {
+				const manifest = buildManifest();
+				return new Response(JSON.stringify(manifest, null, 2), {
+					headers: {
+						"Content-Type": "application/manifest+json",
+						"Cache-Control": "public, max-age=3600",
+					},
+				});
+			},
+		},
+	},
+});

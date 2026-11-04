@@ -1,0 +1,12 @@
+{
+  "schema": "beat-geo/logs@1",
+  "synthetic": true,
+  "records": [
+    { "time": "2026-10-25T08:00:00Z", "host": "example.com", "path": "/docs", "method": "GET", "status": 200, "userAgent": "OAI-SearchBot/1.0" },
+    { "time": "2026-10-25T08:10:00Z", "host": "example.com", "path": "/pricing", "method": "GET", "status": 403, "userAgent": "OAI-SearchBot/1.0" },
+    { "time": "2026-10-25T09:00:00Z", "host": "example.com", "path": "/docs", "method": "GET", "status": 304, "userAgent": "Claude-SearchBot/1.0" },
+    { "time": "2026-10-25T09:05:00Z", "host": "example.com", "path": "/docs", "method": "HEAD", "status": 200, "userAgent": "PerplexityBot/1.0" },
+    { "time": "2026-10-25T10:00:00Z", "host": "example.com", "path": "/blog", "method": "GET", "status": 200, "userAgent": "KimiBot/1.0" },
+    { "time": "2026-10-25T11:00:00Z", "host": "example.com", "path": "/", "method": "GET", "status": 200, "userAgent": "Mozilla/5.0" }
+  ]
+}

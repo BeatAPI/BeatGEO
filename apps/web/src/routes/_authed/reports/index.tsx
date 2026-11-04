@@ -1,0 +1,278 @@
+import { useT } from "@/lib/i18n";
+/**
+ * /reports - Reports list page
+ *
+ * Available to the local workspace owner.
+ */
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Badge } from "@workspace/ui/components/badge";
+import { Button } from "@workspace/ui/components/button";
+import { Card, CardContent } from "@workspace/ui/components/card";
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { Textarea } from "@workspace/ui/components/textarea";
+import { ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { TagsInput } from "@/components/tags-input";
+import { trackEvent } from "@/lib/posthog";
+import { pageHead } from "@/lib/route-head";
+import { createReportFn, getReportsFn } from "@/server/reports";
+
+export const Route = createFileRoute("/_authed/reports/")({
+	staticData: { crumb: "Reports", shell: "admin" },
+	head: pageHead({ description: "Generate and view one-time brand reports." }),
+	beforeLoad: ({ context }) => {
+		if (!context.isAdmin && !context.hasReportAccess) throw notFound();
+	},
+	component: ReportsPage,
+});
+
+function ReportsPage() {
+	const t = useT();
+	const queryClient = useQueryClient();
+
+	const {
+		data: reports = [],
+		error,
+		isLoading,
+	} = useQuery({
+		queryKey: ["reports"],
+		queryFn: () => getReportsFn(),
+		refetchInterval: 5000,
+		staleTime: 2000,
+	});
+
+	const [formData, setFormData] = useState({
+		brandName: "",
+		brandAliases: [] as string[],
+		brandWebsite: "",
+		manualPrompts: "",
+	});
+	const [submitError, setSubmitError] = useState("");
+	const [success, setSuccess] = useState("");
+
+	const createMutation = useMutation({
+		mutationFn: (data: typeof formData) => createReportFn({ data }),
+		onSuccess: (_data, variables) => {
+			trackEvent("report_created", {
+				has_manual_prompts: Boolean(variables.manualPrompts),
+				brand_alias_count: variables.brandAliases.length,
+			});
+			setSuccess("Report request submitted successfully!");
+			setFormData({ brandName: "", brandAliases: [], brandWebsite: "", manualPrompts: "" });
+			queryClient.invalidateQueries({ queryKey: ["reports"] });
+		},
+		onError: (err: Error) => {
+			setSubmitError(err.message || "An error occurred");
+		},
+	});
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		setSubmitError("");
+		setSuccess("");
+		createMutation.mutate(formData);
+	};
+
+	const getStatusBadgeVariant = (status: string) => {
+		switch (status) {
+			case "completed":
+				return "default" as const;
+			case "processing":
+				return "secondary" as const;
+			case "failed":
+				return "destructive" as const;
+			default:
+				return "outline" as const;
+		}
+	};
+
+	const extractDomain = (url: string) => {
+		try {
+			return new URL(url).hostname.replace("www.", "");
+		} catch {
+			return url;
+		}
+	};
+
+	return (
+		<div className="space-y-8">
+			<div className="space-y-2">
+				<h1 className="text-3xl font-bold tracking-tight">{t("Reports")}</h1>
+				<p className="text-muted-foreground">{t("Generate one-time brand reports.")}</p>
+			</div>
+			<div className="space-y-6 max-w-4xl">
+				<div className="space-y-4">
+					<h2 className="text-2xl font-semibold">{t("Create New Report")}</h2>
+
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div className="space-y-2">
+								<Label htmlFor="brandName">{t("Brand Name")}</Label>
+								<Input
+									id="brandName"
+									type="text"
+									placeholder={t("Enter brand name")}
+									value={formData.brandName}
+									onChange={(e) => setFormData({ ...formData, brandName: e.target.value })}
+									required
+									disabled={createMutation.isPending}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="brandWebsite">{t("Brand Website")}</Label>
+								<Input
+									id="brandWebsite"
+									type="url"
+									placeholder="https://example.com"
+									value={formData.brandWebsite}
+									onChange={(e) => setFormData({ ...formData, brandWebsite: e.target.value })}
+									required
+									disabled={createMutation.isPending}
+								/>
+							</div>
+						</div>
+
+						<div className="space-y-2">
+							<Label>
+								{t("Other Brand Names ")}
+								<span className="text-muted-foreground font-normal">{t("(Optional)")}</span>
+							</Label>
+							<TagsInput
+								value={formData.brandAliases}
+								onValueChange={(brandAliases) => setFormData({ ...formData, brandAliases })}
+								placeholder={t("Add a name variant...")}
+								searchPlaceholder="Add a name variant..."
+								maxItems={10}
+								disabled={createMutation.isPending}
+							/>
+							<p className="text-xs text-muted-foreground">
+								{t(
+									"Spellings, abbreviations, or product names the brand also goes by. A mention of any of them counts as a brand mention.",
+								)}
+							</p>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="manualPrompts">
+								{t("Manual Questions ")}
+								<span className="text-muted-foreground font-normal">{t("(Optional)")}</span>
+							</Label>
+							<Textarea
+								id="manualPrompts"
+								placeholder={t("Enter one question per line, up to 50")}
+								value={formData.manualPrompts}
+								onChange={(e) => setFormData({ ...formData, manualPrompts: e.target.value })}
+								disabled={createMutation.isPending}
+								rows={6}
+								className="font-mono text-sm"
+							/>
+							<p className="text-xs text-muted-foreground">
+								{formData.manualPrompts.trim() ? (
+									<>
+										<strong>{t("Note:")}</strong>
+										{t(" Questions will NOT be auto-generated. Using your")}{" "}
+										{
+											formData.manualPrompts
+												.trim()
+												.split("\n")
+												.filter((line) => line.trim()).length
+										}{" "}
+										{t("manual question")}
+										{formData.manualPrompts
+											.trim()
+											.split("\n")
+											.filter((line) => line.trim()).length !== 1
+											? t("s")
+											: ""}
+										.
+									</>
+								) : (
+									t("Leave empty to auto-generate questions based on website analysis, competitors, and keywords.")
+								)}
+							</p>
+						</div>
+
+						{submitError && <p className="text-sm text-destructive">{submitError}</p>}
+						{success && <p className="text-sm text-emerald-400">{success}</p>}
+
+						<Button type="submit" disabled={createMutation.isPending} className="cursor-pointer">
+							{createMutation.isPending ? t("Creating Report...") : t("Create Report")}
+						</Button>
+					</form>
+				</div>
+
+				<div className="space-y-4">
+					<h2 className="text-2xl font-semibold">{t("Report History")}</h2>
+
+					{error && (
+						<Card>
+							<CardContent className="py-8 text-center">
+								<p className="text-destructive">
+									{error instanceof Error ? error.message : t("Failed to load reports")}
+								</p>
+							</CardContent>
+						</Card>
+					)}
+
+					{isLoading ? (
+						<div className="flex items-center justify-center py-8">
+							<div className="flex items-center space-x-2">
+								<Spinner className="size-6 text-primary" />
+								<span>{t("Loading reports...")}</span>
+							</div>
+						</div>
+					) : !error && reports.length === 0 ? (
+						<Card>
+							<CardContent className="py-8 text-center">
+								<p className="text-muted-foreground">{t("No reports found.")}</p>
+							</CardContent>
+						</Card>
+					) : (
+						!error && (
+							<div className="space-y-3">
+								{reports.map((report: any) => (
+									<div key={report.id} className="bg-card border border-border rounded-lg p-4">
+										<div className="flex items-center justify-between">
+											<div className="flex-1 min-w-0">
+												<h3 className="font-semibold text-lg">
+													{report.brandName}{" "}
+													<span className="text-muted-foreground font-normal">
+														({extractDomain(report.brandWebsite)})
+													</span>
+												</h3>
+											</div>
+											<div className="ml-4">
+												{report.status === "completed" ? (
+													<Link
+														to="/reports/render/$reportId"
+														params={{
+															reportId: report.id,
+														}}
+														target="_blank"
+													>
+														<Button variant="default" size="sm" className="cursor-pointer h-6 px-2 text-xs">
+															<ExternalLink className="size-3 mr-0.5" />
+															{t("View Report")}
+														</Button>
+													</Link>
+												) : (
+													<Badge variant={getStatusBadgeVariant(report.status)} className="text-xs">
+														{report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+													</Badge>
+												)}
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						)
+					)}
+				</div>
+			</div>
+		</div>
+	);
+}

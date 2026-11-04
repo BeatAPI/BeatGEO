@@ -1,0 +1,115 @@
+import { DEFAULT_APP_NAME } from "@workspace/config/constants";
+import type { Competitor } from "@workspace/lib/db/schema";
+import { Badge } from "@workspace/ui/components/badge";
+import type { ChartDataPoint, ChartSubject } from "@/lib/chart-utils";
+import { visibilityBadgeProps } from "@/lib/chart-utils";
+import { useT } from "@/lib/i18n";
+import type { LookbackPeriod } from "@/lib/lookback";
+import { BaseChart } from "./base-chart";
+
+interface ChartExportBranding {
+	name?: string;
+	chartColors: string[];
+}
+
+export interface ChartExportPreviewProps {
+	promptName: string;
+	visibility: number | null;
+	data: ChartDataPoint[];
+	lookback: LookbackPeriod;
+	brand: ChartSubject;
+	competitors: Competitor[];
+	branding: ChartExportBranding;
+}
+
+const EXPORT_W = 1200;
+const EXPORT_H = 628;
+
+const HEADER_H = 56;
+const HEADER_TOP = 16;
+const GAP_HEADER_CARD = 16;
+const CARD_PADDING_Y = 24;
+const FOOTER_REGION = 80;
+const CHART_H = EXPORT_H - HEADER_TOP - HEADER_H - GAP_HEADER_CARD - CARD_PADDING_Y - FOOTER_REGION;
+
+export function ChartExportPreview({
+	promptName,
+	visibility,
+	data,
+	lookback,
+	brand,
+	competitors,
+	branding,
+}: ChartExportPreviewProps) {
+	const t = useT();
+	const name = branding.name || DEFAULT_APP_NAME;
+
+	return (
+		<div
+			style={{ width: EXPORT_W, height: EXPORT_H, paddingTop: HEADER_TOP, fontSize: 16 }}
+			className="bg-background text-foreground overflow-hidden flex flex-col"
+		>
+			{/* Title bar */}
+			<div
+				style={{ height: HEADER_H, marginBottom: GAP_HEADER_CARD }}
+				className="flex items-center justify-between px-10 gap-6 shrink-0"
+			>
+				<h2
+					className="font-semibold text-foreground truncate flex-1 min-w-0"
+					style={{ fontSize: 22 }}
+					title={promptName}
+				>
+					{promptName}
+				</h2>
+				{visibility !== null && (
+					<Badge
+						variant={visibilityBadgeProps(visibility).variant}
+						className={`${visibilityBadgeProps(visibility).className} shrink-0`}
+						style={{ fontSize: 16, padding: "4px 14px" }}
+					>
+						{visibility}
+						{t("% Visibility")}
+					</Badge>
+				)}
+			</div>
+
+			{/* Chart card */}
+			<div className="px-8 shrink-0">
+				<div
+					className="rounded-xl border border-border overflow-hidden pl-0"
+					style={{ paddingRight: 12, paddingTop: 12, paddingBottom: 8 }}
+				>
+					<BaseChart
+						data={data}
+						lookback={lookback}
+						brand={brand}
+						competitors={competitors}
+						isAnimationActive={false}
+						chartType="line"
+						chartColors={branding.chartColors}
+						chartHeight={`${CHART_H}px`}
+					/>
+				</div>
+			</div>
+
+			{/* Branding footer — fills remaining space, content vertically centered */}
+			<div className="flex-1 flex items-center justify-between px-10 min-h-0">
+				<div className="flex items-center gap-3">
+					<img
+						src="/icons/beatgeo-mark.png"
+						alt={`${name} logo`}
+						style={{ width: 28, height: 28 }}
+						className="object-contain beat-logo-mark"
+						crossOrigin="anonymous"
+					/>
+					<span className="font-semibold tracking-tight text-foreground" style={{ fontSize: 24 }}>
+						{name}
+					</span>
+				</div>
+				<span style={{ fontSize: 18 }} className="text-muted-foreground font-medium">
+					github.com/BeatAPI/BeatGEO
+				</span>
+			</div>
+		</div>
+	);
+}

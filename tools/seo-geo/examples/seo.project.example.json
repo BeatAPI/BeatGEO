@@ -1,0 +1,11 @@
+{
+  "site": "acme.example",
+  "country": "us",
+  "language": "en",
+  "competitors": ["zeta.example"],
+  "sources": [],
+  "keywords": ["image generation api", "product photography api"],
+  "workflows": ["all"],
+  "limit": 10,
+  "months": 3
+}

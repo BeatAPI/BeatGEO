@@ -1,0 +1,30 @@
+{
+  "name": "e2e",
+  "version": "0.4.5",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test:e2e": "playwright test --project=local",
+    "test:api": "mkdir -p test-results && cd bruno && bru run -r --env local --reporter-junit ../test-results/api-junit.xml --reporter-json ../test-results/api-report.json",
+    "validate:spec": "node validate-openapi.mjs test-results/api-report.json",
+    "seed": "tsx seed.ts"
+  },
+  "dependencies": {
+    "@workspace/lib": "workspace:*"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "@types/pg": "^8.23.1",
+    "@usebruno/cli": "4.2.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "pg": "^8.23.1",
+    "pg-boss": "^12.36.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

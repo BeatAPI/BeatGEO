@@ -1,0 +1,848 @@
+{
+  "schema": "beat-geo/seo-snapshot@1",
+  "site": "acme.example",
+  "synthetic": true,
+  "createdAt": "2026-10-31T00:00:00.000Z",
+  "priceDate": "2026-10-31",
+  "stopped": null,
+  "records": [
+    {
+      "id": "78cfe5db0fa1fc0b186043ba45099a7f476b10523e2702129df886e577037baa",
+      "tool": "keyword-overview",
+      "input": {
+        "keywords": [
+          "image generation api",
+          "product photography api"
+        ],
+        "country": "us",
+        "language": "en"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.keyword_overview",
+        "request_id": "synthetic_78cfe5db",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "keyword": "image generation api",
+            "search_volume": 120,
+            "keyword_difficulty": 24,
+            "cpc_usd": 1.5,
+            "intent": "commercial",
+            "updated_at": "2026-09-12T00:00:00Z",
+            "monthly_searches": [
+              {
+                "year": 2026,
+                "month": 8,
+                "search_volume": 100
+              },
+              {
+                "year": 2026,
+                "month": 9,
+                "search_volume": 120
+              }
+            ]
+          }
+        ]
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "a618cff4bf1df43d7dfd9d37cb149ffa5b8b2b9f22abee4508e877a50fd62767",
+      "tool": "keyword-ideas",
+      "input": {
+        "keywords": [
+          "image generation api",
+          "product photography api"
+        ],
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.keyword_ideas",
+        "request_id": "synthetic_a618cff4",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "keyword": "image generation api",
+            "search_volume": 120,
+            "keyword_difficulty": 24,
+            "cpc_usd": 1.5,
+            "intent": "commercial",
+            "updated_at": "2026-09-12T00:00:00Z"
+          },
+          {
+            "keyword": "product photography api",
+            "search_volume": 70,
+            "keyword_difficulty": 24,
+            "cpc_usd": 1.5,
+            "intent": "commercial",
+            "updated_at": "2026-09-12T00:00:00Z"
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 2
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "d7324cd2634c80f39303fb91f8486194a8eefce443c830f3a4a85daf87e46fb4",
+      "tool": "keyword-difficulty",
+      "input": {
+        "keywords": [
+          "image generation api",
+          "product photography api"
+        ],
+        "country": "us",
+        "language": "en"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.keyword_difficulty",
+        "request_id": "synthetic_d7324cd2",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "keyword": "image generation api",
+            "keyword_difficulty": 24
+          }
+        ]
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "932f25c5f91931a8254500044176b630b23a04fca9b79a27072b3e393d8fff04",
+      "tool": "domain-overview",
+      "input": {
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_overview",
+        "request_id": "synthetic_932f25c5",
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "organic": {
+          "ranking_keywords": 23,
+          "search_traffic_estimate": 430,
+          "rank_distribution": {
+            "1": 2,
+            "2-3": 3,
+            "4-10": 6,
+            "11-20": 12
+          }
+        },
+        "paid": {
+          "ranking_keywords": 0,
+          "search_traffic_estimate": 0
+        }
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "42329aa32000664ef10a55c0b9a230bc94458ee5a8ed7bb8e5dd6c53b1654270",
+      "tool": "domain-overview",
+      "input": {
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_overview",
+        "request_id": "synthetic_42329aa3",
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "organic": {
+          "ranking_keywords": 23,
+          "search_traffic_estimate": 430,
+          "rank_distribution": {
+            "1": 2,
+            "2-3": 3,
+            "4-10": 6,
+            "11-20": 12
+          }
+        },
+        "paid": {
+          "ranking_keywords": 0,
+          "search_traffic_estimate": 0
+        }
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "fb071c767249c51a6da70a78450c144f35864f9f26f2e1c0c822acc5dbc12927",
+      "tool": "ranked-keywords",
+      "input": {
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.ranked_keywords",
+        "request_id": "synthetic_fb071c76",
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "keyword": "image generation api",
+            "search_volume": 120,
+            "keyword_difficulty": 24,
+            "cpc_usd": 1.5,
+            "intent": "commercial",
+            "updated_at": "2026-09-12T00:00:00Z",
+            "position": 12,
+            "url": "https://acme.example/image-api",
+            "position_seen_at": "2026-09-15T00:00:00Z",
+            "search_traffic_estimate": 24
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "400d87074ce60372c71ba944c1ec0b5ffb22330161e911ec97479e64a4106cb9",
+      "tool": "ranked-keywords",
+      "input": {
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.ranked_keywords",
+        "request_id": "synthetic_400d8707",
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "keyword": "image generation api",
+            "search_volume": 120,
+            "keyword_difficulty": 24,
+            "cpc_usd": 1.5,
+            "intent": "commercial",
+            "updated_at": "2026-09-12T00:00:00Z",
+            "position": 4,
+            "url": "https://zeta.example/image-api",
+            "position_seen_at": "2026-09-15T00:00:00Z",
+            "search_traffic_estimate": 24
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "1c25e97e44154adb014336a6dede1917fc21075a395af8166ead6934e726ee7b",
+      "tool": "top-pages",
+      "input": {
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.top_pages",
+        "request_id": "synthetic_1c25e97e",
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "url": "https://acme.example/image-api",
+            "ranking_keywords": 8,
+            "search_traffic_estimate": 130
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "fa4f6fd6929a2211c79e3da54f87bffef5c969ec0f82934fc4233534e8f0391f",
+      "tool": "top-pages",
+      "input": {
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.top_pages",
+        "request_id": "synthetic_fa4f6fd6",
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "url": "https://zeta.example/image-api",
+            "ranking_keywords": 8,
+            "search_traffic_estimate": 130
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "b7a550308eb14e5e5bc3a8497c6cc31ef088d24170a6421c47f8e4c4cd2c95a1",
+      "tool": "competitors",
+      "input": {
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.competitors",
+        "request_id": "synthetic_b7a55030",
+        "domain": "acme.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "domain": "zeta.example",
+            "shared_keywords": 8,
+            "avg_position": 12,
+            "ranking_keywords": 23,
+            "search_traffic_estimate": 430
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "23472052c80cbc09053b806978189a83925e40e0db361f5da0f0d14f17f9bd05",
+      "tool": "competitors",
+      "input": {
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "limit": 10,
+        "offset": 0
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.competitors",
+        "request_id": "synthetic_23472052",
+        "domain": "zeta.example",
+        "country": "us",
+        "language": "en",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "domain": "acme.example",
+            "shared_keywords": 8,
+            "avg_position": 12,
+            "ranking_keywords": 23,
+            "search_traffic_estimate": 430
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "a87f0fc63cea2b2e933e22b196e91c17c3a948edb2a4a73176d933b4ca41f8ff",
+      "tool": "backlink-summary",
+      "input": {
+        "domain": "acme.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.backlink_summary",
+        "request_id": "synthetic_a87f0fc6",
+        "domain": "acme.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "link_authority": 120,
+        "backlinks": 52,
+        "referring_domains": 18,
+        "broken_backlinks": 2,
+        "spam_score": 3
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "2e3963aa094182ff31b3aeb2a10fb7f798a63c9be051cc816c8ce60a4165b681",
+      "tool": "backlink-summary",
+      "input": {
+        "domain": "zeta.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.backlink_summary",
+        "request_id": "synthetic_2e3963aa",
+        "domain": "zeta.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "link_authority": 120,
+        "backlinks": 52,
+        "referring_domains": 18,
+        "broken_backlinks": 2,
+        "spam_score": 3
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "c0855cc788125aaebace9bbeb327112829f94e4b78936f6fb90470d02296a484",
+      "tool": "backlinks",
+      "input": {
+        "domain": "acme.example",
+        "limit": 10,
+        "offset": 0,
+        "one_per_domain": true
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.backlinks",
+        "request_id": "synthetic_c0855cc7",
+        "domain": "acme.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "source_url": "https://source.example/research",
+            "source_domain": "source.example",
+            "target_url": "https://acme.example/image-api",
+            "anchor": "Image API",
+            "source_authority": 120,
+            "dofollow": true,
+            "is_lost": false,
+            "is_broken": false,
+            "last_seen": "2026-09-01T00:00:00Z"
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "2656e5e89c20efe401912229e2d1644806e6ae64ce053a56a4dcf2e9533f3546",
+      "tool": "backlinks",
+      "input": {
+        "domain": "zeta.example",
+        "limit": 10,
+        "offset": 0,
+        "one_per_domain": true
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.backlinks",
+        "request_id": "synthetic_2656e5e8",
+        "domain": "zeta.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "results": [
+          {
+            "source_url": "https://source.example/research",
+            "source_domain": "source.example",
+            "target_url": "https://zeta.example/image-api",
+            "anchor": "Image API",
+            "source_authority": 120,
+            "dofollow": true,
+            "is_lost": false,
+            "is_broken": false,
+            "last_seen": "2026-09-01T00:00:00Z"
+          }
+        ],
+        "limit": 10,
+        "offset": 0,
+        "total": 1
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "0bf16f16a00917085a2142e2d8db10b16a9499d856c1025738f6280590e26ace",
+      "tool": "domain-rating",
+      "input": {
+        "domain": "acme.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_rating",
+        "request_id": "synthetic_0bf16f16",
+        "domain": "acme.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "domain_rating": 27,
+        "link_rank": 123456
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "2a5d66b85ec47e6e285ff910f9a8b79812337748c9d02522d4ebd48d4c405e1d",
+      "tool": "domain-rating",
+      "input": {
+        "domain": "zeta.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_rating",
+        "request_id": "synthetic_2a5d66b8",
+        "domain": "zeta.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "domain_rating": 27,
+        "link_rank": 123456
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "4dae9cd62423b0df6dfdb4fe344cd87d2b0e46823fa207342570bb5a3cb0c1f3",
+      "tool": "domain-rating-history",
+      "input": {
+        "domain": "acme.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_rating_history",
+        "request_id": "synthetic_4dae9cd6",
+        "domain": "acme.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "results": [
+          {
+            "month": "2026-08",
+            "domain_rating": 25
+          },
+          {
+            "month": "2026-09",
+            "domain_rating": 27
+          }
+        ]
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "7a23a875cb36656104a315ab6aa67090a92d2ad4769125f5f86cc803a45abe31",
+      "tool": "domain-rating-history",
+      "input": {
+        "domain": "zeta.example"
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.domain_rating_history",
+        "request_id": "synthetic_7a23a875",
+        "domain": "zeta.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "results": [
+          {
+            "month": "2026-08",
+            "domain_rating": 25
+          },
+          {
+            "month": "2026-09",
+            "domain_rating": 27
+          }
+        ]
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "ae182b5a999527248ae88828a50e402491fedd69fca10cad185a989fb9b73b1f",
+      "tool": "site-traffic",
+      "input": {
+        "domain": "acme.example",
+        "months": 3
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.site_traffic",
+        "request_id": "synthetic_ae182b5a",
+        "domain": "acme.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "months": 3,
+        "site_visits_estimate": 2100,
+        "monthly_visits": [
+          {
+            "month": "2026-08",
+            "visits": 1900
+          },
+          {
+            "month": "2026-09",
+            "visits": 2100
+          }
+        ],
+        "traffic_sources": {
+          "direct": 0.5,
+          "search": 0.4,
+          "gen_ai": 0.1
+        },
+        "top_countries": [
+          {
+            "country": "US",
+            "share": 0.7
+          }
+        ],
+        "bounce_rate": 0.4,
+        "pages_per_visit": 2,
+        "avg_visit_seconds": 45
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    },
+    {
+      "id": "228623e8563ba5a8ef9286c35b7416cf3292b79aeadb677371ec5032cb79ad34",
+      "tool": "site-traffic",
+      "input": {
+        "domain": "zeta.example",
+        "months": 3
+      },
+      "fetchedAt": "2026-10-31T00:00:00.000Z",
+      "status": "ok",
+      "response": {
+        "object": "seo.site_traffic",
+        "request_id": "synthetic_228623e8",
+        "domain": "zeta.example",
+        "billed_rows": 1,
+        "usage": {
+          "billing_unit": "request",
+          "quantity": 1,
+          "price_usd": "0.000",
+          "price_version": "synthetic-no-charge"
+        },
+        "has_data": true,
+        "months": 3,
+        "site_visits_estimate": 2100,
+        "monthly_visits": [
+          {
+            "month": "2026-08",
+            "visits": 1900
+          },
+          {
+            "month": "2026-09",
+            "visits": 2100
+          }
+        ],
+        "traffic_sources": {
+          "direct": 0.5,
+          "search": 0.4,
+          "gen_ai": 0.1
+        },
+        "top_countries": [
+          {
+            "country": "US",
+            "share": 0.7
+          }
+        ],
+        "bounce_rate": 0.4,
+        "pages_per_visit": 2,
+        "avg_visit_seconds": 45
+      },
+      "actualUsd": 0,
+      "reservedUsd": 0
+    }
+  ]
+}

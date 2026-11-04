@@ -1,0 +1,70 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignoreWorkspaces": [
+    "packages/ui"
+  ],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "turbo.json",
+        "scripts/*.mjs",
+        "apps/browser-lab/cli.mjs",
+        "apps/browser-lab/public/*.js",
+        "apps/browser-lab/*.test.mjs",
+        "tools/seo-geo/test/*.test.mjs",
+        "tools/seo-geo/src/workbench.d.mts"
+      ],
+      "ignoreBinaries": [
+        "playwright",
+        "check-types"
+      ]
+    },
+    "apps/web": {
+      "entry": [
+        "src/routes/**/*.{ts,tsx}!",
+        "scripts/*.{ts,tsx}"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx,css}",
+        "scripts/**/*.{ts,tsx}"
+      ],
+      "ignore": [
+        "src/stories/_mocks/**"
+      ],
+      "ignoreDependencies": [
+        "@fontsource/geist-sans",
+        "@base-ui/react",
+        "@takumi-rs/core",
+        "@fontsource/titan-one"
+      ]
+    },
+    "packages/og": {
+      "ignoreDependencies": [
+        "nitro",
+        "@fontsource/geist-mono",
+        "@fontsource/geist-sans",
+        "@fontsource/titan-one"
+      ]
+    },
+    "packages/lib": {
+      "entry": [
+        "scripts/*.mjs"
+      ],
+      "ignoreDependencies": [
+        "auth"
+      ]
+    },
+    "e2e": {
+      "entry": [
+        "*.ts",
+        "tests/**/*.setup.ts",
+        "scheduling/*.ts"
+      ],
+      "project": [
+        "**/*.ts",
+        "scheduling/*.ts"
+      ]
+    }
+  },
+  "ignoreExportsUsedInFile": true
+}

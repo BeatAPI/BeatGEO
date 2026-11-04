@@ -1,0 +1,7 @@
+{
+  "questions": [
+    { "id": "best-generator", "text": "What is the best AI image generator for product photos?", "group": "category" },
+    { "id": "api-pricing", "text": "Which image generation API is cheapest for production use? Cite sources and separate official docs from third-party providers.", "group": "buyer" },
+    { "id": "alternatives", "text": "What are good alternatives to <incumbent product> for a small team?", "group": "alternatives" }
+  ]
+}

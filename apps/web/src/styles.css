@@ -1,0 +1,234 @@
+@import "tailwindcss" source(none);
+
+@import "tw-animate-css";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/geist-mono/latin-400.css";
+
+@plugin "@tailwindcss/typography";
+
+/* Explicit @source scanning only. source(none) on the import above disables
+   @tailwindcss/vite's module-graph-based class detection, which yields
+   different CSS between the client and SSR Vite builds (so the SSR-rendered
+   <link href> points at a hashed file the client build never wrote). See
+   tailwindlabs/tailwindcss#16389 and TanStack/router#4959. */
+@source "../src";
+@source "../../../packages/ui/src";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--font-sans: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+	--font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
+	--color-sidebar-ring: var(--sidebar-ring);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar: var(--sidebar);
+	--color-chart-5: var(--chart-5);
+	--color-chart-4: var(--chart-4);
+	--color-chart-3: var(--chart-3);
+	--color-chart-2: var(--chart-2);
+	--color-chart-1: var(--chart-1);
+	--color-ring: var(--ring);
+	--color-input: var(--input);
+	--color-border: var(--border);
+	--color-destructive: var(--destructive);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent: var(--accent);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-muted: var(--muted);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary: var(--secondary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary: var(--primary);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-popover: var(--popover);
+	--color-card-foreground: var(--card-foreground);
+	--color-card: var(--card);
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+}
+
+:root,
+.dark {
+	color-scheme: dark;
+	/* Near-black analytics palette: one ground for page and sidebar, cards one
+	   step lighter with hairline borders, colour only where data needs it. */
+	--radius: 0.75rem;
+	--background: #08090a;
+	--foreground: #f2f3f5;
+	--card: #111214;
+	--card-foreground: #f2f3f5;
+	--popover: #16171a;
+	--popover-foreground: #f2f3f5;
+	--primary: #f2f3f5;
+	--primary-foreground: #0b0c0e;
+	--secondary: #1c1d21;
+	--secondary-foreground: #f2f3f5;
+	--muted: #17181b;
+	--muted-foreground: #8d909b;
+	--accent: #1d1e22;
+	--accent-foreground: #f2f3f5;
+	--destructive: #ff7a72;
+	--border: #1f2024;
+	--input: #2a2c31;
+	--ring: #7d95ff;
+	--chart-1: #7d95ff;
+	--chart-2: #3ecf8e;
+	--chart-3: #f5b452;
+	--chart-4: #b58cff;
+	--chart-5: #ff7a8a;
+	--sidebar: #08090a;
+	--sidebar-foreground: #8d909b;
+	--sidebar-primary: #7d95ff;
+	--sidebar-primary-foreground: #08090a;
+	--sidebar-accent: #17181b;
+	--sidebar-accent-foreground: #f2f3f5;
+	--sidebar-border: #1a1b1e;
+	--sidebar-ring: #7d95ff;
+	--code-ink: #f2f3f5;
+	--grid-line: rgba(141, 144, 155, 0.07);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-size: 0.875rem;
+		line-height: 1.55;
+		-webkit-font-smoothing: antialiased;
+		font-synthesis: none;
+	}
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
+	}
+}
+
+/* Print styles for reports */
+@media print {
+	@page {
+		size: letter;
+		margin: 0.5in 0.6in;
+	}
+
+	body {
+		background: white;
+		color: #171615;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	button,
+	.cursor-pointer,
+	[role="button"] {
+		display: none !important;
+	}
+
+	.recharts-responsive-container {
+		position: static !important;
+	}
+
+	.print-break-inside-avoid {
+		break-inside: avoid;
+	}
+
+	.print-break-before {
+		break-before: page;
+	}
+
+	.print-page-center {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	* {
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
+		color-adjust: exact !important;
+	}
+}
+
+/* The code texture sits behind the header band; data and editing surfaces stay opaque. */
+.beat-workspace {
+	position: relative;
+	isolation: isolate;
+}
+.beat-code-texture pre {
+	mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.beat-grid {
+	background-image:
+		linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+	background-size: 32px 32px;
+	mask-image: radial-gradient(ellipse 70% 100% at 70% 0%, #000 20%, transparent 75%);
+}
+.beat-page-title {
+	font-size: 1.75rem;
+	line-height: 1.2;
+	font-weight: 500;
+	letter-spacing: -0.02em;
+}
+:lang(zh) .beat-page-title {
+	letter-spacing: 0;
+}
+.beat-workspace [data-slot="table-container"] {
+	background: var(--card);
+}
+.beat-logo-mark {
+	filter: invert(1) hue-rotate(180deg);
+}
+.beat-section-tabs [data-slot="tabs-trigger"] {
+	border: 0;
+	border-radius: 0;
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	box-shadow: none;
+	padding: 0.75rem 0;
+	margin-right: 1.75rem;
+	flex: 0 0 auto;
+	font-weight: 500;
+	height: auto;
+}
+.beat-section-tabs [data-slot="tabs-trigger"][data-active] {
+	border-bottom-color: var(--foreground);
+	color: var(--foreground);
+}
+.beat-section-tabs [data-slot="tabs-content"][hidden] {
+	display: none;
+}
+@media print {
+	.beat-code-texture {
+		display: none;
+	}
+	.beat-logo-mark {
+		filter: none;
+	}
+}
+
+:lang(zh) body {
+	font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Inter", sans-serif;
+	line-height: 1.65;
+}
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3 {
+	letter-spacing: 0;
+	font-weight: 500;
+}

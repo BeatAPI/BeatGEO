@@ -1,0 +1,1 @@
+# BeatGEO does not require the upstream CLA. Contributor history is preserved in Git.

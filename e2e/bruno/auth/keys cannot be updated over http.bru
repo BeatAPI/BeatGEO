@@ -1,0 +1,23 @@
+meta {
+  name: the key plugin's update endpoint is not reachable over HTTP
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{baseUrl}}/api/auth/api-key/update
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "keyId": "e2e-apikey-1",
+    "metadata": { "brandIds": [] }
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Account management is not available in the local workspace.
+}

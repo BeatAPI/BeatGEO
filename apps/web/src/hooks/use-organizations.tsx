@@ -1,0 +1,29 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useLoaderData, useRouter } from "@tanstack/react-router";
+import { useCallback } from "react";
+import { invalidateOrganizations } from "@/lib/organizations/queries";
+import type { OrganizationSummary } from "@/lib/organizations/types";
+import { ORG_ROUTE_ID } from "@/lib/route-subject";
+
+export function useOrganization(): OrganizationSummary {
+	return useLoaderData({ from: ORG_ROUTE_ID, select: (data) => data.organization });
+}
+
+/**
+ * The router resolves `/app/org/$org` against this cache, so a write that
+ * changes what exists has to drop both or the next navigation reads a list that
+ * predates it.
+ */
+export function useOrganizationsChanged(): (moveTo?: () => Promise<unknown>) => Promise<void> {
+	const queryClient = useQueryClient();
+	const router = useRouter();
+
+	return useCallback(
+		async (moveTo?: () => Promise<unknown>) => {
+			await invalidateOrganizations(queryClient);
+			await moveTo?.();
+			await router.invalidate();
+		},
+		[queryClient, router],
+	);
+}

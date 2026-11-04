@@ -1,0 +1,78 @@
+name: Check BeatGEO
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  seo-workbench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Test standalone SEO and GEO workbench
+        working-directory: tools/seo-geo
+        run: node --test "test/*.test.mjs"
+      - name: Render offline synthetic report
+        working-directory: tools/seo-geo
+        run: node bin/beat-geo.mjs seo --input examples/seo.snapshot.example.json --out runs/ci-seo --lang zh
+  browser-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: node --test apps/browser-lab/*.test.mjs scripts/local-runtime.test.mjs
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm -r --if-present check-types
+      - run: pnpm -r --if-present test
+      - name: Install Chromium for isolated SEO workbench tests
+        run: pnpm --dir e2e exec playwright install --with-deps chromium
+      - name: Test SEO workbench user flows without live API calls
+        run: pnpm test:seo:browser
+      - name: Test language synchronization and draft preservation
+        run: pnpm test:i18n:browser
+      - name: Test localized form and date interactions
+        run: pnpm --filter @workspace/web test:storybook src/stories/prompts-list-editor.stories.tsx src/stories/tags-input.stories.tsx src/stories/lookback-picker.stories.tsx src/stories/form-select.stories.tsx src/stories/gsc-panel.stories.tsx src/stories/workspace-error.stories.tsx src/stories/traffic.stories.tsx src/stories/ui-primitives.stories.tsx src/stories/app-sidebar.stories.tsx src/stories/api-keys-settings.stories.tsx
+      - name: Test local workspace, public API and stub worker in disposable storage
+        run: pnpm test:local:browser --workers=2
+  postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: beatgeo_test
+          POSTGRES_PASSWORD: local-ci-only
+          POSTGRES_DB: beatgeo_ci_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U beatgeo_test -d beatgeo_ci_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://beatgeo_test:local-ci-only@127.0.0.1:5432/beatgeo_ci_test
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @workspace/web test:integration

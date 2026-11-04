@@ -1,0 +1,22 @@
+{
+	"name": "@workspace/deployment",
+	"version": "0.4.5",
+	"private": true,
+	"license": "MIT",
+	"scripts": {
+		"check-types": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"main": "./src/index.ts",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"@workspace/config": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.4",
+		"typescript": "^7.0.2",
+		"vitest": "^5.0.3"
+	}
+}

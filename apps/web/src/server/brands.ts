@@ -1,0 +1,435 @@
+import { createServerFn } from "@tanstack/react-start";
+import { targetFilterValue } from "@workspace/config/model-filter";
+import { parseScrapeTargets } from "@workspace/config/scrape-targets";
+import { isValidSlug, MAX_SLUG_LENGTH, slugify } from "@workspace/lib/app-urls";
+import { cleanAndValidateDomain } from "@workspace/lib/citations/domain-categories";
+import { getDefaultDelayHours } from "@workspace/lib/constants";
+import { db } from "@workspace/lib/db/db";
+import { type Brand, type BrandWithPrompts, brands, competitors, prompts } from "@workspace/lib/db/schema";
+import {
+	claimBrandSlug,
+	claimNewBrandSlug,
+	findUnusedBrandId,
+	findUnusedBrandSlug,
+	isBrandSlugAvailable,
+} from "@workspace/lib/db/unique-names";
+import { assertAllowed, assertCompetitorCap, decideCompetitorCap, withQuotaLock } from "@workspace/lib/limits";
+import { isGroundedApiTarget, resolveProviderAccess, selectTargetsForBrand } from "@workspace/lib/providers";
+import { resolvePromptRunPlan } from "@workspace/lib/run-policy";
+import { and, eq, sql } from "drizzle-orm";
+import { z } from "zod";
+import {
+	requireAuthSession,
+	requireBrandOrganization,
+	requireBrandSession,
+	requireOrgAccess,
+} from "@/lib/auth/helpers";
+import { normalizeBrandUpdate } from "@/lib/brand-settings";
+import { validateWebsiteUrl } from "@/lib/brand-website";
+import type { TrackedTarget } from "@/lib/model-filter";
+import { INVALID_SLUG, TAKEN_SLUG } from "@/lib/slug-errors";
+
+/**
+ * What this brand's results can be broken down by: every target it runs.
+ *
+ * A model can appear twice — scraped and grounded are different answers to
+ * different questions — so these are targets rather than model ids. Anything
+ * asking "which models is this brand tracking?" reads from here; deployments
+ * configure arbitrary sets via `SCRAPE_TARGETS`, so nothing hardcodes a list.
+ */
+function computeTrackedTargets(brand: Brand): TrackedTarget[] {
+	try {
+		const configs = parseScrapeTargets(process.env.SCRAPE_TARGETS);
+
+		// Ask the run policy rather than re-deriving it: it already decides which
+		// targets a brand runs, how often, and how many times per firing, and a
+		// second copy of that arithmetic here is how the page and the worker
+		// started disagreeing in the first place.
+		const plan = resolvePromptRunPlan({
+			scrapeTargets: configs,
+			brand: { enabledModels: brand.enabledModels, delayOverrideHours: brand.delayOverrideHours },
+			defaultDelayHours: getDefaultDelayHours(),
+		});
+
+		return plan.targets.map((target) => {
+			const premium = isGroundedApiTarget(target.config);
+			return {
+				value: targetFilterValue(target.config.model, premium),
+				model: target.config.model,
+				premium,
+				// Scraped surface, bare API call, or grounded one — the same split the
+				// LLM settings page groups by, resolved from the target rather than
+				// guessed from the model id (a model can be reached either way).
+				tier: premium
+					? ("premium" as const)
+					: resolveProviderAccess(target.config) === "scraped"
+						? ("scraped" as const)
+						: ("api" as const),
+				intervalHours: target.intervalHours,
+				replication: target.replication,
+			};
+		});
+	} catch {
+		// A misconfigured SCRAPE_TARGETS would already be surfacing via
+		// `validateScrapeTargets` at boot; here we'd rather degrade to an empty
+		// list than crash the brand fetch.
+		return [];
+	}
+}
+
+/**
+ * Picks supplied at creation time go through the same validation as a
+ * post-creation edit. Without picks the brand follows every configured target.
+ */
+function resolveCreateEnabledModels(requested: string[] | undefined): string[] | null {
+	if (!requested || requested.length === 0) return null;
+	const models = [...new Set(requested)];
+	selectTargetsForBrand(parseScrapeTargets(process.env.SCRAPE_TARGETS), models);
+	return models;
+}
+
+function getDefaultBrandDomains(): string[] {
+	const raw = process.env.DEFAULT_BRAND_DOMAINS;
+	if (!raw) return [];
+	return raw
+		.split(",")
+		.map((d) => d.trim())
+		.filter(Boolean)
+		.map((d) => cleanAndValidateDomain(d))
+		.filter((d): d is string => d !== null);
+}
+
+// ============================================================================
+// Helper functions (migrated from apps/web/src/lib/metadata.ts)
+// ============================================================================
+
+async function getBrandWithPromptsFromDb(
+	brandId: string,
+): Promise<(BrandWithPrompts & { trackedTargets: TrackedTarget[] }) | undefined> {
+	try {
+		const brand = await db.query.brands.findFirst({
+			where: eq(brands.id, brandId),
+		});
+		if (!brand) return undefined;
+
+		const [brandPrompts, brandCompetitors] = await Promise.all([
+			db.query.prompts.findMany({ where: eq(prompts.brandId, brandId) }),
+			db.query.competitors.findMany({ where: eq(competitors.brandId, brandId) }),
+		]);
+
+		return {
+			...brand,
+			prompts: brandPrompts,
+			competitors: brandCompetitors,
+			trackedTargets: computeTrackedTargets(brand),
+		};
+	} catch (error) {
+		console.error("Error fetching brand with prompts:", error);
+		return undefined;
+	}
+}
+
+// ============================================================================
+// Server Functions
+// ============================================================================
+
+/**
+ * Get a single brand by ID
+ */
+export const getBrand = createServerFn({ method: "GET" })
+	.validator(z.object({ brandId: z.string() }))
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+
+		const brand = await getBrandWithPromptsFromDb(data.brandId);
+		if (!brand) {
+			throw new Error("Brand not found");
+		}
+
+		return brand;
+	});
+
+/**
+ * Attach a new brand to the current user's existing organization, with a
+ * fresh id decoupled from the org id. Used by the multi-brand "create new
+ * brand" flow on the brand switcher.
+ */
+export const createBrandInOrgFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandName: z.string().min(1).max(100),
+			website: z.string().min(1),
+			organizationId: z.string(),
+			/** Platform picks from the creation wizard; omitted → every configured target. */
+			enabledModels: z.array(z.string().min(1)).max(50).optional(),
+		}),
+	)
+	.handler(async ({ data }) => {
+		const session = await requireAuthSession();
+
+		const urlValidation = validateWebsiteUrl(data.website);
+		if (!urlValidation.isValid) {
+			throw new Error(urlValidation.error);
+		}
+
+		const trimmedName = data.brandName.trim();
+		if (!trimmedName) {
+			throw new Error("Brand name must be a non-empty string");
+		}
+
+		const orgId = data.organizationId;
+		await requireOrgAccess(session.user.id, orgId);
+
+		const baseSlug = slugify(trimmedName, "brand");
+		const defaultDomains = getDefaultBrandDomains();
+		const enabledModels = resolveCreateEnabledModels(data.enabledModels);
+
+		return claimNewBrandSlug(() =>
+			db.transaction(async (tx) => {
+				const brandId = await findUnusedBrandId(baseSlug, tx);
+				const slug = await findUnusedBrandSlug(orgId, baseSlug, tx);
+
+				await tx.insert(brands).values({
+					id: brandId,
+					organizationId: orgId,
+					name: trimmedName,
+					slug,
+					website: urlValidation.formattedUrl,
+					enabled: true,
+					...(enabledModels && { enabledModels }),
+					...(defaultDomains.length > 0 && { additionalDomains: defaultDomains }),
+				});
+
+				return { brandId, brandSlug: slug };
+			}),
+		);
+	});
+
+/**
+ * Update a brand
+ */
+export const updateBrandFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string(),
+			name: z.string().optional(),
+			website: z.string().optional(),
+			slug: z.string().trim().toLowerCase().max(MAX_SLUG_LENGTH).optional(),
+			additionalDomains: z.array(z.string()).optional(),
+			aliases: z.array(z.string()).optional(),
+		}),
+	)
+	.handler(async ({ data }) => {
+		const session = await requireAuthSession();
+		const org = await requireBrandOrganization(session.user.id, data.brandId);
+
+		if (data.slug !== undefined && !isValidSlug(data.slug)) throw new Error(INVALID_SLUG);
+
+		const normalized = normalizeBrandUpdate({
+			name: data.name,
+			website: data.website,
+			additionalDomains: data.additionalDomains,
+			aliases: data.aliases,
+		});
+		if (!normalized.ok) {
+			throw new Error(normalized.error);
+		}
+		const updateData = normalized.updates;
+
+		const result = await claimBrandSlug(
+			() =>
+				db.transaction(async (tx) => {
+					if (
+						data.slug !== undefined &&
+						!(await isBrandSlugAvailable(org.id, data.slug, { excludeBrandId: data.brandId, conn: tx }))
+					) {
+						throw new Error(TAKEN_SLUG);
+					}
+					return tx
+						.update(brands)
+						.set({ ...updateData, ...(data.slug !== undefined && { slug: data.slug }), updatedAt: new Date() })
+						.where(eq(brands.id, data.brandId))
+						.returning();
+				}),
+			TAKEN_SLUG,
+		);
+
+		if (!result[0]) {
+			throw new Error("Failed to update brand");
+		}
+
+		return result[0];
+	});
+
+/**
+ * Get competitors for a brand
+ */
+export const getCompetitors = createServerFn({ method: "GET" })
+	.validator(z.object({ brandId: z.string() }))
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+
+		return db.query.competitors.findMany({
+			where: eq(competitors.brandId, data.brandId),
+		});
+	});
+
+/**
+ * Update competitors for a brand (bulk replace)
+ */
+export const updateCompetitors = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string(),
+			competitors: z.array(
+				z.object({
+					name: z.string(),
+					domains: z.array(z.string()).min(1),
+					aliases: z.array(z.string()).optional().default([]),
+				}),
+			),
+		}),
+	)
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+		const brand = await db.query.brands.findFirst({ where: eq(brands.id, data.brandId) });
+		if (!brand) throw new Error("Brand not found");
+
+		// A bulk replace, so the list submitted is the list the brand ends up with.
+		assertAllowed(decideCompetitorCap(data.competitors.length));
+
+		const cleanedCompetitors = data.competitors.map((c) => {
+			const cleanedDomains = c.domains.map((d) => cleanAndValidateDomain(d));
+			const invalid = c.domains.filter((_, i) => !cleanedDomains[i]);
+			if (invalid.length > 0) {
+				throw new Error(`Invalid domain(s) for "${c.name}": ${invalid.join(", ")}`);
+			}
+			return {
+				name: c.name,
+				domains: cleanedDomains.filter(Boolean) as string[],
+				aliases: c.aliases,
+			};
+		});
+
+		return withQuotaLock(brand.organizationId, async (tx) => {
+			await tx.delete(competitors).where(eq(competitors.brandId, data.brandId));
+
+			if (cleanedCompetitors.length > 0) {
+				await tx.insert(competitors).values(
+					cleanedCompetitors.map((c) => ({
+						brandId: data.brandId,
+						name: c.name,
+						domains: c.domains,
+						aliases: c.aliases,
+					})),
+				);
+			}
+
+			return tx.query.competitors.findMany({
+				where: eq(competitors.brandId, data.brandId),
+			});
+		});
+	});
+
+/**
+ * Add an additional domain to the brand itself
+ */
+export const addDomainToBrandFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string(),
+			domain: z.string().min(1),
+		}),
+	)
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+
+		const domain = cleanAndValidateDomain(data.domain);
+		if (!domain) throw new Error(`Invalid domain: ${data.domain}`);
+
+		const [result] = await db
+			.update(brands)
+			.set({
+				additionalDomains: sql`array_append(${brands.additionalDomains}, ${domain})`,
+				updatedAt: new Date(),
+			})
+			.where(and(eq(brands.id, data.brandId), sql`NOT (${domain} = ANY(${brands.additionalDomains}))`))
+			.returning();
+
+		if (result) return result;
+
+		const brand = await db.query.brands.findFirst({
+			where: eq(brands.id, data.brandId),
+		});
+		if (!brand) throw new Error("Brand not found");
+		return brand;
+	});
+
+/**
+ * Add a domain to an existing competitor
+ */
+export const addDomainToCompetitorFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string(),
+			competitorId: z.string(),
+			domain: z.string().min(1),
+		}),
+	)
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+
+		const existing = await db.query.competitors.findFirst({
+			where: and(eq(competitors.id, data.competitorId), eq(competitors.brandId, data.brandId)),
+		});
+		if (!existing) throw new Error("Competitor not found");
+
+		const domain = cleanAndValidateDomain(data.domain);
+		if (!domain) throw new Error(`Invalid domain: ${data.domain}`);
+		if (existing.domains.includes(domain)) return existing;
+
+		const updatedDomains = [...existing.domains, domain];
+		const [result] = await db
+			.update(competitors)
+			.set({ domains: updatedDomains, updatedAt: new Date() })
+			.where(eq(competitors.id, data.competitorId))
+			.returning();
+
+		return result;
+	});
+
+/**
+ * Create a new competitor from a domain
+ */
+export const createCompetitorFromDomainFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string(),
+			name: z.string().min(1),
+			domain: z.string().min(1),
+		}),
+	)
+	.handler(async ({ data }) => {
+		const session = await requireAuthSession();
+		const org = await requireBrandOrganization(session.user.id, data.brandId);
+
+		const domain = cleanAndValidateDomain(data.domain);
+		if (!domain) throw new Error(`Invalid domain: ${data.domain}`);
+
+		// Check and insert under one lock: otherwise two requests on a brand's
+		// last competitor slot both pass the check.
+		return await withQuotaLock(org.id, async (tx) => {
+			await assertCompetitorCap(data.brandId, 1, tx);
+
+			const [result] = await tx
+				.insert(competitors)
+				.values({
+					brandId: data.brandId,
+					name: data.name.trim(),
+					domains: [domain],
+				})
+				.returning();
+
+			return result;
+		});
+	});

@@ -1,0 +1,41 @@
+{
+  "$schema": "./.hey-api/_config.schema.json",
+  "input": {
+    "path": "./packages/api-spec/src/openapi.json",
+    "declare": [
+      { "scheme": "BearerAuth", "startsWith": "beatgeo_" },
+      {
+        "include": {
+          "openapi": {
+            "operations": [
+              "GET /brands/{brandId}/opportunities",
+              "POST /tools/analyze"
+            ]
+          }
+        },
+        "timeout": 600000
+      }
+    ]
+  },
+  "targets": {
+    "typescript": {
+      "package": {
+        "name": "@beatapi/geo-sdk",
+        "destination": ["github", "npm"],
+        "repository": "https://github.com/BeatAPI/BeatGEO-sdk-typescript",
+        "homepage": "https://github.com/BeatAPI/BeatGEO"
+      }
+    },
+    "python": {
+      "package": {
+        "name": "beatgeo-sdk",
+        "destination": ["github", "pypi"],
+        "repository": "https://github.com/BeatAPI/BeatGEO-sdk-python",
+        "homepage": "https://github.com/BeatAPI/BeatGEO"
+      }
+    }
+  },
+  "plugins": [
+    { "name": "@hey-api/client", "baseURL": "https://github.com/BeatAPI/BeatGEO" }
+  ]
+}

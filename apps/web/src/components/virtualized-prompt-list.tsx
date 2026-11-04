@@ -1,0 +1,102 @@
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
+import { memo, useCallback, useLayoutEffect, useRef, useState } from "react";
+import type { LookbackPeriod } from "@/lib/lookback";
+import { CachedPromptChart } from "./cached-prompt-chart";
+
+interface PromptItem {
+	id: string;
+	value: string;
+	// All-time first evaluation date (null if never evaluated)
+	// Note: Date objects are serialized to strings in JSON responses
+	firstEvaluatedAt?: Date | string | null;
+}
+
+interface VirtualizedPromptListProps {
+	prompts: PromptItem[];
+	brandId: string;
+	lookback: LookbackPeriod;
+	searchHighlight?: string;
+}
+
+// Estimate populated charts; measureElement also accommodates compact empty rows.
+const CHART_CARD_HEIGHT = 380;
+const CHART_GAP = 16;
+
+// Memoized so react-query `isFetching` state changes on the parent
+// (which re-render prompts-display but leave these props untouched) don't
+// cascade into 30+ CachedPromptChart re-renders.
+export const VirtualizedPromptList = memo(function VirtualizedPromptList({
+	prompts,
+	brandId,
+	lookback,
+	searchHighlight = "",
+}: VirtualizedPromptListProps) {
+	const listRef = useRef<HTMLDivElement>(null);
+	const [scrollMargin, setScrollMargin] = useState(0);
+
+	const orderedPrompts = prompts;
+
+	useLayoutEffect(() => {
+		if (listRef.current) {
+			setScrollMargin(listRef.current.offsetTop);
+		}
+	}, []);
+
+	// The measured row height replaces this estimate after rendering.
+	const estimateSize = useCallback(() => CHART_CARD_HEIGHT + CHART_GAP, []);
+
+	const getItemKey = useCallback((index: number) => orderedPrompts[index].id, [orderedPrompts]);
+
+	const virtualizer = useWindowVirtualizer({
+		count: orderedPrompts.length,
+		estimateSize,
+		getItemKey,
+		overscan: 3, // Render 3 extra items above and below viewport
+		scrollMargin,
+	});
+
+	const virtualItems = virtualizer.getVirtualItems();
+
+	return (
+		<div ref={listRef} className="space-y-6">
+			<div
+				style={{
+					height: `${virtualizer.getTotalSize()}px`,
+					width: "100%",
+					position: "relative",
+				}}
+			>
+				{virtualItems.map((virtualItem) => {
+					const prompt = orderedPrompts[virtualItem.index];
+
+					return (
+						<div
+							key={prompt.id}
+							data-index={virtualItem.index}
+							ref={virtualizer.measureElement}
+							style={{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								width: "100%",
+								transform: `translateY(${virtualItem.start - scrollMargin}px)`,
+								contain: "layout style",
+							}}
+						>
+							<div style={{ paddingBottom: CHART_GAP }}>
+								<CachedPromptChart
+									promptId={prompt.id}
+									promptName={prompt.value}
+									brandId={brandId}
+									lookback={lookback}
+									searchHighlight={searchHighlight}
+									hasEverBeenEvaluated={Boolean(prompt.firstEvaluatedAt)}
+								/>
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	);
+});
