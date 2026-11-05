@@ -324,6 +324,8 @@ export const optimizationActions = pgTable(
 		title: text("title").notNull(),
 		description: text("description").notNull(),
 		baseline: jsonb("baseline").$type<Observation[]>().notNull(),
+		kind: text("kind").notNull().default("geo"),
+		seoBaseline: jsonb("seo_baseline").$type<import("../search-analysis").SeoBaseline>(),
 		status: text("status").notNull().default("planned"),
 		implementationNote: text("implementation_note"),
 		contentDraft: text("content_draft"),
@@ -395,4 +397,18 @@ export const brandDataSources = pgTable(
 		updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 	},
 	(t) => ({ brandKindIdx: uniqueIndex("brand_data_sources_brand_kind_idx").on(t.brandId, t.kind) }),
+).enableRLS();
+
+export const analysisEvidence = pgTable(
+	"analysis_evidence",
+	{
+		id: uuid("id").defaultRandom().primaryKey().notNull(),
+		brandId: text("brand_id")
+			.notNull()
+			.references(() => brands.id, { onDelete: "cascade" }),
+		kind: text("kind").notNull(),
+		payload: jsonb("payload").$type<import("../search-analysis").AnalysisPayload>().notNull(),
+		capturedAt: timestamp("captured_at", { withTimezone: true }).defaultNow().notNull(),
+	},
+	(t) => ({ brandKindIdx: index("analysis_evidence_brand_kind_idx").on(t.brandId, t.kind, t.capturedAt) }),
 ).enableRLS();

@@ -68,6 +68,10 @@ const SCOPE_CHECKS = [
 const WINDOW = { start: "2026-01-01T00:00:00Z", end: "2026-02-01T00:00:00Z" };
 
 const CALLS: Record<string, Record<string, unknown>> = {
+	get_analysis_context: { brandId: "brand_1" },
+	read_analysis_evidence: { brandId: "brand_1", offset: 0, limit: 20, dataset: "current.queryPages" },
+	diagnose_site: { brandId: "brand_1" },
+	refresh_analysis_data: { brandId: "brand_1", mode: "preview", plan: { source: "gsc", pages: [] } },
 	compare_collections: { brandId: "brand_1", baselineId: "command_1", headId: "command_2" },
 	create_brand: { organizationId: "org_1", website: "https://example.com", idempotencyKey: "test" },
 	get_workspace: { brandId: "brand_1" },

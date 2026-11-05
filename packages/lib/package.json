@@ -49,7 +49,8 @@
 		"./db/local-workspace": "./src/db/local-workspace.ts",
 		"./traffic/ga": "./src/traffic/ga.mjs",
 		"./traffic/gsc": "./src/traffic/gsc.mjs",
-		"./traffic/crawls": "./src/traffic/crawls.mjs"
+		"./traffic/crawls": "./src/traffic/crawls.mjs",
+		"./search-analysis": "./src/search-analysis.ts"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "^4.0.71",

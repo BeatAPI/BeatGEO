@@ -42,3 +42,7 @@ Local monitoring requires this computer, BeatGEO's worker, the browser runner an
 ## Reusing an existing BeatBrowser
 
 The collector checks an existing shared bridge version before invoking the bundled CLI. A mismatch is reported instead of replacing another Agent's bridge. To reuse an existing installation, set BEAT_BROWSER_COMMAND and BEAT_BROWSER_ARGS_JSON to its matching CLI, or update the extension and all Agent clients together. Do not alternate different CLI versions against the same shared bridge.
+
+## Search analysis
+
+See [Search analysis acceptance and contracts](search-analysis.md) for the GSC/GA evidence workflow, immutable history, bounded refresh and SEO-specific actions. Use `get_analysis_context` first; it never refreshes data or spends credits.

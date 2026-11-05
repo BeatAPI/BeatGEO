@@ -81,7 +81,7 @@ function ActionCard({
 	return (
 		<Card className="gap-3 py-5 shadow-none">
 			<CardHeader className="flex flex-row items-start justify-between gap-4 px-5">
-				<CardTitle className="text-sm font-medium leading-snug">{action.title}</CardTitle>
+				<CardTitle className="text-sm font-medium leading-snug">{t(action.title)}</CardTitle>
 				<span
 					className={`shrink-0 rounded-full border px-2 py-0.5 text-xs ${action.status === "planned" ? "text-muted-foreground" : "border-emerald-500/40 text-emerald-400"}`}
 				>
@@ -129,9 +129,19 @@ function ActionCard({
 										})}
 							</p>
 						)}
-						<button className={button} type="button" disabled={busy} onClick={onRetest}>
-							{t("Retest · uses configured providers")}
-						</button>
+						{action.kind === "seo" && (
+							<p className="text-sm">
+								{t("SEO comparison")}: {t(action.seoComparison?.status ?? "waiting")} ·{" "}
+								{t("Refresh search data after a full comparison period. Movement is not proof of causation.")}
+								{action.seoComparison?.status === "comparable" &&
+									` · ${action.seoComparison.clicksDelta} ${t("Clicks")}`}
+							</p>
+						)}
+						{action.kind !== "seo" && (
+							<button className={button} type="button" disabled={busy} onClick={onRetest}>
+								{t("Retest · uses configured providers")}
+							</button>
+						)}
 					</>
 				)}
 			</CardContent>
@@ -204,7 +214,7 @@ export function MonitoringLoop({ brandId }: { brandId: string }) {
 					</h3>
 					<p className="max-w-3xl text-[13px] text-muted-foreground">
 						{t(
-							"Save an opportunity, implement it, then compare matching questions and model versions. Changes in mention rate do not prove causation.",
+							"Save an opportunity, implement it, then compare matching search periods or AI questions. Observed changes do not prove causation.",
 						)}
 					</p>
 				</div>

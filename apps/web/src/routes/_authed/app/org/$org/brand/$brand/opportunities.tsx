@@ -1,5 +1,6 @@
 import { EvidenceSummary } from "@/components/evidence-summary";
 import { MonitoringLoop } from "@/components/monitoring-loop";
+import { SearchAnalysisPanel } from "@/components/search-analysis-panel";
 import { SiteAudit } from "@/components/site-audit";
 import { useLocale, useT } from "@/lib/i18n";
 /**
@@ -71,9 +72,7 @@ function OpportunitiesPage() {
 	return (
 		<PageHeader
 			title={t("Opportunities")}
-			subtitle={t(
-				"What to create, pitch, and seed to earn more AI citations — generated from your tracked answer data.",
-			)}
+			subtitle={t("Find search and AI visibility opportunities, review evidence, and track implemented improvements.")}
 			infoContent={t(infoContent)}
 		>
 			<Tabs value={tab} onValueChange={(value) => setTab(String(value))} className="beat-section-tabs gap-6">
@@ -82,6 +81,7 @@ function OpportunitiesPage() {
 					aria-label={t("AEO workflow")}
 				>
 					<TabsTrigger value="recommendations">{t("Recommendations")}</TabsTrigger>
+					<TabsTrigger value="search">{t("Search diagnosis")}</TabsTrigger>
 					<TabsTrigger value="actions">{t("Actions & retests")}</TabsTrigger>
 					<TabsTrigger value="evidence">{t("Observed answers")}</TabsTrigger>
 					<TabsTrigger value="website">{t("Website check")}</TabsTrigger>
@@ -97,6 +97,9 @@ function OpportunitiesPage() {
 					</div>
 					{data?.report && data.lastEvaluatedAt && <LastEvaluatedAt date={data.lastEvaluatedAt} />}
 					{content}
+				</TabsContent>
+				<TabsContent value="search">
+					<SearchAnalysisPanel brandId={brandId} />
 				</TabsContent>
 				<TabsContent value="actions" keepMounted>
 					<MonitoringLoop brandId={brandId} />

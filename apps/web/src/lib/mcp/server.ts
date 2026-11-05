@@ -20,6 +20,8 @@ const INSTRUCTIONS = [
 	"Start with list_brands to find a brand id; every other brand tool takes one.",
 	"On local instances, create_brand accepts a website and an existing organization id. It starts paused.",
 	"Use inspect_website, review candidate questions, then apply_workspace_command/save_questions.",
+	"For SEO, get_analysis_context and read_analysis_evidence expose saved Google, SEO workbench and page data. diagnose_site is read-only and spends no model credits.",
+	"Use refresh_analysis_data/preview before an authorized one-shot refresh. Save a diagnosis with its exact evidence IDs, create_seo_action, then save/review the draft. SEO actions compare search periods with compare_seo_action, not AI question retests.",
 	"start_collection returns a commandId immediately; get_collection reads background progress and actual evidence.",
 	"get_workspace shares the dashboard's actions, drafts, readiness, command history and matched retests.",
 	"Generate drafts in your agent, then save_draft. Never claim publication from saving or reviewing a draft.",

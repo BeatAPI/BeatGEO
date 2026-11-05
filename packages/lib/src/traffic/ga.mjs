@@ -440,3 +440,138 @@ export async function loadGa(file) {
 	const clean = sanitizeGaSnapshot(snapshot);
 	return { snapshot: clean, summary: analyzeGa(clean) };
 }
+
+/** Fixed acquisition reports retain Google's rates and response quality metadata. */
+export async function fetchGaPerformance({ token, property, site, start, end, maxRows = 2000, fetchImpl = fetch }) {
+	if (!Number.isInteger(maxRows) || maxRows < 1 || maxRows > 10000) throw new Error("Invalid GA row budget.");
+	const id = gaProperty(property.id);
+	const info = await googleJson(`https://analyticsadmin.googleapis.com/v1beta/properties/${id}`, { token, fetchImpl });
+	const dates = resolveGaDates(gaDates({ start, end }), info.timeZone);
+	const days = Math.round((Date.parse(dates.endDate) - Date.parse(dates.startDate)) / 86400000) + 1;
+	if (days > 90) throw new Error("GA comparisons are limited to 90 days per period.");
+	const before = (n) => new Date(Date.parse(dates.startDate) - n * 86400000).toISOString().slice(0, 10);
+	const metrics = ["sessions", "engagedSessions", "keyEvents", "sessionKeyEventRate"];
+	async function report(period, preset) {
+		const dimensions =
+			preset === "channels" ? ["sessionDefaultChannelGroup", "sessionSource", "sessionMedium"] : ["landingPage"];
+		const expressions = acquisitionFilters(site, preset);
+		const rows = [],
+			metadata = [];
+		let total = 0,
+			expected;
+		const seen = new Set();
+		do {
+			const response = await googleJson(`https://analyticsdata.googleapis.com/v1beta/properties/${id}:runReport`, {
+				token,
+				fetchImpl,
+				body: {
+					dimensions: dimensions.map((name) => ({ name })),
+					metrics: metrics.map((name) => ({ name })),
+					dateRanges: [period],
+					dimensionFilter: { andGroup: { expressions } },
+					orderBys: dimensions.map((dimensionName) => ({ dimension: { dimensionName } })),
+					offset: String(rows.length),
+					limit: String(Math.min(1000, maxRows - rows.length)),
+				},
+			});
+			validateRowCount(response.rowCount ?? 0, expected);
+			expected = response.rowCount ?? 0;
+			if (response.metadata?.timeZone && response.metadata.timeZone !== info.timeZone)
+				throw new Error("GA property timezone changed during the query; retry.");
+			const batch = performanceBatch(response, dimensions, metrics, Math.min(1000, maxRows - rows.length));
+			total = response.rowCount || 0;
+			metadata.push(performanceMetadata(response.metadata));
+			appendPerformanceRows(rows, batch, seen);
+			if (!batch.length) break;
+		} while (rows.length < total && rows.length < maxRows);
+		return { preset, dimensions, rows, rowCount: total, limitReached: rows.length < total, metadata };
+	}
+	async function period(value) {
+		const [channels, organicPages, googleOrganicPages] = await Promise.all(
+			["channels", "organicPages", "googleOrganicPages"].map((preset) => report(value, preset)),
+		);
+		return { ...value, channels, organicPages, googleOrganicPages };
+	}
+	const [current, previous] = await Promise.all([
+		period(dates),
+		period({ startDate: before(days), endDate: before(1) }),
+	]);
+	return {
+		schema: "beat-geo/ga-performance@1",
+		property,
+		site: siteHostname(site),
+		timeZone: info.timeZone,
+		fetchedAt: new Date().toISOString(),
+		current,
+		previous,
+		warning:
+			"GSC clicks and GA sessions are different measurements. Page key events cannot be assigned to search queries. AI referrals overlap channel groups. Event configuration is not verified by this report.",
+	};
+}
+
+function acquisitionFilters(site, preset) {
+	const expressions = [
+		{
+			filter: {
+				fieldName: "hostName",
+				stringFilter: { matchType: "EXACT", value: siteHostname(site), caseSensitive: false },
+			},
+		},
+	];
+	if (preset !== "channels")
+		expressions.push({
+			filter: {
+				fieldName: "sessionDefaultChannelGroup",
+				stringFilter: { matchType: "EXACT", value: "Organic Search", caseSensitive: true },
+			},
+		});
+	if (preset === "googleOrganicPages")
+		expressions.push({
+			filter: {
+				fieldName: "sessionSource",
+				stringFilter: { matchType: "EXACT", value: "google", caseSensitive: false },
+			},
+		});
+
+	return expressions;
+}
+
+function performanceBatch(response, dimensions, metrics, limit) {
+	const total = response.rowCount ?? 0,
+		batch = response.rows ?? [];
+	if (!Number.isInteger(total) || total < 0 || !Array.isArray(batch) || batch.length > limit || batch.length > total)
+		throw new Error("Invalid GA performance response.");
+	return batch.map((row) => performanceRow(row, dimensions, metrics));
+}
+function performanceRow(row, dimensions, metrics) {
+	if (row.dimensionValues?.length !== dimensions.length || row.metricValues?.length !== metrics.length)
+		throw new Error("Invalid GA performance row.");
+	if (row.dimensionValues.some((v) => typeof v.value !== "string"))
+		throw new Error("Invalid GA performance dimensions.");
+	const values = row.metricValues.map((v) => (typeof v.value !== "string" || v.value === "" ? NaN : Number(v.value)));
+	if (values.some((v) => !Number.isFinite(v) || v < 0) || values[3] > 1)
+		throw new Error("Invalid GA performance metrics.");
+	return {
+		dimensions: Object.fromEntries(dimensions.map((key, i) => [key, row.dimensionValues[i].value])),
+		metrics: Object.fromEntries(metrics.map((key, i) => [key, values[i]])),
+	};
+}
+function performanceMetadata(raw = {}) {
+	return {
+		subjectToThresholding: raw.subjectToThresholding === true,
+		dataLossFromOtherRow: raw.dataLossFromOtherRow === true,
+		sampled: Array.isArray(raw.samplingMetadatas) && raw.samplingMetadatas.length > 0,
+		restricted: Boolean(raw.schemaRestrictionResponse?.activeMetricRestrictions?.length),
+		timeZone: typeof raw.timeZone === "string" ? raw.timeZone : "",
+		emptyReason: typeof raw.emptyReason === "string" ? raw.emptyReason : "",
+	};
+}
+
+function appendPerformanceRows(rows, batch, seen) {
+	for (const row of batch) {
+		const key = JSON.stringify(row.dimensions);
+		if (seen.has(key)) throw new Error("GA returned duplicate dimension rows.");
+		seen.add(key);
+		rows.push(row);
+	}
+}

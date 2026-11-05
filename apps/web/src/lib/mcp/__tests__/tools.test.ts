@@ -8,6 +8,7 @@ import type { AdminAuth, OrganizationAuth, UserAuth } from "@/lib/auth/api-auth"
 import { MCP_TOOLS, toolsFor } from "../tools";
 
 const WRITE_TOOLS = [
+	"refresh_analysis_data",
 	"create_prompts",
 	"update_prompt",
 	"create_brand",

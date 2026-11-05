@@ -73,6 +73,8 @@ it("encrypts GA grants, saves an exact-host snapshot and removes it on disconnec
 				});
 			if (u.includes("analyticsadmin")) return Response.json({ timeZone: "Asia/Shanghai" });
 			const body = JSON.parse(String(init?.body));
+			if (body.metrics.some((m: { name: string }) => m.name === "sessionKeyEventRate"))
+				return Response.json({ rowCount: 0, rows: [], metadata: { timeZone: "Asia/Shanghai" } });
 			return Response.json(body.dimensions.length === 3 ? ga.sources : ga.landing);
 		}),
 	);

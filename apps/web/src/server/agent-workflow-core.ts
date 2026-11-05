@@ -1,7 +1,14 @@
 import { createHash } from "node:crypto";
 import { parseScrapeTargets } from "@workspace/config/scrape-targets";
 import { db } from "@workspace/lib/db/db";
-import { brands, collectionAttempts, organization, prompts, workspaceCommands } from "@workspace/lib/db/schema";
+import {
+	brands,
+	collectionAttempts,
+	optimizationActions,
+	organization,
+	prompts,
+	workspaceCommands,
+} from "@workspace/lib/db/schema";
 import { compareObservations, PROMPT_JOB_OPTIONS } from "@workspace/lib/monitoring";
 import { readRuntimeHealth } from "@workspace/lib/runtime-health";
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
@@ -9,6 +16,7 @@ import { z } from "zod";
 import { ApiError } from "@/lib/api/handler";
 import { getBoss } from "@/lib/boss-client";
 import { createMultiplePromptJobSchedulers } from "@/lib/job-scheduler";
+import { createSeoAction, saveDiagnosis, seoActionComparison } from "./analysis-core";
 import { browserRequest } from "./connections-core";
 import { reviewContentDraft, saveContentDraft } from "./content-draft-core";
 import {
@@ -21,6 +29,9 @@ import { createBrand, saveWizardOnboarding, updateBrand, wizardOnboardingInputSc
 import { workspaceCommand } from "./workspace-command";
 
 export const workspaceOperation = z.discriminatedUnion("type", [
+	z.object({ type: z.literal("save_diagnosis"), evidenceIds: z.array(z.uuid()).min(1).max(20) }),
+	z.object({ type: z.literal("create_seo_action"), diagnosisId: z.uuid(), findingId: z.string().min(1).max(200) }),
+	z.object({ type: z.literal("compare_seo_action"), actionId: z.uuid() }),
 	z.object({
 		type: z.literal("update_brand"),
 		name: z.string().trim().min(1).max(200).optional(),
@@ -87,6 +98,18 @@ export async function applyWorkspaceOperation(
 		},
 		async () => {
 			switch (command.type) {
+				case "save_diagnosis":
+					return saveDiagnosis(brand.id, command.evidenceIds);
+				case "create_seo_action":
+					return createSeoAction(brand.id, command.diagnosisId, command.findingId);
+				case "compare_seo_action": {
+					const [action] = await db
+						.select()
+						.from(optimizationActions)
+						.where(and(eq(optimizationActions.brandId, brand.id), eq(optimizationActions.id, command.actionId)));
+					if (!action || action.kind !== "seo") throw new Error("Choose a SEO action in this brand.");
+					return seoActionComparison(brand.id, action);
+				}
 				case "update_brand":
 					return updateBrand({ brandId: brand.id, brandName: command.name, aliases: command.aliases });
 				case "save_questions":
