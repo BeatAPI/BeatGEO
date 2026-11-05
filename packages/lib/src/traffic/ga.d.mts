@@ -10,6 +10,7 @@ export interface GaRow {
 	keyEvents: number;
 }
 export interface GaSummary {
+	performance?: GaPerformance;
 	schema: "beat-geo/ga-summary@1";
 	generatedAt: string;
 	synthetic: boolean;
@@ -62,3 +63,44 @@ export function fetchGa(options: {
 	end?: string;
 	fetchImpl?: typeof fetch;
 }): Promise<{ summary: GaSummary; snapshot: unknown }>;
+export type GaPerformanceReport = {
+	preset: string;
+	dimensions: string[];
+	rows: Array<{ dimensions: Record<string, string>; metrics: Record<string, number> }>;
+	rowCount: number;
+	limitReached: boolean;
+	metadata: Array<{
+		subjectToThresholding: boolean;
+		dataLossFromOtherRow: boolean;
+		sampled: boolean;
+		restricted: boolean;
+		timeZone: string;
+		emptyReason: string;
+	}>;
+};
+export type GaPerformanceWindow = {
+	startDate: string;
+	endDate: string;
+	channels: GaPerformanceReport;
+	organicPages: GaPerformanceReport;
+	googleOrganicPages: GaPerformanceReport;
+};
+export type GaPerformance = {
+	schema: "beat-geo/ga-performance@1";
+	property: { id: string; name: string };
+	site: string;
+	timeZone: string;
+	fetchedAt: string;
+	current: GaPerformanceWindow;
+	previous: GaPerformanceWindow;
+	warning: string;
+};
+export function fetchGaPerformance(options: {
+	token: string;
+	property: { id: string; name: string };
+	site: string;
+	start?: string;
+	end?: string;
+	maxRows?: number;
+	fetchImpl?: typeof fetch;
+}): Promise<GaPerformance>;

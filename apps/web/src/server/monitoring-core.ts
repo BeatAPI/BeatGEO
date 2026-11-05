@@ -10,6 +10,7 @@ import {
 import { readRuntimeHealth } from "@workspace/lib/runtime-health";
 import { and, desc, eq, gt, inArray, isNull, or, sql } from "drizzle-orm";
 import { getBoss } from "@/lib/boss-client";
+import { seoActionComparison } from "./analysis-core";
 
 export async function readMonitoring(brandId: string) {
 	const [attempts, actions, questions, runtime] = await Promise.all([
@@ -49,12 +50,16 @@ export async function readMonitoring(brandId: string) {
 					? "interrupted"
 					: attempt.status,
 		})),
-		actions: actions.map((action) => ({
-			...action,
-			comparison: action.appliedAt
-				? compareObservations(action.baseline, observations, action.appliedAt.toISOString())
-				: null,
-		})),
+		actions: await Promise.all(
+			actions.map(async (action) => ({
+				...action,
+				seoComparison: action.kind === "seo" ? await seoActionComparison(brandId, action) : null,
+				comparison:
+					action.kind !== "seo" && action.appliedAt
+						? compareObservations(action.baseline, observations, action.appliedAt.toISOString())
+						: null,
+			})),
+		),
 	};
 }
 
@@ -110,6 +115,8 @@ export async function retestOptimizationAction(brandId: string, id: string) {
 		.from(optimizationActions)
 		.where(and(eq(optimizationActions.id, id), eq(optimizationActions.brandId, brandId)));
 	if (!action?.appliedAt) throw new Error("Record the implemented change before retesting.");
+	if (action.kind === "seo")
+		throw new Error("Refresh Search Console and use compare_seo_action; SEO actions do not submit AI questions.");
 	const ids = [...new Set(action.baseline.map((row) => row.promptId))];
 	const current = await db
 		.select()

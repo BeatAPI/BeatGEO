@@ -9,6 +9,7 @@ import { FormSelect } from "@/components/form-select";
 import { PageHeader } from "@/components/page-header";
 import { useLocale, useT } from "@/lib/i18n";
 import type { TrafficData } from "@/server/traffic-core";
+import { GaPerformancePanel } from "./search-performance";
 
 type Props = {
 	settingsOnly?: boolean;
@@ -38,8 +39,10 @@ export function TrafficPanel({
 	const [file, setFile] = useState<File | null>(null);
 	const [format, setFormat] = useState<"auto" | "combined" | "json" | "jsonl">("auto");
 	const crawls = data.crawls?.snapshot as CrawlSummary | null;
+	const performance = (data.ga?.snapshot as GaSummary | null)?.performance;
 	return (
 		<div className="space-y-6 min-w-0">
+			{!settingsOnly && performance && <GaPerformancePanel data={performance} />}
 			{!settingsOnly && (
 				<PageHeader
 					title={t("AI Traffic & Crawls")}

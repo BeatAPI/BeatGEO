@@ -1,9 +1,9 @@
 import { brandLinkParams } from "@workspace/lib/app-urls";
 import { db } from "@workspace/lib/db/db";
-import { brandDataSources, brands, organization } from "@workspace/lib/db/schema";
+import { analysisEvidence, brandDataSources, brands, organization } from "@workspace/lib/db/schema";
 import { analyzeCrawls, siteHostname } from "@workspace/lib/traffic/crawls";
-import { fetchGa, type GaSummary, gaProperty, listGaProperties } from "@workspace/lib/traffic/ga";
-import { fetchGsc, listGscProperties } from "@workspace/lib/traffic/gsc";
+import { fetchGa, fetchGaPerformance, type GaSummary, gaProperty, listGaProperties } from "@workspace/lib/traffic/ga";
+import { fetchGscAnalysis, listGscProperties } from "@workspace/lib/traffic/gsc";
 import { and, eq, sql } from "drizzle-orm";
 import { type GaTokens, gaClient, sealGa, usableGaTokens } from "./ga-oauth-core";
 import type { GoogleGrant } from "./google-oauth-core";
@@ -121,14 +121,23 @@ export async function syncGa(brandId: string, propertyId?: string, siteInput?: s
 		const tokens = await usableGaTokens(row.encryptedCredentials!, brandId);
 		const property = propertyId ? { id: gaProperty(propertyId), name: "" } : row.config?.property;
 		if (!property) throw new Error("Choose a GA property first.");
-		const allowed = await listGaProperties(tokens.accessToken);
+		const fetchImpl = boundedGoogleFetch(165);
+		const allowed = await listGaProperties(tokens.accessToken, { fetchImpl });
 		const selected = allowed.find((p) => p.id === property.id);
 		if (!selected) throw new Error("This Google account cannot read the selected property.");
 		const brand = await trafficBrand(brandId);
 		const site = siteHostname(siteInput ?? row.config?.site ?? brandHostname(brand.website));
 		const owned = [brandHostname(brand.website), ...(brand.additionalDomains ?? []).map(brandHostname)];
 		if (!owned.includes(site)) throw new Error("Choose a hostname saved in this brand's settings.");
-		const { summary } = await fetchGa({ token: tokens.accessToken, property: selected, site });
+		const { summary }: { summary: GaSummary } = await fetchGa({
+			token: tokens.accessToken,
+			property: selected,
+			site,
+			fetchImpl,
+		});
+		const performance = await fetchGaPerformance({ token: tokens.accessToken, property: selected, site, fetchImpl });
+		summary.performance = performance;
+		await tx.insert(analysisEvidence).values({ brandId, kind: "ga", payload: { kind: "ga", data: performance } });
 		await tx
 			.update(brandDataSources)
 			.set({
@@ -185,14 +194,26 @@ export async function syncGsc(brandId: string, property?: string) {
 		const tokens = await usableGscTokens(row.encryptedCredentials!, brandId);
 		const selected = property ?? row.config?.property?.id;
 		if (!selected) throw new Error("Choose a Search Console property first.");
-		const now = new Date();
+		const now = new Date(
+			`${new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())}T00:00:00Z`,
+		);
 		const date = (days: number) =>
 			new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - days)).toISOString().slice(0, 10);
-		const snapshot = await fetchGsc({
+		const brand = await trafficBrand(brandId);
+		const hosts = [brand.website, ...(brand.additionalDomains ?? [])].map(brandHostname);
+		const propertyHost = selected.startsWith("sc-domain:") ? selected.slice(10) : brandHostname(selected);
+		if (
+			!hosts.some(
+				(host) => host === propertyHost || (selected.startsWith("sc-domain:") && host.endsWith(`.${propertyHost}`)),
+			)
+		)
+			throw new Error("Choose a Search Console property for a hostname saved in this brand.");
+		const snapshot = await fetchGscAnalysis({
 			token: tokens.accessToken,
 			siteUrl: selected,
 			startDate: date(31),
 			endDate: date(4),
+			fetchImpl: boundedGoogleFetch(56),
 		});
 		await tx
 			.update(brandDataSources)
@@ -203,6 +224,7 @@ export async function syncGsc(brandId: string, property?: string) {
 				updatedAt: new Date(),
 			})
 			.where(sourceWhere(brandId, "gsc"));
+		await tx.insert(analysisEvidence).values({ brandId, kind: "gsc", payload: { kind: "gsc", data: snapshot } });
 		return snapshot;
 	});
 }
@@ -233,3 +255,12 @@ export async function importCrawlTraffic(
 	return summary;
 }
 export type TrafficData = Awaited<ReturnType<typeof readTraffic>>;
+
+function boundedGoogleFetch(maxRequests: number): typeof fetch {
+	const deadline = AbortSignal.timeout(180000);
+	let count = 0;
+	return async (input, init) => {
+		if (++count > maxRequests) throw new Error("Google request budget exceeded.");
+		return fetch(input, { ...init, signal: init?.signal ? AbortSignal.any([deadline, init.signal]) : deadline });
+	};
+}

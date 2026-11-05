@@ -4,6 +4,7 @@
  */
 
 import { type Principal, principalScopes } from "@/lib/auth/api-auth";
+import { ANALYSIS_TOOLS } from "./analysis";
 import { getAnalytics, getCitations, getOpportunities, getPromptPerformance, getQueryFanout } from "./analytics";
 import { getBrand, listBrandsTool, listCompetitorsTool } from "./brands";
 import type { McpTool } from "./define";
@@ -32,6 +33,7 @@ export const MCP_TOOLS: readonly McpTool[] = [
 	listRuns,
 	getRun,
 	...WORKSPACE_TOOLS,
+	...ANALYSIS_TOOLS,
 ];
 
 /** Filtered rather than refused at call time, so `tools/list` is an honest

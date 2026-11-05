@@ -50,6 +50,7 @@ export async function fetchGsc({ token, siteUrl, startDate, endDate, fetchImpl =
 	const base = { startDate, endDate, type: "web", dataState: "final" };
 	async function details(dimension) {
 		const rows = [];
+		const seen = new Set();
 		for (let offset = 0; offset < 10000; offset += 1000) {
 			const result = await request(
 				url,
@@ -59,9 +60,9 @@ export async function fetchGsc({ token, siteUrl, startDate, endDate, fetchImpl =
 			);
 			if (result.rows !== undefined && !Array.isArray(result.rows))
 				throw new Error("Invalid Search Console performance response.");
-			const batch = result.rows ?? [];
+			const batch = cleanRows(result.rows ?? [], [dimension]);
 			if (batch.length > 1000) throw new Error("Invalid Search Console page size.");
-			rows.push(...batch);
+			appendGscRows(rows, batch, seen);
 			if (batch.length < 1000) return { rows, limitReached: false };
 		}
 		return { rows, limitReached: true };
@@ -82,11 +83,109 @@ export async function fetchGsc({ token, siteUrl, startDate, endDate, fetchImpl =
 		startDate,
 		endDate,
 		fetchedAt: new Date().toISOString(),
-		totals: totals.rows?.[0] ?? null,
+		totals: cleanRows(totals.rows ?? [], [])[0] ?? null,
 		pages: pages.rows ?? [],
 		queries: queries.rows ?? [],
 		limitReached: pages.limitReached || queries.limitReached,
 		warning:
 			"Google Search performance only. Google may omit queries or return only top rows; detail is limited to 10,000 rows per view and must not be summed as totals.",
 	};
+}
+
+/** A bounded, reproducible comparison; missing rows are never inferred as zero. */
+export async function fetchGscAnalysis({ token, siteUrl, startDate, endDate, maxRows = 2000, fetchImpl = fetch }) {
+	if (!Number.isInteger(maxRows) || maxRows < 1 || maxRows > 10000)
+		throw new Error("Invalid Search Console row budget.");
+	const days = Math.round((Date.parse(endDate) - Date.parse(startDate)) / 86400000) + 1;
+	if (!Number.isInteger(days) || days < 1 || days > 90)
+		throw new Error("Search comparisons are limited to 90 days per period.");
+	const current = await fetchGsc({ token, siteUrl, startDate, endDate, fetchImpl });
+	const shift = (date, n) => new Date(Date.parse(date) + n * 86400000).toISOString().slice(0, 10);
+	const previous = await fetchGsc({
+		token,
+		siteUrl,
+		startDate: shift(startDate, -days),
+		endDate: shift(startDate, -1),
+		fetchImpl,
+	});
+	const url = `${API}/${encodeURIComponent(siteUrl)}/searchAnalytics/query`;
+	async function dataset(period, dimensions) {
+		const rows = [];
+		const seen = new Set();
+		let exhausted = false;
+		while (rows.length < maxRows) {
+			const limit = Math.min(1000, maxRows - rows.length);
+			const response = await request(
+				url,
+				token,
+				{
+					startDate: period.startDate,
+					endDate: period.endDate,
+					type: "web",
+					dataState: "final",
+					dimensions,
+					rowLimit: limit,
+					startRow: rows.length,
+				},
+				fetchImpl,
+			);
+			const batch = cleanRows(response.rows ?? [], dimensions);
+			if (
+				!Array.isArray(batch) ||
+				batch.length > limit ||
+				batch.some(
+					(row) =>
+						!Array.isArray(row.keys) ||
+						row.keys.length !== dimensions.length ||
+						row.keys.some((k) => typeof k !== "string") ||
+						["clicks", "impressions", "ctr", "position"].some((k) => !Number.isFinite(row[k]) || row[k] < 0) ||
+						row.ctr > 1,
+				)
+			)
+				throw new Error("Invalid Search Console analysis rows.");
+			appendGscRows(rows, batch, seen);
+			if (batch.length < limit) {
+				exhausted = true;
+				break;
+			}
+		}
+		return { dimensions, rows, returnedRows: rows.length, limitReached: !exhausted, providerLimited: true };
+	}
+	async function enrich(period) {
+		const [daily, queryPages, dailyPages] = await Promise.all([
+			dataset(period, ["date"]),
+			dataset(period, ["query", "page"]),
+			dataset(period, ["date", "page"]),
+		]);
+		return { ...period, daily, queryPages, dailyPages };
+	}
+	const [head, base] = await Promise.all([enrich(current), enrich(previous)]);
+	return {
+		...current,
+		analysis: { schema: "beat-geo/gsc-analysis@1", timezone: "America/Los_Angeles", current: head, previous: base },
+	};
+}
+
+function cleanRows(rows, dimensions) {
+	if (!Array.isArray(rows)) throw new Error("Invalid Search Console rows.");
+	return rows.map((row) => {
+		const keys = row.keys ?? [];
+		if (!Array.isArray(keys) || keys.length !== dimensions.length || keys.some((key) => typeof key !== "string"))
+			throw new Error("Invalid Search Console dimensions.");
+		if (
+			["clicks", "impressions", "ctr", "position"].some((key) => !Number.isFinite(row[key]) || row[key] < 0) ||
+			row.ctr > 1
+		)
+			throw new Error("Invalid Search Console metrics.");
+		return { keys, clicks: row.clicks, impressions: row.impressions, ctr: row.ctr, position: row.position };
+	});
+}
+
+function appendGscRows(rows, batch, seen) {
+	for (const row of batch) {
+		const key = JSON.stringify(row.keys);
+		if (seen.has(key)) throw new Error("Search Console rows changed during pagination; retry the report.");
+		seen.add(key);
+		rows.push(row);
+	}
 }

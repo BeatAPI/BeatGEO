@@ -6,6 +6,7 @@ import { FormSelect } from "@/components/form-select";
 import { gscPropertyLabel } from "@/lib/gsc-property-label";
 import { useT } from "@/lib/i18n";
 import type { TrafficData } from "@/server/traffic-core";
+import { GscRelationships } from "./search-performance";
 
 type Props = {
 	settingsOnly?: boolean;
@@ -109,6 +110,7 @@ export function GscPanel({
 								))}
 							</div>
 						)}
+						{result.analysis && <GscRelationships analysis={result.analysis} />}
 						<label htmlFor="gsc-filter" className="text-sm">
 							{t("Filter search queries")}
 						</label>
