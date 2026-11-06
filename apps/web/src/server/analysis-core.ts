@@ -123,6 +123,7 @@ export async function createSeoAction(brandId: string, diagnosisId: string, find
 			seoBaseline: {
 				evidenceIds: [...new Set([diagnosisId, ...finding.evidenceIds])],
 				findingId,
+				finding: { kind: finding.kind, title: finding.title, note: finding.note, messages: finding.messages },
 				page: finding.page,
 				query: finding.query,
 			},
@@ -132,7 +133,11 @@ export async function createSeoAction(brandId: string, diagnosisId: string, find
 }
 export async function seoActionComparison(brandId: string, action: typeof optimizationActions.$inferSelect) {
 	if (!action.seoBaseline || !action.appliedAt)
-		return { status: "waiting", reason: "Record the implemented change first." };
+		return {
+			status: "waiting",
+			reasonCode: "implementation_required" as const,
+			reason: "Record the implemented change first.",
+		};
 	const baseline = await db
 		.select()
 		.from(analysisEvidence)
@@ -146,7 +151,11 @@ export async function seoActionComparison(brandId: string, action: typeof optimi
 	const head = (await latestEvidence(brandId)).find((e) => e.payload.kind === "gsc");
 	const base = baseline[0]?.payload;
 	if (base?.kind !== "gsc" || head?.payload.kind !== "gsc")
-		return { status: "insufficient_data", reason: "Refresh Search Console before comparing." };
+		return {
+			status: "insufficient_data",
+			reasonCode: "comparison_refresh" as const,
+			reason: "Refresh Search Console before comparing.",
+		};
 	return compareSearchBaseline(base.data, head.payload.data, action.seoBaseline, action.appliedAt.toISOString());
 }
 export async function captureAnalysisPages(brandId: string, pages: string[]) {

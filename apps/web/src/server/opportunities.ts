@@ -13,8 +13,8 @@
  * Provider selection reuses the same config as onboarding / prompt-idea
  * generation (`runStructuredCompletionPrompt` → `resolveResearchProvider`, which
  * honors ONBOARDING_LLM_TARGET / the preference order). Reports are persisted to
- * the brand_opportunities table (append-only) and served as-is until the latest
- * is older than REFRESH_AFTER_DAYS, so a normal page load doesn't trigger an LLM call.
+ * the brand_opportunities table (append-only). Reading never invokes a model;
+ * generation is a separate explicit, idempotent command.
  */
 
 import { type CitationCategory, extractDomain } from "@workspace/lib/citations/domain-categories";
@@ -22,7 +22,7 @@ import { categorizeDomain } from "@workspace/lib/citations/domain-lists";
 import { db } from "@workspace/lib/db/db";
 import { brandOpportunities, brands, competitors } from "@workspace/lib/db/schema";
 import { runStructuredCompletionPrompt } from "@workspace/lib/onboarding";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
 	getBrandMentionRateByModel,
@@ -35,8 +35,9 @@ import {
 } from "@/lib/postgres-read";
 import { isBrandedPrompt } from "@/lib/prompt-tags";
 import { resolveLookbackRange, resolveTimezone } from "@/lib/timezone-utils";
-import { computeVolatility, type DailyDomainCount, stabilityScore } from "@/lib/visibility-stats";
+import { computeVolatility, stabilityScore } from "@/lib/visibility-stats";
 import { resolveFilteredPrompts } from "@/server/prompt-resolution";
+import { workspaceCommand } from "@/server/workspace-command";
 
 /** First occurrence of each entry, by whatever `key` identifies it. */
 function distinctBy<T>(items: T[], key: (item: T) => string): T[] {
@@ -126,7 +127,7 @@ export interface OpportunitiesReport extends Omit<RawReport, "opportunities"> {
 	opportunities: ReportOpportunity[];
 }
 
-type OpportunitiesReason = "insufficient-data" | null;
+type OpportunitiesReason = "not-generated" | "insufficient-data" | null;
 export interface OpportunitiesResponse {
 	report: OpportunitiesReport | null;
 	reason: OpportunitiesReason;
@@ -505,9 +506,6 @@ function citationsForPrompts(
 	};
 }
 
-/** Regenerate at most this often; stored generations newer than this are served
- * from cache. Surfaced as "Refreshed weekly" on the page — kept a touch under 7 days. */
-const REFRESH_AFTER_DAYS = 6;
 const MAX_GENERATION_ATTEMPTS = 1;
 
 /** Resolve the LLM output's prompt strings to tracked IDs (for deep-linking) and
@@ -544,55 +542,75 @@ async function generateValidReport(prompt: string): Promise<{ report: RawReport;
 	return null;
 }
 
-/**
- * Generation is inline and synchronous — there is no queue, so a caller either
- * gets the current report or waits for the one it just caused. The freshness
- * gate is what bounds the spend.
- */
-export async function resolveOpportunities(brandId: string, timezone = "UTC"): Promise<OpportunitiesResponse> {
+function storedResponse(latest?: typeof brandOpportunities.$inferSelect): OpportunitiesResponse {
+	return {
+		report: latest ? withoutRepeats(latest.report as OpportunitiesReport) : null,
+		reason: latest ? null : "not-generated",
+		generatedFor: null,
+		lastEvaluatedAt: latest?.createdAt.toISOString() ?? null,
+		model: latest?.model ?? null,
+	};
+}
+
+/** Reading a report never collects evidence, invokes a model or writes a snapshot. */
+export async function resolveOpportunities(brandId: string): Promise<OpportunitiesResponse> {
 	const [latest] = await db
 		.select()
 		.from(brandOpportunities)
 		.where(eq(brandOpportunities.brandId, brandId))
 		.orderBy(desc(brandOpportunities.createdAt))
 		.limit(1);
-	const lastEvaluatedAt = latest?.createdAt.toISOString() ?? null;
-	const servedModel = latest?.model ?? null;
-	const isFresh = latest && Date.now() - new Date(latest.createdAt).getTime() < REFRESH_AFTER_DAYS * 86_400_000;
-	const serveStored = () => ({
-		report: withoutRepeats(latest.report as OpportunitiesReport),
-		reason: null,
-		generatedFor: null,
-		lastEvaluatedAt,
-		model: servedModel,
-	});
-	if (latest && isFresh) return serveStored();
+	return storedResponse(latest);
+}
 
-	const digest = await buildDigest(brandId, timezone);
-	if (!digest) {
-		if (latest) return serveStored();
-		return { report: null, reason: "insufficient-data", generatedFor: null, lastEvaluatedAt, model: null };
-	}
-
-	const prompt = `${GUIDANCE}\n\n=== BRAND DATA ===\n${digest.text}\n\n=== TASK ===\n${TASK}`;
-	const generated = await generateValidReport(prompt);
-	if (!generated) {
-		// No schema-valid report; serve the last good one if there is one.
-		if (latest) return serveStored();
-		throw new Error("Failed to generate a valid opportunities report");
-	}
-
-	const report = enrichReport(generated.report, digest);
-	const [savedReport] = await db
-		.insert(brandOpportunities)
-		.values({ brandId, report, model: generated.model })
-		.returning({ createdAt: brandOpportunities.createdAt });
-
-	return {
-		report,
-		reason: null,
-		generatedFor: { brandName: digest.brandName },
-		lastEvaluatedAt: savedReport?.createdAt.toISOString() ?? null,
-		model: generated.model,
-	};
+export async function generateOpportunities(
+	brand: Pick<typeof brands.$inferSelect, "id" | "organizationId">,
+	idempotencyKey: string,
+	timezone: string,
+	expectedLastEvaluatedAt: string | null,
+): Promise<OpportunitiesResponse> {
+	const command = await workspaceCommand(
+		{
+			organizationId: brand.organizationId,
+			brandId: brand.id,
+			operation: "generate_opportunities",
+			idempotencyKey,
+			args: { timezone, expectedLastEvaluatedAt },
+		},
+		async () =>
+			db.transaction(async (tx) => {
+				// Distinct keys from tabs/devices still cannot overlap a paid request for one brand.
+				const lock = await tx.execute<{ acquired: boolean }>(
+					sql`select pg_try_advisory_xact_lock(hashtextextended(${`opportunities:${brand.id}`}, 0)) as acquired`,
+				);
+				if (!lock.rows[0]?.acquired)
+					throw new Error("Recommendations are already being generated. Wait and reload the saved report.");
+				const [latest] = await tx
+					.select()
+					.from(brandOpportunities)
+					.where(eq(brandOpportunities.brandId, brand.id))
+					.orderBy(desc(brandOpportunities.createdAt))
+					.limit(1);
+				// A stale tab must not buy another generation after another tab completed it.
+				if ((latest?.createdAt.toISOString() ?? null) !== expectedLastEvaluatedAt) return storedResponse(latest);
+				const digest = await buildDigest(brand.id, timezone);
+				if (!digest) return { ...storedResponse(latest), reason: "insufficient-data" };
+				const prompt = `${GUIDANCE}\n\n=== BRAND DATA ===\n${digest.text}\n\n=== TASK ===\n${TASK}`;
+				const generated = await generateValidReport(prompt);
+				if (!generated) throw new Error("Could not generate recommendations. Your saved report is unchanged.");
+				const report = enrichReport(generated.report, digest);
+				const [saved] = await tx
+					.insert(brandOpportunities)
+					.values({ brandId: brand.id, report, model: generated.model })
+					.returning({ createdAt: brandOpportunities.createdAt });
+				return {
+					report,
+					reason: null,
+					generatedFor: { brandName: digest.brandName },
+					lastEvaluatedAt: saved.createdAt.toISOString(),
+					model: generated.model,
+				};
+			}),
+	);
+	return command.data as OpportunitiesResponse;
 }

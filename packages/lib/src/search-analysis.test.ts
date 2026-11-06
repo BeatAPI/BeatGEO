@@ -90,7 +90,14 @@ describe("evidence based search decisions", () => {
 		const base = summary([row("api", "https://example.com/a", 4)]),
 			head = summary([row("api", "https://example.com/a", 8)]);
 		const target = { page: "https://example.com/a", query: "api", evidenceIds: ["gsc-id"], findingId: "low_ctr:0" };
-		expect(compareSearchBaseline(base, head, target, "2026-10-29T00:00:00Z").status).toBe("waiting");
+		expect(compareSearchBaseline(base, head, target, "2026-10-29T00:00:00Z")).toMatchObject({
+			status: "waiting",
+			reasonCode: "waiting_period",
+			windows: {
+				baseline: { startDate: "2026-10-01", endDate: "2026-10-28" },
+				current: { startDate: "2026-10-01", endDate: "2026-10-28" },
+			},
+		});
 		head.analysis!.current = window(head.analysis!.current.queryPages.rows, "2026-11-01", "2026-11-28");
 		expect(compareSearchBaseline(base, head, target, "2026-10-29T00:00:00Z")).toMatchObject({
 			status: "comparable",

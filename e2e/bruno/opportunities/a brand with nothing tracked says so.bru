@@ -16,7 +16,7 @@ headers {
 
 assert {
   res.status: eq 200
-  res.body.status: eq insufficient-data
+  res.body.status: eq not-generated
   res.body.generatedAt: isNull
   res.body.model: isNull
   res.body.opportunities: isEmpty

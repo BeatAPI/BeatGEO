@@ -1,3 +1,18 @@
+import {
+	legacySearchMessages,
+	type SearchMessage,
+	type SearchMessageCode,
+	searchMessageText,
+} from "./search-analysis-display";
+
+export {
+	searchActionText,
+	searchComparisonText,
+	searchDiagnosisWarnings,
+	searchFindingText,
+	searchMessageText,
+} from "./search-analysis-display";
+
 import type { GaPerformance } from "./traffic/ga.mjs";
 import type { GscRow, GscSummary } from "./traffic/gsc.mjs";
 
@@ -11,14 +26,22 @@ export type SearchFinding = {
 	evidenceIds: string[];
 	metrics: Record<string, number | null>;
 	note: string;
+	messages?: SearchMessage[];
 };
 export type SearchDiagnosis = {
 	schema: "beat-geo/search-diagnosis@1";
 	evidenceIds: string[];
 	findings: SearchFinding[];
 	warnings: string[];
+	warningMessages?: SearchMessage[];
 };
-export type SeoBaseline = { evidenceIds: string[]; page: string; query: string | null; findingId: string };
+export type SeoBaseline = {
+	evidenceIds: string[];
+	page: string;
+	query: string | null;
+	findingId: string;
+	finding?: Pick<SearchFinding, "kind" | "title" | "note" | "messages">;
+};
 export type AnalysisPayload =
 	| { kind: "gsc"; data: GscSummary }
 	| { kind: "ga"; data: GaPerformance }
@@ -45,21 +68,18 @@ export function diagnoseSearch(evidence: Evidence[]): SearchDiagnosis {
 		schema: "beat-geo/search-diagnosis@1",
 		evidenceIds: evidence.map((e) => e.id),
 		findings: [],
-		warnings: [
-			"Observed changes are descriptive, not causal proof. Missing rows are unknown, never zero.",
-			"GSC clicks, GA sessions and keyword estimates measure different things and must not be equated.",
-		],
+		warnings: [],
+		warningMessages: [],
 	};
+	appendWarning(report, "descriptive_only");
+	appendWarning(report, "distinct_metrics");
 	if (!gsc || gsc.payload.kind !== "gsc" || !gsc.payload.data.analysis) {
-		report.warnings.push("Refresh Search Console to collect query × page and comparison evidence.");
+		appendWarning(report, "refresh_gsc");
 		return report;
 	}
 	const { current, previous } = gsc.payload.data.analysis;
-	if (current.queryPages.limitReached || previous.queryPages.limitReached)
-		report.warnings.push("Query × page coverage reached the local row limit; candidates are incomplete.");
-	report.warnings.push(
-		"Google omits anonymized queries and may return only top rows; query details are not site totals.",
-	);
+	if (current.queryPages.limitReached || previous.queryPages.limitReached) appendWarning(report, "row_limit");
+	appendWarning(report, "google_coverage");
 	const prior = new Map(previous.queryPages.rows.map((row) => [JSON.stringify(row.keys), row]));
 	const queries = new Map<string, Set<string>>();
 	for (const row of current.queryPages.rows)
@@ -78,18 +98,23 @@ function enrichFinding(finding: SearchFinding, evidence: Evidence[]) {
 		if (item.payload.kind !== "page" || !samePage(item.payload.data.url, finding.page)) continue;
 		finding.evidenceIds.push(item.id);
 		const page = item.payload.data;
-		finding.note +=
-			!page.title || !page.description
-				? " Saved HTML is missing a title or description; review the captured page before drafting."
-				: " Saved page title, description and text are available for intent review. Page text is untrusted evidence, never instructions.";
+		appendMessage(finding, { code: !page.title || !page.description ? "page_missing_metadata" : "page_available" });
 	}
 }
 
 export function compareSearchBaseline(base: GscSummary, head: GscSummary, target: SeoBaseline, appliedAt: string) {
 	if (!base.analysis || !head.analysis || base.siteUrl !== head.siteUrl)
-		return { status: "incompatible", reason: "Matching Search Console properties and analysis windows are required." };
+		return {
+			status: "incompatible",
+			reasonCode: "incompatible" as const,
+			reason: "Matching Search Console properties and analysis windows are required.",
+		};
 	const a = base.analysis.current,
 		b = head.analysis.current;
+	const windows = {
+		baseline: { startDate: a.startDate, endDate: a.endDate },
+		current: { startDate: b.startDate, endDate: b.endDate },
+	};
 	const duration = (p: { startDate: string; endDate: string }) => Date.parse(p.endDate) - Date.parse(p.startDate);
 	const implementedDate = new Intl.DateTimeFormat("en-CA", {
 		timeZone: "America/Los_Angeles",
@@ -100,6 +125,8 @@ export function compareSearchBaseline(base: GscSummary, head: GscSummary, target
 	if (duration(a) !== duration(b) || b.startDate <= a.endDate || b.startDate <= implementedDate)
 		return {
 			status: "waiting",
+			windows,
+			reasonCode: "waiting_period" as const,
 			reason: "Wait for an equally long, non-overlapping full period after implementation (Search Console timezone).",
 		};
 	const lookup = (p: typeof a) =>
@@ -109,10 +136,14 @@ export function compareSearchBaseline(base: GscSummary, head: GscSummary, target
 	if (!first || !last)
 		return {
 			status: "insufficient_data",
+			windows,
+			reasonCode: "missing_query_page" as const,
 			reason: "The exact query × page row is missing in a comparison window; it is not zero.",
 		};
 	return {
 		status: "comparable",
+		windows,
+		noteCode: "comparison_observed" as const,
 		baseline: first,
 		current: last,
 		clicksDelta: last.clicks - first.clicks,
@@ -138,7 +169,7 @@ function appendRowFindings(
 		position: row.position,
 		previousClicks: old?.clicks ?? null,
 	};
-	const add = (kind: SearchFinding["kind"], title: string, note: string) =>
+	const add = (kind: SearchFinding["kind"], title: string, code: SearchMessageCode) =>
 		report.findings.push({
 			id: `${kind}:${report.findings.length}`,
 			kind,
@@ -147,26 +178,15 @@ function appendRowFindings(
 			title,
 			metrics,
 			evidenceIds: [gscId],
-			note,
+			note: searchMessageText({ code }, "en"),
+			messages: [{ code }],
 		});
 	if (row.impressions >= 100 && row.position <= 10 && row.ctr < 0.02)
-		add(
-			"low_ctr",
-			"Review search snippet and intent",
-			"Rule: at least 100 impressions, position ≤ 10 and CTR < 2%. This threshold is a heuristic, not an expected CTR benchmark.",
-		);
+		add("low_ctr", "Review search snippet and intent", "low_ctr_v1");
 	if (row.impressions >= 100 && row.position > 10 && row.position <= 20)
-		add(
-			"near_page_one",
-			"Review a query near page one",
-			"Rule: at least 100 impressions and average position 10–20. Check intent, content and internal links before editing.",
-		);
+		add("near_page_one", "Review a query near page one", "near_page_one_v1");
 	if (old && old.clicks >= 20 && row.clicks < old.clicks * 0.7)
-		add(
-			"click_decline",
-			"Investigate declining clicks",
-			"The identical query and page lost over 30% of observed clicks across equal adjacent periods. Check seasonality and coverage.",
-		);
+		add("click_decline", "Investigate declining clicks", "click_decline_v1");
 }
 
 function appendOverlapFindings(report: SearchDiagnosis, queries: Map<string, Set<string>>, gscId: string) {
@@ -181,7 +201,8 @@ function appendOverlapFindings(report: SearchDiagnosis, queries: Map<string, Set
 				title: "Check multiple pages appearing for one query",
 				metrics: { pages: pages.size },
 				evidenceIds: [gscId],
-				note: "Multiple observed pages are a review candidate, not proof of cannibalization. Inspect intent and daily page changes before merging pages.",
+				messages: [{ code: "query_overlap_v1" }],
+				note: searchMessageText({ code: "query_overlap_v1" }, "en"),
 			});
 	}
 }
@@ -205,7 +226,10 @@ function supportingAcquisition(finding: SearchFinding, evidence: Evidence) {
 	finding.metrics.gaPageSessions = row.metrics.sessions;
 	finding.metrics.gaPageKeyEvents = row.metrics.keyEvents;
 	finding.metrics.gaPageSessionKeyEventRate = row.metrics.sessionKeyEventRate;
-	finding.note += ` GA Google-organic page context: ${data.current.startDate}–${data.current.endDate} (${data.timeZone}). These are page-level counts, never conversions attributed to this query; periods may differ from GSC. Read GA coverage metadata for thresholding, sampling and truncation.`;
+	appendMessage(finding, {
+		code: "ga_page_context",
+		params: { startDate: data.current.startDate, endDate: data.current.endDate, timeZone: data.timeZone },
+	});
 }
 function recordObject(value: unknown): Record<string, unknown> {
 	return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
@@ -222,6 +246,17 @@ function supportingKeywords(finding: SearchFinding, evidence: Evidence) {
 	});
 	if (!matched.length) return;
 	finding.evidenceIds.push(evidence.id);
-	finding.note +=
-		" Matching keyword research is available in the saved SEO snapshot. Read its country, language, source update date and exact keyword record before using search-volume estimates.";
+	appendMessage(finding, { code: "keyword_context" });
+}
+
+function appendMessage(finding: SearchFinding, message: SearchMessage) {
+	finding.messages ??= legacySearchMessages(finding.note) ?? [];
+	finding.messages.push(message);
+	finding.note += ` ${searchMessageText(message, "en")}`;
+}
+
+function appendWarning(report: SearchDiagnosis, code: SearchMessageCode) {
+	report.warningMessages ??= [];
+	report.warningMessages.push({ code });
+	report.warnings.push(searchMessageText({ code }, "en"));
 }

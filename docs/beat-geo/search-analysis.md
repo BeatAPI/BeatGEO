@@ -1,15 +1,21 @@
 # Search analysis
 
-The Search diagnosis tab under Opportunities combines actual Search Console query × page observations, GA Google-organic page context, matching saved SEO keyword research, and captured page text. Rules produce review candidates; neither low CTR nor multiple pages for a query proves a content problem. CMS publication and weekly reporting are outside this workflow.
+SEO → Search diagnosis combines actual Search Console query × page observations, GA Google-organic page context, matching saved SEO keyword research, and captured page text. Rules produce review candidates; neither low CTR nor multiple pages for a query proves a content problem. CMS publication and weekly reporting are outside this workflow.
 
 ## User flow
 
 1. In Brand settings, authorize Google and select the matching GSC/GA properties. Refresh Search Console or acquisition data. Existing AI referral reports remain available.
 2. Search Console includes query × page, date and date × page views, filters and pagination. GA includes all-channel acquisition, organic landing pages and Google-organic landing pages. Each offers current/previous periods.
-3. In Opportunities → Search diagnosis, refresh sources or import the latest completed non-demo SEO workbench run. No paid SEO request is made by importing it; new paid research remains an explicit workbench operation.
+3. In SEO → Search diagnosis, refresh sources or import the latest completed non-demo SEO workbench run. No paid SEO request is made by importing it; new paid research remains an explicit workbench operation.
 4. Review candidates and evidence history. Read a candidate page before drafting. Create SEO action freezes the diagnosis and supporting evidence IDs; it requires no fabricated AI monitoring question.
-5. Under Actions & retests, generate an outline or request a paid AI draft explicitly, edit and approve its exact revision, then record the real implementation separately. There is no publishing action.
+5. Follow View saved SEO action or SEO → SEO actions to generate an outline or request a paid AI draft explicitly, edit and approve its exact revision, then record the real implementation separately. There is no publishing action.
 6. After a full comparable period, refresh GSC. The action shows descriptive click movement only when property, query, page and window length match and the new full window is after implementation. Missing rows stay unknown.
+
+The source cards distinguish a disconnected account, an unselected property, first analysis refresh, an older summary, and stale analysis. Saved evidence remains readable after disconnecting. SEO imports become available only when matching real completed workbench research exists.
+
+The diagnosis and action destination are kept in the URL fragment, including the SEO/GEO action filter. Actions retain their source type, and implementation feedback links to the matching search comparison or AI-question collection. GA acquisition and AI referral/crawl reports live under Analytics → Traffic analysis as separate measurements.
+
+GEO recommendation reads (dashboard, public API and MCP) never invoke a model. Missing reports return `not-generated`; saved reports retain their original timestamp regardless of age. Only the explicit dashboard generation button spends research-provider credits. Durable command keys, a brand-level transaction lock and the last-seen report timestamp protect against replays, concurrent tabs and stale-tab regeneration.
 
 ## MCP contract
 

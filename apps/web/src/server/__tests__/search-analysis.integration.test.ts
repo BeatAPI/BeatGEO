@@ -111,6 +111,10 @@ it("archives real joint snapshots, keeps prior evidence on a failed refresh, and
 	const draft = await createContentDraft(brandId, action.data.id, 0, "zh", false);
 	expect(draft.contentDraft).toContain("https://example.com/pricing");
 	expect(draft.contentDraft).toContain("image api");
+	expect(draft.contentDraft).toContain("# 核查搜索摘要与意图");
+	expect(draft.contentDraft).toContain("筛选规则：展示至少 100 次");
+	expect(draft.contentDraft).not.toContain("Rule:");
+	expect(draft.contentDraft).not.toContain("Review search snippet and intent");
 	await expect(
 		write({ type: "record_implementation", actionId: action.data.id, note: "Updated title" }),
 	).rejects.toThrow();

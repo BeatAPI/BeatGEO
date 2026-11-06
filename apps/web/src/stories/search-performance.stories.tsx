@@ -59,10 +59,13 @@ export const JointEvidence: Story = {
 		await expect(c.getByText("image api")).toBeVisible();
 		await expect(c.getByText("0.80%")).toBeVisible();
 		await expect(c.getByText("Row limit reached. This view is incomplete.")).toBeVisible();
-		await userEvent.selectOptions(c.getByRole("combobox", { name: "Search evidence view" }), "daily");
+		await userEvent.click(c.getByRole("combobox", { name: "Search evidence view" }));
+		await userEvent.click(await within(document.body).findByRole("option", { name: "Daily totals", exact: true }));
 		await expect(c.getByText("2026-10-02")).toBeVisible();
-		await userEvent.selectOptions(c.getByRole("combobox", { name: "Search evidence view" }), "queryPages");
-		await userEvent.selectOptions(c.getByRole("combobox", { name: "Comparison period" }), "previous");
+		await userEvent.click(c.getByRole("combobox", { name: "Search evidence view" }));
+		await userEvent.click(await within(document.body).findByRole("option", { name: "Query × page", exact: true }));
+		await userEvent.click(c.getByRole("combobox", { name: "Comparison period" }));
+		await userEvent.click(await within(document.body).findByRole("option", { name: "Previous period", exact: true }));
 		await expect(c.queryByText("image api")).toBeNull();
 		await expect(c.getByText(/2026-09-03/)).toBeVisible();
 	},
@@ -117,7 +120,10 @@ export const AcquisitionRates: Story = {
 		const c = within(canvasElement);
 		await expect(c.getByText("60.00%")).toBeVisible();
 		await expect(c.queryByText("150.00%")).toBeNull();
-		await userEvent.selectOptions(c.getByRole("combobox", { name: "Acquisition view" }), "googleOrganicPages");
+		await userEvent.click(c.getByRole("combobox", { name: "Acquisition view" }));
+		await userEvent.click(
+			await within(document.body).findByRole("option", { name: "Google organic landing pages", exact: true }),
+		);
 		await expect(c.getByText("/pricing")).toBeVisible();
 	},
 };
