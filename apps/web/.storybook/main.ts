@@ -71,6 +71,17 @@ const config: StorybookConfig = {
 						find: /^@\/server\/opportunities-fn(\.ts)?$/,
 						replacement: path.resolve(mocksDir, "server-opportunities.ts"),
 					},
+					...[
+						"analysis-fn",
+						"monitoring-fn",
+						"content-draft-fn",
+						"workspace-fn",
+						"evidence-summary",
+						"site-audit-fn",
+					].map((module) => ({
+						find: new RegExp(`^@/server/${module}(\\.ts)?$`),
+						replacement: path.resolve(mocksDir, "server-workflow.ts"),
+					})),
 					{ find: /^@tanstack\/react-router$/, replacement: path.resolve(mocksDir, "tanstack-router.tsx") },
 					{ find: /^@tanstack\/react-start\/server$/, replacement: path.resolve(mocksDir, "tanstack-start.ts") },
 					{ find: /^@tanstack\/react-start$/, replacement: path.resolve(mocksDir, "tanstack-start.ts") },

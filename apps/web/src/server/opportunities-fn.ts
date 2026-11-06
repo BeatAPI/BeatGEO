@@ -6,11 +6,31 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireBrandSession } from "@/lib/auth/helpers";
-import { type OpportunitiesResponse, resolveOpportunities } from "@/server/opportunities";
+import { generateOpportunities, type OpportunitiesResponse, resolveOpportunities } from "@/server/opportunities";
+import { trafficBrand } from "./traffic-core";
 
 export const getOpportunitiesFn = createServerFn({ method: "GET" })
 	.validator(z.object({ brandId: z.string(), timezone: z.string().default("UTC") }))
 	.handler(async ({ data }): Promise<OpportunitiesResponse> => {
 		await requireBrandSession(data.brandId);
-		return await resolveOpportunities(data.brandId, data.timezone);
+		return await resolveOpportunities(data.brandId);
+	});
+
+export const generateOpportunitiesFn = createServerFn({ method: "POST" })
+	.validator(
+		z.object({
+			brandId: z.string().min(1).max(200),
+			timezone: z.string().max(100).default("UTC"),
+			idempotencyKey: z.string().min(1).max(120),
+			expectedLastEvaluatedAt: z.iso.datetime().nullable(),
+		}),
+	)
+	.handler(async ({ data }): Promise<OpportunitiesResponse> => {
+		await requireBrandSession(data.brandId);
+		return generateOpportunities(
+			await trafficBrand(data.brandId),
+			data.idempotencyKey,
+			data.timezone,
+			data.expectedLastEvaluatedAt,
+		);
 	});

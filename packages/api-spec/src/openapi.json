@@ -1513,7 +1513,7 @@
 				"required": ["category", "title", "why", "relatedPrompts", "yourCitations", "competitorCitations"]
 			},
 			"BrandOpportunities": {
-				"description": "The brand's latest Opportunities report — the same LLM-generated analysis the dashboard shows, read from the append-only history rather than regenerated. BeatGEO decides when to produce a new one; there is no way to trigger generation over the API, because it spends provider budget with no per-call metering behind it.",
+				"description": "The brand's latest Opportunities report — the same LLM-generated analysis the dashboard shows, read from the append-only history rather than regenerated. Reads never generate reports or spend provider budget. The local dashboard offers explicit generation; this public API only reads stored reports.",
 				"type": "object",
 				"properties": {
 					"brandId": {
@@ -1521,8 +1521,8 @@
 					},
 					"status": {
 						"type": "string",
-						"description": "`ready` when a report is present. `insufficient-data` when the brand hasn't accumulated enough tracked answers to say anything useful yet, in which case the lists are empty.",
-						"enum": ["ready", "insufficient-data"]
+						"description": "`ready` when a report is present. `not-generated` when no report has been saved; this read does not assess data sufficiency or generate a report.",
+						"enum": ["ready", "not-generated"]
 					},
 					"generatedAt": {
 						"type": ["string", "null"],
@@ -2317,7 +2317,7 @@
 		"/brands/{brandId}/opportunities": {
 			"get": {
 				"summary": "Get the latest opportunities report",
-				"description": "**Experimental — the response shape may still change.**\n\nThe brand's Opportunities report: a prioritized set of ways to get cited more often, with the tracked prompts and cited pages behind each one. The same analysis the dashboard shows, from the same code.\n\nGeneration is inline and synchronous. A stored report is served while it is fresh and regenerated when it is not, so there is nothing to poll for and no way to be handed a stale one — but a request that triggers a generation waits for it. The freshness window bounds the cost: however many callers ask, one generation per brand per window. There is deliberately no `POST`, which would spend provider budget with nothing metering it per call.",
+				"description": "**Experimental — the response shape may still change.**\n\nRead the latest saved Opportunities report for the brand, including its original generation time. This GET never invokes a model, refreshes a report or spends provider budget, regardless of report age. A missing report returns status `not-generated`; that does not imply insufficient source evidence. Generate a report explicitly in the local dashboard. This public API does not offer generation.",
 				"operationId": "getBrandOpportunities",
 				"tags": ["Opportunities"],
 				"x-beatgeo-scopes": ["read"],

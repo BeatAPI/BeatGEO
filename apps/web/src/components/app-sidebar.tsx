@@ -61,8 +61,16 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 			matchLinks: INSIGHT_PAGES.slice(1).map((page) => ({ to: page.to, params })),
 			icon: IconChartBar,
 		},
-		{ title: "AI Traffic & Crawls", link: { to: "/app/org/$org/brand/$brand/traffic", params }, icon: IconChartBar },
-		{ title: "Opportunities", link: { to: "/app/org/$org/brand/$brand/opportunities", params }, icon: IconTarget },
+		{
+			title: "GEO recommendations",
+			link: { to: "/app/org/$org/brand/$brand/opportunities", params },
+			icon: IconTarget,
+		},
+		{
+			title: "GEO actions",
+			link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "actions" },
+			icon: IconFileText,
+		},
 	);
 
 	const groups: NavGroup[] = [];
@@ -70,6 +78,16 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 		groups.push({
 			label: "SEO",
 			items: [
+				{
+					title: "Search diagnosis",
+					link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "search" },
+					icon: IconTarget,
+				},
+				{
+					title: "SEO actions",
+					link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "seo-actions" },
+					icon: IconFileText,
+				},
 				...SEO_PAGES.map(
 					(page): NavItem => ({
 						title: page.title,
@@ -93,6 +111,17 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 			],
 		});
 	groups.push({ label: "GEO", items: dashboard });
+	groups.push({
+		label: "Analytics",
+		items: [
+			{ title: "Traffic analysis", link: { to: "/app/org/$org/brand/$brand/traffic", params }, icon: IconChartBar },
+			{
+				title: "All improvement actions",
+				link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "all-actions" },
+				icon: IconFileText,
+			},
+		],
+	});
 
 	groups.push({
 		label: "Settings",

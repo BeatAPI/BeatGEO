@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireBrandSession } from "@/lib/auth/helpers";
 import { applyWorkspaceOperation, workspaceOperation } from "./agent-workflow-core";
 import { analysisContext, listAnalysisEvidence, readEvidenceRows } from "./analysis-core";
+import { analysisReadiness } from "./analysis-readiness";
 import { executeAnalysisRefresh, refreshPlan } from "./analysis-refresh";
 import { trafficBrand } from "./traffic-core";
 
@@ -45,4 +46,11 @@ export const analysisCommandFn = createServerFn({ method: "POST" })
 		await requireBrandSession(data.brandId);
 		const result = await applyWorkspaceOperation(await trafficBrand(data.brandId), data.idempotencyKey, data.command);
 		return { commandId: result.commandId, replayed: result.replayed, dataJson: JSON.stringify(result.data) };
+	});
+
+export const getAnalysisReadinessFn = createServerFn({ method: "GET" })
+	.validator(brandInput)
+	.handler(async ({ data }) => {
+		await requireBrandSession(data.brandId);
+		return analysisReadiness(data.brandId);
 	});

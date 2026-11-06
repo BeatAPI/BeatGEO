@@ -42,15 +42,15 @@ export function TrafficPanel({
 	const performance = (data.ga?.snapshot as GaSummary | null)?.performance;
 	return (
 		<div className="space-y-6 min-w-0">
-			{!settingsOnly && performance && <GaPerformancePanel data={performance} />}
 			{!settingsOnly && (
 				<PageHeader
-					title={t("AI Traffic & Crawls")}
+					title={t("Traffic analysis")}
 					subtitle={t(
-						"See visits from AI assistants and crawler requests. These are separate from answer mentions and citations.",
+						"Review acquisition, organic search, AI referrals and crawler requests as separate measurements.",
 					)}
 				/>
 			)}
+			{!settingsOnly && performance && <GaPerformancePanel data={performance} />}
 			{error && (
 				<p
 					role="alert"

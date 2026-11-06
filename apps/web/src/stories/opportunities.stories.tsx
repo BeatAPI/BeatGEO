@@ -1,13 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
 import type { ComponentType, ReactNode } from "react";
+import { expect, within } from "storybook/test";
 import { Route } from "@/routes/_authed/app/org/$org/brand/$brand/opportunities";
 
 // The route file exports only `Route` (route files must, for code-splitting).
 // Render its component via the route options — the mock exposes `options`.
 const OpportunitiesPage = (Route as unknown as { options: { component: ComponentType } }).options.component;
 
-import { setMockOpportunities } from "./_mocks/server-opportunities";
+import {
+	getMockOpportunitiesCalls,
+	resetMockOpportunitiesCalls,
+	setMockOpportunities,
+} from "./_mocks/server-opportunities";
 import { setMockBrand } from "./_mocks/use-brands";
 import { mockOpportunities } from "./analytics-fixtures";
 
@@ -41,10 +46,18 @@ const meta = {
 	title: "Pages/Opportunities",
 	component: OpportunitiesPage,
 	parameters: { layout: "fullscreen" },
+	beforeEach: () => {
+		localStorage.setItem("beatgeo.ui-language", "en");
+		resetMockOpportunitiesCalls();
+	},
 	decorators: [
-		(Story) => {
+		(Story, context) => {
 			setMockBrand(onboardedBrand);
-			setMockOpportunities(mockOpportunities);
+			setMockOpportunities(
+				context.parameters.emptyReport
+					? { report: null, reason: "not-generated", generatedFor: null, lastEvaluatedAt: null, model: null }
+					: mockOpportunities,
+			);
 			return (
 				<Shell>
 					<Story />
@@ -57,4 +70,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+	play: async ({ canvasElement }) => {
+		const c = within(canvasElement);
+		await expect(await c.findByText(mockOpportunities.report.summary[0])).toBeVisible();
+		expect(getMockOpportunitiesCalls().reads).toBeGreaterThan(0);
+		expect(getMockOpportunitiesCalls().generations).toBe(0);
+	},
+};
+export const NotGenerated: Story = {
+	parameters: { emptyReport: true },
+	play: async ({ canvasElement }) => {
+		const c = within(canvasElement);
+		await expect(await c.findByText("No saved recommendations yet")).toBeVisible();
+		await expect(c.getByRole("button", { name: "Generate recommendations · uses API credits" })).toBeVisible();
+		expect(getMockOpportunitiesCalls().reads).toBeGreaterThan(0);
+		expect(getMockOpportunitiesCalls().generations).toBe(0);
+	},
+};

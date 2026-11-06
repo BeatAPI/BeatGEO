@@ -36,7 +36,11 @@ export function crumbsFor(matches: CrumbMatch[], { hash }: { hash: string }): Cr
 		}
 		const crumbs = pageCrumbs(match.staticData?.crumb, match.pathname, hash);
 		// GEO pages sit under their section the way SEO pages do; its overview is the brand's own page.
-		if (brandPath && GEO_PAGES.has(match.staticData?.crumb ?? ""))
+		if (
+			brandPath &&
+			GEO_PAGES.has(match.staticData?.crumb ?? "") &&
+			!(match.staticData?.crumb === "Opportunities" && ["search", "seo-actions", "all-actions"].includes(hash))
+		)
 			return [{ label: "GEO", href: brandPath.replace(/\/$/, "") }, ...crumbs];
 		return crumbs;
 	});
@@ -67,6 +71,23 @@ export function useBreadcrumbs(): Crumb[] {
 }
 
 function pageCrumbs(label: string | undefined, pathname: string, hash: string): Crumb[] {
+	if (label === "Opportunities" && ["search", "seo-actions", "all-actions"].includes(hash))
+		return [
+			{
+				label: hash === "all-actions" ? "Analytics" : "SEO",
+				href: pathname.replace(/opportunities$/, hash === "all-actions" ? "traffic" : "seo"),
+			},
+			{
+				label:
+					hash === "search" ? "Search diagnosis" : hash === "seo-actions" ? "SEO actions" : "All improvement actions",
+				href: `${pathname}#${hash}`,
+			},
+		];
+	if (label === "Traffic analysis")
+		return [
+			{ label: "Analytics", href: pathname },
+			{ label, href: pathname },
+		];
 	if (label === "Search performance")
 		return [
 			{ label: "SEO", href: pathname.replace(/search-console$/, "seo") },

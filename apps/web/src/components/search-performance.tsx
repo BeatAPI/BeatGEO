@@ -1,7 +1,9 @@
 import type { GaPerformance } from "@workspace/lib/traffic/ga";
 import type { GscAnalysis } from "@workspace/lib/traffic/gsc";
 import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
 import { useState } from "react";
+import { FormSelect } from "@/components/form-select";
 import { useT } from "@/lib/i18n";
 
 export function GscRelationships({ analysis }: { analysis: GscAnalysis }) {
@@ -17,35 +19,37 @@ export function GscRelationships({ analysis }: { analysis: GscAnalysis }) {
 		<section className="space-y-3 rounded-lg border p-4">
 			<h3 className="font-medium">{t("Queries, pages and daily history")}</h3>
 			<div className="flex flex-wrap gap-3">
-				<select
+				<FormSelect
 					aria-label={t("Comparison period")}
-					className="rounded border bg-background p-2"
+					className="w-full sm:w-auto sm:min-w-44"
 					value={period}
-					onChange={(e) => {
-						setPeriod(e.target.value as typeof period);
+					onValueChange={(value) => {
+						setPeriod(value);
 						setOffset(0);
 					}}
-				>
-					<option value="current">{t("Current period")}</option>
-					<option value="previous">{t("Previous period")}</option>
-				</select>
-				<select
+					options={[
+						{ value: "current", label: t("Current period") },
+						{ value: "previous", label: t("Previous period") },
+					]}
+				/>
+				<FormSelect
 					aria-label={t("Search evidence view")}
-					className="rounded border bg-background p-2"
+					className="w-full sm:w-auto sm:min-w-44"
 					value={dataset}
-					onChange={(e) => {
-						setDataset(e.target.value as typeof dataset);
+					onValueChange={(value) => {
+						setDataset(value);
 						setOffset(0);
 					}}
-				>
-					<option value="queryPages">{t("Query × page")}</option>
-					<option value="daily">{t("Daily totals")}</option>
-					<option value="dailyPages">{t("Date × page")}</option>
-				</select>
-				<input
+					options={[
+						{ value: "queryPages", label: t("Query × page") },
+						{ value: "daily", label: t("Daily totals") },
+						{ value: "dailyPages", label: t("Date × page") },
+					]}
+				/>
+				<Input
 					aria-label={t("Filter search evidence")}
 					placeholder={t("Filter search evidence")}
-					className="rounded border bg-background p-2"
+					className="w-full sm:max-w-xs"
 					value={filter}
 					onChange={(e) => {
 						setFilter(e.target.value);
@@ -101,31 +105,33 @@ export function GaPerformancePanel({ data }: { data: GaPerformance }) {
 		<section className="space-y-3 rounded-lg border p-4">
 			<h3 className="font-medium">{t("Acquisition and organic search")}</h3>
 			<div className="flex flex-wrap gap-3">
-				<select
+				<FormSelect
 					aria-label={t("Comparison period")}
-					className="rounded border bg-background p-2"
+					className="w-full sm:w-auto sm:min-w-44"
 					value={period}
-					onChange={(e) => {
-						setPeriod(e.target.value as typeof period);
+					onValueChange={(value) => {
+						setPeriod(value);
 						setOffset(0);
 					}}
-				>
-					<option value="current">{t("Current period")}</option>
-					<option value="previous">{t("Previous period")}</option>
-				</select>
-				<select
+					options={[
+						{ value: "current", label: t("Current period") },
+						{ value: "previous", label: t("Previous period") },
+					]}
+				/>
+				<FormSelect
 					aria-label={t("Acquisition view")}
-					className="rounded border bg-background p-2"
+					className="w-full sm:w-auto sm:min-w-44"
 					value={preset}
-					onChange={(e) => {
-						setPreset(e.target.value as typeof preset);
+					onValueChange={(value) => {
+						setPreset(value);
 						setOffset(0);
 					}}
-				>
-					<option value="channels">{t("All channels")}</option>
-					<option value="organicPages">{t("Organic search landing pages")}</option>
-					<option value="googleOrganicPages">{t("Google organic landing pages")}</option>
-				</select>
+					options={[
+						{ value: "channels", label: t("All channels") },
+						{ value: "organicPages", label: t("Organic search landing pages") },
+						{ value: "googleOrganicPages", label: t("Google organic landing pages") },
+					]}
+				/>
 			</div>
 			<p className="text-xs text-muted-foreground">
 				{data.site} · {window.startDate} – {window.endDate} · {data.timeZone}
@@ -178,7 +184,7 @@ export function GaPerformancePanel({ data }: { data: GaPerformance }) {
 function Paging({ offset, total, setOffset }: { offset: number; total: number; setOffset: (n: number) => void }) {
 	const t = useT();
 	return (
-		<div className="flex items-center gap-3 text-sm">
+		<div className="flex flex-wrap items-center gap-3 text-sm">
 			<Button variant="outline" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - 50))}>
 				{t("Previous page")}
 			</Button>

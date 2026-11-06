@@ -71,3 +71,19 @@ describe("SEO section navigation", () => {
 		expect(activeNavHref(rail, BRAND, "keywords")).toBe("");
 	});
 });
+
+describe("SEO and GEO action navigation", () => {
+	const path = `${BRAND}/opportunities`;
+	const rail = [
+		{ href: `${path}#search` },
+		{ href: `${path}#seo-actions` },
+		{ href: path },
+		{ href: `${path}#actions` },
+		{ href: `${path}#all-actions` },
+	];
+	it("keeps SEO destinations selected instead of the generic GEO page", () => {
+		for (const hash of ["search", "seo-actions", "actions", "all-actions"])
+			expect(activeNavHref(rail, path, hash)).toBe(`${path}#${hash}`);
+		expect(activeNavHref(rail, path, "recommendations")).toBe(path);
+	});
+});

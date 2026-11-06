@@ -6,8 +6,8 @@
 import type { CitedPage, ReportOpportunity } from "./opportunities";
 import { resolveOpportunities } from "./opportunities";
 
-/** So a caller never has to tell "none" from "not enough data yet". */
-type OpportunitiesStatus = "ready" | "insufficient-data";
+/** Absence of a generated report does not imply absence of observed answers. */
+type OpportunitiesStatus = "ready" | "not-generated";
 
 interface PublishedOpportunity {
 	category: ReportOpportunity["category"];
@@ -29,12 +29,12 @@ export interface PublishedOpportunities {
 }
 
 export async function publishedOpportunities(brandId: string): Promise<PublishedOpportunities> {
-	const result = await resolveOpportunities(brandId, "UTC");
+	const result = await resolveOpportunities(brandId);
 	const opportunities = result.report?.opportunities ?? [];
 
 	return {
 		brandId,
-		status: opportunities.length > 0 ? "ready" : "insufficient-data",
+		status: result.report ? "ready" : "not-generated",
 		generatedAt: result.lastEvaluatedAt,
 		model: result.model,
 		summary: result.report?.summary ?? [],
