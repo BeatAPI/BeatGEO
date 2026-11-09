@@ -5,8 +5,8 @@ import { type PromptRunPlan, targetKey } from "./policy";
 const NOW = new Date("2026-08-05T12:00:00Z");
 const HOUR = 3600 * 1000;
 
-const CHATGPT = { model: "chatgpt", provider: "brightdata", webSearch: true };
-const PERPLEXITY = { model: "perplexity", provider: "brightdata", webSearch: true };
+const CHATGPT = { model: "chatgpt", provider: "beat-browser", webSearch: true };
+const PERPLEXITY = { model: "perplexity", provider: "beat-browser", webSearch: true };
 
 function plan(intervalHours = 24, models = [CHATGPT]): PromptRunPlan {
 	return {
@@ -186,7 +186,7 @@ describe("computeMaintenanceDecisions", () => {
 		const mixed: PromptRunPlan = {
 			targets: [
 				{ config: CHATGPT, intervalHours: 6, replication: 1 },
-				{ config: { model: "claude", provider: "anthropic-api", webSearch: true }, intervalHours: 24, replication: 1 },
+				{ config: { model: "claude", provider: "beatapi", webSearch: true }, intervalHours: 24, replication: 1 },
 			],
 			rescheduleHours: 6,
 		};
@@ -197,10 +197,7 @@ describe("computeMaintenanceDecisions", () => {
 					plan: mixed,
 					lastRunAtByKey: new Map([
 						[targetKey(CHATGPT), new Date(NOW.getTime() - 7 * HOUR)],
-						[
-							targetKey({ model: "claude", provider: "anthropic-api", webSearch: true }),
-							new Date(NOW.getTime() - 2 * HOUR),
-						],
+						[targetKey({ model: "claude", provider: "beatapi", webSearch: true }), new Date(NOW.getTime() - 2 * HOUR)],
 					]),
 				}),
 			],

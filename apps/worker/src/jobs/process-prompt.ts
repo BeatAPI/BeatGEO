@@ -29,7 +29,6 @@ import { estimateRunCostUsd } from "@workspace/lib/usage";
 import { and, eq, gt, sql } from "drizzle-orm";
 import type { Job } from "pg-boss";
 import { getBoss } from "../boss";
-import { trackWorkerEvent } from "../telemetry";
 
 export interface ProcessPromptData {
 	promptId: string;
@@ -156,7 +155,7 @@ async function recordUsageEvent(input: {
 	config: ModelConfig;
 }): Promise<void> {
 	try {
-		const cost = estimateRunCostUsd(input.config.provider, input.config.webSearch);
+		const cost = estimateRunCostUsd(input.config.provider);
 		await db.insert(usageEvents).values({
 			organizationId: input.organizationId,
 			brandId: input.brandId,
@@ -408,15 +407,6 @@ async function processPrompt(
 
 	const successCount = runTasks.length - failures.length;
 	console.log(`Completed prompt ${promptId}: ${successCount}/${runTasks.length} successful runs`);
-
-	trackWorkerEvent("prompt_processed", {
-		brand_id: brand.id,
-		models: [...new Set(dueTargets.map((t) => t.config.model))],
-		providers: [...new Set(dueTargets.map((t) => t.config.provider))],
-		total_runs: runTasks.length,
-		successful_runs: successCount,
-		failed_runs: failures.length,
-	});
 
 	// A cycle where nothing came back means the targets themselves are failing,
 	// so the next attempt backs off instead of running on cadence. Anything that

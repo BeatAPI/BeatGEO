@@ -45,14 +45,14 @@ describe("ENV_REGISTRY", () => {
 	it("is fully declared in apps/web/src/env.d.ts", () => {
 		const envDts = readFileSync(envDtsPath, "utf8");
 		// Neither interface body contains braces, so a non-greedy match to the
-		// first "}" captures the whole block.
-		const importMetaEnv = envDts.match(/interface ImportMetaEnv \{([^}]*)\}/)?.[1];
+		// first "}" captures the whole block. ImportMetaEnv exists only while the
+		// registry has client-scoped vars.
+		const importMetaEnv = envDts.match(/interface ImportMetaEnv \{([^}]*)\}/)?.[1] ?? "";
 		const processEnv = envDts.match(/interface ProcessEnv \{([^}]*)\}/)?.[1];
-		expect(importMetaEnv, "could not find ImportMetaEnv in env.d.ts").toBeDefined();
 		expect(processEnv, "could not find NodeJS.ProcessEnv in env.d.ts").toBeDefined();
 
 		const undeclared = ENV_REGISTRY.filter((spec) => {
-			const block = spec.scope === "client" ? importMetaEnv! : processEnv!;
+			const block = spec.scope === "client" ? importMetaEnv : processEnv!;
 			return !new RegExp(`readonly ${spec.name}\\??:`).test(block);
 		});
 

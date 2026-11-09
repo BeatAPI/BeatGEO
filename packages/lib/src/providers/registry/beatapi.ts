@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { getCredential } from "../../secrets";
-import { configuredWhen } from "../config";
+import { API_PROVIDER_MAX_OUTPUT_TOKENS, configuredWhen } from "../config";
 import type { Provider, StructuredResearchOptions, StructuredResearchResult } from "../types";
-import { jsonSchemaResponseFormat, parseSchemaJson } from "./ai-sdk";
+import { jsonSchemaResponseFormat, parseSchemaJson } from "./structured-output";
 
 const BASE_URL = "https://api.beatapi.io/v1";
 
@@ -46,22 +46,22 @@ export const beatapi: Provider = {
 	access: "api",
 	docsAnchor: "beatapi",
 	isConfigured: configuredWhen("BEATAPI_API_KEY"),
+	// Targets read <platform>:beatapi (the platform's default model) or
+	// <platform>:beatapi:<model-id>. They are grouped as API answers, apart from
+	// what BeatBrowser sees in a consumer page.
 	validateTarget: (target) => {
-		if (target.model !== "api-simulation")
-			return "Use api-simulation:beatapi:<model-id> to keep API simulations separate from browser visibility.";
-		if (!target.version) return "Specify a BeatAPI model ID as the third segment.";
+		if (!target.version) return "This platform has no default BeatAPI model; add a model ID as the third segment.";
 		if (target.webSearch)
-			return "BeatAPI monitoring is an API simulation; use BeatBrowser for consumer-web observations.";
+			return "BeatAPI targets ask the model directly; use BeatBrowser for consumer-web observations.";
 		return null;
 	},
-	async run(model, prompt, options) {
-		if (model !== "api-simulation") throw new Error("Use the api-simulation label for BeatAPI model experiments.");
+	async run(_model, prompt, options) {
 		if (!options?.version || options.webSearch)
 			throw new Error("BeatAPI monitoring requires a model ID and no :online suffix.");
 		const data = await beatApiPost("/chat/completions", {
 			model: options.version,
 			messages: [{ role: "user", content: prompt }],
-			max_completion_tokens: 8000,
+			max_completion_tokens: API_PROVIDER_MAX_OUTPUT_TOKENS,
 		});
 		return {
 			textContent: answer(data),

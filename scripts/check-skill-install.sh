@@ -3,7 +3,6 @@
 set -euo pipefail
 
 # Smoke-test installs shouldn't count toward the skill's public install numbers.
-export DISABLE_TELEMETRY=1
 
 dir="${RUNNER_TEMP:-/tmp}/skill-install-$2"
 rm -rf "$dir" && mkdir -p "$dir" && cd "$dir"

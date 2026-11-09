@@ -13,7 +13,7 @@ import {
 } from "./crypto";
 
 const KEY = Buffer.alloc(32, 7);
-const AAD = "secret:OPENAI_API_KEY";
+const AAD = "secret:BEATAPI_API_KEY";
 
 /** A keyring whose primary is the first key; the rest are accepted for decrypt. */
 function ring(...keys: Buffer[]): Keyring {
@@ -85,7 +85,7 @@ describe("encryptSecret / decryptSecret", () => {
 		});
 
 		it("wrong AAD", async () => {
-			await expect(decryptSecret(await fresh(), { keyring: RING, aad: "secret:ANTHROPIC_API_KEY" })).rejects.toThrow(
+			await expect(decryptSecret(await fresh(), { keyring: RING, aad: "secret:BROWSER_RUNNER_TOKEN" })).rejects.toThrow(
 				SecretDecryptError,
 			);
 		});
@@ -100,7 +100,7 @@ describe("encryptSecret / decryptSecret", () => {
 		// relabels the header to match. The header is the AEAD's additional data,
 		// so rewriting it breaks the tag rather than re-homing the credential.
 		it("ctx rewritten to the name it was moved to", async () => {
-			const target = "secret:ANTHROPIC_API_KEY";
+			const target = "secret:BROWSER_RUNNER_TOKEN";
 			const payload = rewriteHeader(await fresh(), { alg: "dir", enc: "A256GCM", kid: keyId(KEY), ctx: target });
 			await expect(decryptSecret(payload, { keyring: RING, aad: target })).rejects.toThrow(SecretDecryptError);
 		});

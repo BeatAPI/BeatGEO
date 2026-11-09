@@ -59,7 +59,7 @@ it.each([401, 402, 429, 500])("sanitizes HTTP %s and never automatically repeats
 	vi.stubEnv("BEATAPI_API_KEY", "test-key");
 	const request = vi.fn().mockResolvedValue(new Response("private supplier message", { status }));
 	vi.stubGlobal("fetch", request);
-	await expect(beatapi.run("api-simulation", "test", { version: "test-model" })).rejects.toThrow(`(${status})`);
+	await expect(beatapi.run("claude", "test", { version: "test-model" })).rejects.toThrow(`(${status})`);
 	expect(request).toHaveBeenCalledTimes(1);
 });
 
@@ -69,25 +69,35 @@ it("rejects empty or truncated observations", async () => {
 		"fetch",
 		vi.fn().mockResolvedValueOnce(completion("partial", "length")).mockResolvedValueOnce(completion("")),
 	);
-	await expect(beatapi.run("api-simulation", "test", { version: "test-model" })).rejects.toThrow("complete answer");
-	await expect(beatapi.run("api-simulation", "test", { version: "test-model" })).rejects.toThrow("empty answer");
+	await expect(beatapi.run("claude", "test", { version: "test-model" })).rejects.toThrow("complete answer");
+	await expect(beatapi.run("claude", "test", { version: "test-model" })).rejects.toThrow("empty answer");
 });
 
 it("keeps API simulations readable and separate from consumer web observations", async () => {
 	vi.stubEnv("BEATAPI_API_KEY", "test-key");
 	vi.stubGlobal("fetch", vi.fn().mockResolvedValue(completion("Example answer")));
-	const result = await beatapi.run("api-simulation", "test", { version: "test-model" });
+	const result = await beatapi.run("claude", "test", { version: "test-model" });
 	expect(extractTextContent(result.rawOutput, "beatapi")).toBe("Example answer");
 	expect(result.citations).toEqual([]);
 	expect(beatapi.access).toBe("api");
-	await expect(beatapi.run("api-simulation", "test", { version: "test-model", webSearch: true })).rejects.toThrow(
-		"no :online",
-	);
+	await expect(beatapi.run("claude", "test", { version: "test-model", webSearch: true })).rejects.toThrow("no :online");
 });
 
-it("rejects consumer-platform labels before making a paid request", async () => {
-	const request = vi.fn();
+it("names the platform a model belongs to while staying an API answer", async () => {
+	vi.stubEnv("BEATAPI_API_KEY", "test-key");
+	const request = vi.fn().mockResolvedValue(completion("Claude answer"));
 	vi.stubGlobal("fetch", request);
-	await expect(beatapi.run("chatgpt", "test", { version: "test-model" })).rejects.toThrow("api-simulation");
-	expect(request).not.toHaveBeenCalled();
+	expect(
+		beatapi.validateTarget?.({ model: "claude", provider: "beatapi", version: "claude-sonnet-5-5", webSearch: false }),
+	).toBeNull();
+	const result = await beatapi.run("claude", "test", { version: "claude-sonnet-5-5" });
+	expect(JSON.parse(request.mock.calls[0][1].body).model).toBe("claude-sonnet-5-5");
+	expect(result.textContent).toBe("Claude answer");
+});
+
+it("rejects a target without a model or with web search before making a paid request", () => {
+	expect(beatapi.validateTarget?.({ model: "unknown", provider: "beatapi", webSearch: false })).toContain("model ID");
+	expect(
+		beatapi.validateTarget?.({ model: "claude", provider: "beatapi", version: "claude-sonnet-5-5", webSearch: true }),
+	).toContain("BeatBrowser");
 });

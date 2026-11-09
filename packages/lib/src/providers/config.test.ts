@@ -1,12 +1,7 @@
-import { describe, expect, it } from "vitest";
-import { reportedWebQueries, validateScrapeTargets } from "./config";
-import { brightdata } from "./registry/brightdata";
-import { cloro } from "./registry/cloro";
-import { dataforseo } from "./registry/dataforseo";
-import { olostep } from "./registry/olostep";
-import { oxylabs } from "./registry/oxylabs";
-import { searchapi } from "./registry/searchapi";
-import type { ModelConfig } from "./types";
+import { describe, expect, it, vi } from "vitest";
+import { validateScrapeTargets } from "./config";
+import { beatBrowser } from "./registry/beat-browser";
+import { beatapi } from "./registry/beatapi";
 
 describe("validateScrapeTargets", () => {
 	const configuredProvider = { isConfigured: () => true };
@@ -18,10 +13,15 @@ describe("validateScrapeTargets", () => {
 
 	it("passes when all providers are configured", () => {
 		const configs = [
-			{ model: "chatgpt", provider: "olostep", webSearch: true },
-			{ model: "google-ai-mode", provider: "olostep", webSearch: true },
+			{ model: "chatgpt", provider: "beat-browser", webSearch: false },
+			{ model: "claude", provider: "beatapi", version: "claude-sonnet-5-5", webSearch: false },
 		];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ olostep: configuredProvider }))).not.toThrow();
+		expect(() =>
+			validateScrapeTargets(
+				configs,
+				makeGetProvider({ "beat-browser": configuredProvider, beatapi: configuredProvider }),
+			),
+		).not.toThrow();
 	});
 
 	it("throws on unknown provider", () => {
@@ -29,243 +29,45 @@ describe("validateScrapeTargets", () => {
 		expect(() => validateScrapeTargets(configs, makeGetProvider({}))).toThrow('unknown provider "nonexistent"');
 	});
 
-	it("throws when provider is not configured", () => {
-		const configs = [{ model: "chatgpt", provider: "olostep", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ olostep: unconfiguredProvider }))).toThrow(
-			"requires API key",
-		);
-	});
-
-	it("throws when openai-api provider has no version", () => {
-		const configs = [{ model: "chatgpt", provider: "openai-api", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "openai-api": configuredProvider }))).toThrow(
-			"requires a version slug",
-		);
-	});
-
-	it("throws when anthropic-api provider has no version", () => {
-		const configs = [{ model: "claude", provider: "anthropic-api", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "anthropic-api": configuredProvider }))).toThrow(
-			"requires a version slug",
-		);
-	});
-
-	it("throws when openrouter provider has no version", () => {
-		const configs = [{ model: "chatgpt", provider: "openrouter", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ openrouter: configuredProvider }))).toThrow(
-			"requires a version slug",
-		);
-	});
-
-	it("throws when mistral-api provider has no version", () => {
-		const configs = [{ model: "mistral", provider: "mistral-api", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "mistral-api": configuredProvider }))).toThrow(
-			"requires a version slug",
+	it("names the missing key when a provider is not configured", () => {
+		const configs = [{ model: "claude", provider: "beatapi", version: "claude-sonnet-5-5", webSearch: false }];
+		expect(() => validateScrapeTargets(configs, makeGetProvider({ beatapi: unconfiguredProvider }))).toThrow(
+			"BEATAPI_API_KEY",
 		);
 	});
 
 	it("reports every misconfigured target at once", () => {
 		const configs = [
-			{ model: "chatgpt", provider: "nonexistent", webSearch: true },
-			{ model: "claude", provider: "anthropic-api", webSearch: true },
+			{ model: "chatgpt", provider: "nonexistent", webSearch: false },
+			{ model: "unknown", provider: "beatapi", webSearch: false },
 		];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "anthropic-api": unconfiguredProvider }))).toThrow(
-			/unknown provider "nonexistent"[\s\S]*"anthropic-api" requires API key\(s\) to be configured: ANTHROPIC_API_KEY[\s\S]*requires a version slug/,
-		);
-	});
-
-	it("passes when mistral-api provider has a version", () => {
-		const configs = [{ model: "mistral", provider: "mistral-api", version: "mistral-medium-latest", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "mistral-api": configuredProvider }))).not.toThrow();
-	});
-
-	it("passes when openai-api provider has a version", () => {
-		const configs = [{ model: "chatgpt", provider: "openai-api", version: "gpt-5-mini", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ "openai-api": configuredProvider }))).not.toThrow();
-	});
-
-	it("passes when anthropic-api provider has a version", () => {
-		const configs = [{ model: "claude", provider: "anthropic-api", version: "claude-sonnet-4", webSearch: true }];
-		expect(() =>
-			validateScrapeTargets(configs, makeGetProvider({ "anthropic-api": configuredProvider })),
-		).not.toThrow();
-	});
-
-	it("passes when openrouter provider has a version", () => {
-		const configs = [{ model: "chatgpt", provider: "openrouter", version: "openai/gpt-5-mini", webSearch: true }];
-		expect(() => validateScrapeTargets(configs, makeGetProvider({ openrouter: configuredProvider }))).not.toThrow();
-	});
-
-	it("does not require version for scraping providers", () => {
-		const configs = [
-			{ model: "chatgpt", provider: "olostep", webSearch: true },
-			{ model: "chatgpt", provider: "brightdata", webSearch: true },
-			{ model: "chatgpt", provider: "oxylabs", webSearch: true },
-			{ model: "chatgpt", provider: "searchapi", webSearch: true },
-			{ model: "chatgpt", provider: "cloro", webSearch: true },
-			{ model: "google-ai-mode", provider: "dataforseo", webSearch: true },
-		];
-		expect(() =>
-			validateScrapeTargets(
-				configs,
-				makeGetProvider({
-					olostep: configuredProvider,
-					brightdata: configuredProvider,
-					oxylabs: configuredProvider,
-					searchapi: configuredProvider,
-					cloro: configuredProvider,
-					dataforseo: configuredProvider,
-				}),
-			),
-		).not.toThrow();
+		const error = (() => {
+			try {
+				validateScrapeTargets(configs, (id) => (id === "beatapi" ? beatapi : undefined));
+			} catch (err) {
+				return String(err);
+			}
+			return "";
+		})();
+		expect(error).toContain('unknown provider "nonexistent"');
+		expect(error).toContain("default BeatAPI model");
 	});
 });
 
-describe("provider validateTarget", () => {
-	function config(model: string, provider: string, webSearch: boolean, version?: string): ModelConfig {
-		return { model, provider, version, webSearch };
-	}
-
-	describe("searchapi", () => {
-		it("accepts every surface it can reach, online", () => {
-			for (const model of ["chatgpt", "perplexity", "copilot", "gemini", "google-ai-mode", "google-ai-overview"]) {
-				expect(searchapi.validateTarget!(config(model, "searchapi", true))).toBeNull();
-			}
-		});
-
-		it("lets ChatGPT run without web search, since it is the only surface that can", () => {
-			expect(searchapi.validateTarget!(config("chatgpt", "searchapi", false))).toBeNull();
-			expect(searchapi.validateTarget!(config("perplexity", "searchapi", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unknown models", () => {
-			expect(searchapi.validateTarget!(config("claude", "searchapi", true))).toMatch(/does not support/);
-		});
+describe("BeatBrowser targets", () => {
+	it("accepts ChatGPT and Gemini consumer pages", () => {
+		vi.stubEnv("RUNS_PER_PROMPT", "1");
+		for (const model of ["chatgpt", "gemini"]) {
+			expect(beatBrowser.validateTarget?.({ model, provider: "beat-browser", webSearch: false })).toBeNull();
+		}
+		vi.unstubAllEnvs();
 	});
 
-	describe("olostep", () => {
-		it("accepts valid online targets", () => {
-			for (const model of ["chatgpt", "google-ai-mode", "google-ai-overview", "gemini", "copilot", "perplexity"]) {
-				expect(olostep.validateTarget!(config(model, "olostep", true))).toBeNull();
-			}
-		});
-
-		it("rejects targets without :online", () => {
-			expect(olostep.validateTarget!(config("chatgpt", "olostep", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unknown models", () => {
-			expect(olostep.validateTarget!(config("unknown", "olostep", true))).toMatch(/does not support/);
-		});
-	});
-
-	describe("brightdata", () => {
-		it("accepts chatgpt with and without :online", () => {
-			expect(brightdata.validateTarget!(config("chatgpt", "brightdata", true))).toBeNull();
-			expect(brightdata.validateTarget!(config("chatgpt", "brightdata", false))).toBeNull();
-		});
-
-		it("accepts other models with :online", () => {
-			for (const model of ["perplexity", "copilot", "gemini", "google-ai-mode"]) {
-				expect(brightdata.validateTarget!(config(model, "brightdata", true))).toBeNull();
-			}
-		});
-
-		it("rejects non-chatgpt models without :online", () => {
-			expect(brightdata.validateTarget!(config("gemini", "brightdata", false))).toMatch(/requires :online/);
-			expect(brightdata.validateTarget!(config("perplexity", "brightdata", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unknown models", () => {
-			expect(brightdata.validateTarget!(config("unknown", "brightdata", true))).toMatch(/does not support/);
-		});
-
-		it("accepts unknown models with custom dataset ID", () => {
-			expect(brightdata.validateTarget!(config("unknown", "brightdata", true, "gd_custom123"))).toBeNull();
-		});
-	});
-
-	describe("dataforseo", () => {
-		it("accepts google-ai-mode:online", () => {
-			expect(dataforseo.validateTarget!(config("google-ai-mode", "dataforseo", true))).toBeNull();
-		});
-
-		it("rejects without :online", () => {
-			expect(dataforseo.validateTarget!(config("google-ai-mode", "dataforseo", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unsupported models", () => {
-			expect(dataforseo.validateTarget!(config("copilot", "dataforseo", true))).toMatch(/only supports/);
-		});
-
-		it("accepts chatgpt/perplexity/gemini with :online", () => {
-			for (const model of ["chatgpt", "perplexity", "gemini"]) {
-				expect(dataforseo.validateTarget!(config(model, "dataforseo", true))).toBeNull();
-			}
-		});
-
-		it("accepts an explicit model_name via the version slug", () => {
-			expect(dataforseo.validateTarget!(config("chatgpt", "dataforseo", true, "gpt-4.1"))).toBeNull();
-		});
-
-		it("rejects chatgpt/perplexity/gemini without :online", () => {
-			expect(dataforseo.validateTarget!(config("chatgpt", "dataforseo", false))).toMatch(/requires :online/);
-		});
-	});
-
-	describe("oxylabs", () => {
-		it("accepts chatgpt with and without :online", () => {
-			expect(oxylabs.validateTarget!(config("chatgpt", "oxylabs", true))).toBeNull();
-			expect(oxylabs.validateTarget!(config("chatgpt", "oxylabs", false))).toBeNull();
-		});
-
-		it("accepts perplexity, google-ai-mode, and google-ai-overview with :online", () => {
-			expect(oxylabs.validateTarget!(config("perplexity", "oxylabs", true))).toBeNull();
-			expect(oxylabs.validateTarget!(config("google-ai-mode", "oxylabs", true))).toBeNull();
-			expect(oxylabs.validateTarget!(config("google-ai-overview", "oxylabs", true))).toBeNull();
-		});
-
-		it("rejects perplexity / google-ai-mode / google-ai-overview without :online", () => {
-			expect(oxylabs.validateTarget!(config("perplexity", "oxylabs", false))).toMatch(/requires :online/);
-			expect(oxylabs.validateTarget!(config("google-ai-mode", "oxylabs", false))).toMatch(/requires :online/);
-			expect(oxylabs.validateTarget!(config("google-ai-overview", "oxylabs", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unsupported models (e.g. copilot, gemini)", () => {
-			expect(oxylabs.validateTarget!(config("copilot", "oxylabs", true))).toMatch(/does not support/);
-			expect(oxylabs.validateTarget!(config("gemini", "oxylabs", true))).toMatch(/does not support/);
-		});
-	});
-
-	describe("cloro", () => {
-		it("accepts all supported surfaces with :online", () => {
-			for (const model of ["chatgpt", "perplexity", "copilot", "gemini", "google-ai-mode", "google-ai-overview"]) {
-				expect(cloro.validateTarget!(config(model, "cloro", true))).toBeNull();
-			}
-		});
-
-		it("rejects targets without :online", () => {
-			expect(cloro.validateTarget!(config("chatgpt", "cloro", false))).toMatch(/requires :online/);
-			expect(cloro.validateTarget!(config("perplexity", "cloro", false))).toMatch(/requires :online/);
-		});
-
-		it("rejects unknown models", () => {
-			expect(cloro.validateTarget!(config("grok", "cloro", true))).toMatch(/does not support/);
-		});
-	});
-});
-
-describe("reportedWebQueries", () => {
-	it("reports nothing when web search was off", () => {
-		expect(reportedWebQueries(["a"], { webSearch: false })).toEqual([]);
-	});
-
-	it("passes captured queries through", () => {
-		expect(reportedWebQueries(["a", "b"])).toEqual(["a", "b"]);
-	});
-
-	it("marks a proven search with no captured query as unavailable", () => {
-		expect(reportedWebQueries([])).toEqual(["unavailable"]);
-		expect(reportedWebQueries([], { searchProven: false })).toEqual([]);
+	it("rejects platforms the browser collector cannot open", () => {
+		vi.stubEnv("RUNS_PER_PROMPT", "1");
+		expect(
+			beatBrowser.validateTarget?.({ model: "perplexity", provider: "beat-browser", webSearch: false }),
+		).toBeTruthy();
+		vi.unstubAllEnvs();
 	});
 });

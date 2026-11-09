@@ -25,7 +25,6 @@ import { dashboardKeys } from "@/hooks/use-dashboard-summary";
 import { usePolledBrandJob } from "@/hooks/use-polled-brand-job";
 import { promptsSummaryKeys } from "@/hooks/use-prompts-summary";
 import { useBrandParams } from "@/hooks/use-route-params";
-import { trackEvent } from "@/lib/posthog";
 import { useWriteErrorMessage } from "@/lib/write-errors";
 import {
 	cancelAnalyzeBrandFn,
@@ -159,10 +158,6 @@ export default function PromptWizard() {
 				),
 			});
 			setReviewing(true);
-			trackEvent("onboarding_analyzed", {
-				competitor_count: suggestion.competitors.length,
-				prompt_count: suggestion.suggestedPrompts.length,
-			});
 		},
 		onError: setError,
 		startErrorFallback: "Analysis failed",
@@ -220,12 +215,6 @@ export default function PromptWizard() {
 					competitors: competitorsPayload,
 					prompts: promptsPayload,
 				},
-			});
-
-			trackEvent("wizard_completed", {
-				prompts_created: promptsPayload.length,
-				competitors_created: competitorsPayload.length,
-				skipped: false,
 			});
 
 			// Deployments without an onboardingRedirectUrlTemplate (e.g. local mode) skip the full reload, so caches fetched while !onboarded must be busted explicitly.

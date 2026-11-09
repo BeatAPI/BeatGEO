@@ -206,65 +206,65 @@ function summarizeSelection(count: number, spend: { saved: number; next: number 
 }
 
 /**
- * Self-hosted only: what else BeatGEO can track, and which provider account each
- * one needs. The provider status workflow exercises every suggested combination.
- *
- * Scrapers and direct APIs are separate columns because they are not
- * interchangeable — Perplexity through BrightData returns the surface a visitor
- * sees, while Perplexity through OpenRouter returns the model's own answer. A
- * single list of provider names hid that choice.
+ * What else this workspace could track, and the SCRAPE_TARGETS entry that adds
+ * each route. Browser observations and API answers are separate columns because
+ * they are not interchangeable: ChatGPT in BeatBrowser is the page a visitor
+ * reads, ChatGPT through BeatAPI is the model's own answer.
  */
-const PROVIDER_COLUMNS = [
-	{ access: "scraped", header: "Scrapers" },
-	{ access: "api", header: "Direct APIs" },
+const ROUTE_COLUMNS = [
+	{ access: "scraped", header: "Browser · BeatBrowser" },
+	{ access: "api", header: "API · BeatAPI" },
 ] as const;
 
-const PROVIDER_GRID = "grid grid-cols-[minmax(7rem,1fr)_1.5fr_1fr] gap-x-4";
+const ROUTE_GRID = "grid grid-cols-[minmax(6rem,1fr)_1fr_1.4fr] gap-x-4";
 
 function AddPlatformsCard({ platforms }: { platforms: ModelPickerState["unconfiguredPlatforms"] }) {
 	const t = useT();
+	const example = platforms.flatMap((platform) => platform.routes).find((route) => route.access === "api")?.target;
 	return (
 		<Card>
 			<CardHeader>
 				<CardTitle>{t("Track more platforms")}</CardTitle>
 				<CardDescription>
-					{t("Add these to ")}
-					<code className="font-mono text-xs">SCRAPE_TARGETS</code>
 					{t(
-						" to start tracking them. One account is enough, but which kind you pick changes the data: a scraper reads the product a visitor uses, an API asks the model directly.",
+						"BeatBrowser reads the AI product in your own Chrome at no API cost. BeatAPI asks the model directly with the same key used for research.",
 					)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-3">
-				<div className={`${PROVIDER_GRID} gap-y-2 border-b pb-2 text-xs font-medium text-muted-foreground`}>
+				<div className={`${ROUTE_GRID} gap-y-2 border-b pb-2 text-xs font-medium text-muted-foreground`}>
 					<span>{t("Platform")}</span>
-					{PROVIDER_COLUMNS.map((column) => (
+					{ROUTE_COLUMNS.map((column) => (
 						<span key={column.access}>{t(column.header)}</span>
 					))}
 				</div>
 				<div className="divide-y">
 					{platforms.map((platform) => (
-						<div key={platform.model} className={`${PROVIDER_GRID} items-start gap-y-1 py-2`}>
+						<div key={platform.model} className={`${ROUTE_GRID} items-start gap-y-1 py-2`}>
 							<span className="flex items-center gap-2 text-sm font-medium">
 								<ModelIcon iconId={getModelMeta(platform.model).iconId} className="size-4 shrink-0" />
 								<span className="truncate">{getModelMeta(platform.model).label}</span>
 							</span>
-							{PROVIDER_COLUMNS.map((column) => (
-								<ProviderLinks
+							{ROUTE_COLUMNS.map((column) => (
+								<RouteCell
 									key={column.access}
-									providers={platform.providers.filter((provider) => provider.access === column.access)}
+									routes={platform.routes.filter((route) => route.access === column.access)}
 								/>
 							))}
 						</div>
 					))}
 				</div>
+				<p className="text-xs text-muted-foreground">
+					{t("Add an entry to SCRAPE_TARGETS in .env and restart pnpm local:start, for example")}{" "}
+					<code className="font-mono">{example ?? "gemini:beat-browser"}</code>
+				</p>
 				<a
 					href={PROVIDERS_DOCS_URL}
 					target="_blank"
 					rel="noopener noreferrer"
 					className={buttonVariants({ variant: "outline", size: "sm" })}
 				>
-					{t("Provider setup guide")}
+					{t("Platform setup guide")}
 					<IconExternalLink className="h-4 w-4" />
 				</a>
 			</CardContent>
@@ -272,23 +272,16 @@ function AddPlatformsCard({ platforms }: { platforms: ModelPickerState["unconfig
 	);
 }
 
-/** A cell's providers, or a dash when a platform can't be reached that way. */
-function ProviderLinks({ providers }: { providers: ModelPickerState["unconfiguredPlatforms"][number]["providers"] }) {
+/** A cell's routes as copyable model IDs, or a dash when a platform can't be reached that way. */
+function RouteCell({ routes }: { routes: ModelPickerState["unconfiguredPlatforms"][number]["routes"] }) {
 	const t = useT();
-	if (providers.length === 0) return <span className="text-sm text-muted-foreground">—</span>;
-
+	if (routes.length === 0) return <span className="text-sm text-muted-foreground">—</span>;
 	return (
-		<span className="flex flex-wrap gap-x-2 gap-y-1">
-			{providers.map((provider) => (
-				<a
-					key={provider.id}
-					href={provider.docsUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="text-sm text-muted-foreground underline decoration-dotted hover:text-foreground"
-				>
-					{t(provider.name)}
-				</a>
+		<span className="flex flex-col gap-1">
+			{routes.map((route) => (
+				<span key={route.target} className="text-sm text-muted-foreground">
+					{route.version ? <code className="font-mono text-xs">{route.version}</code> : t("Available")}
+				</span>
 			))}
 		</span>
 	);

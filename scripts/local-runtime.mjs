@@ -9,7 +9,6 @@ export function localEnvironment({ databasePort = 55440, appPort = 3140, browser
 		BEAT_GEO_DATABASE_MODE: "embedded",
 		BETTER_AUTH_SECRET: randomBytes(32).toString("hex"),
 		BEAT_GEO_ENCRYPTION_KEY: randomBytes(32).toString("base64"),
-		DISABLE_TELEMETRY: "1",
 		APP_URL: `http://localhost:${appPort}`,
 		SCRAPE_TARGETS: "chatgpt:beat-browser",
 		RUNS_PER_PROMPT: "1",

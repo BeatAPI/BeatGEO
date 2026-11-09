@@ -5,15 +5,12 @@ import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { BEAT_GEO_THEME_COLOR, DEFAULT_APP_ICON } from "@workspace/config/constants";
 import type { MissingEnvVar } from "@workspace/config/env";
-import { useEffect } from "react";
 import MissingEnvPage from "@/components/missing-env-page";
 import { NotFoundPage } from "@/components/not-found-page";
 import queryDevtools from "@/integrations/tanstack-query/devtools";
-import { initClarity } from "@/lib/clarity";
 import { rootConfigQuery } from "@/lib/config/queries";
 import { LocaleProvider, useLocale } from "@/lib/i18n";
 import { type Locale, loadLocale, translate } from "@/lib/i18n/messages";
-import { initAnalytics } from "@/lib/posthog";
 import type { PublicClientConfig } from "@/server/config";
 import { getRequestLocaleFn } from "@/server/locale";
 import appCss from "../styles.css?url";
@@ -43,16 +40,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 	},
 	head: ({ match }) => {
 		const branding = match.context?.clientConfig?.branding;
-		const analytics = match.context?.clientConfig?.analytics;
-		const scripts = [];
-		if (analytics?.plausibleDomain) {
-			scripts.push({
-				src: "/api/plausible/js/script",
-				defer: true,
-				"data-domain": analytics.plausibleDomain,
-				"data-api": "/api/plausible/event",
-			});
-		}
 
 		const hasCustomIcon = Boolean(branding?.icon && branding.icon !== DEFAULT_APP_ICON);
 		const appName = branding?.name || "BeatGEO";
@@ -120,7 +107,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 							{ rel: "apple-touch-icon", href: "/icons/apple-touch-icon.png?v=product" },
 						]),
 			],
-			scripts,
 		};
 	},
 	component: RootComponent,
@@ -137,21 +123,7 @@ function RootComponent() {
 
 function RootContent() {
 	const { locale } = useLocale();
-	const { envValidation, clientConfig } = Route.useRouteContext();
-	const clarityProjectId = clientConfig?.analytics?.clarityProjectId;
-	const posthogKey = clientConfig?.analytics?.posthogKey;
-
-	// Both are operator-owned and off unless a key is configured; whoever runs
-	// the workspace is the one consenting.
-	useEffect(() => {
-		const stops = [
-			posthogKey ? initAnalytics(posthogKey, false) : undefined,
-			clarityProjectId ? initClarity(clarityProjectId, false) : undefined,
-		];
-		return () => {
-			for (const stop of stops) stop?.();
-		};
-	}, [posthogKey, clarityProjectId]);
+	const { envValidation } = Route.useRouteContext();
 
 	// Only swap in the missing-env page once we actually know env is invalid —
 	// envValidation is absent while a navigation's root beforeLoad is in flight.

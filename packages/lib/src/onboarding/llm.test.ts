@@ -1,19 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { resolveResearchProvider } from "./llm";
 
-const ENV_KEYS = [
-	"BEATAPI_API_KEY",
-	"BEATAPI_RESEARCH_MODEL",
-	"ONBOARDING_LLM_TARGET",
-	"ANTHROPIC_API_KEY",
-	"OPENAI_API_KEY",
-	"OPENROUTER_API_KEY",
-	"OLOSTEP_API_KEY",
-	"BRIGHTDATA_API_TOKEN",
-	"OXYLABS_USERNAME",
-	"OXYLABS_PASSWORD",
-	"MISTRAL_API_KEY",
-];
+const ENV_KEYS = ["BEATAPI_API_KEY", "BEATAPI_RESEARCH_MODEL", "ONBOARDING_LLM_TARGET", "BROWSER_RUNNER_TOKEN"];
 
 const savedEnv: Record<string, string | undefined> = {};
 
@@ -33,81 +21,32 @@ afterEach(() => {
 });
 
 describe("resolveResearchProvider", () => {
+	it("selects BeatAPI research only with a configured model", () => {
+		process.env.BEATAPI_API_KEY = "test";
+		expect(() => resolveResearchProvider({ BEATAPI_API_KEY: "test" })).toThrow(/BEATAPI_RESEARCH_MODEL/);
+		process.env.BEATAPI_RESEARCH_MODEL = "test-model";
+		expect(resolveResearchProvider().id).toBe("beatapi");
+	});
+
 	it("uses the explicit env override when set", () => {
-		process.env.ANTHROPIC_API_KEY = "x";
-		const provider = resolveResearchProvider({
-			ANTHROPIC_API_KEY: "x",
-			ONBOARDING_LLM_TARGET: "claude:anthropic-api",
-		});
-		expect(provider.id).toBe("anthropic-api");
+		expect(resolveResearchProvider({ ONBOARDING_LLM_TARGET: "stub:stub" }).id).toBe("stub");
 	});
 
 	it("throws when ONBOARDING_LLM_TARGET points at an unconfigured provider", () => {
 		expect(() =>
-			resolveResearchProvider({
-				ONBOARDING_LLM_TARGET: "chatgpt:openai-api:gpt-5-mini",
-			}),
+			resolveResearchProvider({ ONBOARDING_LLM_TARGET: "research:beatapi", BEATAPI_RESEARCH_MODEL: "m" }),
 		).toThrow(/isn't configured/);
 	});
 
-	it("throws when ONBOARDING_LLM_TARGET points at a scraper", () => {
-		process.env.OLOSTEP_API_KEY = "x";
-		expect(() =>
-			resolveResearchProvider({
-				OLOSTEP_API_KEY: "x",
-				ONBOARDING_LLM_TARGET: "gemini:olostep:online",
-			}),
-		).toThrow(/does not support structured research/);
-	});
-
-	it("prefers OpenAI direct first when configured", () => {
-		// provider.isConfigured() reads from process.env, not the function's
-		// env arg — set both so ONBOARDING_LLM_TARGET lookup and the
-		// per-provider config probe see the same world.
-		process.env.OPENAI_API_KEY = "a";
-		process.env.OPENROUTER_API_KEY = "b";
-		process.env.ANTHROPIC_API_KEY = "c";
-		process.env.MISTRAL_API_KEY = "d";
-		const provider = resolveResearchProvider();
-		expect(provider.id).toBe("openai-api");
-	});
-
-	it("falls back to OpenRouter when OpenAI direct isn't configured", () => {
-		process.env.OPENROUTER_API_KEY = "b";
-		process.env.ANTHROPIC_API_KEY = "c";
-		process.env.MISTRAL_API_KEY = "d";
-		const provider = resolveResearchProvider();
-		expect(provider.id).toBe("openrouter");
-	});
-
-	it("falls back to Anthropic when OpenAI / OpenRouter aren't configured", () => {
-		process.env.ANTHROPIC_API_KEY = "c";
-		process.env.MISTRAL_API_KEY = "d";
-		const provider = resolveResearchProvider();
-		expect(provider.id).toBe("anthropic-api");
-	});
-
-	it("falls back to Mistral when only Mistral is set", () => {
-		process.env.MISTRAL_API_KEY = "x";
-		const provider = resolveResearchProvider();
-		expect(provider.id).toBe("mistral-api");
-	});
-
-	it("ignores scraper providers entirely", () => {
-		process.env.OLOSTEP_API_KEY = "x";
-		process.env.BRIGHTDATA_API_TOKEN = "y";
-		expect(() => resolveResearchProvider({ OLOSTEP_API_KEY: "x", BRIGHTDATA_API_TOKEN: "y" })).toThrow(
-			/at least one direct LLM API/,
+	it("throws when ONBOARDING_LLM_TARGET points at the browser collector", () => {
+		process.env.BROWSER_RUNNER_TOKEN = "x";
+		expect(() => resolveResearchProvider({ ONBOARDING_LLM_TARGET: "chatgpt:beat-browser" })).toThrow(
+			/does not support structured research/,
 		);
 	});
 
-	it("throws when no provider is configured", () => {
-		expect(() => resolveResearchProvider({})).toThrow(/at least one direct LLM API/);
+	it("does not treat the browser collector as a research provider", () => {
+		process.env.BROWSER_RUNNER_TOKEN = "x";
+		expect(() => resolveResearchProvider({ BROWSER_RUNNER_TOKEN: "x" })).toThrow(/BeatAPI/);
 	});
-});
-
-it("selects BeatAPI research only with a configured model", () => {
-	process.env.BEATAPI_API_KEY = "test";
-	process.env.BEATAPI_RESEARCH_MODEL = "test-model";
-	expect(resolveResearchProvider().id).toBe("beatapi");
 });

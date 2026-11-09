@@ -2,21 +2,17 @@ import { describe, expect, it } from "vitest";
 import { estimateRunCostUsd, projectMonthlyTargetCostUsd } from "./cost";
 
 describe("estimateRunCostUsd", () => {
-	it("prices a run by provider", () => {
-		expect(estimateRunCostUsd("brightdata", false)).toBe(0.01);
-		expect(estimateRunCostUsd("dataforseo", false)).toBe(0.005);
+	it("charges nothing for browser collection in the user's own account", () => {
+		expect(estimateRunCostUsd("beat-browser")).toBe(0);
 	});
 
-	it("adds Anthropic's per-use web search charge only when grounded", () => {
-		const base = estimateRunCostUsd("anthropic-api", false);
-		const grounded = estimateRunCostUsd("anthropic-api", true);
-		expect(base).not.toBeNull();
-		expect(grounded).toBeGreaterThan(base as number);
+	it("prices a BeatAPI run", () => {
+		expect(estimateRunCostUsd("beatapi")).toBeGreaterThan(0);
 	});
 
 	it("reports nothing for an unpriced or missing provider", () => {
-		expect(estimateRunCostUsd("some-new-provider", false)).toBeNull();
-		expect(estimateRunCostUsd(null, false)).toBeNull();
+		expect(estimateRunCostUsd("some-new-provider")).toBeNull();
+		expect(estimateRunCostUsd(null)).toBeNull();
 	});
 });
 

@@ -15,25 +15,22 @@ describe("startup requirements", () => {
 });
 
 describe("research provider requirement", () => {
-	it("is missing when no direct LLM key is set", () => {
+	it("is missing when no BeatAPI key is set", () => {
 		expect(missingIds({}).has("RESEARCH_PROVIDER")).toBe(true);
 	});
 
-	it("is satisfied by any one direct LLM key", () => {
-		for (const key of ["OPENAI_API_KEY", "OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "MISTRAL_API_KEY"]) {
-			expect(missingIds({ [key]: "x" }).has("RESEARCH_PROVIDER"), key).toBe(false);
-		}
+	it("needs both the BeatAPI key and a research model", () => {
+		expect(missingIds({ BEATAPI_API_KEY: "x" }).has("RESEARCH_PROVIDER")).toBe(true);
+		expect(missingIds({ BEATAPI_API_KEY: "x", BEATAPI_RESEARCH_MODEL: "m" }).has("RESEARCH_PROVIDER")).toBe(false);
 	});
 
-	it("is not satisfied by scraper keys alone", () => {
-		expect(missingIds({ OLOSTEP_API_KEY: "x", CLORO_API_KEY: "x" }).has("RESEARCH_PROVIDER")).toBe(true);
+	it("is not satisfied by the browser collector token alone", () => {
+		expect(missingIds({ BROWSER_RUNNER_TOKEN: "x" }).has("RESEARCH_PROVIDER")).toBe(true);
 	});
 
-	it("follows ONBOARDING_LLM_TARGET to that provider's keys", () => {
-		const target = { ONBOARDING_LLM_TARGET: "claude:anthropic-api" };
-		expect(missingIds({ ...target, OPENAI_API_KEY: "x" }).has("RESEARCH_PROVIDER")).toBe(true);
-		expect(missingIds({ ...target, ANTHROPIC_API_KEY: "x" }).has("RESEARCH_PROVIDER")).toBe(false);
+	it("follows ONBOARDING_LLM_TARGET", () => {
 		expect(missingIds({ ONBOARDING_LLM_TARGET: "stub:stub" }).has("RESEARCH_PROVIDER")).toBe(false);
+		expect(missingIds({ ONBOARDING_LLM_TARGET: "research:beatapi" }).has("RESEARCH_PROVIDER")).toBe(true);
 	});
 });
 
@@ -56,7 +53,7 @@ describe("requireEnvVars", () => {
 
 describe("assertRequiredEnv", () => {
 	it("names every missing var in one error", () => {
-		expect(() => assertRequiredEnv({ SCRAPE_TARGETS: "chatgpt:olostep:online" })).toThrow(
+		expect(() => assertRequiredEnv({ SCRAPE_TARGETS: "chatgpt:beat-browser" })).toThrow(
 			/DATABASE_URL.*BETTER_AUTH_SECRET.*BEAT_GEO_ENCRYPTION_KEY/,
 		);
 	});
@@ -67,7 +64,7 @@ describe("assertRequiredEnv", () => {
 				DATABASE_URL: "postgres://localhost/beatgeo",
 				BETTER_AUTH_SECRET: "secret",
 				BEAT_GEO_ENCRYPTION_KEY: "key",
-				SCRAPE_TARGETS: "chatgpt:olostep:online",
+				SCRAPE_TARGETS: "chatgpt:beat-browser",
 			}),
 		).not.toThrow();
 	});

@@ -22,8 +22,8 @@ export interface PlatformGroup {
 }
 
 const GROUP_DESCRIPTIONS: Record<PlatformTierId, string> = {
-	scraped: "Captures the response of an LLM within an actual UI. You track what a real visitor sees.",
-	api: "LLMs called without web-search tools, so answers show what the model was trained on.",
+	scraped: "Opens the AI product in your own signed-in Chrome and saves the answer and visible sources a visitor sees.",
+	api: "Asks the model directly through your BeatAPI key, without web search, so answers show what the model already believes about you.",
 	premium:
 		"LLMs called with their native web-search tools, so answers are grounded using recent updates to their web index.",
 };

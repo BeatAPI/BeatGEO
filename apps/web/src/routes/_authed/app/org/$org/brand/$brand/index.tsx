@@ -23,7 +23,6 @@ import { EARLY_SIGNAL_RUNS, isEarlySignal } from "@/lib/chart-utils";
 import { useLocale, useT } from "@/lib/i18n";
 import type { Values } from "@/lib/i18n/messages";
 import { describeTargetSchedule, type TrackedTarget } from "@/lib/model-filter";
-import { setPersonProperties } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
 
 function getVisibilityTextColor(value: number): string {
@@ -422,7 +421,7 @@ function ResearchBrandData() {
 }
 
 /** Everything the two trend sections plot, plus the loading flags they key off.
- *  Reads only; the analytics write lives in `useReportedPromptCount`. */
+ */
 function useDashboardMetrics(brandId: string | undefined) {
 	const { data: dashboardSummary, isLoading: isLoadingSummary } = useDashboardSummary(brandId, "1m");
 	const { data: sovData, isLoading: isLoadingSov } = useShareOfVoice(brandId, { lookback: "1m" });
@@ -438,13 +437,6 @@ function useDashboardMetrics(brandId: string | undefined) {
 		nonBrandedVisibility: dashboardSummary?.nonBrandedVisibility || 0,
 		lastUpdatedAt: dashboardSummary?.lastUpdatedAt || null,
 	};
-}
-
-/** Mirrors the brand's active prompt count onto the PostHog person. */
-function useReportedPromptCount(totalPrompts: number | undefined) {
-	useEffect(() => {
-		if (totalPrompts != null) setPersonProperties({ active_prompt_count: totalPrompts });
-	}, [totalPrompts]);
 }
 
 const VISIBILITY_TOOLTIP =
@@ -498,7 +490,6 @@ function DashboardPage() {
 		nonBrandedVisibility,
 		lastUpdatedAt,
 	} = useDashboardMetrics(brand?.id);
-	useReportedPromptCount(totalPrompts);
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const clientConfig = context.clientConfig;
 

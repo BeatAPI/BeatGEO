@@ -2,7 +2,7 @@ import { parseScrapeTargets } from "@workspace/config/scrape-targets";
 import { describe, expect, it } from "vitest";
 import { type ResolveBrandPromptRunPlansInput, resolveBrandPromptRunPlans } from "./brand-plans";
 
-const TARGETS = parseScrapeTargets("chatgpt:brightdata:online,perplexity:brightdata:online");
+const TARGETS = parseScrapeTargets("chatgpt:beat-browser:online,perplexity:beat-browser:online");
 
 function input(overrides: Partial<ResolveBrandPromptRunPlansInput>): ResolveBrandPromptRunPlansInput {
 	return {

@@ -43,13 +43,45 @@ export type AppSidebarProps = ShellScope;
 
 type SidebarBrand = Pick<BrandWithPrompts, "id" | "slug" | "onboarded">;
 
+/**
+ * SEO comes first because search is the foundation AI answers draw on; GEO
+ * carries the most entries because monitoring AI answers is the product's core;
+ * Optimize closes the loop with actions and matched retests.
+ */
 function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seoEnabled: boolean): NavGroup[] {
 	const params = brandLinkParams(organization, brand);
-	const dashboard: NavItem[] = [
-		{ title: "Overview", link: { to: "/app/org/$org/brand/$brand", params }, icon: IconDashboard, exact: true },
-	];
+	const seoPage = (view: "home" | "actions") => SEO_PAGES.find((page) => page.view === view)!;
 
-	dashboard.push(
+	const seo: NavItem[] = [
+		{
+			title: "Search performance",
+			link: { to: "/app/org/$org/brand/$brand/search-console", params },
+			icon: IconChartBar,
+		},
+		{
+			title: "Search diagnosis",
+			link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "search" },
+			icon: IconSearch,
+		},
+	];
+	if (seoEnabled)
+		seo.push(
+			{
+				title: seoPage("home").title,
+				link: { to: "/app/org/$org/brand/$brand/seo", params, hash: "" },
+				icon: IconWorld,
+				exact: true,
+			},
+			{
+				title: seoPage("actions").title,
+				link: { to: "/app/org/$org/brand/$brand/seo", params, hash: "actions" },
+				icon: IconFileText,
+				exact: true,
+			},
+		);
+
+	const geo: NavItem[] = [
+		{ title: "Overview", link: { to: "/app/org/$org/brand/$brand", params }, icon: IconDashboard, exact: true },
 		{
 			title: "Questions",
 			link: { to: "/app/org/$org/brand/$brand/settings/prompts", params },
@@ -61,75 +93,37 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 			matchLinks: INSIGHT_PAGES.slice(1).map((page) => ({ to: page.to, params })),
 			icon: IconChartBar,
 		},
+		{ title: "Traffic analysis", link: { to: "/app/org/$org/brand/$brand/traffic", params }, icon: IconLink },
+		{
+			title: "Competitors",
+			link: { to: "/app/org/$org/brand/$brand/settings/competitors", params },
+			icon: IconBuildings,
+		},
+		{
+			title: "Monitoring platforms",
+			link: { to: "/app/org/$org/brand/$brand/settings/llms", params },
+			icon: IconCpu,
+		},
+	];
+
+	const optimize: NavItem[] = [
 		{
 			title: "GEO recommendations",
 			link: { to: "/app/org/$org/brand/$brand/opportunities", params },
 			icon: IconTarget,
 		},
-	);
+		{
+			title: "Actions & retests",
+			link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "all-actions" },
+			icon: IconHistory,
+		},
+	];
 
-	const groups: NavGroup[] = [];
-	if (seoEnabled)
-		groups.push({
-			label: "SEO",
-			items: [
-				{
-					title: "Search diagnosis",
-					link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "search" },
-					icon: IconTarget,
-				},
-				...SEO_PAGES.map(
-					(page): NavItem => ({
-						title: page.title,
-						link: { to: "/app/org/$org/brand/$brand/seo", params, hash: page.view === "home" ? "" : page.view },
-						icon: {
-							home: IconDashboard,
-							domain: IconWorld,
-							keywords: IconSearch,
-							backlinks: IconLink,
-							results: IconHistory,
-							actions: IconFileText,
-						}[page.view],
-						exact: true,
-					}),
-				),
-				{
-					title: "Search performance",
-					link: { to: "/app/org/$org/brand/$brand/search-console", params },
-					icon: IconChartBar,
-				},
-			],
-		});
-	groups.unshift({ label: "GEO", items: dashboard });
-	groups.push({
-		label: "Analytics",
-		items: [
-			{ title: "Traffic analysis", link: { to: "/app/org/$org/brand/$brand/traffic", params }, icon: IconChartBar },
-			{
-				title: "All improvement actions",
-				link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "all-actions" },
-				icon: IconFileText,
-			},
-		],
-	});
-
-	groups.push({
-		label: "Settings",
-		items: [
-			{
-				title: "Competitors",
-				link: { to: "/app/org/$org/brand/$brand/settings/competitors", params },
-				icon: IconBuildings,
-			},
-			{
-				title: "Monitoring platforms",
-				link: { to: "/app/org/$org/brand/$brand/settings/llms", params },
-				icon: IconCpu,
-			},
-		],
-	});
-
-	return groups;
+	return [
+		{ label: "SEO", items: seo },
+		{ label: "GEO", items: geo },
+		{ label: "Optimize", items: optimize },
+	];
 }
 
 /** Developer and learning pages, shared by every page so the rail never changes shape. */

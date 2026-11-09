@@ -13,8 +13,8 @@ export type PlatformTierId = "scraped" | "api" | "premium";
 
 /** What each tier is called, wherever it is shown. */
 export const PLATFORM_TIER_LABELS: Record<PlatformTierId, string> = {
-	scraped: "Scraped Engines",
-	api: "LLM APIs",
+	scraped: "Browser observations · BeatBrowser",
+	api: "Model answers · BeatAPI",
 	premium: "Premium LLM APIs",
 };
 

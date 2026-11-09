@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 // Mock the LLM and excerpt modules so the tests never call external services.
 vi.mock("./llm", () => ({
 	resolveResearchTarget: vi.fn(() => ({
-		provider: { id: "anthropic-api", isConfigured: () => true } as any,
+		provider: { id: "beatapi", isConfigured: () => true } as any,
 		model: "claude-sonnet-5",
 	})),
 	runStructuredResearchPrompt: vi.fn(),

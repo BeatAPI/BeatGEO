@@ -31,7 +31,6 @@ import { Route as ApiV1MeRouteImport } from './routes/api/v1/me'
 import { Route as ApiV1ModelsRouteImport } from './routes/api/v1/models'
 import { Route as AuthedAppOrgOrgRouteImport } from './routes/_authed/app/org/$org'
 import { Route as AuthedReportsRenderReportIdRouteImport } from './routes/_authed/reports/render/$reportId'
-import { Route as ApiPlausibleEventIndexRouteImport } from './routes/api/plausible/event/index'
 import { Route as ApiSeoBrandIdSplatRouteImport } from './routes/api/seo/$brandId/$'
 import { Route as ApiTrafficGaCallbackRouteImport } from './routes/api/traffic/ga/callback'
 import { Route as ApiTrafficGoogleCallbackRouteImport } from './routes/api/traffic/google/callback'
@@ -51,7 +50,6 @@ import { Route as ApiV1ToolsAnalyzeRouteImport } from './routes/api/v1/tools/ana
 import { Route as AuthedAppOrgOrgIndexRouteImport } from './routes/_authed/app/org/$org/index'
 import { Route as AuthedAppOrgOrgNewRouteImport } from './routes/_authed/app/org/$org/new'
 import { Route as AuthedAppOrgOrgSettingsRouteImport } from './routes/_authed/app/org/$org/settings'
-import { Route as ApiPlausibleJsScriptIndexRouteImport } from './routes/api/plausible/js/script/index'
 import { Route as ApiV1BrandsBrandIdAnalyticsRouteImport } from './routes/api/v1/brands/$brandId/analytics'
 import { Route as ApiV1BrandsBrandIdOpportunitiesRouteImport } from './routes/api/v1/brands/$brandId/opportunities'
 import { Route as ApiV1BrandsBrandIdPromptPerformanceRouteImport } from './routes/api/v1/brands/$brandId/prompt-performance'
@@ -203,11 +201,6 @@ const AuthedReportsRenderReportIdRoute =
     path: '/render/$reportId',
     getParentRoute: () => AuthedReportsRoute,
   } as any)
-const ApiPlausibleEventIndexRoute = ApiPlausibleEventIndexRouteImport.update({
-  id: '/api/plausible/event/',
-  path: '/api/plausible/event/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiSeoBrandIdSplatRoute = ApiSeoBrandIdSplatRouteImport.update({
   id: '/api/seo/$brandId/$',
   path: '/api/seo/$brandId/$',
@@ -306,12 +299,6 @@ const AuthedAppOrgOrgSettingsRoute = AuthedAppOrgOrgSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthedAppOrgOrgRoute,
 } as any)
-const ApiPlausibleJsScriptIndexRoute =
-  ApiPlausibleJsScriptIndexRouteImport.update({
-    id: '/api/plausible/js/script/',
-    path: '/api/plausible/js/script/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiV1BrandsBrandIdAnalyticsRoute =
   ApiV1BrandsBrandIdAnalyticsRouteImport.update({
     id: '/analytics',
@@ -561,7 +548,6 @@ export interface FileRoutesByFullPath {
   '/api/v1/prompts/$promptId': typeof ApiV1PromptsPromptIdRouteWithChildren
   '/api/v1/reports/$reportId': typeof ApiV1ReportsReportIdRoute
   '/api/v1/tools/analyze': typeof ApiV1ToolsAnalyzeRoute
-  '/api/plausible/event/': typeof ApiPlausibleEventIndexRoute
   '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/competitors/': typeof ApiV1CompetitorsIndexRoute
   '/api/v1/docs/': typeof ApiV1DocsIndexRoute
@@ -576,7 +562,6 @@ export interface FileRoutesByFullPath {
   '/api/v1/brands/$brandId/query-fanout': typeof ApiV1BrandsBrandIdQueryFanoutRoute
   '/api/v1/prompts/$promptId/snapshot': typeof ApiV1PromptsPromptIdSnapshotRoute
   '/app/org/$org/': typeof AuthedAppOrgOrgIndexRoute
-  '/api/plausible/js/script/': typeof ApiPlausibleJsScriptIndexRoute
   '/app/org/$org/brand/$brand': typeof AuthedAppOrgOrgBrandBrandRouteWithChildren
   '/app/org/$org/settings/api': typeof AuthedAppOrgOrgSettingsApiRoute
   '/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
@@ -639,7 +624,6 @@ export interface FileRoutesByTo {
   '/api/v1/prompts/$promptId': typeof ApiV1PromptsPromptIdRouteWithChildren
   '/api/v1/reports/$reportId': typeof ApiV1ReportsReportIdRoute
   '/api/v1/tools/analyze': typeof ApiV1ToolsAnalyzeRoute
-  '/api/plausible/event': typeof ApiPlausibleEventIndexRoute
   '/api/v1/brands': typeof ApiV1BrandsIndexRoute
   '/api/v1/competitors': typeof ApiV1CompetitorsIndexRoute
   '/api/v1/docs': typeof ApiV1DocsIndexRoute
@@ -653,7 +637,6 @@ export interface FileRoutesByTo {
   '/api/v1/brands/$brandId/query-fanout': typeof ApiV1BrandsBrandIdQueryFanoutRoute
   '/api/v1/prompts/$promptId/snapshot': typeof ApiV1PromptsPromptIdSnapshotRoute
   '/app/org/$org': typeof AuthedAppOrgOrgIndexRoute
-  '/api/plausible/js/script': typeof ApiPlausibleJsScriptIndexRoute
   '/app/org/$org/settings/api': typeof AuthedAppOrgOrgSettingsApiRoute
   '/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
   '/app/org/$org/settings/brands': typeof AuthedAppOrgOrgSettingsBrandsRoute
@@ -719,7 +702,6 @@ export interface FileRoutesById {
   '/api/v1/prompts/$promptId': typeof ApiV1PromptsPromptIdRouteWithChildren
   '/api/v1/reports/$reportId': typeof ApiV1ReportsReportIdRoute
   '/api/v1/tools/analyze': typeof ApiV1ToolsAnalyzeRoute
-  '/api/plausible/event/': typeof ApiPlausibleEventIndexRoute
   '/api/v1/brands/': typeof ApiV1BrandsIndexRoute
   '/api/v1/competitors/': typeof ApiV1CompetitorsIndexRoute
   '/api/v1/docs/': typeof ApiV1DocsIndexRoute
@@ -734,7 +716,6 @@ export interface FileRoutesById {
   '/api/v1/brands/$brandId/query-fanout': typeof ApiV1BrandsBrandIdQueryFanoutRoute
   '/api/v1/prompts/$promptId/snapshot': typeof ApiV1PromptsPromptIdSnapshotRoute
   '/_authed/app/org/$org/': typeof AuthedAppOrgOrgIndexRoute
-  '/api/plausible/js/script/': typeof ApiPlausibleJsScriptIndexRoute
   '/_authed/app/org/$org/brand/$brand': typeof AuthedAppOrgOrgBrandBrandRouteWithChildren
   '/_authed/app/org/$org/settings/api': typeof AuthedAppOrgOrgSettingsApiRoute
   '/_authed/app/org/$org/settings/api-keys': typeof AuthedAppOrgOrgSettingsApiKeysRoute
@@ -801,7 +782,6 @@ export interface FileRouteTypes {
     | '/api/v1/prompts/$promptId'
     | '/api/v1/reports/$reportId'
     | '/api/v1/tools/analyze'
-    | '/api/plausible/event/'
     | '/api/v1/brands/'
     | '/api/v1/competitors/'
     | '/api/v1/docs/'
@@ -816,7 +796,6 @@ export interface FileRouteTypes {
     | '/api/v1/brands/$brandId/query-fanout'
     | '/api/v1/prompts/$promptId/snapshot'
     | '/app/org/$org/'
-    | '/api/plausible/js/script/'
     | '/app/org/$org/brand/$brand'
     | '/app/org/$org/settings/api'
     | '/app/org/$org/settings/api-keys'
@@ -879,7 +858,6 @@ export interface FileRouteTypes {
     | '/api/v1/prompts/$promptId'
     | '/api/v1/reports/$reportId'
     | '/api/v1/tools/analyze'
-    | '/api/plausible/event'
     | '/api/v1/brands'
     | '/api/v1/competitors'
     | '/api/v1/docs'
@@ -893,7 +871,6 @@ export interface FileRouteTypes {
     | '/api/v1/brands/$brandId/query-fanout'
     | '/api/v1/prompts/$promptId/snapshot'
     | '/app/org/$org'
-    | '/api/plausible/js/script'
     | '/app/org/$org/settings/api'
     | '/app/org/$org/settings/api-keys'
     | '/app/org/$org/settings/brands'
@@ -958,7 +935,6 @@ export interface FileRouteTypes {
     | '/api/v1/prompts/$promptId'
     | '/api/v1/reports/$reportId'
     | '/api/v1/tools/analyze'
-    | '/api/plausible/event/'
     | '/api/v1/brands/'
     | '/api/v1/competitors/'
     | '/api/v1/docs/'
@@ -973,7 +949,6 @@ export interface FileRouteTypes {
     | '/api/v1/brands/$brandId/query-fanout'
     | '/api/v1/prompts/$promptId/snapshot'
     | '/_authed/app/org/$org/'
-    | '/api/plausible/js/script/'
     | '/_authed/app/org/$org/brand/$brand'
     | '/_authed/app/org/$org/settings/api'
     | '/_authed/app/org/$org/settings/api-keys'
@@ -1034,14 +1009,12 @@ export interface RootRouteChildren {
   ApiV1PromptsPromptIdRoute: typeof ApiV1PromptsPromptIdRouteWithChildren
   ApiV1ReportsReportIdRoute: typeof ApiV1ReportsReportIdRoute
   ApiV1ToolsAnalyzeRoute: typeof ApiV1ToolsAnalyzeRoute
-  ApiPlausibleEventIndexRoute: typeof ApiPlausibleEventIndexRoute
   ApiV1BrandsIndexRoute: typeof ApiV1BrandsIndexRoute
   ApiV1CompetitorsIndexRoute: typeof ApiV1CompetitorsIndexRoute
   ApiV1DocsIndexRoute: typeof ApiV1DocsIndexRoute
   ApiV1OrganizationsIndexRoute: typeof ApiV1OrganizationsIndexRoute
   ApiV1PromptsIndexRoute: typeof ApiV1PromptsIndexRoute
   ApiV1ReportsIndexRoute: typeof ApiV1ReportsIndexRoute
-  ApiPlausibleJsScriptIndexRoute: typeof ApiPlausibleJsScriptIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1200,13 +1173,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedReportsRenderReportIdRouteImport
       parentRoute: typeof AuthedReportsRoute
     }
-    '/api/plausible/event/': {
-      id: '/api/plausible/event/'
-      path: '/api/plausible/event'
-      fullPath: '/api/plausible/event/'
-      preLoaderRoute: typeof ApiPlausibleEventIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/seo/$brandId/$': {
       id: '/api/seo/$brandId/$'
       path: '/api/seo/$brandId/$'
@@ -1339,13 +1305,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/org/$org/settings'
       preLoaderRoute: typeof AuthedAppOrgOrgSettingsRouteImport
       parentRoute: typeof AuthedAppOrgOrgRoute
-    }
-    '/api/plausible/js/script/': {
-      id: '/api/plausible/js/script/'
-      path: '/api/plausible/js/script'
-      fullPath: '/api/plausible/js/script/'
-      preLoaderRoute: typeof ApiPlausibleJsScriptIndexRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/api/v1/brands/$brandId/analytics': {
       id: '/api/v1/brands/$brandId/analytics'
@@ -1811,14 +1770,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1PromptsPromptIdRoute: ApiV1PromptsPromptIdRouteWithChildren,
   ApiV1ReportsReportIdRoute: ApiV1ReportsReportIdRoute,
   ApiV1ToolsAnalyzeRoute: ApiV1ToolsAnalyzeRoute,
-  ApiPlausibleEventIndexRoute: ApiPlausibleEventIndexRoute,
   ApiV1BrandsIndexRoute: ApiV1BrandsIndexRoute,
   ApiV1CompetitorsIndexRoute: ApiV1CompetitorsIndexRoute,
   ApiV1DocsIndexRoute: ApiV1DocsIndexRoute,
   ApiV1OrganizationsIndexRoute: ApiV1OrganizationsIndexRoute,
   ApiV1PromptsIndexRoute: ApiV1PromptsIndexRoute,
   ApiV1ReportsIndexRoute: ApiV1ReportsIndexRoute,
-  ApiPlausibleJsScriptIndexRoute: ApiPlausibleJsScriptIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

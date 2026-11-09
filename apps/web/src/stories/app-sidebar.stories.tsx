@@ -35,7 +35,6 @@ const organization = {
 
 const localConfig: ClientConfig = {
 	branding: { name: "BeatGEO", chartColors: DEFAULT_CHART_COLORS },
-	analytics: {},
 };
 
 // ---------------------------------------------------------------------------

@@ -20,7 +20,6 @@ const beatgeoConfig: ClientConfig = {
 		name: "BeatGEO",
 		chartColors: DEFAULT_CHART_COLORS.map((c) => c),
 	},
-	analytics: {},
 };
 
 export default {
