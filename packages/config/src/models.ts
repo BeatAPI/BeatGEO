@@ -14,17 +14,13 @@ export interface ModelMeta {
 
 export const KNOWN_MODELS: Record<string, ModelMeta> = {
 	chatgpt: { label: "ChatGPT", iconId: "openai" },
-	claude: { label: "Claude", iconId: "anthropic" },
-	"google-ai-mode": { label: "Google AI Mode", iconId: "google" },
-	"google-ai-overview": { label: "Google AI Overview", iconId: "google" },
 	gemini: { label: "Gemini", iconId: "google" },
-	copilot: { label: "Copilot", iconId: "microsoft" },
-	perplexity: { label: "Perplexity", iconId: "perplexity" },
-	grok: { label: "Grok", iconId: "x" },
-	mistral: { label: "Mistral", iconId: "mistral" },
+	claude: { label: "Claude", iconId: "anthropic" },
 	deepseek: { label: "DeepSeek", iconId: "deepseek" },
-	kimi: { label: "Kimi", iconId: "moonshotai" },
 	qwen: { label: "Qwen", iconId: "qwen" },
+	kimi: { label: "Kimi", iconId: "moonshotai" },
+	grok: { label: "Grok", iconId: "x" },
+	glm: { label: "GLM", iconId: "generic" },
 };
 
 export function getModelMeta(model: string): ModelMeta {
@@ -35,3 +31,18 @@ export function getModelMeta(model: string): ModelMeta {
 		.join(" ");
 	return { label, iconId: "generic" };
 }
+
+/**
+ * The BeatAPI model asked when a target names only the platform, e.g.
+ * `claude:beatapi`. A target may still pin another model as `claude:beatapi:<id>`.
+ */
+export const BEATAPI_DEFAULT_MODELS: Record<string, string> = {
+	chatgpt: "gpt-5.6-luna",
+	gemini: "gemini-3.8-flash",
+	claude: "claude-sonnet-5-5",
+	deepseek: "deepseek-v4.1-flash",
+	qwen: "qwen3.8-flash",
+	kimi: "kimi-k3",
+	grok: "grok-4.6",
+	glm: "glm-5.3",
+};

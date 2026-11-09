@@ -22,7 +22,6 @@ const defaultClientConfig: ClientConfig = {
 		parentName: "",
 		chartColors: DEFAULT_CHART_COLORS,
 	},
-	analytics: {},
 };
 
 const mockBrand = {

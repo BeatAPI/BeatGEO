@@ -3,7 +3,7 @@
  * stay in separate files.
  */
 import { createServerFn } from "@tanstack/react-start";
-import { parseScrapeTargets, providersByModel } from "@workspace/config/scrape-targets";
+import { PLATFORM_TARGETS, parseScrapeTargets } from "@workspace/config/scrape-targets";
 import { getDefaultDelayHours, getRunsPerPrompt } from "@workspace/lib/constants";
 import { db } from "@workspace/lib/db/db";
 import { brands, prompts } from "@workspace/lib/db/schema";
@@ -40,13 +40,13 @@ export type ModelPickerState = {
 	/** What this brand's tracking currently costs to run, for projecting the price of a platform. */
 	costBasis: { enabledPrompts: number; runsPerDay: number; replication: number };
 	/**
-	 * Platforms BeatGEO can track that this instance has not configured, with the
-	 * providers that can serve each and where to read how.
+	 * Platforms BeatGEO can track that this workspace has not configured, with the
+	 * SCRAPE_TARGETS entry that adds each route.
 	 */
 	unconfiguredPlatforms: {
 		model: string;
 		/** Split by how each reaches the model: the two are not interchangeable. */
-		providers: { id: string; name: string; access: ProviderAccess; docsUrl: string }[];
+		routes: { provider: string; access: ProviderAccess; target: string; version?: string }[];
 	}[];
 };
 
@@ -57,7 +57,7 @@ function toOption(config: ModelConfig): PlatformOption {
 		access: resolveProviderAccess(config),
 		providerName: describeProvider(config.provider).name,
 		version: config.version,
-		costPerRunUsd: estimateRunCostUsd(config.provider, config.webSearch),
+		costPerRunUsd: estimateRunCostUsd(config.provider),
 	};
 }
 
@@ -95,19 +95,18 @@ async function costBasis(brand: {
 	};
 }
 
-/**
- * Trackable platforms this instance has no target for. Derived from the combos
- * the provider status workflow exercises, so every suggestion is one we know
- * works, and ordered to match the picker above.
- */
+/** Trackable platforms with no configured target, in catalogue order. */
 function unconfiguredPlatforms(configs: ModelConfig[]): ModelPickerState["unconfiguredPlatforms"] {
 	const configured = new Set(configs.map((config) => config.model));
-	const suggestions: ModelPickerState["unconfiguredPlatforms"] = [];
-	for (const [model, providerIds] of providersByModel()) {
-		if (configured.has(model)) continue;
-		suggestions.push({ model, providers: providerIds.map(describeProvider) });
+	const byModel = new Map<string, ModelPickerState["unconfiguredPlatforms"][number]["routes"]>();
+	for (const target of PLATFORM_TARGETS) {
+		const [config] = parseScrapeTargets(target);
+		if (!config || configured.has(config.model)) continue;
+		const routes = byModel.get(config.model) ?? [];
+		routes.push({ provider: config.provider, access: resolveProviderAccess(config), target, version: config.version });
+		byModel.set(config.model, routes);
 	}
-	return suggestions;
+	return [...byModel].map(([model, routes]) => ({ model, routes }));
 }
 
 export const getModelPickerStateFn = createServerFn({ method: "GET" })

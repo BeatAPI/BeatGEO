@@ -3,9 +3,8 @@
  * other: the models we give display metadata to, the provider/model combos the
  * scheduled status workflow exercises, and the providers we actually ship.
  *
- * These drifted once already — Qwen shipped on the cloud platform menu with no
- * status target, so nothing was watching whether it still worked, and the LLM
- * settings page could not tell an operator which provider it needs.
+ * If they drift, the monitoring platforms page cannot tell the user which
+ * provider a platform needs.
  */
 
 import { PROVIDERS_DOCS_URL } from "@workspace/config/constants";
@@ -51,32 +50,17 @@ describe("provider coverage", () => {
 
 /**
  * The settings page labels a target "Scraped" or "API" from this, and the two
- * describe genuinely different data — a scraped answer carries the surface a
- * visitor sees, an API answer is the model talking to us. A label that
- * disagrees with the route the provider takes is worse than no label.
+ * describe genuinely different data — a browser observation carries the page a
+ * visitor sees, an API answer is the model talking to us.
  */
 describe("how a target is reached", () => {
-	const dfs = (model: string, version?: string) =>
-		resolveProviderAccess({ provider: "dataforseo", model, version, webSearch: false });
-
-	it("reads Google's surfaces by scraping them, whatever the target says", () => {
-		expect(dfs("google-ai-overview")).toBe("scraped");
-		expect(dfs("google-ai-mode", "some-version")).toBe("scraped");
+	it("reads consumer pages through BeatBrowser", () => {
+		expect(resolveProviderAccess({ provider: "beat-browser", model: "chatgpt", webSearch: false })).toBe("scraped");
 	});
 
-	it("calls the model directly for a surface DataForSEO cannot scrape", () => {
-		// Perplexity has no LLM Scraper route, so an unpinned target still asks
-		// the model rather than reading perplexity.ai.
-		expect(dfs("perplexity")).toBe("api");
-	});
-
-	it("switches to the API once a target pins a version, which only the API honors", () => {
-		expect(dfs("chatgpt")).toBe("scraped");
-		expect(dfs("chatgpt", "gpt-5")).toBe("api");
-	});
-
-	it("takes a single-route provider at its word", () => {
-		expect(resolveProviderAccess({ provider: "brightdata", model: "chatgpt", webSearch: false })).toBe("scraped");
-		expect(resolveProviderAccess({ provider: "anthropic-api", model: "claude", webSearch: false })).toBe("api");
+	it("asks the model directly through BeatAPI", () => {
+		expect(
+			resolveProviderAccess({ provider: "beatapi", model: "claude", version: "claude-sonnet-5-5", webSearch: false }),
+		).toBe("api");
 	});
 });

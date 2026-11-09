@@ -3,9 +3,9 @@ import { selectTargetsForBrand } from "./runner";
 import type { ModelConfig } from "./types";
 
 const configs: ModelConfig[] = [
-	{ model: "chatgpt", provider: "brightdata", version: undefined, webSearch: true },
-	{ model: "claude", provider: "anthropic-api", version: "claude-sonnet-4", webSearch: false },
-	{ model: "google-ai-mode", provider: "dataforseo", version: undefined, webSearch: true },
+	{ model: "chatgpt", provider: "beat-browser", version: undefined, webSearch: true },
+	{ model: "claude", provider: "beatapi", version: "claude-sonnet-4", webSearch: false },
+	{ model: "google-ai-mode", provider: "beat-browser", version: undefined, webSearch: true },
 ];
 
 describe("selectTargetsForBrand", () => {
@@ -39,8 +39,8 @@ describe("selectTargetsForBrand", () => {
 
 	it("keeps duplicates in configs when the model is allowed (multi-sample case)", () => {
 		const duplicated: ModelConfig[] = [
-			{ model: "chatgpt", provider: "brightdata", version: undefined, webSearch: true },
-			{ model: "chatgpt", provider: "olostep", version: undefined, webSearch: true },
+			{ model: "chatgpt", provider: "beat-browser", version: undefined, webSearch: true },
+			{ model: "chatgpt", provider: "beat-browser", version: undefined, webSearch: true },
 		];
 		expect(selectTargetsForBrand(duplicated, ["chatgpt"])).toEqual(duplicated);
 	});

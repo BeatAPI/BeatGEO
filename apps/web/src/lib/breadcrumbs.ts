@@ -74,18 +74,17 @@ function pageCrumbs(label: string | undefined, pathname: string, hash: string): 
 	if (label === "Opportunities" && ["search", "seo-actions", "all-actions"].includes(hash))
 		return [
 			{
-				label: hash === "all-actions" ? "Analytics" : "SEO",
-				href: pathname.replace(/opportunities$/, hash === "all-actions" ? "traffic" : "seo"),
+				label: hash === "all-actions" ? "Optimize" : "SEO",
+				href: hash === "all-actions" ? pathname : pathname.replace(/opportunities$/, "seo"),
 			},
 			{
-				label:
-					hash === "search" ? "Search diagnosis" : hash === "seo-actions" ? "SEO actions" : "All improvement actions",
+				label: hash === "search" ? "Search diagnosis" : hash === "seo-actions" ? "SEO actions" : "Actions & retests",
 				href: `${pathname}#${hash}`,
 			},
 		];
 	if (label === "Traffic analysis")
 		return [
-			{ label: "Analytics", href: pathname },
+			{ label: "GEO", href: pathname.replace(/traffic$/, "") },
 			{ label, href: pathname },
 		];
 	if (label === "Search performance")

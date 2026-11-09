@@ -47,8 +47,8 @@ afterEach(() => {
 
 describe("getCredential", () => {
 	it("falls back to process.env when the overlay is empty", () => {
-		vi.stubEnv("OPENAI_API_KEY", "env-value");
-		expect(getCredential("OPENAI_API_KEY")).toBe("env-value");
+		vi.stubEnv("BEATAPI_API_KEY", "env-value");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("env-value");
 	});
 
 	it("returns undefined when neither overlay nor env has the var", () => {
@@ -58,14 +58,14 @@ describe("getCredential", () => {
 
 	it("a stored value beats process.env, and clearing restores the env fallback", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", KEY_B64);
-		vi.stubEnv("OPENAI_API_KEY", "env-value");
-		dbState.rows = [await encryptedRow("OPENAI_API_KEY", "db-value")];
+		vi.stubEnv("BEATAPI_API_KEY", "env-value");
+		dbState.rows = [await encryptedRow("BEATAPI_API_KEY", "db-value")];
 
 		await refreshCredentialOverlay();
-		expect(getCredential("OPENAI_API_KEY")).toBe("db-value");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("db-value");
 
 		clearCredentialOverlay();
-		expect(getCredential("OPENAI_API_KEY")).toBe("env-value");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("env-value");
 	});
 	it("keeps an explicitly disconnected BeatAPI credential empty after refresh even with an environment key", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", KEY_B64);
@@ -83,12 +83,12 @@ describe("getCredential", () => {
 describe("withStoredCredentials", () => {
 	it("counts a credential stored in the database as set", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", KEY_B64);
-		dbState.rows = [await encryptedRow("OLOSTEP_API_KEY", "db-value")];
+		dbState.rows = [await encryptedRow("BEATAPI_RESEARCH_MODEL", "db-value")];
 		await refreshCredentialOverlay();
 
 		expect(withStoredCredentials({ DATABASE_URL: "postgres://x" })).toMatchObject({
 			DATABASE_URL: "postgres://x",
-			OLOSTEP_API_KEY: "db-value",
+			BEATAPI_RESEARCH_MODEL: "db-value",
 		});
 	});
 });
@@ -97,13 +97,13 @@ describe("refreshCredentialOverlay", () => {
 	beforeEach(() => vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", KEY_B64));
 
 	it("overrides each credential independently", async () => {
-		vi.stubEnv("OXYLABS_PASSWORD", "env-password");
-		dbState.rows = [await encryptedRow("OXYLABS_USERNAME", "db-user")];
+		vi.stubEnv("BROWSER_RUNNER_TOKEN", "env-password");
+		dbState.rows = [await encryptedRow("BEATAPI_RESEARCH_MODEL", "db-user")];
 
 		await refreshCredentialOverlay();
 
-		expect(getCredential("OXYLABS_USERNAME")).toBe("db-user");
-		expect(getCredential("OXYLABS_PASSWORD")).toBe("env-password");
+		expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("db-user");
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBe("env-password");
 	});
 
 	it("ignores rows whose name is not an overridable credential", async () => {
@@ -116,79 +116,79 @@ describe("refreshCredentialOverlay", () => {
 	});
 
 	it("rejects a ciphertext replayed under another credential's name", async () => {
-		vi.stubEnv("ANTHROPIC_API_KEY", undefined);
-		const stolen = await encryptedRow("OPENAI_API_KEY", "openai-secret");
-		dbState.rows = [{ name: "ANTHROPIC_API_KEY", encryptedValue: stolen.encryptedValue }];
+		vi.stubEnv("BROWSER_RUNNER_TOKEN", undefined);
+		const stolen = await encryptedRow("BEATAPI_API_KEY", "beatapi-secret");
+		dbState.rows = [{ name: "BROWSER_RUNNER_TOKEN", encryptedValue: stolen.encryptedValue }];
 
 		await refreshCredentialOverlay();
 
-		expect(getCredential("ANTHROPIC_API_KEY")).toBeUndefined();
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBeUndefined();
 	});
 
 	it("drops only the undecryptable row, leaving healthy rows in place", async () => {
-		vi.stubEnv("BRIGHTDATA_API_TOKEN", undefined);
+		vi.stubEnv("BROWSER_RUNNER_TOKEN", undefined);
 		dbState.rows = [
-			await encryptedRow("OPENAI_API_KEY", "ok"),
+			await encryptedRow("BEATAPI_API_KEY", "ok"),
 			// Encrypted under a different key → GCM auth fails on decrypt.
-			await encryptedRow("BRIGHTDATA_API_TOKEN", "nope", Buffer.alloc(32, 9)),
+			await encryptedRow("BROWSER_RUNNER_TOKEN", "nope", Buffer.alloc(32, 9)),
 		];
 
 		await refreshCredentialOverlay();
 
-		expect(getCredential("OPENAI_API_KEY")).toBe("ok");
-		expect(getCredential("BRIGHTDATA_API_TOKEN")).toBeUndefined();
+		expect(getCredential("BEATAPI_API_KEY")).toBe("ok");
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBeUndefined();
 	});
 
 	it("never keeps a stale overlay value once a row stops decrypting", async () => {
-		vi.stubEnv("BRIGHTDATA_API_TOKEN", undefined); // no env fallback for this var
+		vi.stubEnv("BROWSER_RUNNER_TOKEN", undefined); // no env fallback for this var
 
-		dbState.rows = [await encryptedRow("BRIGHTDATA_API_TOKEN", "first")];
+		dbState.rows = [await encryptedRow("BROWSER_RUNNER_TOKEN", "first")];
 		await refreshCredentialOverlay();
-		expect(getCredential("BRIGHTDATA_API_TOKEN")).toBe("first");
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBe("first");
 
-		dbState.rows = [await encryptedRow("BRIGHTDATA_API_TOKEN", "second", Buffer.alloc(32, 3))];
+		dbState.rows = [await encryptedRow("BROWSER_RUNNER_TOKEN", "second", Buffer.alloc(32, 3))];
 		await refreshCredentialOverlay();
-		expect(getCredential("BRIGHTDATA_API_TOKEN")).toBeUndefined();
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBeUndefined();
 	});
 
 	it("keeps serving rows written under a retired key mid-rotation", async () => {
 		const retired = Buffer.alloc(32, 4);
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY_OLD", retired.toString("base64"));
-		dbState.rows = [await encryptedRow("OPENAI_API_KEY", "written-before-rotation", retired)];
+		dbState.rows = [await encryptedRow("BEATAPI_API_KEY", "written-before-rotation", retired)];
 
 		await refreshCredentialOverlay();
 
-		expect(getCredential("OPENAI_API_KEY")).toBe("written-before-rotation");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("written-before-rotation");
 		expect(console.error).not.toHaveBeenCalled();
 	});
 
 	it("names the key a stranded row needs instead of blaming the row", async () => {
-		vi.stubEnv("OPENAI_API_KEY", undefined);
-		dbState.rows = [await encryptedRow("OPENAI_API_KEY", "stranded", Buffer.alloc(32, 4))];
+		vi.stubEnv("BEATAPI_API_KEY", undefined);
+		dbState.rows = [await encryptedRow("BEATAPI_API_KEY", "stranded", Buffer.alloc(32, 4))];
 
 		await refreshCredentialOverlay();
 
-		expect(getCredential("OPENAI_API_KEY")).toBeUndefined();
+		expect(getCredential("BEATAPI_API_KEY")).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith(expect.stringContaining("BEAT_GEO_ENCRYPTION_KEY_OLD"));
 	});
 
 	it("leaves the overlay untouched when the query fails", async () => {
-		dbState.rows = [await encryptedRow("OPENAI_API_KEY", "current")];
+		dbState.rows = [await encryptedRow("BEATAPI_API_KEY", "current")];
 		await refreshCredentialOverlay();
 
 		dbState.error = new Error("database unavailable");
 
 		await expect(refreshCredentialOverlay()).rejects.toThrow("database unavailable");
-		expect(getCredential("OPENAI_API_KEY")).toBe("current");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("current");
 	});
 
 	it("degrades to env-only (never throws) when BEAT_GEO_ENCRYPTION_KEY is the wrong length", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", Buffer.alloc(16).toString("base64"));
-		vi.stubEnv("OPENAI_API_KEY", "env-value");
-		dbState.rows = [await encryptedRow("OPENAI_API_KEY", "db-value")];
+		vi.stubEnv("BEATAPI_API_KEY", "env-value");
+		dbState.rows = [await encryptedRow("BEATAPI_API_KEY", "db-value")];
 
 		await expect(refreshCredentialOverlay()).resolves.toBeUndefined();
-		expect(getCredential("OPENAI_API_KEY")).toBe("env-value");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("env-value");
 	});
 });
 
@@ -198,14 +198,14 @@ describe("refreshCredentialOverlay", () => {
 describe("deployments with nothing stored", () => {
 	it("is a no-op: env credentials win, the table is never queried, and nothing is logged", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", undefined);
-		vi.stubEnv("OPENAI_API_KEY", "env-value");
-		vi.stubEnv("OXYLABS_USERNAME", "env-user");
+		vi.stubEnv("BEATAPI_API_KEY", "env-value");
+		vi.stubEnv("BEATAPI_RESEARCH_MODEL", "env-user");
 
 		await refreshCredentialOverlay();
 
 		expect(dbState.queries).toBe(0);
-		expect(getCredential("OPENAI_API_KEY")).toBe("env-value");
-		expect(getCredential("OXYLABS_USERNAME")).toBe("env-user");
+		expect(getCredential("BEATAPI_API_KEY")).toBe("env-value");
+		expect(getCredential("BEATAPI_RESEARCH_MODEL")).toBe("env-user");
 		expect(console.error).not.toHaveBeenCalled();
 	});
 });
@@ -213,11 +213,11 @@ describe("deployments with nothing stored", () => {
 describe("encryptCredential", () => {
 	it("produces a payload that round-trips through the overlay", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", KEY_B64);
-		const encryptedValue = await encryptCredential("OXYLABS_PASSWORD", "longer-secret");
+		const encryptedValue = await encryptCredential("BROWSER_RUNNER_TOKEN", "longer-secret");
 
-		dbState.rows = [{ name: "OXYLABS_PASSWORD", encryptedValue }];
+		dbState.rows = [{ name: "BROWSER_RUNNER_TOKEN", encryptedValue }];
 		await refreshCredentialOverlay();
-		expect(getCredential("OXYLABS_PASSWORD")).toBe("longer-secret");
+		expect(getCredential("BROWSER_RUNNER_TOKEN")).toBe("longer-secret");
 	});
 
 	it("rejects a name that is not an overridable credential", async () => {
@@ -227,6 +227,6 @@ describe("encryptCredential", () => {
 
 	it("throws EncryptionKeyError when no encryption key is set", async () => {
 		vi.stubEnv("BEAT_GEO_ENCRYPTION_KEY", undefined);
-		await expect(encryptCredential("OPENAI_API_KEY", "x")).rejects.toThrow(EncryptionKeyError);
+		await expect(encryptCredential("BEATAPI_API_KEY", "x")).rejects.toThrow(EncryptionKeyError);
 	});
 });

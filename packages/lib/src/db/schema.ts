@@ -393,6 +393,7 @@ export const brandDataSources = pgTable(
 			| import("../traffic/ga.mjs").GaSummary
 			| import("../traffic/crawls.mjs").CrawlSummary
 			| import("../traffic/gsc.mjs").GscSummary
+			| import("../ai-reports").AiReport
 		>(),
 		updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 	},

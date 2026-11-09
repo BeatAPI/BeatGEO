@@ -243,12 +243,12 @@ describe("model filter", () => {
 		const grounded = await createRun(brandId, promptId, {
 			at,
 			brandMentioned: true,
-			provider: "openai-api",
+			provider: "beatapi",
 			webSearch: true,
 		});
-		const scraped = await createRun(brandId, promptId, { at, brandMentioned: false, provider: "brightdata" });
-		await createRun(brandId, promptId, { at, brandMentioned: false, provider: "openai-api", webSearch: false });
-		await createRun(brandId, promptId, { at, brandMentioned: true, model: "claude", provider: "anthropic-api" });
+		const scraped = await createRun(brandId, promptId, { at, brandMentioned: false, provider: "beat-browser" });
+		await createRun(brandId, promptId, { at, brandMentioned: false, provider: "beatapi", webSearch: false });
+		await createRun(brandId, promptId, { at, brandMentioned: true, model: "claude", provider: "beatapi" });
 		await createCitation(grounded, "https://a.example/1");
 		await createCitation(scraped, "https://b.example/1");
 		await createCitation(scraped, "https://b.example/2");

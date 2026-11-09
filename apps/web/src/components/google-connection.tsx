@@ -42,9 +42,14 @@ export function GoogleConnection({
 						)}
 					</p>
 				)}
+				<p className="text-xs text-muted-foreground">
+					{t(
+						"Saved authorization does not guarantee the next refresh will succeed. Connection errors do not erase the saved report shown below.",
+					)}
+				</p>
 				<ol className="grid gap-3 text-sm sm:grid-cols-3">
 					<li>
-						{t("1. Authorize Google")} · {t(connected ? "Connected" : "Not connected")}
+						{t("1. Authorize Google")} · {t(connected ? "Authorization saved" : "Not connected")}
 					</li>
 					<li>
 						{t("2. Choose Search Console property")} · {t(data.gsc?.config?.property ? "Selected" : "Not selected")}

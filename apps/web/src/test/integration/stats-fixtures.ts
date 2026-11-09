@@ -80,7 +80,7 @@ export async function createRun(
 			promptId,
 			brandId,
 			model,
-			provider: opts.provider ?? "brightdata",
+			provider: opts.provider ?? "beat-browser",
 			version: "test",
 			webSearchEnabled: opts.webSearch ?? true,
 			rawOutput: {},

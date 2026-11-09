@@ -6,7 +6,6 @@ import { startWorkerHeartbeat } from "@workspace/lib/runtime-health";
 import { startCredentialRefresh } from "@workspace/lib/secrets";
 import { getBoss } from "./boss";
 import { registerHandlers } from "./handlers";
-import { shutdownTelemetry } from "./telemetry";
 
 let stopHeartbeat: (() => Promise<void>) | undefined;
 
@@ -86,7 +85,6 @@ async function shutdown() {
 		console.error("Could not clear the worker heartbeat; it will expire automatically.");
 	}
 	await getBoss().stop({ graceful: true, timeout: 30000 });
-	await shutdownTelemetry();
 	console.log("Worker stopped");
 	process.exit(0);
 }

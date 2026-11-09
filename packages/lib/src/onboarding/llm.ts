@@ -1,23 +1,8 @@
 /**
- * Provider-agnostic onboarding research.
- *
- * Onboarding always runs against a direct API provider (Anthropic / OpenAI /
- * OpenRouter / Mistral / BeatAPI) — the deployment guarantees one is configured, and
- * the CLI's setup wizard enforces it. Each provider implements
- * `runStructuredResearch<T>(prompt, schema)` itself, picking the most
- * idiomatic combo for its API:
- *   • Anthropic / OpenAI — `generateText` + native web-search tool +
- *     `output: Output.object(schema)`.
- *   • OpenRouter — `generateObject` against a `:online`-suffixed slug
- *     (web search baked into the route).
- *   • Mistral — OpenAI-compat `generateObject` (no web search; users who
- *     want it should target a different provider via ONBOARDING_LLM_TARGET).
- *
- * This module's job is just to pick the right provider and forward the call.
- * No prompt wrappers, no JSON parsing, no two-pass anything.
- *
- * `ONBOARDING_LLM_TARGET` (parsed like a SCRAPE_TARGETS entry) overrides the
- * preference order if a deployment wants a specific provider/model.
+ * Onboarding research and the Opportunities report run through BeatAPI: one
+ * bounded web search, a few page reads and one structured completion
+ * (`runStructuredResearch`). `ONBOARDING_LLM_TARGET` (parsed like a
+ * SCRAPE_TARGETS entry) can point at `stub:stub` for keyless UI work.
  */
 import { RESEARCH_PROVIDER_PREFERENCE } from "@workspace/config/env-registry";
 import { parseScrapeTargets } from "@workspace/config/scrape-targets";
@@ -27,14 +12,10 @@ import { withStoredCredentials } from "../secrets";
 
 export { RESEARCH_PROVIDER_PREFERENCE };
 
-export type ResearchProviderId = (typeof RESEARCH_PROVIDER_PREFERENCE)[number];
-
-const ONBOARDING_LLM_TARGET_HELP =
-	"Set ONBOARDING_LLM_TARGET (e.g. claude:anthropic-api) " +
-	"or configure BEATAPI_API_KEY + BEATAPI_RESEARCH_MODEL / ANTHROPIC_API_KEY / OPENAI_API_KEY / OPENROUTER_API_KEY / MISTRAL_API_KEY.";
+const ONBOARDING_LLM_TARGET_HELP = "Configure BEATAPI_API_KEY + BEATAPI_RESEARCH_MODEL in Brand → API Key.";
 
 /**
- * Pick which direct-API provider the onboarding flow should use.
+ * Pick which provider the onboarding flow should use.
  *
  * Resolution order:
  *   1. `ONBOARDING_LLM_TARGET` env override (parsed `model:provider`; only
@@ -42,8 +23,7 @@ const ONBOARDING_LLM_TARGET_HELP =
  *   2. First provider in `RESEARCH_PROVIDER_PREFERENCE` that's configured AND
  *      implements `runStructuredResearch`.
  *
- * BeatAPI uses BEATAPI_RESEARCH_MODEL; other providers supply their research
- * model internally. The target model segment does not override either choice.
+ * BeatAPI uses BEATAPI_RESEARCH_MODEL; the target model segment does not override it.
  */
 export function resolveResearchProvider(env: Record<string, string | undefined> = withStoredCredentials()): Provider {
 	const explicit = env.ONBOARDING_LLM_TARGET?.trim();
@@ -69,7 +49,7 @@ export function resolveResearchProvider(env: Record<string, string | undefined> 
 	const preferred = RESEARCH_PROVIDER_PREFERENCE.map(getProvider).find((provider) => researchReady(provider, env));
 	if (preferred) return preferred;
 
-	throw new Error(`Onboarding requires at least one direct LLM API provider. ${ONBOARDING_LLM_TARGET_HELP}`);
+	throw new Error(`Onboarding research needs BeatAPI. ${ONBOARDING_LLM_TARGET_HELP}`);
 }
 
 /**

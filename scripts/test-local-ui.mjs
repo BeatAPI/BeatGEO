@@ -57,7 +57,7 @@ try {
 		DATABASE_URL: local.DATABASE_URL.replace(/\/beatgeo$/, "/beatgeo_ui_test"),
 		APP_URL: `http://127.0.0.1:${port}`, BASE_URL: `http://127.0.0.1:${port}`,
 		SCRAPE_TARGETS: "stub:stub", ONBOARDING_LLM_TARGET: "stub:stub", ADMIN_API_KEYS: "test-api-key-e2e",
-		DISABLE_TELEMETRY: "1", BROWSER_RUNNER_TOKEN: "",
+		BROWSER_RUNNER_TOKEN: "",
 		PLAYWRIGHT_HTML_OPEN: "never", BEAT_GEO_TEST_ENV_DIR: temp,
 	};
 	const webRequire = createRequire(new URL("../apps/web/package.json", import.meta.url));

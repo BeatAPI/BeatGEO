@@ -5,14 +5,14 @@ const strictTransportSecurity = "max-age=63072000; includeSubDomains";
 const SECURITY_HEADERS: Record<string, string> = {
 	"Content-Security-Policy": [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' https://*.clarity.ms https://us.i.posthog.com",
+		"script-src 'self' 'unsafe-inline'",
 		"style-src 'self' 'unsafe-inline'",
-		"img-src 'self' data: https: https://c.bing.com",
+		"img-src 'self' data: https:",
 		"font-src 'self' data:",
 		"media-src 'self'",
 		"worker-src 'self' blob:",
 		"frame-src 'self'",
-		"connect-src 'self' https://us.i.posthog.com https://*.clarity.ms https://c.bing.com",
+		"connect-src 'self'",
 		"object-src 'none'",
 		"frame-ancestors 'none'",
 		"base-uri 'self'",

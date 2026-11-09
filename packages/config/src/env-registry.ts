@@ -76,102 +76,17 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		description: "Session cookie encryption secret.",
 	},
 	{
-		name: "DATAFORSEO_LOGIN",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "dataforseo",
-		description: "DataForSEO account login.",
-	},
-	{
-		name: "DATAFORSEO_PASSWORD",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "dataforseo",
-		description: "DataForSEO account password.",
-	},
-	{
-		name: "OPENAI_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "openai-api",
-		description: "OpenAI API key.",
-	},
-	{
-		name: "ANTHROPIC_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "anthropic-api",
-		description: "Anthropic API key.",
-	},
-	{
-		name: "MISTRAL_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "mistral-api",
-		description: "Mistral API key.",
-	},
-	{
 		name: "SCRAPE_TARGETS",
 		scope: "server",
 		requiredBy: "required",
-		description:
-			"Comma-separated model:provider[:version][:online] entries. Example: chatgpt:olostep:online,google-ai-mode:olostep:online,copilot:olostep:online",
-	},
-	{
-		name: "SEARCHAPI_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "searchapi",
-		description: "SearchApi.io API key.",
-	},
-	{
-		name: "OLOSTEP_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "olostep",
-		description: "Olostep API key.",
-	},
-	{
-		name: "BRIGHTDATA_API_TOKEN",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "brightdata",
-		description: "BrightData API token.",
-	},
-	{
-		name: "OXYLABS_USERNAME",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "oxylabs",
-		description: "Oxylabs Web Scraper API username.",
-	},
-	{
-		name: "OXYLABS_PASSWORD",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "oxylabs",
-		description: "Oxylabs Web Scraper API password.",
-	},
-	{
-		name: "CLORO_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "cloro",
-		description: "Cloro API key.",
-	},
-	{
-		name: "OPENROUTER_API_KEY",
-		scope: "server",
-		requiredBy: "dynamic-scrape-targets",
-		provider: "openrouter",
-		description: "OpenRouter API key.",
+		description: "Comma-separated model:provider[:version] entries. Example: chatgpt:beat-browser,claude:beatapi",
 	},
 	{
 		name: "ONBOARDING_LLM_TARGET",
 		scope: "server",
 		requiredBy: "optional",
 		description:
-			"model:provider override for the LLM behind brand onboarding and the Opportunities report (e.g., 'claude:anthropic-api'). Defaults to the first configured provider in RESEARCH_PROVIDER_PREFERENCE.",
+			"model:provider override for the LLM behind brand onboarding and the Opportunities report (e.g., 'research:beatapi'). Defaults to the first configured provider in RESEARCH_PROVIDER_PREFERENCE.",
 	},
 	{
 		name: "JINA_API_KEY",
@@ -194,12 +109,6 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		requiredBy: "optional",
 		description:
 			"Previous BEAT_GEO_ENCRYPTION_KEY values, comma-separated, kept readable while rotating. Set only during a rotation.",
-	},
-	{
-		name: "BEAT_GEO_POSTHOG_KEY",
-		scope: "server",
-		requiredBy: "optional",
-		description: "Optional operator-owned analytics key. No telemetry is sent without an explicit key.",
 	},
 	{
 		name: "BROWSER_RUNS_DIR",
@@ -249,48 +158,14 @@ export const ENV_REGISTRY: EnvVarSpec[] = [
 		requiredBy: "optional",
 		description: "Comma-separated domains added as default brands.",
 	},
-	{
-		name: "VITE_PLAUSIBLE_DOMAIN",
-		scope: "client",
-		requiredBy: "optional",
-		description: "Plausible analytics domain.",
-	},
-	{
-		name: "VITE_CLARITY_PROJECT_ID",
-		scope: "client",
-		requiredBy: "optional",
-		description: "Microsoft Clarity project ID.",
-	},
-	{
-		name: "VITE_POSTHOG_KEY",
-		scope: "client",
-		requiredBy: "optional",
-		description: "PostHog project API key override.",
-	},
-	{
-		name: "DISABLE_TELEMETRY",
-		scope: "server",
-		requiredBy: "optional",
-		description: "Set to any value to disable telemetry.",
-	},
 ];
 
 /**
- * Direct-API providers in the order onboarding prefers them. GPT-5 Mini was
- * the cheapest + best-recall in compare-onboarding runs, so we go OpenAI
- * direct first, then OpenAI via OpenRouter as a fallback (same model, just
- * different key), then Anthropic, then Mistral.
- *
- * Lives here, not with the onboarding code, so startup validation can require
- * one of them.
+ * Providers that can run onboarding research and the Opportunities report, in
+ * preference order. Lives here, not with the onboarding code, so startup
+ * validation can require one of them.
  */
-export const RESEARCH_PROVIDER_PREFERENCE = [
-	"beatapi",
-	"openai-api",
-	"openrouter",
-	"anthropic-api",
-	"mistral-api",
-] as const;
+export const RESEARCH_PROVIDER_PREFERENCE = ["beatapi"] as const;
 
 export const CREDENTIAL_ENV_NAMES: ReadonlySet<string> = new Set([
 	...ENV_REGISTRY.filter((spec) => spec.requiredBy === "dynamic-scrape-targets" && spec.provider).map(

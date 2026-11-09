@@ -11,11 +11,6 @@ import { storedCredentialsLoaded, withStoredCredentials } from "@workspace/lib/s
 
 export type PublicClientConfig = ClientConfig;
 
-function resolvePosthogKey(): string | undefined {
-	if (process.env.DISABLE_TELEMETRY) return undefined;
-	return process.env.VITE_POSTHOG_KEY;
-}
-
 /**
  * Get the client-safe deployment configuration. Called in the root route's
  * loader so the config is available to all routes via context; the return value
@@ -27,11 +22,6 @@ export const getClientConfig = createServerFn({ method: "GET" }).handler(async (
 
 	return {
 		branding: deployment.branding,
-		analytics: {
-			plausibleDomain: process.env.VITE_PLAUSIBLE_DOMAIN,
-			clarityProjectId: process.env.VITE_CLARITY_PROJECT_ID,
-			posthogKey: resolvePosthogKey(),
-		},
 		defaultDelayHours: getDefaultDelayHours(),
 		hasUsers: userCount > 0,
 	};

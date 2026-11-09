@@ -7,7 +7,6 @@
 		"check-types": "tsc --noEmit",
 		"codegen": "pnpm run generate:auth-schema",
 		"test": "vitest run",
-		"compare:onboarding": "tsx scripts/compare-onboarding.ts",
 		"generate:auth-schema": "bash scripts/generate-auth-schema.sh"
 	},
 	"exports": {
@@ -50,27 +49,21 @@
 		"./traffic/ga": "./src/traffic/ga.mjs",
 		"./traffic/gsc": "./src/traffic/gsc.mjs",
 		"./traffic/crawls": "./src/traffic/crawls.mjs",
-		"./search-analysis": "./src/search-analysis.ts"
+		"./search-analysis": "./src/search-analysis.ts",
+		"./ai-reports": "./src/ai-reports.ts"
 	},
 	"dependencies": {
-		"@ai-sdk/anthropic": "^4.0.71",
-		"@ai-sdk/openai": "^4.0.83",
-		"@anthropic-ai/sdk": "^0.131.0",
 		"@better-auth/api-key": "1.7.7",
 		"@better-auth/cimd": "1.7.7",
 		"@better-auth/core": "1.7.7",
 		"@better-auth/mcp": "1.7.7",
 		"@better-auth/oauth-provider": "1.7.7",
-		"@brightdata/sdk": "^1.2.0",
 		"@mozilla/readability": "^0.6.0",
 		"@workspace/config": "workspace:*",
-		"ai": "^7.0.127",
 		"better-auth": "^1.7.7",
-		"dataforseo-client": "^2.1.8",
 		"drizzle-orm": "^0.45.3",
 		"jose": "6.2.12",
 		"linkedom": "^0.18.13",
-		"olostep": "^1.2.2",
 		"pg": "^8.23.1",
 		"zod": "^4.6.5"
 	},

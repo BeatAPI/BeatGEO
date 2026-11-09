@@ -1,16 +1,6 @@
 import { PROVIDERS_DOCS_URL } from "@workspace/config/constants";
-import { anthropicApi } from "./registry/anthropic-api";
 import { beatBrowser } from "./registry/beat-browser";
 import { beatapi } from "./registry/beatapi";
-import { brightdata } from "./registry/brightdata";
-import { cloro } from "./registry/cloro";
-import { dataforseo } from "./registry/dataforseo";
-import { mistralApi } from "./registry/mistral-api";
-import { olostep } from "./registry/olostep";
-import { openaiApi } from "./registry/openai-api";
-import { openrouter } from "./registry/openrouter";
-import { oxylabs } from "./registry/oxylabs";
-import { searchapi } from "./registry/searchapi";
 import { stub } from "./registry/stub";
 import type { ModelConfig, Provider, ProviderAccess } from "./types";
 
@@ -27,19 +17,11 @@ export type {
 	TestResult,
 } from "./types";
 
+// BeatBrowser observes the consumer pages in the user's own Chrome; BeatAPI asks
+// models directly through one key. `stub` serves keyless UI work and tests.
 const providerMap: Record<string, Provider> = {
-	beatapi,
 	"beat-browser": beatBrowser,
-	searchapi,
-	olostep,
-	brightdata,
-	oxylabs,
-	cloro,
-	"openai-api": openaiApi,
-	"anthropic-api": anthropicApi,
-	"mistral-api": mistralApi,
-	dataforseo,
-	openrouter,
+	beatapi,
 	stub,
 };
 

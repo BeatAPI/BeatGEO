@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authed/app/")({
 	loader: async ({ context }) => {
 		const { organizations } = await context.queryClient.ensureQueryData(organizationsQuery);
 		const website = context.localNavigation?.website ?? firstWebsite(organizations);
-		if (website) throw redirect({ to: "/app/org/$org/brand/$brand/seo", params: website });
+		if (website) throw redirect({ to: "/app/org/$org/brand/$brand", params: website });
 		throw redirect({ to: "/setup" });
 	},
 });

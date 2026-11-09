@@ -14,7 +14,7 @@ import {
 const NOW = new Date("2026-08-05T12:00:00Z");
 
 const SELF_HOSTED_TARGETS = parseScrapeTargets(
-	"chatgpt:brightdata:online,perplexity:brightdata:online,claude:anthropic-api:claude-sonnet-5:online",
+	"chatgpt:beat-browser:online,perplexity:beat-browser:online,claude:beatapi:claude-sonnet-5:online",
 );
 
 function localInput(overrides?: Partial<ResolveRunPlanInput>): ResolveRunPlanInput {
@@ -63,7 +63,7 @@ describe("resolvePromptRunPlan", () => {
 
 describe("cadence enforcement", () => {
 	const plan = {
-		config: { model: "chatgpt", provider: "brightdata", webSearch: true },
+		config: { model: "chatgpt", provider: "beat-browser", webSearch: true },
 		intervalHours: 6,
 		replication: 1,
 	};
@@ -85,12 +85,12 @@ describe("cadence enforcement", () => {
 
 	it("selectDueTargets keys claude base and web separately", () => {
 		const base = {
-			config: { model: "claude", provider: "anthropic-api", webSearch: false },
+			config: { model: "claude", provider: "beatapi", webSearch: false },
 			intervalHours: 24,
 			replication: 1,
 		};
 		const web = {
-			config: { model: "claude", provider: "anthropic-api", webSearch: true },
+			config: { model: "claude", provider: "beatapi", webSearch: true },
 			intervalHours: 24,
 			replication: 1,
 		};

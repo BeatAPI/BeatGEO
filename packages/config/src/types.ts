@@ -1,9 +1,3 @@
-export interface AnalyticsConfig {
-	plausibleDomain?: string;
-	clarityProjectId?: string;
-	posthogKey?: string;
-}
-
 export interface BrandingConfig {
 	name: string;
 	icon: string;
@@ -20,7 +14,6 @@ export interface Deployment {
 /** Serializable deployment configuration exposed to browser code. */
 export interface ClientConfig {
 	branding: BrandingConfig;
-	analytics: AnalyticsConfig;
 	/** Prompt cadence in hours when a brand has no override. */
 	defaultDelayHours: number;
 	hasUsers: boolean;

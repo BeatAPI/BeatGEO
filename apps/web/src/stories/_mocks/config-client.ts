@@ -16,14 +16,8 @@ export interface BrandingConfig {
 	chartColors: string[];
 }
 
-export interface AnalyticsConfig {
-	plausibleDomain?: string;
-	clarityProjectId?: string;
-}
-
 export interface ClientConfig {
 	branding: BrandingConfig;
-	analytics: AnalyticsConfig;
 	defaultDelayHours?: number;
 	hasUsers?: boolean;
 }
@@ -37,7 +31,6 @@ let _config: ClientConfig = {
 		name: "BeatGEO",
 		chartColors: DEFAULT_CHART_COLORS,
 	},
-	analytics: {},
 	defaultDelayHours: 24,
 	hasUsers: true,
 };

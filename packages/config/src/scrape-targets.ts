@@ -2,13 +2,14 @@
  * The single module that parses and formats the SCRAPE_TARGETS env var.
  *
  * Format: model:provider[:version][:online]
- * - model: AI model to track (chatgpt, google-ai-mode, copilot, etc.)
- * - provider: How to reach it (olostep, brightdata, direct, openrouter, dataforseo)
- * - version: Specific version slug, required for direct/openrouter (may contain colons for OpenRouter variants)
- * - :online: Append to enable web search. Omit = no web search.
+ * - model: AI platform to track (chatgpt, gemini, claude, deepseek, ...)
+ * - provider: How to reach it — beat-browser (the consumer page in your Chrome) or beatapi (the model API)
+ * - version: BeatAPI model ID; optional for beatapi (defaults per platform), omitted for beat-browser
+ * - :online: Reserved for web-search targets. Neither shipped provider accepts it today.
  */
 
 import { PROVIDERS_DOCS_URL } from "./constants";
+import { BEATAPI_DEFAULT_MODELS } from "./models";
 
 export interface ModelConfig {
 	model: string;
@@ -22,14 +23,13 @@ export interface ModelConfig {
  *
  * Parsing: split on ":". First = model, second = provider. If last segment is "online",
  * pop it (websearch = true). Remaining middle segments rejoined with ":" = version slug.
- * This naturally handles OpenRouter variant suffixes like ":free".
  */
 export function parseScrapeTargets(envValue?: string): ModelConfig[] {
 	if (!envValue || !envValue.trim()) {
 		throw new Error(
 			"SCRAPE_TARGETS environment variable is required. " +
 				"Set it to configure which AI models to track. Example:\n" +
-				"  SCRAPE_TARGETS=chatgpt:olostep:online,google-ai-mode:olostep:online,copilot:olostep:online\n" +
+				"  SCRAPE_TARGETS=chatgpt:beat-browser,claude:beatapi\n" +
 				`See ${PROVIDERS_DOCS_URL} for details.`,
 		);
 	}
@@ -42,7 +42,12 @@ export function parseScrapeTargets(envValue?: string): ModelConfig[] {
 		const provider = parts[1];
 		const webSearch = parts[parts.length - 1] === "online";
 		const versionParts = parts.slice(2, webSearch ? -1 : undefined);
-		const version = versionParts.length > 0 ? versionParts.join(":") : undefined;
+		const version =
+			versionParts.length > 0
+				? versionParts.join(":")
+				: provider === "beatapi"
+					? BEATAPI_DEFAULT_MODELS[model]
+					: undefined;
 		return { model, provider, version, webSearch };
 	});
 }
@@ -59,83 +64,24 @@ export function formatScrapeTarget(config: ModelConfig): string {
 }
 
 /**
- * The provider:model targets shown on the public status page and exercised by
- * the scheduled test-providers workflow. Both the page and the workflow read
- * this one list so the "what we display" and "what we test" sets can't drift.
+ * Every platform BeatGEO can track and how: BeatBrowser opens the consumer page in
+ * the user's own Chrome, BeatAPI asks the platform's model (BEATAPI_DEFAULT_MODELS)
+ * through one key.
  */
-export const STATUS_TARGETS = [
-	"chatgpt:searchapi",
-	"chatgpt:searchapi:online",
-	"google-ai-mode:searchapi:online",
-	"google-ai-overview:searchapi:online",
-	"gemini:searchapi:online",
-	"copilot:searchapi:online",
-	"perplexity:searchapi:online",
-	"chatgpt:olostep:online",
-	"google-ai-mode:olostep:online",
-	"google-ai-overview:olostep:online",
-	"gemini:olostep:online",
-	"copilot:olostep:online",
-	"perplexity:olostep:online",
-	"chatgpt:brightdata",
-	"chatgpt:brightdata:online",
-	"google-ai-mode:brightdata:online",
-	"gemini:brightdata:online",
-	"perplexity:brightdata:online",
-	"copilot:brightdata:online",
-	"google-ai-overview:brightdata:online",
-	"chatgpt:oxylabs",
-	"chatgpt:oxylabs:online",
-	"google-ai-mode:oxylabs:online",
-	"google-ai-overview:oxylabs:online",
-	"perplexity:oxylabs:online",
-	"chatgpt:cloro:online",
-	"perplexity:cloro:online",
-	"copilot:cloro:online",
-	"gemini:cloro:online",
-	"google-ai-mode:cloro:online",
-	"google-ai-overview:cloro:online",
-	"google-ai-mode:dataforseo:online",
-	"google-ai-overview:dataforseo:online",
-	"chatgpt:dataforseo:online",
-	"gemini:dataforseo:online",
-	"perplexity:dataforseo:online",
-	// Pinning a model_name routes to LLM Responses instead of the scraper, so
-	// these keep the API side of the provider monitored too.
-	"chatgpt:dataforseo:gpt-5.5:online",
-	"gemini:dataforseo:gemini-2.5-flash:online",
-	"chatgpt:openai-api:gpt-5-mini",
-	"chatgpt:openai-api:gpt-5-mini:online",
-	"claude:anthropic-api:claude-sonnet-5",
-	"claude:anthropic-api:claude-sonnet-5:online",
-	"claude:openrouter:anthropic/claude-sonnet-5",
-	"claude:openrouter:anthropic/claude-sonnet-5:online",
-	"chatgpt:openrouter:openai/gpt-5-mini",
-	"chatgpt:openrouter:openai/gpt-5-mini:online",
-	"gemini:openrouter:google/gemini-2.5-flash",
-	"gemini:openrouter:google/gemini-2.5-flash:online",
-	"deepseek:openrouter:deepseek/deepseek-v3.2",
-	"qwen:openrouter:qwen/qwen3-235b-a22b",
-	"kimi:openrouter:moonshotai/kimi-k3",
-	"grok:openrouter:x-ai/grok-4.5",
-	"grok:openrouter:x-ai/grok-4.5:online",
-	"mistral:openrouter:mistralai/mistral-medium-3.1",
-	// Perplexity's own search, not OpenRouter's Exa fallback: with the plugin
-	// engine left unset, OpenRouter routes Perplexity slugs to native search.
-	"perplexity:openrouter:perplexity/sonar:online",
-	"mistral:mistral-api:mistral-medium-latest",
-	"mistral:mistral-api:mistral-medium-latest:online",
+export const PLATFORM_TARGETS = [
+	"chatgpt:beat-browser",
+	"gemini:beat-browser",
+	...Object.keys(BEATAPI_DEFAULT_MODELS).map((model) => `${model}:beatapi`),
 ];
 
 /**
- * Which providers can serve each trackable model, derived from STATUS_TARGETS so
- * the answer is limited to combinations the scheduled provider workflow actually
- * exercises. Used to tell a self-hosted operator what they would need in order
- * to track a platform they have not configured yet.
+ * Which providers can serve each trackable model, derived from PLATFORM_TARGETS.
+ * Used to tell the user what they would need in order to track a platform they
+ * have not configured yet.
  */
 export function providersByModel(): Map<string, string[]> {
 	const byModel = new Map<string, Set<string>>();
-	for (const target of parseScrapeTargets(STATUS_TARGETS.join(","))) {
+	for (const target of parseScrapeTargets(PLATFORM_TARGETS.join(","))) {
 		const providers = byModel.get(target.model) ?? new Set<string>();
 		providers.add(target.provider);
 		byModel.set(target.model, providers);

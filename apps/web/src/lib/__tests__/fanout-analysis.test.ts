@@ -161,14 +161,14 @@ describe("computeFanoutAnalysis: 'unavailable' sentinel", () => {
 	// store ["unavailable"] in web_queries when a search happened but the strings
 	// aren't exposed. It's not a real fan-out query and must never reach the page.
 	const breakdown: FanoutBreakdownRow[] = [
-		{ prompt_id: "p1", model: "openrouter-claude", query: UNAVAILABLE_SENTINEL, count: 6, brand_mentions: 2 },
-		{ prompt_id: "p1", model: "openrouter-gpt", query: "Unavailable", count: 3, brand_mentions: 1 }, // mixed case
+		{ prompt_id: "p1", model: "api-claude", query: UNAVAILABLE_SENTINEL, count: 6, brand_mentions: 2 },
+		{ prompt_id: "p1", model: "api-gpt", query: "Unavailable", count: 3, brand_mentions: 1 }, // mixed case
 		{ prompt_id: "p1", model: "chatgpt", query: "best crm software 2026", count: 4, brand_mentions: 3 },
 	];
 	// The SQL filters the sentinel, so OpenRouter's model totals come back at 0.
 	const modelTotals: FanoutModelTotalRow[] = [
-		{ model: "openrouter-claude", runs: 8, fanout_runs: 0, total_queries: 0 },
-		{ model: "openrouter-gpt", runs: 5, fanout_runs: 0, total_queries: 0 },
+		{ model: "api-claude", runs: 8, fanout_runs: 0, total_queries: 0 },
+		{ model: "api-gpt", runs: 5, fanout_runs: 0, total_queries: 0 },
 		{ model: "chatgpt", runs: 4, fanout_runs: 4, total_queries: 4 },
 	];
 	const a = computeFanoutAnalysis(breakdown, modelTotals, promptMap);
@@ -184,8 +184,8 @@ describe("computeFanoutAnalysis: 'unavailable' sentinel", () => {
 
 	it("surfaces sentinel-only providers in the per-model breakdown with zero fan-out", () => {
 		const byModel = Object.fromEntries(a.byModel.map((m) => [m.model, m]));
-		expect(byModel["openrouter-claude"]).toMatchObject({ totalQueries: 0, fanoutRuns: 0 });
-		expect(byModel["openrouter-gpt"]).toMatchObject({ totalQueries: 0, fanoutRuns: 0 });
+		expect(byModel["api-claude"]).toMatchObject({ totalQueries: 0, fanoutRuns: 0 });
+		expect(byModel["api-gpt"]).toMatchObject({ totalQueries: 0, fanoutRuns: 0 });
 		expect(byModel.chatgpt.totalQueries).toBe(4);
 	});
 });

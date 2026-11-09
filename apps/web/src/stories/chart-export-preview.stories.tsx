@@ -65,7 +65,6 @@ function generateChartData(days: number) {
 
 const defaultClientConfig: ClientConfig = {
 	branding: { name: "BeatGEO", chartColors: DEFAULT_CHART_COLORS },
-	analytics: {},
 };
 
 function setupMocks() {

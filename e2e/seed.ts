@@ -552,7 +552,7 @@ async function seed(connectionString: string) {
     const nikeRunId = "00000000-0000-0000-0000-420000000001";
     await client.query(
       `INSERT INTO prompt_runs (id, prompt_id, brand_id, model, provider, version, web_search_enabled, raw_output, web_queries, brand_mentioned, competitors_mentioned, created_at)
-       VALUES ($1, $2, $3, 'chatgpt', 'brightdata', 'gpt-5-5', true, $4, $5, true, $6, NOW())`,
+       VALUES ($1, $2, $3, 'chatgpt', 'beat-browser', 'gpt-5-5', true, $4, $5, true, $6, NOW())`,
       [nikeRunId, NIKE_PROMPT_IDS.training, NIKE_BRAND_ID, JSON.stringify({ response: "Nike Metcon and Romaleos are top picks; Adidas Powerlift is an alternative." }), ["best weightlifting shoes"], ["Adidas"]],
     );
     for (const [i, cite] of [

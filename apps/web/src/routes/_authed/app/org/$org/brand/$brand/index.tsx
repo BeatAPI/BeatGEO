@@ -9,6 +9,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { type ReactNode, useEffect } from "react";
 import { FirstCollectionStatus } from "@/components/first-collection-status";
+import { MonitoringStart } from "@/components/monitoring-start";
 import { PageHeader } from "@/components/page-header";
 import PromptWizard from "@/components/prompt-wizard";
 import { SiteIcon } from "@/components/site-icon";
@@ -22,7 +23,6 @@ import { EARLY_SIGNAL_RUNS, isEarlySignal } from "@/lib/chart-utils";
 import { useLocale, useT } from "@/lib/i18n";
 import type { Values } from "@/lib/i18n/messages";
 import { describeTargetSchedule, type TrackedTarget } from "@/lib/model-filter";
-import { setPersonProperties } from "@/lib/posthog";
 import { pageHead } from "@/lib/route-head";
 
 function getVisibilityTextColor(value: number): string {
@@ -421,7 +421,7 @@ function ResearchBrandData() {
 }
 
 /** Everything the two trend sections plot, plus the loading flags they key off.
- *  Reads only; the analytics write lives in `useReportedPromptCount`. */
+ */
 function useDashboardMetrics(brandId: string | undefined) {
 	const { data: dashboardSummary, isLoading: isLoadingSummary } = useDashboardSummary(brandId, "1m");
 	const { data: sovData, isLoading: isLoadingSov } = useShareOfVoice(brandId, { lookback: "1m" });
@@ -437,13 +437,6 @@ function useDashboardMetrics(brandId: string | undefined) {
 		nonBrandedVisibility: dashboardSummary?.nonBrandedVisibility || 0,
 		lastUpdatedAt: dashboardSummary?.lastUpdatedAt || null,
 	};
-}
-
-/** Mirrors the brand's active prompt count onto the PostHog person. */
-function useReportedPromptCount(totalPrompts: number | undefined) {
-	useEffect(() => {
-		if (totalPrompts != null) setPersonProperties({ active_prompt_count: totalPrompts });
-	}, [totalPrompts]);
 }
 
 const VISIBILITY_TOOLTIP =
@@ -497,7 +490,6 @@ function DashboardPage() {
 		nonBrandedVisibility,
 		lastUpdatedAt,
 	} = useDashboardMetrics(brand?.id);
-	useReportedPromptCount(totalPrompts);
 	const context = useRouteContext({ strict: false }) as { clientConfig?: ClientConfig };
 	const clientConfig = context.clientConfig;
 
@@ -508,12 +500,22 @@ function DashboardPage() {
 	const rankingDomains = rankingDomainsFor(brand);
 
 	if (!isLoadingBrand && !brand?.onboarded) {
-		return <ResearchBrandData />;
+		return (
+			<div>
+				<MonitoringStart />
+				<ResearchBrandData />
+			</div>
+		);
 	}
 
 	// No runs yet: the dashboard has nothing to plot, so point at what to do next.
 	if (!loadingVisibility && totalRuns === 0) {
-		return <AwaitingFirstEvaluation totalPrompts={totalPrompts ?? 0} hasPrompts={(brand?.prompts?.length ?? 0) > 0} />;
+		return (
+			<div>
+				<MonitoringStart />
+				<AwaitingFirstEvaluation totalPrompts={totalPrompts ?? 0} hasPrompts={(brand?.prompts?.length ?? 0) > 0} />
+			</div>
+		);
 	}
 
 	return (

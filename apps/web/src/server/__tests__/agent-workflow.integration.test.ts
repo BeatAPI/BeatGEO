@@ -93,7 +93,7 @@ it("completes a shared MCP workflow with replay protection, browser jobs, eviden
 	const collectionArgs = { brandId, promptIds: [promptId], repeats: 2, idempotencyKey: randomUUID() };
 	const collection = await call("start_collection", collectionArgs);
 	expect((await call("start_collection", collectionArgs)).replayed).toBe(true);
-	vi.stubEnv("SCRAPE_TARGETS", "chatgpt:openai-api");
+	vi.stubEnv("SCRAPE_TARGETS", "chatgpt:beatapi");
 	expect((await call("start_collection", collectionArgs)).replayed).toBe(true);
 	vi.stubEnv("SCRAPE_TARGETS", "chatgpt:beat-browser");
 	const jobs = await boss.fetch<ProcessPromptData>("process-prompt", { batchSize: 10 });
