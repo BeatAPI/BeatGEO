@@ -76,6 +76,15 @@ describe("labelForModelFilter", () => {
 	});
 
 	it("labels the no-filter sentinel", () => {
-		expect(labelForModelFilter(ALL_MODELS_VALUE)).toBe("All models");
+		expect(labelForModelFilter(ALL_MODELS_VALUE)).toBe("All browser platforms");
 	});
+});
+
+it("keeps browser observations and ungrounded API answers independently selectable", () => {
+	const browser = target("chatgpt");
+	const api: TrackedTarget = { ...browser, value: targetFilterValue("chatgpt", false, "api"), tier: "api" };
+	expect(getAvailableModels([browser, api])).toEqual(["all", "chatgpt", "chatgpt::api"]);
+	expect(parseModelFilter(api.value)).toEqual({ model: "chatgpt", premium: false, api: true });
+	expect(labelForModelFilter(api.value)).toBe("ChatGPT · API");
+	expect(getAvailableModels([api])).toEqual(["all", "chatgpt::api"]);
 });

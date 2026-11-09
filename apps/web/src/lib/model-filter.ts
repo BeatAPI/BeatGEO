@@ -60,12 +60,10 @@ export function groupTrackedTargets(targets: readonly TrackedTarget[]): {
 		.filter((group) => group.values.length > 0);
 }
 
-/**
- * Dropdown options for a brand's targets, with "All" on top once there is more
- * than one. A single-target brand gets no "all" entry, since the filter is
- * redundant (callers hide the dropdown entirely).
- */
+/** Keep the browser aggregate available when a brand also samples API answers. */
 export function getAvailableModels(targets: readonly TrackedTarget[]): string[] {
-	const values = targets.map((target) => target.value);
-	return values.length > 1 ? [ALL_MODELS_VALUE, ...values] : values;
+	const values = [...new Set(targets.map((target) => target.value))];
+	return values.length > 1 || targets.some((target) => target.tier !== "scraped")
+		? [ALL_MODELS_VALUE, ...values]
+		: values;
 }

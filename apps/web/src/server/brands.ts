@@ -54,7 +54,7 @@ function computeTrackedTargets(brand: Brand): TrackedTarget[] {
 		return plan.targets.map((target) => {
 			const premium = isGroundedApiTarget(target.config);
 			return {
-				value: targetFilterValue(target.config.model, premium),
+				value: targetFilterValue(target.config.model, premium, resolveProviderAccess(target.config)),
 				model: target.config.model,
 				premium,
 				// Scraped surface, bare API call, or grounded one — the same split the
