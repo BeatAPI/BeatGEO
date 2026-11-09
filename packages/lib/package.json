@@ -50,7 +50,8 @@
 		"./traffic/ga": "./src/traffic/ga.mjs",
 		"./traffic/gsc": "./src/traffic/gsc.mjs",
 		"./traffic/crawls": "./src/traffic/crawls.mjs",
-		"./search-analysis": "./src/search-analysis.ts"
+		"./search-analysis": "./src/search-analysis.ts",
+		"./ai-reports": "./src/ai-reports.ts"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "^4.0.71",
