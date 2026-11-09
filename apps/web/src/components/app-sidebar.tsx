@@ -66,11 +66,6 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 			link: { to: "/app/org/$org/brand/$brand/opportunities", params },
 			icon: IconTarget,
 		},
-		{
-			title: "GEO actions",
-			link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "actions" },
-			icon: IconFileText,
-		},
 	);
 
 	const groups: NavGroup[] = [];
@@ -82,11 +77,6 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 					title: "Search diagnosis",
 					link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "search" },
 					icon: IconTarget,
-				},
-				{
-					title: "SEO actions",
-					link: { to: "/app/org/$org/brand/$brand/opportunities", params, hash: "seo-actions" },
-					icon: IconFileText,
 				},
 				...SEO_PAGES.map(
 					(page): NavItem => ({
@@ -110,7 +100,7 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 				},
 			],
 		});
-	groups.push({ label: "GEO", items: dashboard });
+	groups.unshift({ label: "GEO", items: dashboard });
 	groups.push({
 		label: "Analytics",
 		items: [
@@ -131,7 +121,11 @@ function brandGroups(organization: OrganizationSummary, brand: SidebarBrand, seo
 				link: { to: "/app/org/$org/brand/$brand/settings/competitors", params },
 				icon: IconBuildings,
 			},
-			{ title: "Models", link: { to: "/app/org/$org/brand/$brand/settings/llms", params }, icon: IconCpu },
+			{
+				title: "Monitoring platforms",
+				link: { to: "/app/org/$org/brand/$brand/settings/llms", params },
+				icon: IconCpu,
+			},
 		],
 	});
 

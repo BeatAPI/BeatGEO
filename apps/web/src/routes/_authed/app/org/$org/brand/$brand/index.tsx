@@ -9,6 +9,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
 import { type ReactNode, useEffect } from "react";
 import { FirstCollectionStatus } from "@/components/first-collection-status";
+import { MonitoringStart } from "@/components/monitoring-start";
 import { PageHeader } from "@/components/page-header";
 import PromptWizard from "@/components/prompt-wizard";
 import { SiteIcon } from "@/components/site-icon";
@@ -508,12 +509,22 @@ function DashboardPage() {
 	const rankingDomains = rankingDomainsFor(brand);
 
 	if (!isLoadingBrand && !brand?.onboarded) {
-		return <ResearchBrandData />;
+		return (
+			<div>
+				<MonitoringStart />
+				<ResearchBrandData />
+			</div>
+		);
 	}
 
 	// No runs yet: the dashboard has nothing to plot, so point at what to do next.
 	if (!loadingVisibility && totalRuns === 0) {
-		return <AwaitingFirstEvaluation totalPrompts={totalPrompts ?? 0} hasPrompts={(brand?.prompts?.length ?? 0) > 0} />;
+		return (
+			<div>
+				<MonitoringStart />
+				<AwaitingFirstEvaluation totalPrompts={totalPrompts ?? 0} hasPrompts={(brand?.prompts?.length ?? 0) > 0} />
+			</div>
+		);
 	}
 
 	return (

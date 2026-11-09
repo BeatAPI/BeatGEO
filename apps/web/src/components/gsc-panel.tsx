@@ -94,6 +94,10 @@ export function GscPanel({
 					<div className="space-y-4">
 						<p className="text-sm text-muted-foreground">
 							{result.startDate} – {result.endDate} · {t("Google Search, web results")}
+							<br />
+							{t("Last successful data fetch")}: {new Date(result.fetchedAt).toLocaleString()}
+							<br />
+							{t("Saved search data is not a live connection check or a separate AI report.")}
 						</p>
 						{result.totals && (
 							<div className="grid grid-cols-2 gap-3 md:grid-cols-4">

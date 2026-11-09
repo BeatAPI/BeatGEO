@@ -1,3 +1,4 @@
+import { MonitoringStart } from "@/components/monitoring-start";
 import { useT } from "@/lib/i18n";
 /**
  * Which platforms a brand is tracked against, grouped by what each group tells
@@ -32,7 +33,7 @@ import { useWriteErrorMessage } from "@/lib/write-errors";
 import { getModelPickerStateFn, type ModelPickerState, updateEnabledModelsFn } from "@/server/platform-picks";
 
 export const Route = createFileRoute("/_authed/app/org/$org/brand/$brand/settings/llms")({
-	staticData: { crumb: "Models" },
+	staticData: { crumb: "Monitoring platforms" },
 	loader: async ({ context }): Promise<{ picker: ModelPickerState }> => ({
 		picker: await getModelPickerStateFn({ data: { brandId: context.brandId } }),
 	}),
@@ -46,8 +47,9 @@ function LlmsSettingsPage() {
 
 	return (
 		<div className="max-w-6xl space-y-8">
+			<MonitoringStart />
 			<div>
-				<h1 className="text-3xl font-bold">{t("Models")}</h1>
+				<h1 className="text-3xl font-bold">{t("Monitoring platforms")}</h1>
 				<p className="text-muted-foreground">
 					{t(
 						"Your questions are evaluated against these AI models to track how your brand appears across different types of AI search.",
