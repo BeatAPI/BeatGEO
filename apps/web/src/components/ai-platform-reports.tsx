@@ -220,5 +220,7 @@ function reportView(reports: AiReport[], selected: string, previous: string, fil
 	const baseline = reports.find((r) => r.id === previous);
 	const comparison = report && baseline ? compareAiReports(report, baseline) : null;
 	const rows = (comparison ?? report?.rows ?? []).filter((r) => r.key.toLowerCase().includes(filter.toLowerCase()));
+	if (report?.dimension !== "date")
+		rows.sort((a, b) => (b.value ?? -1) - (a.value ?? -1) || a.key.localeCompare(b.key));
 	return { report, comparison, rows };
 }
