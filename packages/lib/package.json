@@ -53,25 +53,25 @@
 		"./ai-reports": "./src/ai-reports.ts"
 	},
 	"dependencies": {
-		"@better-auth/api-key": "1.7.7",
-		"@better-auth/cimd": "1.7.7",
-		"@better-auth/core": "1.7.7",
-		"@better-auth/mcp": "1.7.7",
-		"@better-auth/oauth-provider": "1.7.7",
+		"@better-auth/api-key": "1.7.17",
+		"@better-auth/cimd": "1.7.17",
+		"@better-auth/core": "1.7.17",
+		"@better-auth/mcp": "1.7.17",
+		"@better-auth/oauth-provider": "1.7.17",
 		"@mozilla/readability": "^0.6.0",
 		"@workspace/config": "workspace:*",
-		"better-auth": "^1.7.7",
-		"drizzle-orm": "^0.45.3",
-		"jose": "6.2.12",
-		"linkedom": "^0.18.13",
+		"better-auth": "^1.7.17",
+		"drizzle-orm": "^0.45.4",
+		"jose": "6.2.15",
+		"linkedom": "^0.18.15",
 		"pg": "^8.23.1",
-		"zod": "^4.6.5"
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@types/pg": "^8.23.1",
-		"auth": "1.7.7",
+		"auth": "1.7.17",
 		"drizzle-kit": "^0.31.11",
 		"typescript": "^7.0.2",
-		"vitest": "^5.0.3"
+		"vitest": "^5.1.0"
 	}
 }
