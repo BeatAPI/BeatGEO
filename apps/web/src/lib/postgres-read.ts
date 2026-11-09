@@ -128,32 +128,19 @@ function promptIdFilter(enabledPromptIds?: string[]): SQL {
 	return sql`AND prompt_id IN (${uuidList(enabledPromptIds)})`;
 }
 
-/**
- * Provider ids that reach a model by calling it directly. Combined with
- * `web_search_enabled`, this is what separates a grounded API answer from the
- * same model scraped off its consumer product — `prompt_runs` records the
- * provider, and both rows carry `model = 'chatgpt'` with web search on.
- *
- * Caveat: a provider that picks its route per target (DataForSEO scrapes by
- * default and calls the API when a target pins a version) is classified by its
- * default here, since the row doesn't record which route ran.
- */
+/** Grounded API filters also require a run to have web search enabled. */
 const API_PROVIDER_IDS = getAllProviders()
 	.filter((provider) => provider.access === "api")
 	.map((provider) => provider.id);
 
-/**
- * Narrow to one target. A bare model id means the standard platform; the
- * `::premium` variant means the grounded API call (the model's own web search).
- *
- * The provider list is bound one parameter per id rather than as an array:
- * drizzle flattens a JS array into a single text parameter, which `ANY(...)`
- * then can't compare element-wise.
- */
+/** Default and bare model filters describe browser observations; API results require an explicit suffix. */
 function modelFilter(model?: string, opts?: { alias?: string; source?: "prompt_runs" | "citations" }): SQL {
 	const target = model ? parseModelFilter(model) : null;
-	if (!target) return sql``;
 	const prefix = opts?.alias ? sql.raw(`${opts.alias}.`) : sql``;
+	if (!target?.premium) {
+		const channel = answerChannel(prefix, opts?.source, !!target?.api);
+		return sql`AND ${channel} ${target ? sql`AND ${prefix}model = ${target.model}` : sql``}`;
+	}
 	const grounded = groundedCondition(prefix, opts?.source);
 	// No API providers configured means nothing can be grounded, so the premium
 	// side matches nothing and the standard side matches everything.
@@ -161,6 +148,16 @@ function modelFilter(model?: string, opts?: { alias?: string; source?: "prompt_r
 		return target.premium ? sql`AND FALSE` : sql`AND ${prefix}model = ${target.model}`;
 	}
 	return sql`AND ${prefix}model = ${target.model} AND ${target.premium ? grounded : sql`NOT ${grounded}`}`;
+}
+
+function answerChannel(prefix: SQL, source: "prompt_runs" | "citations" | undefined, api: boolean): SQL {
+	const provider = api ? "beatapi" : "beat-browser";
+	if (source === "citations") {
+		return sql`EXISTS (SELECT 1 FROM prompt_runs AS channel_run
+			WHERE channel_run.id = ${prefix}prompt_run_id AND channel_run.provider = ${provider}
+			${api ? sql`AND NOT channel_run.web_search_enabled` : sql``})`;
+	}
+	return sql`${prefix}provider = ${provider} ${api ? sql`AND NOT ${prefix}web_search_enabled` : sql``}`;
 }
 
 function groundedCondition(prefix: SQL, source?: "prompt_runs" | "citations"): SQL | null {
@@ -204,6 +201,7 @@ export async function getDashboardSummary(
 		WHERE brand_id = ${brandId}
 			${dateFilter(fromDate, toDate, timezone)}
 			${promptIdFilter(enabledPromptIds)}
+			${modelFilter()}
 	`);
 	return rows;
 }
@@ -415,7 +413,6 @@ export async function getCitationsCountByModel(
 	enabledPromptIds?: string[],
 ): Promise<CitationCountByModelRow[]> {
 	if (enabledPromptIds && enabledPromptIds.length === 0) return [];
-	const grounded = groundedCondition(sql``, "citations");
 	const rows = await queryPg<CitationCountByModelRow>(sql`
 		SELECT model, count(*)::int AS count
 		FROM citations
@@ -423,7 +420,7 @@ export async function getCitationsCountByModel(
 			AND created_at >= ${windowStart(fromDate, timezone)}
 			AND created_at < ${windowEnd(toDate, timezone)}
 			${promptIdFilter(enabledPromptIds)}
-			${grounded ? sql`AND NOT ${grounded}` : sql``}
+			${modelFilter(undefined, { source: "citations" })}
 		GROUP BY model
 	`);
 	return rows.map((row) => ({ model: row.model, count: Number(row.count) }));

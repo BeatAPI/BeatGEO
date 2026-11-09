@@ -38,7 +38,7 @@ export function MonitoringStart() {
 				search={{ view: "reports" }}
 				className="text-sm underline"
 			>
-				{t("Import Bing or Google AI reports")}
+				{t("Connect Bing or Google AI reports")}
 			</Link>
 		</section>
 	);

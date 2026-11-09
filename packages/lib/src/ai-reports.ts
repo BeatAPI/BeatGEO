@@ -14,7 +14,59 @@ export type AiReport = Omit<AiReportInput, "content"> & {
 	id: string;
 	importedAt: string;
 	rows: Array<{ key: string; value: number | null }>;
+	property?: string;
+	method?: "browser";
+	coverage?: string;
+	total?: number;
 };
+
+export function validateConnectedReport(report: Omit<AiReport, "id" | "importedAt" | "schema">) {
+	if (
+		!report.property ||
+		!["bing", "google"].includes(report.source) ||
+		!["page", "query", "date"].includes(report.dimension) ||
+		(report.source === "google" && report.dimension === "query")
+	)
+		throw new Error("Invalid AI report.");
+	if (!validDate(report.startDate) || !validDate(report.endDate) || report.startDate > report.endDate)
+		throw new Error("Invalid report period.");
+	const host = reportHost(report.property);
+	if (host !== report.site || report.rows.length > 2000) throw new Error("Invalid report website or row limit.");
+	const seen = new Set<string>();
+	for (const row of report.rows) {
+		validateConnectedRow(row, report, report.property);
+		if (seen.has(row.key)) throw new Error("Duplicate report row.");
+		seen.add(row.key);
+	}
+	if (report.total !== undefined && (!Number.isSafeInteger(report.total) || report.total < 0))
+		throw new Error("Invalid total.");
+	return {
+		...report,
+		schema: "beat-geo/ai-report@1" as const,
+		rows: [...report.rows].sort((a, b) => a.key.localeCompare(b.key)),
+	};
+}
+function validateConnectedRow(
+	row: AiReport["rows"][number],
+	report: Omit<AiReport, "id" | "importedAt" | "schema">,
+	property: string,
+) {
+	if (!row.key || row.key.length > 2048 || (row.value !== null && (!Number.isSafeInteger(row.value) || row.value < 0)))
+		throw new Error("Invalid report row.");
+	if (report.dimension === "page") validatePropertyPage(row.key, property, report.source);
+	if (report.dimension === "date" && (!validDate(row.key) || row.key < report.startDate || row.key > report.endDate))
+		throw new Error("Observation is outside the report period.");
+}
+function validatePropertyPage(key: string, property: string, source: AiReportSource) {
+	const page = new URL(key),
+		host = reportHost(property),
+		pageHost = reportHost(key);
+	const domainProperty = property.startsWith("sc-domain:") || source === "bing";
+	const matches = domainProperty
+		? pageHost === host || pageHost.endsWith(`.${host}`)
+		: page.origin === new URL(property).origin && page.href.startsWith(property);
+	if (!matches) throw new Error("Page URL is outside the connected property.");
+}
 export function reportHost(value: string): string {
 	const url = new URL(
 		value.startsWith("sc-domain:") ? `https://${value.slice(10)}` : value.includes("://") ? value : `https://${value}`,
@@ -148,6 +200,7 @@ export function compareAiReports(current: AiReport, previous: AiReport) {
 	const days = (r: AiReport) => Date.parse(r.endDate) - Date.parse(r.startDate);
 	if (
 		current.source !== previous.source ||
+		current.property !== previous.property ||
 		current.dimension !== previous.dimension ||
 		current.site !== previous.site ||
 		current.scope !== previous.scope ||

@@ -388,7 +388,11 @@ export const brandDataSources = pgTable(
 			.references(() => brands.id, { onDelete: "cascade" }),
 		kind: text("kind").notNull(),
 		encryptedCredentials: text("encrypted_credentials"),
-		config: jsonb("config").$type<{ property?: { id: string; name: string }; site: string }>(),
+		config: jsonb("config").$type<{
+			property?: { id: string; name: string };
+			site: string;
+			aiReport?: Record<string, string | undefined>;
+		}>(),
 		snapshot: jsonb("snapshot").$type<
 			| import("../traffic/ga.mjs").GaSummary
 			| import("../traffic/crawls.mjs").CrawlSummary

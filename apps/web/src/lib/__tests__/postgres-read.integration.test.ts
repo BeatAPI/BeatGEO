@@ -264,15 +264,23 @@ describe("model filter", () => {
 			[promptId],
 			"chatgpt::premium",
 		);
-		expect(standard).toMatchObject({ total_runs: 2, brand_mentioned_runs: 0 });
+		expect(standard).toMatchObject({ total_runs: 1, brand_mentioned_runs: 0 });
 		expect(premium).toMatchObject({ total_runs: 1, brand_mentioned_runs: 1 });
+	});
+
+	it("keeps API answers out of the default dashboard while allowing explicit API inspection", async () => {
+		const [summary] = await getDashboardSummary(brandId, "2026-03-02", "2026-03-02", "UTC");
+		expect(summary).toMatchObject({ total_runs: 1, avg_visibility: 0 });
+		const api = await getBrandMentionTotals(brandId, "2026-03-02", "2026-03-02", "UTC", [promptId], "chatgpt::api");
+		expect(api).toMatchObject({ total_runs: 1, brand_mentioned_runs: 0 });
 	});
 
 	it("attributes citations through the run that produced them", async () => {
 		const window: [string, string, string, string[]] = ["2026-03-02", "2026-03-02", "UTC", [promptId]];
 		expect(await getCitationsTotalCount(brandId, ...window, "chatgpt")).toBe(2);
 		expect(await getCitationsTotalCount(brandId, ...window, "chatgpt::premium")).toBe(1);
-		expect(await getCitationsTotalCount(brandId, ...window)).toBe(3);
+		expect(await getCitationsTotalCount(brandId, ...window)).toBe(2);
+		expect(await getCitationsTotalCount(brandId, ...window, "chatgpt::api")).toBe(0);
 	});
 
 	it("counts each model's citations the way its bare model filter does", async () => {
@@ -284,10 +292,7 @@ describe("model filter", () => {
 
 	it("breaks mention rate down by model", async () => {
 		const rows = await getBrandMentionRateByModel(brandId, "2026-03-02", "2026-03-02", "UTC", [promptId]);
-		expect(rows).toEqual([
-			{ model: "chatgpt", runs: 3, brand_mentioned_count: 1 },
-			{ model: "claude", runs: 1, brand_mentioned_count: 1 },
-		]);
+		expect(rows).toEqual([{ model: "chatgpt", runs: 1, brand_mentioned_count: 0 }]);
 	});
 });
 
