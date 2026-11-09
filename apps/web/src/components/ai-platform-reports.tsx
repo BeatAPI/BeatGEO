@@ -1,18 +1,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-	type AiReport,
-	type AiReportDimension,
-	type AiReportInput,
-	type AiReportSource,
-	compareAiReports,
-	parseAiReport,
-} from "@workspace/lib/ai-reports";
+import { type AiReport, compareAiReports } from "@workspace/lib/ai-reports";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useBrandId } from "@/hooks/use-brand-id";
 import { useT } from "@/lib/i18n";
-import { deleteAiReportFn, importAiReportFn, listAiReportsFn } from "@/server/ai-reports";
+import { deleteAiReportFn, listAiReportsFn } from "@/server/ai-reports";
+
+import { AiReportConnections } from "./ai-report-connections";
+import { TrendChart } from "./trend-chart";
 
 const fieldClass = "h-10 w-full min-w-0 rounded-md border bg-background px-3 text-sm";
 export function AiPlatformReports() {
@@ -24,17 +20,7 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 		client = useQueryClient();
 	const queryKey = ["ai-platform-reports", brandId];
 	const query = useQuery({ queryKey, queryFn: () => listAiReportsFn({ data: { brandId } }) });
-	const [input, setInput] = useState<AiReportInput>({
-		source: "bing",
-		dimension: "page",
-		site: "",
-		startDate: "",
-		endDate: "",
-		scope: "",
-		content: "",
-	});
-	const [confirmed, setConfirmed] = useState(false),
-		[busy, setBusy] = useState(false),
+	const [busy, setBusy] = useState(false),
 		[message, setMessage] = useState("");
 	const [selected, setSelected] = useState(""),
 		[previous, setPrevious] = useState(""),
@@ -42,84 +28,15 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 		[offset, setOffset] = useState(0);
 	const reports = query.data ?? [];
 	const { report, comparison, rows } = reportView(reports, selected, previous, filter);
-	const preview = useMemo(() => {
-		if (!input.content) return { data: null, error: "" };
-		try {
-			return { data: parseAiReport(input), error: "" };
-		} catch (error) {
-			return { data: null, error: error instanceof Error ? error.message : "Invalid report." };
-		}
-	}, [input]);
-	function update(patch: Partial<AiReportInput>) {
-		setInput((v) => ({ ...v, ...patch }));
-		setConfirmed(false);
-		setMessage("");
-	}
-	async function save() {
-		if (!preview.data || !confirmed || busy) return;
-		setBusy(true);
-		setMessage("");
-		try {
-			const result = await importAiReportFn({ data: { ...input, brandId } });
-			await client.invalidateQueries({ queryKey });
-			setSelected(result.id);
-			setPrevious("");
-			setOffset(0);
-			setMessage(result.duplicate ? "This report is already saved; no counts were added." : "AI report saved.");
-		} catch (error) {
-			setMessage(error instanceof Error ? error.message : "Could not save AI report.");
-		} finally {
-			setBusy(false);
-		}
-	}
 	return (
 		<div className="space-y-6 p-4 md:p-6 min-w-0">
 			<div>
 				<h2 className="text-xl font-semibold">{t("AI platform reports")}</h2>
 				<p className="mt-2 text-sm text-muted-foreground">
-					{t(
-						"Import platform observations separately from your monitored questions. Imports do not enable automatic synchronization.",
-					)}
+					{t("Connect your website accounts and sync AI visibility directly. No files to download or upload.")}
 				</p>
 			</div>
-			<div className="grid gap-4 md:grid-cols-2">
-				{(["bing", "google"] as const).map((source) => {
-					const latest = reports.find((r) => r.source === source);
-					return (
-						<section key={source} className="rounded-xl border p-4 space-y-2">
-							<h3 className="font-medium">
-								{source === "bing" ? "Bing AI Performance" : "Google Search Console · AI"}
-							</h3>
-							<p className="text-sm text-muted-foreground">
-								{t(
-									source === "bing"
-										? "Citations · Microsoft and supported partners"
-										: "Impressions · Google AI Overviews and AI Mode",
-								)}
-							</p>
-							<p className="text-sm">
-								{query.isPending
-									? t("Loading…")
-									: query.isError
-										? t("Could not load AI reports.")
-										: latest
-											? `${latest.startDate} – ${latest.endDate} · ${latest.site}`
-											: t("No AI report imported")}
-							</p>
-							<a
-								className="text-sm underline"
-								href={
-									source === "bing" ? "https://www.bing.com/webmasters/" : "https://search.google.com/search-console"
-								}
-								target="_blank"
-								rel="noreferrer"
-							>
-								{t("Open official dashboard")}
-							</a>
-						</section>
-					);
-				})}
-			</div>
+			<AiReportConnections brandId={brandId} onSynced={() => client.invalidateQueries({ queryKey })} />
 			{query.isError && (
 				<p role="alert">
 					{t("Could not load AI reports.")}{" "}
@@ -128,141 +45,31 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 					</Button>
 				</p>
 			)}
-			<details className="rounded-xl border p-4" open={!reports.length}>
-				<summary className="cursor-pointer font-medium">{t("Import AI report CSV")}</summary>
-				<p className="my-3 text-sm text-muted-foreground">
-					{t(
-						"Export one table from the AI report, then provide its website, dates and filters. Supported: page, daily history, and Bing grounding queries. Use exact counts, not Topic Portfolio opportunity ranges. CSV only; extract ZIP exports first. Maximum 2 MB / 2,000 rows.",
-					)}
-				</p>
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<label className="space-y-1 text-sm">
-						{t("Report source")}
-						<select
-							className={fieldClass}
-							value={input.source}
-							onChange={(e) => update({ source: e.target.value as AiReportSource, dimension: "page" })}
-						>
-							<option value="bing">Bing AI Performance</option>
-							<option value="google">Google Search Console · AI</option>
-						</select>
-					</label>
-					<label className="space-y-1 text-sm">
-						{t("Report dimension")}
-						<select
-							className={fieldClass}
-							value={input.dimension}
-							onChange={(e) => update({ dimension: e.target.value as AiReportDimension })}
-						>
-							<option value="page">{t("Pages")}</option>
-							<option value="date">{t("Daily history")}</option>
-							{input.source === "bing" && <option value="query">{t("Grounding queries")}</option>}
-						</select>
-					</label>
-					<label htmlFor="ai-report-site" className="space-y-1 text-sm">
-						{t("Report website")}
-						<Input
-							id="ai-report-site"
-							value={input.site}
-							placeholder="example.com"
-							onChange={(e) => update({ site: e.target.value })}
-						/>
-					</label>
-					<label htmlFor="ai-report-startDate" className="space-y-1 text-sm">
-						{t("Report start date")}
-						<Input
-							id="ai-report-startDate"
-							type="date"
-							value={input.startDate}
-							onChange={(e) => update({ startDate: e.target.value })}
-						/>
-					</label>
-					<label htmlFor="ai-report-endDate" className="space-y-1 text-sm">
-						{t("Report end date")}
-						<Input
-							id="ai-report-endDate"
-							type="date"
-							value={input.endDate}
-							onChange={(e) => update({ endDate: e.target.value })}
-						/>
-					</label>
-					<label htmlFor="ai-report-scope" className="space-y-1 text-sm">
-						{t("Filters and coverage")}
-						<Input
-							id="ai-report-scope"
-							maxLength={500}
-							value={input.scope}
-							placeholder={t("For example: all countries, text search, no page filter")}
-							onChange={(e) => update({ scope: e.target.value })}
-						/>
-					</label>
-					<label htmlFor="ai-report-file" className="space-y-1 text-sm sm:col-span-2">
-						{t("AI report CSV")}
-						<Input
-							id="ai-report-file"
-							type="file"
-							accept=".csv,text/csv"
-							disabled={busy}
-							onChange={async (e) => {
-								const file = e.target.files?.[0];
-								update({ content: "" });
-								if (!file) return;
-								if (file.size > 2_000_000) {
-									setMessage("CSV is too large (maximum 2 MB).");
-									return;
-								}
-								try {
-									update({ content: await file.text() });
-								} catch {
-									setMessage("Could not read CSV.");
-								}
-							}}
-						/>
-					</label>
-				</div>
-				{preview.error && (
-					<p role="alert" className="mt-3 text-sm text-destructive">
-						{t(preview.error)}
-					</p>
-				)}
-				{preview.data && (
-					<div className="mt-4 space-y-3">
-						<p className="text-sm">
-							{t("Import preview")} · {preview.data.rows.length} {t("rows")} ·{" "}
-							{t(input.source === "bing" ? "Citations" : "Impressions")}
-						</p>
-						<div className="overflow-x-auto">
-							<table className="w-full text-sm text-left">
-								<tbody>
-									{preview.data.rows.slice(0, 5).map((r) => (
-										<tr key={r.key}>
-											<td className="p-2 break-all">{r.key}</td>
-											<td className="p-2">{r.value ?? "—"}</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-						<label className="flex gap-2 items-start text-sm">
-							<input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} />
-							{t(
-								"I confirm this file comes from the selected AI report, and the website, dates and filters match the export. Ordinary search impressions are not AI impressions.",
-							)}
-						</label>
-					</div>
-				)}
-				<Button className="mt-4" disabled={!preview.data || !confirmed || busy} onClick={() => void save()}>
-					{t(busy ? "Saving…" : "Save AI report")}
-				</Button>
-			</details>
 			{message && (
 				<p role="status" className="text-sm">
 					{t(message)}
 				</p>
 			)}
+			{!query.isPending && !query.isError && !report && (
+				<p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
+					{t("No AI data synchronized yet. Connect an account above, then choose Sync now.")}
+				</p>
+			)}
 			{report && (
 				<section className="rounded-xl border p-4 space-y-4">
 					<h3 className="font-medium">{t("Saved AI observations")}</h3>
+					<div className="grid gap-3 sm:grid-cols-2">
+						<div className="rounded-lg bg-muted/40 p-4">
+							<p className="text-sm text-muted-foreground">
+								{t("Official report total")} · {t(report.source === "bing" ? "Citations" : "Impressions")}
+							</p>
+							<p className="mt-1 text-2xl font-semibold">{report.total?.toLocaleString() ?? "—"}</p>
+						</div>
+						<div className="rounded-lg bg-muted/40 p-4">
+							<p className="text-sm text-muted-foreground">{t("Returned observations")}</p>
+							<p className="mt-1 text-2xl font-semibold">{report.rows.length.toLocaleString()}</p>
+						</div>
+					</div>
 					<div className="grid gap-3 md:grid-cols-2">
 						<label className="text-sm space-y-1">
 							{t("Saved report")}
@@ -278,7 +85,7 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 							>
 								{reports.map((r) => (
 									<option key={r.id} value={r.id}>
-										{r.source} · {t(r.dimension)} · {r.startDate} – {r.endDate} · {r.scope}
+										{r.source} · {t(r.dimension)} · {r.startDate} – {r.endDate}
 									</option>
 								))}
 							</select>
@@ -291,22 +98,37 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 									.filter((r) => compareAiReports(report, r) !== null)
 									.map((r) => (
 										<option key={r.id} value={r.id}>
-											{r.startDate} – {r.endDate} · {r.scope}
+											{r.startDate} – {r.endDate} · {t(r.scope)}
 										</option>
 									))}
 							</select>
 						</label>
 					</div>
 					<p className="text-sm text-muted-foreground">
-						{report.site} · {report.startDate} – {report.endDate} · {report.scope}
+						{report.site} · {report.startDate} – {report.endDate} · {t(report.scope)}
 						<br />
-						{t("Imported at")}: {new Date(report.importedAt).toLocaleString()}
+						{report.coverage && (
+							<>
+								{t(report.coverage)}
+								<br />
+							</>
+						)}
+						{t("Saved at")}: {new Date(report.importedAt).toLocaleString()}
 					</p>
 					<p className="text-sm text-muted-foreground">
 						{t(
 							"Compare only equal-length, non-overlapping periods from the same source, dimension, website and filters. Missing rows are unknown, not zero. Daily reports remain separate observations. Row sums are not site totals; different platforms are never added together.",
 						)}
 					</p>
+					{report.dimension === "date" && report.rows.length > 0 && (
+						<TrendChart
+							data={report.rows.map((row) => ({ date: row.key, value: row.value }))}
+							label={t(report.source === "bing" ? "Citations" : "Impressions")}
+							color="var(--primary)"
+							className="aspect-auto h-64 w-full"
+							unit="count"
+						/>
+					)}
 					<Input
 						aria-label={t("Filter observations")}
 						placeholder={t("Filter observations")}
@@ -369,7 +191,7 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 							variant="outline"
 							disabled={busy}
 							onClick={async () => {
-								if (!window.confirm(t("Remove this imported report? The original file is unchanged."))) return;
+								if (!window.confirm(t("Remove this saved snapshot? The official report is unchanged."))) return;
 								setBusy(true);
 								try {
 									await deleteAiReportFn({ data: { brandId, id: report.id } });
@@ -384,7 +206,7 @@ function ReportWorkspace({ brandId }: { brandId: string }) {
 								}
 							}}
 						>
-							{t("Remove import")}
+							{t("Remove snapshot")}
 						</Button>
 					</div>
 				</section>

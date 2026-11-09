@@ -30,8 +30,11 @@ if (process.platform !== "win32" && !process.env.BEATGEO_LAUNCHER) {
 }
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const envPath = process.argv[2] || path.join(root, ".env");
-ensureLocalSetup(root, { envFile: process.argv[2] });
+const startupArgs = process.argv.slice(2);
+const skipMigrations = startupArgs.includes("--skip-migrations");
+const envFile = startupArgs.find((arg) => arg !== "--skip-migrations");
+const envPath = envFile || path.join(root, ".env");
+ensureLocalSetup(root, { envFile });
 Object.assign(process.env, parseEnv(readFileSync(envPath, "utf8")));
 requireBundledStorage(process.env);
 const app = new URL(process.env.APP_URL || "http://localhost:3140");
@@ -76,9 +79,11 @@ try {
 	await prepareExtension(root);
 	database = await startEmbeddedDatabase(root, process.env);
 	// Migrations are applied before either application process starts.
-	execFileSync(process.execPath, ["node_modules/drizzle-kit/bin.cjs", "migrate"], {
-		cwd: path.join(root, "packages/lib"), stdio: "inherit", env: process.env,
-	});
+	if (!skipMigrations) {
+		execFileSync(process.execPath, ["node_modules/drizzle-kit/bin.cjs", "migrate"], {
+			cwd: path.join(root, "packages/lib"), stdio: "inherit", env: process.env,
+		});
+	}
 	start(process.execPath, ["apps/browser-lab/server.mjs"]);
 	// The shared bridge may serve other agents, so it is not stopped with BeatGEO.
 	try {

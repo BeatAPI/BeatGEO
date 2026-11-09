@@ -26,15 +26,18 @@ export function TrendChart({
 	label,
 	color,
 	className = "aspect-auto h-full w-full",
+	unit = "percent",
 }: {
 	data: TrendPoint[];
 	label: string;
 	color: string;
 	className?: string;
+	unit?: "percent" | "count";
 }) {
 	const { locale } = useLocale();
 	const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 	const config = { value: { label, color } } satisfies ChartConfig;
+	const formatValue = (value: number) => (unit === "percent" ? `${value}%` : value.toLocaleString(dateLocale));
 	const observedCount = data.filter((point) => point.value != null).length;
 	const observedIndex = data.findIndex((point) => point.value != null);
 
@@ -60,7 +63,8 @@ export function TrendChart({
 					tickMargin={8}
 					tickCount={4}
 					tick={{ fontSize: 11 }}
-					tickFormatter={(value: number) => `${value}%`}
+					tickFormatter={formatValue}
+					allowDecimals={unit === "percent"}
 				/>
 				<ChartTooltip
 					isAnimationActive={false}
@@ -80,7 +84,7 @@ export function TrendChart({
 								<div className="flex items-center gap-2">
 									<div className="shrink-0 rounded-[2px] h-2.5 w-2.5" style={{ background: color }} />
 									<span className="text-muted-foreground">{label}</span>
-									<span className="ml-auto font-mono tabular-nums">{value}%</span>
+									<span className="ml-auto font-mono tabular-nums">{formatValue(value)}</span>
 								</div>
 							</div>
 						);
@@ -93,7 +97,7 @@ export function TrendChart({
 					strokeWidth={2}
 					fill={color}
 					fillOpacity={0.18}
-					connectNulls
+					connectNulls={unit === "percent"}
 					// A lone observation has no line to sit on, so it would otherwise not be drawn at all.
 					dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) =>
 						observedCount === 1 && index === observedIndex && cx != null && cy != null ? (

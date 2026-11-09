@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { type AiReport, type AiReportInput, compareAiReports, parseAiReport } from "./ai-reports";
+import {
+	type AiReport,
+	type AiReportInput,
+	compareAiReports,
+	parseAiReport,
+	validateConnectedReport,
+} from "./ai-reports";
 
 const base: AiReportInput = {
 	source: "bing",
@@ -74,5 +80,45 @@ describe("AI platform report imports", () => {
 				content: "Page,Citations\r\nhttps://example.com/b,-\r\nhttps://example.com/a,1200\r\n",
 			}),
 		);
+	});
+});
+
+describe("connected AI reports", () => {
+	const report = {
+		source: "google" as const,
+		dimension: "page" as const,
+		site: "example.com",
+		property: "sc-domain:example.com",
+		startDate: "2026-10-01",
+		endDate: "2026-10-28",
+		scope: "Official AI report",
+		rows: [{ key: "https://docs.example.com/a", value: 5 }],
+		total: 12,
+	};
+	it("keeps official totals separate from partial page rows and accepts domain subdomains", () => {
+		expect(validateConnectedReport(report)).toMatchObject({ total: 12, rows: report.rows });
+		expect(validateConnectedReport({ ...report, rows: [] }).rows).toEqual([]);
+	});
+	it.each(["https://example.com.evil.test/a", "https://other.test/a", "javascript:alert(1)"])(
+		"rejects unrelated page %s",
+		(key) => {
+			expect(() => validateConnectedReport({ ...report, rows: [{ key, value: 2 }] })).toThrow();
+		},
+	);
+	it("restricts URL prefix properties", () => {
+		expect(() =>
+			validateConnectedReport({
+				...report,
+				property: "https://example.com/docs/",
+				rows: [{ key: "https://example.com/blog/a", value: 2 }],
+			}),
+		).toThrow();
+	});
+	it("rejects duplicate rows, invalid counts and dates outside the report", () => {
+		expect(() => validateConnectedReport({ ...report, rows: [...report.rows, ...report.rows] })).toThrow();
+		expect(() => validateConnectedReport({ ...report, total: -1 })).toThrow();
+		expect(() =>
+			validateConnectedReport({ ...report, dimension: "date", rows: [{ key: "2026-11-01", value: 2 }] }),
+		).toThrow();
 	});
 });

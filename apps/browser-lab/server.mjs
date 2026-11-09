@@ -14,6 +14,7 @@ import {
 	summarize,
 	validateInput,
 } from "./core.mjs";
+import { readWebmasterReport } from "./webmaster-reports.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const directory = defaultRunDirectory();
@@ -134,6 +135,19 @@ async function handle(request, response) {
 	const url = new URL(request.url, `http://127.0.0.1:${port}`);
 	if (request.method === "GET") return handleRead(url, request, response);
 	if (request.method === "POST" && url.pathname === "/api/browser/profile") return selectProfile(request, response);
+	if (request.method === "POST" && url.pathname === "/api/reports") {
+		if (!authorized(request)) return json(response, 403, { error: "Invalid local runner token" });
+		const input = await bodyOf(request);
+		if (!["connect", "sync"].includes(input.action)) return json(response, 400, { error: "Invalid report action" });
+		if (active)
+			return json(response, 409, { error: "The browser is busy. Retry after the current operation finishes." });
+		active = { status: "reading-report" };
+		try {
+			return json(response, 200, await readWebmasterReport(input));
+		} finally {
+			active = null;
+		}
+	}
 	if (request.method !== "POST" || !["/api/run", "/api/collect"].includes(url.pathname))
 		return json(response, 404, { error: "Not found" });
 	return handleCollection(request, response, url);
