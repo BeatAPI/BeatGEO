@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@v6.1.1
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -69,7 +69,7 @@ jobs:
       TEST_DATABASE_URL: postgres://beatgeo_test:local-ci-only@127.0.0.1:5432/beatgeo_ci_test
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@v6.1.1
       - uses: actions/setup-node@v7
         with:
           node-version: 24
